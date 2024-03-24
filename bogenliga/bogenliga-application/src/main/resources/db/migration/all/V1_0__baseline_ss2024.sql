@@ -43,7 +43,7 @@ CREATE TABLE configuration (
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_region_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_region_id START WITH 2000 INCREMENT BY 1;
 CREATE TABLE region (
   region_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_region_id'), -- DECIMAL(19,0) = unsigned long
   region_name           VARCHAR(200)  NOT NULL,
@@ -80,7 +80,7 @@ CREATE TRIGGER tr_region_update_version
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_verein_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_verein_id START WITH 1200 INCREMENT BY 1;
 
 /**
  * Ein Verein besitzt einen Namen und eine ID beim DSB.
@@ -148,7 +148,7 @@ CREATE TRIGGER tr_verein_update_version
  **/
 
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_dsb_mitglied_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_dsb_mitglied_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE dsb_mitglied (
    dsb_mitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval('sq_dsb_mitglied_id'),
    dsb_mitglied_vorname         VARCHAR(200)   NOT NULL,
@@ -188,7 +188,7 @@ CREATE TRIGGER tr_dsb_mitglied_update_version
 -- Userdaten für die technische Userverwaltung (Authentifizierung, Sessionmanagement, etc)
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_benutzer_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_benutzer_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE benutzer (
                           benutzer_id                   DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_benutzer_id'), -- DECIMAL(19,0) = unsigned long
                           benutzer_email                VARCHAR(200),  -- will be required for active users - see unique index
@@ -230,7 +230,7 @@ CREATE TRIGGER tr_benutzer_update_version
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_klasse_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_klasse_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE klasse (
                         klasse_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_klasse_id'), -- DECIMAL(19,0) = unsigned long
                         klasse_name           VARCHAR(200)  NOT NULL, -- gem. Vorgaben DSB
@@ -265,7 +265,7 @@ CREATE TRIGGER tr_klasse_update_version
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_disziplin_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_disziplin_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE disziplin (
                            disziplin_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_disziplin_id'), -- DECIMAL(19,0) = unsigned long
                            disziplin_name           VARCHAR(200)  NOT NULL, -- gem. Vorgaben DSB
@@ -296,7 +296,7 @@ CREATE TRIGGER tr_disziplin_update_version
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_wettkampftyp_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_wettkampftyp_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE wettkampftyp (
                               wettkampftyp_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_wettkampftyp_id'), -- DECIMAL(19,0) = unsigned long
                               wettkampftyp_name           VARCHAR(200)  NOT NULL, -- gem. Vorgaben DSB
@@ -330,7 +330,7 @@ CREATE TRIGGER tr_wettkampftyp_update_version
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_liga_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_liga_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE liga (
    liga_id               DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_liga_id'), -- DECIMAL(19,0) = unsigned long
    liga_region_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zur Region
@@ -378,7 +378,7 @@ CREATE TRIGGER tr_liga_update_version
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_lizenz_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_lizenz_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE lizenz (
                         lizenz_id               DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_lizenz_id'), -- DECIMAL(19,0) = unsigned long
                         lizenz_nummer           VARCHAR(200)  NOT NULL, --fachliche Lizenz-Nummer für Anzeige und Druck
@@ -427,7 +427,7 @@ CREATE TRIGGER tr_lizenz_update_version
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_veranstaltung_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_veranstaltung_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE veranstaltung (
     veranstaltung_id                  DECIMAL(19, 0) NOT NULL    DEFAULT nextval('sq_veranstaltung_id'),
     veranstaltung_wettkampftyp_id     DECIMAL(19, 0) NOT NULL, --bezug zu den Regeln
@@ -476,7 +476,7 @@ CREATE TRIGGER tr_veranstaltung_update_version
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_wettkampf_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_wettkampf_id START WITH 1200 INCREMENT BY 1;
 
 CREATE TABLE wettkampf (
   wettkampf_veranstaltung_id    DECIMAL(19,0) NOT NULL, --bezug zum Sportjahr
@@ -531,7 +531,7 @@ CREATE TRIGGER tr_wettkampf_update_version
     FOR EACH ROW EXECUTE PROCEDURE update_row_version();
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_mannschaft_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_mannschaft_id START WITH 1200 INCREMENT BY 1;
 
 /**
  * Einen Mannschaft legt die gemeldeten Schützen für eine Liga oder einen Wettkampf fest
@@ -582,7 +582,7 @@ CREATE TRIGGER tr_mannschaft_update_version
  * Strafpunkte beeinflussen das Ergebnis eines Matches ohne die Pfeilwerte eines Schützen (Entität Passe)
  * zu verändern. Daher werden diese hier abgelegt.
  **/
-CREATE SEQUENCE sq_match_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_match_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE match (
     -- composite key aus mehreren Fremd- und fachlichen Schlüsseln
    match_id DECIMAL(19, 0) NOT NULL DEFAULT nextval('sq_match_id'),
@@ -638,7 +638,7 @@ CREATE TRIGGER tr_match_update_version
 
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_passe_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_passe_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE passe (
 
     passe_id DECIMAL(19, 0) NOT NULL DEFAULT nextval('sq_passe_id'),
@@ -738,7 +738,7 @@ CREATE TRIGGER tr_kampfrichter_update_version
  */
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_recht_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_recht_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE recht (
   recht_id             DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_recht_id'), -- DECIMAL(19,0) = unsigned long
   recht_name           VARCHAR(200)  NOT NULL,
@@ -756,7 +756,7 @@ CREATE TABLE recht (
  */
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_rolle_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_rolle_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE rolle (
    rolle_id           DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_rolle_id'), -- DECIMAL(19,0) = unsigned long
    rolle_name         VARCHAR(200)    NOT NULL,
@@ -849,7 +849,7 @@ CREATE TABLE benutzer_login_verlauf (
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE mannschaftsmitglied_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE mannschaftsmitglied_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE mannschaftsmitglied (
     mannschaftsmitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval('mannschaftsmitglied_id'), -- DECIMAL(19,0) = unsigned long
     mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
@@ -1745,7 +1745,7 @@ VALUES (1, 'NEW'),
 ;
 
 
-CREATE SEQUENCE  altsystem_aenderung_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE  altsystem_aenderung_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE altsystem_aenderung (
                                      aenderung_id         INT            NOT NULL PRIMARY KEY DEFAULT NEXTVAL('altsystem_aenderung_id'),
                                      kategorie            VARCHAR        NOT NULL,
@@ -1766,7 +1766,7 @@ CREATE TRIGGER tr_altsystem_aenderung_update_version
     BEFORE UPDATE ON altsystem_aenderung
     FOR EACH ROW EXECUTE PROCEDURE update_row_version();
 
-CREATE SEQUENCE sq_migrationTimestamp_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE sq_migrationTimestamp_id START WITH 1200 INCREMENT BY 1;
 CREATE TABLE Migrationtimestamp (
                                     id DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_migrationTimestamp_id'),
                                     timestamp TIMESTAMP
