@@ -338,7 +338,7 @@ CREATE TABLE liga (
    liga_uebergeordnet    DECIMAL(19,0)   NULL,  -- Verweis auf die uebergeordnete Liga - bei Bundesliga (ganz oben) leer
    liga_verantwortlich   DECIMAL(19,0)   NULL,  -- Verweis auf den Verantwortlichen User für die Liga
    liga_disziplin_id     DECIMAL(19,0) NOT NULL,  -- technical columns to track the lifecycle of each row
-   liga_detail           VARCHAR(5000) NOT NULL,
+   liga_detail           VARCHAR(5000)  NULL,
    liga_file_base64 varchar(10485760) DEFAULT '',
    liga_file_name varchar (200) DEFAULT '',
    liga_file_type varchar (202) DEFAULT '',
