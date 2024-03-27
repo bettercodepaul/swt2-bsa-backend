@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.veranstaltung.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +84,7 @@ public class VeranstaltungService implements ServiceFacade {
         phaseList[0] = VeranstaltungPhase.Phase.GEPLANT;
         phaseList[1] = VeranstaltungPhase.Phase.LAUFEND;
 
-        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
-                Collectors.toList());
+        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -103,8 +101,7 @@ public class VeranstaltungService implements ServiceFacade {
         phaseList[0] = VeranstaltungPhase.Phase.LAUFEND;
         phaseList[1] = VeranstaltungPhase.Phase.ABGESCHLOSSEN;
 
-        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
-                Collectors.toList());
+        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -137,7 +134,7 @@ public class VeranstaltungService implements ServiceFacade {
         final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
 
-        return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -151,7 +148,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         List<SportjahrDO> returnList= veranstaltungComponent.findAllSportjahreDestinct();
 
-        return returnList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
+        return returnList.stream().map(SportjahrDTOMapper.toDTO).toList();
     }
 
 
@@ -169,7 +166,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[0];
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
-                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+                VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -188,7 +185,7 @@ public class VeranstaltungService implements ServiceFacade {
         VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[1];
         phaseList[0] = VeranstaltungPhase.Phase.LAUFEND;
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
-                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+                VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -209,7 +206,7 @@ public class VeranstaltungService implements ServiceFacade {
         phaseList[1] = VeranstaltungPhase.Phase.LAUFEND;
 
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
-                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+                VeranstaltungDTOMapper.toDTO).toList();
     }
 
 
@@ -228,7 +225,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         List <VeranstaltungDO> returnList = veranstaltungComponent.findBySportjahrDestinct(sportjahr);
 
-        return returnList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return returnList.stream().map(VeranstaltungDTOMapper.toDTO).toList();
     }
 
     /**
