@@ -2,7 +2,7 @@ package de.bogenliga.application.services.v1.regionen.service;
 
 import java.security.Principal;
 import java.util.List;
-// remove used import
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +61,7 @@ public class RegionenService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RegionenDTO> findAll() {
         final List<RegionenDO> regionDOList = regionenComponent.findAll();
-        // Replace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'
+
         return regionDOList.stream().map(RegionenDTOMapper.toDTO).toList();
     }
 
@@ -70,7 +70,7 @@ public class RegionenService implements ServiceFacade {
     public List<RegionenDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
         final List<RegionenDO> regionDOList = regionenComponent.findBySearch(searchTerm);
 
-        // Replace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'
+
         return regionDOList.stream().map(RegionenDTOMapper.toDTO).toList();
     }
 
@@ -155,7 +155,7 @@ public class RegionenService implements ServiceFacade {
 
         final List<RegionenDO> regionenDOList = regionenComponent.findAllByType(upperCaseType);
 
-        // Replace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'
+
         return regionenDOList.stream().map(RegionenDTOMapper.toDTO).toList();
     }
 
