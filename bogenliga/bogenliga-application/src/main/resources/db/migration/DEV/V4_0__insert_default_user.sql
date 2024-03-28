@@ -28,4 +28,20 @@ VALUES (6,
         0
         );
 
+INSERT INTO benutzer_rolle (
+        benutzer_rolle_benutzer_id,
+        benutzer_rolle_rolle_id,
+        created_at_utc,
+        created_by,
+        last_modified_at_utc,
+        last_modified_by,
+        version
+        )
+VALUES (6,
+        8,
+        '2024-03-23 10:48:57.525494',
+        0,
+        null,
+        null,
+        0);
 
