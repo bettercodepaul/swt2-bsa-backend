@@ -30,6 +30,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     private static final String PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET = "DsbMitglied nationalitaet must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
+    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREINNAME = "DsbMitglied vereinName must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID = "Team id must not be negative";
@@ -59,6 +60,13 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
+    @Override
+    public List<DsbMitgliedDO> findAllForOverview() {
+        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAllForOverview();
+        return dsbMitgliedBEList.stream()
+                .map(DsbMitgliedMapper.toDsbMitgliedDO)
+                .toList();
+    }
 
     @Override
     public List<DsbMitgliedDO> findAllByTeamId(final long id) {
@@ -180,6 +188,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkNotNull(dsbMitgliedDO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
         Preconditions.checkNotNull(dsbMitgliedDO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
         Preconditions.checkNotNull(dsbMitgliedDO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
+        Preconditions.checkNotNull(dsbMitgliedDO.getVereinName(), PRECONDITION_MSG_DSBMITGLIED_VEREINNAME);
         Preconditions.checkArgument(dsbMitgliedDO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
     }
 }

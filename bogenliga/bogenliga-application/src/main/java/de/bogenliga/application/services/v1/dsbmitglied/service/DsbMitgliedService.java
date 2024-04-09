@@ -105,6 +105,13 @@ public class DsbMitgliedService implements ServiceFacade {
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping(value = "/overview", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
+    public List<DsbMitgliedDTO> findAllForOverview() {
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllForOverview();
+        return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)

@@ -39,6 +39,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_BE_NATIONALITY = "dsbMitgliedNationalitaet";
     private static final String DSBMITGLIED_BE_MEMBERNUMBER = "dsbMitgliedMitgliedsnummer";
     private static final String DSBMITGLIED_BE_CLUB_ID = "dsbMitgliedVereinsId";
+    private static final String DSBMITGLIED_BE_CLUB_NAME = "dsbMitgliedVereinName";
     private static final String DSBMITGLIED_BE_USER_ID = "dsbMitgliedUserId";
 
     private static final String DSBMITGLIED_TABLE_ID = "dsb_mitglied_id";
@@ -48,6 +49,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_NATIONALITY = "dsb_mitglied_nationalitaet";
     private static final String DSBMITGLIED_TABLE_MEMBERNUMBER = "dsb_mitglied_mitgliedsnummer";
     private static final String DSBMITGLIED_TABLE_CLUB_ID = "dsb_mitglied_verein_id";
+    private static final String DSBMITGLIED_TABLE_CLUB_NAME = "verein_name";
     private static final String DSBMITGLIED_TABLE_USER_ID = "dsb_mitglied_benutzer_id";
 
     // wrap all specific config parameters
@@ -61,6 +63,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM dsb_mitglied"
                     + " ORDER BY dsb_mitglied_id";
+
+    private static final String FIND_ALL_FOR_OVERVIEW =
+            "SELECT dsb_mitglied.*, verein.verein_name "
+                    + " FROM dsb_mitglied"
+                    + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
+                    + " ORDER BY dsb_mitglied.dsb_mitglied_id";
 
     private static final String FIND_BY_ID =
             "SELECT * "
@@ -126,6 +134,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_NATIONALITY, DSBMITGLIED_BE_NATIONALITY);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_MEMBERNUMBER, DSBMITGLIED_BE_MEMBERNUMBER);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_ID, DSBMITGLIED_BE_CLUB_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_NAME, DSBMITGLIED_BE_CLUB_NAME);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_USER_ID, DSBMITGLIED_BE_USER_ID);
 
         // add technical columns
@@ -152,6 +161,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL);
     }
 
+    /**
+     * Return all dsbmitglied entries and the corresponding verein name
+     */
+    public List<DsbMitgliedBE> findAllForOverview() {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_FOR_OVERVIEW);
+    }
 
     /**
      * @param id id of the team, in which the dsmitglied entries are used
