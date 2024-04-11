@@ -2,6 +2,7 @@ package de.bogenliga.application.business.altsystem.mannschaft.mapper;
 
 import java.sql.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
@@ -128,7 +129,7 @@ public class AltsystemVeranstaltungMapper {
         // groesse: default als Mindestgroesse auf 4 gesetzt, später in getOrCreateVeranstaltung updated
         veranstaltungDO.setVeranstaltungGroesse(4);
         // phase: "geplant" setzen
-        veranstaltungDO.setVeranstaltungPhase("geplant");
+        veranstaltungDO.setVeranstaltungPhase("Laufend");
         // Ligaleiter_id:
         veranstaltungDO.setVeranstaltungLigaleiterID(currentUserId);
         // Wettkampftyp: Satzsystem
