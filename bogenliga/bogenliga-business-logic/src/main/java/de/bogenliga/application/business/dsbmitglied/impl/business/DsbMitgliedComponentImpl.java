@@ -60,13 +60,6 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
-    @Override
-    public List<DsbMitgliedDO> findAllForOverview() {
-        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAllForOverview();
-        return dsbMitgliedBEList.stream()
-                .map(DsbMitgliedMapper.toDsbMitgliedDO)
-                .toList();
-    }
 
     @Override
     public List<DsbMitgliedDO> findAllByTeamId(final long id) {

@@ -90,15 +90,13 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param nationalitaet
      * @param mitgliedsnummer
      * @param vereinsId
-     * @param vereinName
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
                          final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
-                         final String vereinName, final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final Long version) {
+                         final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -106,7 +104,6 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.nationalitaet = nationalitaet;
         this.mitgliedsnummer = mitgliedsnummer;
         this.vereinsId = vereinsId;
-        this.vereinName = vereinName;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;

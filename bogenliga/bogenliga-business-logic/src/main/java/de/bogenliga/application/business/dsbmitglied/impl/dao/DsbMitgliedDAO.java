@@ -60,11 +60,6 @@ public class DsbMitgliedDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM dsb_mitglied"
-                    + " ORDER BY dsb_mitglied_id";
-
-    private static final String FIND_ALL_FOR_OVERVIEW =
             "SELECT dsb_mitglied.*, verein.verein_name "
                     + " FROM dsb_mitglied"
                     + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
@@ -161,12 +156,6 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL);
     }
 
-    /**
-     * Return all dsbmitglied entries and the corresponding verein name
-     */
-    public List<DsbMitgliedBE> findAllForOverview() {
-        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_FOR_OVERVIEW);
-    }
 
     /**
      * @param id id of the team, in which the dsmitglied entries are used
