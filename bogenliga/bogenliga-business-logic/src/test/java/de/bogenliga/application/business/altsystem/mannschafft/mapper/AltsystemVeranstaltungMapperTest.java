@@ -125,7 +125,7 @@ public class AltsystemVeranstaltungMapperTest {
 
     }
 
-    // tests getOrCreateVeranstaltung when try/catch throws exception
+     // tests getOrCreateVeranstaltung when try/catch throws exception
     @Test
     public void testTryCatch() {
         AltsystemVeranstaltungMapper altsystemVeranstaltungMapper1 = Mockito.spy(altsystemVeranstaltungMapper);
@@ -209,6 +209,85 @@ public class AltsystemVeranstaltungMapperTest {
         assertEquals(Date.valueOf("2021-10-01"), result.getVeranstaltungMeldeDeadline());
         assertEquals((Integer) 4, result.getVeranstaltungGroesse());
         assertEquals("Laufend", result.getVeranstaltungPhase());
+        assertEquals((Long)CURRENTUSERID, result.getVeranstaltungLigaleiterID());
+        assertEquals((Long) WETTKAMPFTYP_ID, result.getVeranstaltungWettkampftypID());
+        assertEquals(WETTKAMPFTYP_NAME, result.getVeranstaltungWettkampftypName());
+
+
+    }
+    // tests createVeranstaltung
+    @Test
+    public void testCreateVeranstaltung_geplant() {
+        // prepare test data
+        // Mock Liga
+        LigaDO mockedLigaDO = new LigaDO();
+        mockedLigaDO.setId(LIGAID);
+        mockedLigaDO.setName("TestLiga");
+        // aktives Sportjahr aus Configuration
+        ConfigurationDO configurationDO = new ConfigurationDO();
+        configurationDO.setKey("aktives-Sportjahr");
+        configurationDO.setValue("2020");
+
+        // Mock behavior of ligaComponent.findById
+        when(ligaComponent.findById(LIGAID)).thenReturn(mockedLigaDO);
+
+        // Mock behavior of getSatzSystemDO()
+        when(wettkampfTypComponent.findAll()).thenReturn(getMockedWettkampfTypen());
+
+        // Mock behavior of veranstaltungComponent.create()
+        when(veranstaltungComponent.create(any(VeranstaltungDO.class), eq(CURRENTUSERID)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(configurationComponent.findByKey("aktives-Sportjahr")).thenReturn(configurationDO);
+
+        // Call test method
+        VeranstaltungDO result = altsystemVeranstaltungMapper.createVeranstaltung(LIGAID, SPORTJAHR, CURRENTUSERID);
+
+        // assert result
+        assertEquals("TestLiga " + SPORTJAHR, result.getVeranstaltungName());
+        assertEquals((Long)LIGAID, result.getVeranstaltungLigaID());
+        assertEquals((Long)SPORTJAHR, result.getVeranstaltungSportJahr());
+        assertEquals(Date.valueOf("2021-10-01"), result.getVeranstaltungMeldeDeadline());
+        assertEquals((Integer) 4, result.getVeranstaltungGroesse());
+        assertEquals("Geplant", result.getVeranstaltungPhase());
+        assertEquals((Long)CURRENTUSERID, result.getVeranstaltungLigaleiterID());
+        assertEquals((Long) WETTKAMPFTYP_ID, result.getVeranstaltungWettkampftypID());
+        assertEquals(WETTKAMPFTYP_NAME, result.getVeranstaltungWettkampftypName());
+
+
+    }
+    @Test
+    public void testCreateVeranstaltung_abgeschlossen() {
+        // prepare test data
+        // Mock Liga
+        LigaDO mockedLigaDO = new LigaDO();
+        mockedLigaDO.setId(LIGAID);
+        mockedLigaDO.setName("TestLiga");
+        // aktives Sportjahr aus Configuration
+        ConfigurationDO configurationDO = new ConfigurationDO();
+        configurationDO.setKey("aktives-Sportjahr");
+        configurationDO.setValue("2024");
+
+        // Mock behavior of ligaComponent.findById
+        when(ligaComponent.findById(LIGAID)).thenReturn(mockedLigaDO);
+
+        // Mock behavior of getSatzSystemDO()
+        when(wettkampfTypComponent.findAll()).thenReturn(getMockedWettkampfTypen());
+
+        // Mock behavior of veranstaltungComponent.create()
+        when(veranstaltungComponent.create(any(VeranstaltungDO.class), eq(CURRENTUSERID)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(configurationComponent.findByKey("aktives-Sportjahr")).thenReturn(configurationDO);
+
+        // Call test method
+        VeranstaltungDO result = altsystemVeranstaltungMapper.createVeranstaltung(LIGAID, SPORTJAHR, CURRENTUSERID);
+
+        // assert result
+        assertEquals("TestLiga " + SPORTJAHR, result.getVeranstaltungName());
+        assertEquals((Long)LIGAID, result.getVeranstaltungLigaID());
+        assertEquals((Long)SPORTJAHR, result.getVeranstaltungSportJahr());
+        assertEquals(Date.valueOf("2021-10-01"), result.getVeranstaltungMeldeDeadline());
+        assertEquals((Integer) 4, result.getVeranstaltungGroesse());
+        assertEquals("Abgeschlossen", result.getVeranstaltungPhase());
         assertEquals((Long)CURRENTUSERID, result.getVeranstaltungLigaleiterID());
         assertEquals((Long) WETTKAMPFTYP_ID, result.getVeranstaltungWettkampftypID());
         assertEquals(WETTKAMPFTYP_NAME, result.getVeranstaltungWettkampftypName());
