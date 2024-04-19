@@ -181,7 +181,6 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkNotNull(dsbMitgliedDO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
         Preconditions.checkNotNull(dsbMitgliedDO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
         Preconditions.checkNotNull(dsbMitgliedDO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
-        Preconditions.checkNotNull(dsbMitgliedDO.getVereinName(), PRECONDITION_MSG_DSBMITGLIED_VEREINNAME);
         Preconditions.checkArgument(dsbMitgliedDO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
     }
 }

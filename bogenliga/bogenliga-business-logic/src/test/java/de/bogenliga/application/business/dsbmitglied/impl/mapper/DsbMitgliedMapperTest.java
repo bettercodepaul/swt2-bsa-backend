@@ -28,7 +28,10 @@ public class DsbMitgliedMapperTest {
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final long VEREINSID = 2;
+    private static final String VEREINNAME = "TEST VEREIN";
     private static final long USERID = 4242;
+
+    private static final Boolean KAMPFRICHTER = true;
 
     private final int[] ZAHLENLISTE = {0,129, 173};
     private final String[] NAMENSLISTE = {"Allmendinger" , "Michael", "Gröner", "Alexander" , "Haag", "Axel"};
@@ -43,7 +46,7 @@ public class DsbMitgliedMapperTest {
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
 
         final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET,
-                MITGLIEDSNUMMER, VEREINSID, USERID, false);
+                MITGLIEDSNUMMER, VEREINSID, VEREINNAME, USERID, KAMPFRICHTER);
         assertThat(actual.getNachname()).isEqualTo(NACHNAME);
     }
 
