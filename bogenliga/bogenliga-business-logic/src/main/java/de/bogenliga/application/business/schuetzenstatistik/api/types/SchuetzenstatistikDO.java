@@ -28,6 +28,11 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float pfeilpunkteSchnitt;
+    private String schuetzeSatz1;
+    private String schuetzeSatz2;
+    private String schuetzeSatz3;
+    private String schuetzeSatz4;
+    private String schuetzeSatz5;
 
 
     public SchuetzenstatistikDO() {
@@ -51,7 +56,11 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
      * @param dsbMitgliedName;
      * @param rueckenNummer;
      * @param pfeilpunkteSchnitt;
-
+     * @param schuetzeSatz1;
+     * @param schuetzeSatz2;
+     * @param schuetzeSatz3;
+     * @param schuetzeSatz4;
+     * @param schuetzeSatz5;
      */
     public SchuetzenstatistikDO(
             Long veranstaltungId,
@@ -67,7 +76,12 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
             Long dsbMitgliedId,
             String dsbMitgliedName,
             int rueckenNummer,
-            float pfeilpunkteSchnitt
+            float pfeilpunkteSchnitt,
+            String schuetzeSatz1,
+            String schuetzeSatz2,
+            String schuetzeSatz3,
+            String schuetzeSatz4,
+            String schuetzeSatz5
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -83,6 +97,11 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.dsbMitgliedName = dsbMitgliedName;
         this.rueckenNummer = rueckenNummer;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
+        this.schuetzeSatz1 = schuetzeSatz1;
+        this.schuetzeSatz2 = schuetzeSatz2;
+        this.schuetzeSatz3 = schuetzeSatz3;
+        this.schuetzeSatz4 = schuetzeSatz4;
+        this.schuetzeSatz5 = schuetzeSatz5;
     }
 
 
@@ -152,6 +171,41 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
+    public String getschuetzeSatz1() {
+        return schuetzeSatz1;
+    }
+    public void setschuetzeSatz1(String schuetzeSatz1) {
+        this.schuetzeSatz1 = schuetzeSatz1;
+    }
+
+    public String getschuetzeSatz2() {
+        return schuetzeSatz2;
+    }
+    public void setschuetzeSatz2(String schuetzeSatz2) {
+        this.schuetzeSatz2 = schuetzeSatz2;
+    }
+
+    public String getschuetzeSatz3() {
+        return schuetzeSatz3;
+    }
+    public void setschuetzeSatz3(String schuetzeSatz3) {
+        this.schuetzeSatz3 = schuetzeSatz3;
+    }
+
+    public String getschuetzeSatz4() {
+        return schuetzeSatz4;
+    }
+    public void setschuetzeSatz4(String schuetzeSatz4) {
+        this.schuetzeSatz4 = schuetzeSatz4;
+    }
+
+    public String getschuetzeSatz5() {
+        return schuetzeSatz5;
+    }
+    public void setschuetzeSatz5(String schuetzeSatz5) {
+        this.schuetzeSatz5 = schuetzeSatz5;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -170,14 +224,20 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
                 rueckenNummer == that.rueckenNummer &&
-                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
+                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt &&
+                Objects.equals(schuetzeSatz1, that.schuetzeSatz1) &&
+                Objects.equals(schuetzeSatz2, that.schuetzeSatz2) &&
+                Objects.equals(schuetzeSatz3, that.schuetzeSatz3) &&
+                Objects.equals(schuetzeSatz4, that.schuetzeSatz4) &&
+                Objects.equals(schuetzeSatz5, that.schuetzeSatz5);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
                 mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, matchNr,
-                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt);
+                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt,
+                schuetzeSatz1, schuetzeSatz2, schuetzeSatz3, schuetzeSatz4, schuetzeSatz5);
     }
 
 }
