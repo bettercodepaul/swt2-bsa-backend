@@ -41,8 +41,6 @@ public class SchuetzenstatistikServiceTest {
         private static final String dsbMitgliedName = "Mitglied_Name";
         private static final int rueckenNummer = 5;
         private static final int pfeilpunkteSchnitt = 3;
-
-        //todo Werte anpassen! warten auf Lennis handhabung
         private static final String schuetzeSatz1 = "5,8";
         private static final String schuetzeSatz2 = "9,3";
         private static final String schuetzeSatz3 = "4,8";
