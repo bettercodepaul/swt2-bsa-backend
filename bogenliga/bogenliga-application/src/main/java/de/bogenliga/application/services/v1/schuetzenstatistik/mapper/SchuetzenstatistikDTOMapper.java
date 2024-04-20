@@ -29,10 +29,17 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedName = schuetzenstatistikDO.getDsbMitgliedName();
         final int rueckenNummer = schuetzenstatistikDO.getRueckenNummer();
         final float pfeilPunkteSchnitt = schuetzenstatistikDO.getPfeilpunkteSchnitt();
+        final String schuetzeSatz1 = schuetzenstatistikDO.getschuetzeSatz1();
+        final String schuetzeSatz2 = schuetzenstatistikDO.getschuetzeSatz2();
+        final String schuetzeSatz3 = schuetzenstatistikDO.getschuetzeSatz3();
+        final String schuetzeSatz4 = schuetzenstatistikDO.getschuetzeSatz4();
+        final String schuetzeSatz5 = schuetzenstatistikDO.getschuetzeSatz5();
+
 
 
         return new SchuetzenstatistikDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt);
+                mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer,
+                pfeilPunkteSchnitt, schuetzeSatz1, schuetzeSatz2, schuetzeSatz3, schuetzeSatz4, schuetzeSatz5);
     };
     /**
      * I map the {@link SchuetzenstatistikDTO} object to the {@link SchuetzenstatistikDO} object
@@ -55,6 +62,11 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         schuetzenstatistikDO.setDsbMitgliedName(dto.getDsbMitgliedName());
         schuetzenstatistikDO.setRueckenNummer(dto.getRueckenNummer());
         schuetzenstatistikDO.setPfeilpunkteSchnitt(dto.getPfeilpunkteSchnitt());
+        schuetzenstatistikDO.setschuetzeSatz1(dto.getSchuetzeSatz1());
+        schuetzenstatistikDO.setschuetzeSatz2(dto.getSchuetzeSatz2());
+        schuetzenstatistikDO.setschuetzeSatz3(dto.getSchuetzeSatz3());
+        schuetzenstatistikDO.setschuetzeSatz4(dto.getSchuetzeSatz4());
+        schuetzenstatistikDO.setschuetzeSatz5(dto.getSchuetzeSatz5());
 
         return schuetzenstatistikDO;
     };
