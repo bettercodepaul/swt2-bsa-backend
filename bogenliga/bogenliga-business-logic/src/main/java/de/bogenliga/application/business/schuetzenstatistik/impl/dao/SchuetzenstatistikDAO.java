@@ -133,11 +133,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                 RUECKENNUMMER_TABLE,
                 DSBMITGLIEDNAME_TABLE,
                 MATCHNR_TABLE,
-                "ARRAY_remove("+SCHUETZESATZ1_TABLE+", NULL) as"+SCHUETZESATZ1_BE,
-                "ARRAY_remove("+SCHUETZESATZ2_TABLE+", NULL) as"+SCHUETZESATZ2_BE,
-                "ARRAY_remove("+SCHUETZESATZ3_TABLE+", NULL) as"+SCHUETZESATZ3_BE,
-                "ARRAY_remove("+SCHUETZESATZ4_TABLE+", NULL) as"+SCHUETZESATZ4_BE,
-                "ARRAY_remove("+SCHUETZESATZ5_TABLE+", NULL) as"+SCHUETZESATZ5_BE,
+                "ARRAY_remove("+SCHUETZESATZ1_TABLE+", NULL) as "+SCHUETZESATZ1_BE,
+                "ARRAY_remove("+SCHUETZESATZ2_TABLE+", NULL) as "+SCHUETZESATZ2_BE,
+                "ARRAY_remove("+SCHUETZESATZ3_TABLE+", NULL) as "+SCHUETZESATZ3_BE,
+                "ARRAY_remove("+SCHUETZESATZ4_TABLE+", NULL) as "+SCHUETZESATZ4_BE,
+                "ARRAY_remove("+SCHUETZESATZ5_TABLE+", NULL) as "+SCHUETZESATZ5_BE,
                 "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
@@ -157,7 +157,6 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE,
-                    PFEILPUNKTESCHNITT_TABLE,
                     RUECKENNUMMER_TABLE,
                     DSBMITGLIEDNAME_TABLE,
                     MATCHNR_TABLE,
