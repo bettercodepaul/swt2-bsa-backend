@@ -35,9 +35,15 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         final String dsbMitgliedName = be.getDsbMitgliedName();
         final int rueckenNummer = be.getRueckenNummer();
         final float pfeilPunkteSchnitt = be.getPfeilpunkteSchnitt();
+        final String schuetzeSatz1 = be.getschuetzeSatz1();
+        final String schuetzeSatz2 = be.getschuetzeSatz2();
+        final String schuetzeSatz3 = be.getschuetzeSatz3();
+        final String schuetzeSatz4 = be.getschuetzeSatz4();
+        final String schuetzeSatz5 = be.getschuetzeSatz5();
 
         return new SchuetzenstatistikDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt);
+                mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt,
+                schuetzeSatz1, schuetzeSatz2, schuetzeSatz3, schuetzeSatz4, schuetzeSatz5);
     };
 
      /**
@@ -61,6 +67,11 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         schuetzenstatistik.setDsbMitgliedName(vo.getDsbMitgliedName());
         schuetzenstatistik.setRueckenNummer(vo.getRueckenNummer());
         schuetzenstatistik.setPfeilpunkteSchnitt(vo.getPfeilpunkteSchnitt());
+        schuetzenstatistik.setschuetzeSatz1(vo.getschuetzeSatz1());
+        schuetzenstatistik.setschuetzeSatz2(vo.getschuetzeSatz2());
+        schuetzenstatistik.setschuetzeSatz3(vo.getschuetzeSatz3());
+        schuetzenstatistik.setschuetzeSatz4(vo.getschuetzeSatz4());
+        schuetzenstatistik.setschuetzeSatz5(vo.getschuetzeSatz5());
 
         return schuetzenstatistik;
     };

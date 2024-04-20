@@ -25,6 +25,12 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float pfeilpunkteSchnitt;
+    private String schuetzeSatz1;
+    private String schuetzeSatz2;
+    private String schuetzeSatz3;
+    private String schuetzeSatz4;
+    private String schuetzeSatz5;
+
 
     public SchuetzenstatistikBE() {
         // nothing is here
@@ -47,6 +53,11 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
                 ", dsbMitgliedName='" + dsbMitgliedName +
                 ", rueckenNummer='" + rueckenNummer +
                 ", pfeilpunkteSchnitt='" + pfeilpunkteSchnitt +
+                ", schuetzeSatz1='" + schuetzeSatz1 +
+                ", schuetzeSatz2='" + schuetzeSatz2 +
+                ", schuetzeSatz3='" + schuetzeSatz3 +
+                ", schuetzeSatz4='" + schuetzeSatz4 +
+                ", schuetzeSatz5='" + schuetzeSatz5 +
                 '}';
     }
 
@@ -152,4 +163,43 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
+
+    public String getschuetzeSatz1() {
+        return schuetzeSatz1;
+    }
+    public void setschuetzeSatz1(String schuetzeSatz1) {
+        this.schuetzeSatz1 = schuetzeSatz1;
+    }
+
+    public String getschuetzeSatz2() {
+        return schuetzeSatz2;
+    }
+    public void setschuetzeSatz2(String schuetzeSatz2) {
+        this.schuetzeSatz2 = schuetzeSatz2;
+    }
+
+    public String getschuetzeSatz3() {
+        return schuetzeSatz3;
+    }
+    public void setschuetzeSatz3(String schuetzeSatz3) {
+        this.schuetzeSatz3 = schuetzeSatz3;
+    }
+
+    public String getschuetzeSatz4() {
+        return schuetzeSatz4;
+    }
+    public void setschuetzeSatz4(String schuetzeSatz4) {
+        this.schuetzeSatz4 = schuetzeSatz4;
+    }
+
+    public String getschuetzeSatz5() {
+        return schuetzeSatz5;
+    }
+    public void setschuetzeSatz5(String schuetzeSatz5) {
+        this.schuetzeSatz5 = schuetzeSatz5;
+    }
+
+
+
+
 }
