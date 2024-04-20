@@ -33,6 +33,7 @@ public class SchuetzenstatistikService implements ServiceFacade {
     private final SchuetzenstatistikComponent schuetzenstatistikComponent;
 
 
+
     /**
      * Constructor with dependency injection
      *
