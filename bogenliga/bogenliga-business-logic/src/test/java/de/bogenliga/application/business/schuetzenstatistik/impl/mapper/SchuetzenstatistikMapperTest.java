@@ -29,6 +29,11 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedName());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikBE.getPfeilpunkteSchnitt());
+        assertThat(actual.getschuetzeSatz1()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz1());
+        assertThat(actual.getschuetzeSatz2()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz2());
+        assertThat(actual.getschuetzeSatz3()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz3());
+        assertThat(actual.getschuetzeSatz4()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz4());
+        assertThat(actual.getschuetzeSatz5()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz5());
 
         SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO(
                 schuetzenstatistikBE.getVeranstaltungId(),
@@ -44,7 +49,12 @@ public class SchuetzenstatistikMapperTest {
                 schuetzenstatistikBE.getDsbMitgliedId(),
                 schuetzenstatistikBE.getDsbMitgliedName(),
                 schuetzenstatistikBE.getRueckenNummer(),
-                schuetzenstatistikBE.getPfeilpunkteSchnitt());
+                schuetzenstatistikBE.getPfeilpunkteSchnitt(),
+                schuetzenstatistikBE.getschuetzeSatz1(),
+                schuetzenstatistikBE.getschuetzeSatz2(),
+                schuetzenstatistikBE.getschuetzeSatz3(),
+                schuetzenstatistikBE.getschuetzeSatz4(),
+                schuetzenstatistikBE.getschuetzeSatz5());
 
         assertThat(actual.hashCode()).isEqualTo(schuetzenstatistikDO.hashCode());
     }
@@ -70,5 +80,10 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
         assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
+        assertThat(actual.getschuetzeSatz1()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz1());
+        assertThat(actual.getschuetzeSatz2()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz2());
+        assertThat(actual.getschuetzeSatz3()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz3());
+        assertThat(actual.getschuetzeSatz4()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz4());
+        assertThat(actual.getschuetzeSatz5()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz5());
     }
 }

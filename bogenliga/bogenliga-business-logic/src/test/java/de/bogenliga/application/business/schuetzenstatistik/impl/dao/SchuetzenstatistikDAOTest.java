@@ -65,6 +65,11 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
         assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
+        assertThat(actual.get(0).getschuetzeSatz1()).isEqualTo(expectedBE.getschuetzeSatz1());
+        assertThat(actual.get(0).getschuetzeSatz2()).isEqualTo(expectedBE.getschuetzeSatz2());
+        assertThat(actual.get(0).getschuetzeSatz3()).isEqualTo(expectedBE.getschuetzeSatz3());
+        assertThat(actual.get(0).getschuetzeSatz4()).isEqualTo(expectedBE.getschuetzeSatz4());
+        assertThat(actual.get(0).getschuetzeSatz5()).isEqualTo(expectedBE.getschuetzeSatz5());
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
@@ -101,6 +106,11 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
         assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
+        assertThat(actual.get(0).getschuetzeSatz1()).isEqualTo(expectedBE.getschuetzeSatz1());
+        assertThat(actual.get(0).getschuetzeSatz2()).isEqualTo(expectedBE.getschuetzeSatz2());
+        assertThat(actual.get(0).getschuetzeSatz3()).isEqualTo(expectedBE.getschuetzeSatz3());
+        assertThat(actual.get(0).getschuetzeSatz4()).isEqualTo(expectedBE.getschuetzeSatz4());
+        assertThat(actual.get(0).getschuetzeSatz5()).isEqualTo(expectedBE.getschuetzeSatz5());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
