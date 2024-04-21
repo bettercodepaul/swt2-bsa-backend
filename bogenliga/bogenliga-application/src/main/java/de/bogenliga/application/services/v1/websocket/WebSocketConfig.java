@@ -9,18 +9,12 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        System.out.println("Socket Handler");
-        registry.addHandler(tradeWebSocketHandler(), "/stocks").setAllowedOrigins("*");
+        registry.addHandler(tradeWebSocketHandler(), "/websocket").setAllowedOrigins("*");
     }
 
     @Bean

@@ -16,13 +16,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-
-    Random r = new Random();
-
+    String test = "hi";
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
-            TextMessage message = new TextMessage("Hi");
+            TextMessage message = new TextMessage(objectMapper.writeValueAsString(test));
             session.sendMessage(message);
 
             Thread.sleep(1000);
