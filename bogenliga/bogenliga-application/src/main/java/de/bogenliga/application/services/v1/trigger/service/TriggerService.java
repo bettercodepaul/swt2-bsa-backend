@@ -137,7 +137,7 @@ public class TriggerService implements ServiceFacade {
     }
     @GetMapping("/findAllUnprocessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllUnprocesseed() {
+    public List<TriggerDTO> findAllUnprocessed() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
