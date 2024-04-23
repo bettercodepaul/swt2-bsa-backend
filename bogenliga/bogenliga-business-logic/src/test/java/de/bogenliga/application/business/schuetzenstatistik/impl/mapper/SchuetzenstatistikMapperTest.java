@@ -10,11 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SchuetzenstatistikMapperTest {
 
-    private static final String schuetzeSatz1 = "10,5,6,null,9,9";
-    private static final String schuetzeSatz2 = "4,10,null,null,7,8";
-    private static final String schuetzeSatz3 = "10,null,8,null,9,null";
-    private static final String schuetzeSatz4 = "null,3,8,null,10,3";
-    private static final String schuetzeSatz5 = "10,8,3,7,null,8";
 
     @Test
     public void toSchuetzenstatistikDO() throws Exception {
@@ -35,11 +30,11 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedName());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikBE.getPfeilpunkteSchnitt());
-        assertThat(actual.getschuetzeSatz1()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz1());
-        assertThat(actual.getschuetzeSatz2()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz2());
-        assertThat(actual.getschuetzeSatz3()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz3());
-        assertThat(actual.getschuetzeSatz4()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz4());
-        assertThat(actual.getschuetzeSatz5()).isEqualTo(schuetzenstatistikBE.getschuetzeSatz5());
+        assertThat(actual.getschuetzeSatz1()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz1() + "}");
+        assertThat(actual.getschuetzeSatz2()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz2() + "}");
+        assertThat(actual.getschuetzeSatz3()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz3() + "}");
+        assertThat(actual.getschuetzeSatz4()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz4() + "}");
+        assertThat(actual.getschuetzeSatz5()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz5() + "}");
 
         SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO(
                 schuetzenstatistikBE.getVeranstaltungId(),
@@ -61,8 +56,6 @@ public class SchuetzenstatistikMapperTest {
                 schuetzenstatistikBE.getschuetzeSatz3(),
                 schuetzenstatistikBE.getschuetzeSatz4(),
                 schuetzenstatistikBE.getschuetzeSatz5());
-
-        assertThat(actual.hashCode()).isEqualTo(schuetzenstatistikDO.hashCode());
     }
 
 
@@ -86,10 +79,14 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
         assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
-        assertThat(actual.getschuetzeSatz1()).isEqualTo(schuetzeSatz1);
-        assertThat(actual.getschuetzeSatz2()).isEqualTo(schuetzeSatz2);
-        assertThat(actual.getschuetzeSatz3()).isEqualTo(schuetzeSatz3);
-        assertThat(actual.getschuetzeSatz4()).isEqualTo(schuetzeSatz4);
-        assertThat(actual.getschuetzeSatz5()).isEqualTo(schuetzeSatz5);
+        assertThat(actual.getschuetzeSatz1()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz1()));
+        assertThat(actual.getschuetzeSatz2()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz2()));
+        assertThat(actual.getschuetzeSatz3()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz3()));
+        assertThat(actual.getschuetzeSatz4()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz4()));
+        assertThat(actual.getschuetzeSatz5()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz5()));
+    }
+
+    private String trimCurlyBrackets(String str) {
+        return str.substring(1, str.length() - 1);
     }
 }

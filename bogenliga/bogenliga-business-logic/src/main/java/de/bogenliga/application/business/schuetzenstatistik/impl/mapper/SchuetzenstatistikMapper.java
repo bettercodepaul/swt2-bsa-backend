@@ -21,25 +21,25 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
      */
     public static final Function<SchuetzenstatistikBE, SchuetzenstatistikDO> toSchuetzenstatistikDO = be -> {
 
-        final Long veranstaltungId= be.getVeranstaltungId();
-        final String veranstaltungName= be.getVeranstaltungName();
-        final Long wettkampfId= be.getWettkampfId();
-        final int wettkampfTag= be.getWettkampfTag();
-        final Long mannschaftId= be.getMannschaftId();
-        final int mannschaftNummer=be.getMannschaftNummer();
-        final Long vereinId=be.getVereinId();
-        final String vereinName=be.getVereinName();
+        final Long veranstaltungId = be.getVeranstaltungId();
+        final String veranstaltungName = be.getVeranstaltungName();
+        final Long wettkampfId = be.getWettkampfId();
+        final int wettkampfTag = be.getWettkampfTag();
+        final Long mannschaftId = be.getMannschaftId();
+        final int mannschaftNummer = be.getMannschaftNummer();
+        final Long vereinId = be.getVereinId();
+        final String vereinName = be.getVereinName();
         final Long matchId = be.getMatchId();
         final int matchNr = be.getMatchNr();
         final Long dsbMitgliedId = be.getDsbMitgliedId();
         final String dsbMitgliedName = be.getDsbMitgliedName();
         final int rueckenNummer = be.getRueckenNummer();
         final float pfeilPunkteSchnitt = be.getPfeilpunkteSchnitt();
-        final String schuetzeSatz1 = be.getschuetzeSatz1();
-        final String schuetzeSatz2 = be.getschuetzeSatz2();
-        final String schuetzeSatz3 = be.getschuetzeSatz3();
-        final String schuetzeSatz4 = be.getschuetzeSatz4();
-        final String schuetzeSatz5 = be.getschuetzeSatz5();
+        final String schuetzeSatz1 = "{" + be.getschuetzeSatz1() + "}";
+        final String schuetzeSatz2 = "{" + be.getschuetzeSatz2() + "}";
+        final String schuetzeSatz3 = "{" + be.getschuetzeSatz3() + "}";
+        final String schuetzeSatz4 = "{" + be.getschuetzeSatz4() + "}";
+        final String schuetzeSatz5 = "{" + be.getschuetzeSatz5() + "}";
 
         return new SchuetzenstatistikDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt,
