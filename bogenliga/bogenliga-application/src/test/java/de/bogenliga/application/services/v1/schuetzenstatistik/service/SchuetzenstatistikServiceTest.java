@@ -2,9 +2,7 @@ package de.bogenliga.application.services.v1.schuetzenstatistik.service;
 
 import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
-import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
-import de.bogenliga.application.services.v1.ligatabelle.service.LigatabelleService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -203,6 +201,15 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz5());
             // verify invocations
             verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
+
+        }
+        @Test
+        public void equalMethodSchuetzenstatistikDTOTest(){
+
+            SchuetzenstatistikDTO schuetzenstatistikDTOToCompareWith = SchuetzenstatistikServiceTest.getSchuetzenstatistikDTO();
+            SchuetzenstatistikDTO schuetzenstatistikDTOComparator = SchuetzenstatistikServiceTest.getSchuetzenstatistikDTO();
+
+            assertThat(schuetzenstatistikDTOToCompareWith.equals(schuetzenstatistikDTOComparator)).isTrue();
 
         }
 }
