@@ -30,8 +30,9 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         final String nationalitaet = be.getDsbMitgliedNationalitaet();
         final String mitgliedsnummer = be.getDsbMitgliedMitgliedsnummer();
         final Long vereinsId = be.getDsbMitgliedVereinsId();
+        final String vereinName= be.getDsbMitgliedVereinName();
         final Long userId = be.getDsbMitgliedUserId();
-        final Boolean kampfrichter=false;
+        final Boolean kampfrichter = false;
 
 
         // technical parameter
@@ -42,8 +43,9 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new DsbMitgliedDO(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, kampfrichter);
+        return new DsbMitgliedDO(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId,
+                vereinName, userId, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version,
+                kampfrichter);
     };
 
     /**
@@ -62,6 +64,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         dsbMitgliedBE.setDsbMitgliedNationalitaet(dsbMitgliedDO.getNationalitaet());
         dsbMitgliedBE.setDsbMitgliedMitgliedsnummer(dsbMitgliedDO.getMitgliedsnummer());
         dsbMitgliedBE.setDsbMitgliedVereinsId(dsbMitgliedDO.getVereinsId());
+        dsbMitgliedBE.setDsbMitgliedVereinName(dsbMitgliedDO.getVereinName());
         dsbMitgliedBE.setDsbMitgliedUserId(dsbMitgliedDO.getUserId());
 
         dsbMitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);

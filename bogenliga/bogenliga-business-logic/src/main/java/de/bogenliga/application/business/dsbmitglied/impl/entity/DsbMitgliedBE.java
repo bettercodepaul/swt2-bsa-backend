@@ -23,6 +23,7 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
     private String dsbMitgliedNationalitaet;
     private String dsbMitgliedMitgliedsnummer;
     private Long dsbMitgliedVereinsId;
+    private String dsbMitgliedVereinName;
     private Long dsbMitgliedUserId;
 
 
@@ -101,6 +102,14 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         this.dsbMitgliedVereinsId = dsbMitgliedVereinsId;
     }
 
+    public String getDsbMitgliedVereinName() {
+        return dsbMitgliedVereinName;
+    }
+
+
+    public void setDsbMitgliedVereinName(final String dsbMitgliedVereinName) {
+        this.dsbMitgliedVereinName = dsbMitgliedVereinName;
+    }
 
     public Long getDsbMitgliedUserId() {
         return dsbMitgliedUserId;
@@ -121,6 +130,7 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
                 ", dsbMitgliedNationalitaet='" + dsbMitgliedNationalitaet + '\'' +
                 ", dsbMitgliedMitgliedsnummer='" + dsbMitgliedMitgliedsnummer + '\'' +
                 ", dsbMitgliedVereinsId=" + dsbMitgliedVereinsId +
+                ", dsbMitgliedVereinName=" + dsbMitgliedVereinName +
                 ", dsbMitgliedUserId=" + dsbMitgliedUserId +
                 '}';
     }
