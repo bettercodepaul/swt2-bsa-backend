@@ -48,6 +48,7 @@ public class DsbMitgliedComponentImplTest {
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final Long VEREINSID = 2L;
+    private static final String VEREINNAME = "Test Verein";
     private static final Long USERID = 4242L;
 
     private static final Boolean KAMPFRICHTER = true;
@@ -77,6 +78,7 @@ public class DsbMitgliedComponentImplTest {
         expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
         expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
         expectedBE.setDsbMitgliedVereinsId(VEREINSID);
+        expectedBE.setDsbMitgliedVereinName(VEREINNAME);
         expectedBE.setDsbMitgliedUserId(USERID);
 
         return expectedBE;
@@ -94,6 +96,7 @@ public class DsbMitgliedComponentImplTest {
         expectedA.setDsbMitgliedNationalitaet(NATIONALITAET);
         expectedA.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
         expectedA.setDsbMitgliedVereinsId(VEREINSID);
+        expectedA.setDsbMitgliedVereinName(VEREINNAME);
         expectedA.setDsbMitgliedUserId(USERID);
 
         final DsbMitgliedBE expectedB = new DsbMitgliedBE();
@@ -104,6 +107,7 @@ public class DsbMitgliedComponentImplTest {
         expectedB.setDsbMitgliedNationalitaet(NATIONALITAET);
         expectedB.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
         expectedB.setDsbMitgliedVereinsId(VEREINSID);
+        expectedB.setDsbMitgliedVereinName(VEREINNAME);
         expectedB.setDsbMitgliedUserId(USERID);
 
         list.add(expectedA);
@@ -130,6 +134,7 @@ public class DsbMitgliedComponentImplTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
+                VEREINNAME,
                 USERID,
                 KAMPFRICHTER);
     }
@@ -261,6 +266,8 @@ public class DsbMitgliedComponentImplTest {
                 .isEqualTo(expectedBE.getDsbMitgliedMitgliedsnummer());
         assertThat(actual.get(0).getVereinsId())
                 .isEqualTo(expectedBE.getDsbMitgliedVereinsId());
+        assertThat(actual.get(0).getVereinName())
+                .isEqualTo(expectedBE.getDsbMitgliedVereinName());
         assertThat(actual.get(0).getUserId())
                 .isEqualTo(expectedBE.getDsbMitgliedUserId());
 
