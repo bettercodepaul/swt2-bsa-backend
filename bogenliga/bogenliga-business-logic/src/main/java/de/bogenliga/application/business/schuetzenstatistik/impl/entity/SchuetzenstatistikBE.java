@@ -30,7 +30,7 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private String schuetzeSatz3;
     private String schuetzeSatz4;
     private String schuetzeSatz5;
-    //NOSONAR
+
 
     public SchuetzenstatistikBE() {
         // nothing is here
