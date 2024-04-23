@@ -167,43 +167,39 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     public String getschuetzeSatz1() {
         return schuetzeSatz1;
     }
-    // All Satz setters remove the first and last character from the string to deal with the curly brackets that the SELECT gives
     public void setschuetzeSatz1(String schuetzeSatz1) {
-        this.schuetzeSatz1 = removeFirstAndLast(schuetzeSatz1);
+        this.schuetzeSatz1 = schuetzeSatz1;
     }
 
     public String getschuetzeSatz2() {
         return schuetzeSatz2;
     }
     public void setschuetzeSatz2(String schuetzeSatz2) {
-        this.schuetzeSatz2 = removeFirstAndLast(schuetzeSatz2);
+        this.schuetzeSatz2 = schuetzeSatz2;
     }
 
     public String getschuetzeSatz3() {
         return schuetzeSatz3;
     }
     public void setschuetzeSatz3(String schuetzeSatz3) {
-        this.schuetzeSatz3 = removeFirstAndLast(schuetzeSatz3);
+        this.schuetzeSatz3 = schuetzeSatz3;
     }
 
     public String getschuetzeSatz4() {
         return schuetzeSatz4;
     }
     public void setschuetzeSatz4(String schuetzeSatz4) {
-        this.schuetzeSatz4 = removeFirstAndLast(schuetzeSatz4);
+        this.schuetzeSatz4 = schuetzeSatz4;
     }
 
     public String getschuetzeSatz5() {
         return schuetzeSatz5;
     }
     public void setschuetzeSatz5(String schuetzeSatz5) {
-        this.schuetzeSatz5 = removeFirstAndLast(schuetzeSatz5);
+        this.schuetzeSatz5 = schuetzeSatz5;
     }
 
-    private String removeFirstAndLast(String input) {
-        if (input.length() <= 2) {
-            return "";
-        }
-        return input.substring(1, input.length() - 1);
-    }
+
+
+
 }

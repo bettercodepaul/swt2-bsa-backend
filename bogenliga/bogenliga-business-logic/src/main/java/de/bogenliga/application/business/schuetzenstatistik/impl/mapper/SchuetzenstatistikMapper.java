@@ -49,34 +49,36 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
      /**
      * Converts a {@link SchuetzenstatistikDO} to a {@link SchuetzenstatistikBE}
      */
-    public static final Function<SchuetzenstatistikDO, SchuetzenstatistikBE> toSchuetzenstatistikBE = vo -> {
+     public static final Function<SchuetzenstatistikDO, SchuetzenstatistikBE> toSchuetzenstatistikBE = vo -> {
 
-        SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
+         SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
 
-        schuetzenstatistik.setVeranstaltungId(vo.getveranstaltungId());
-        schuetzenstatistik.setVeranstaltungName(vo.getveranstaltungName());
-        schuetzenstatistik.setWettkampfId(vo.getwettkampfId());
-        schuetzenstatistik.setWettkampfTag(vo.getwettkampfTag());
-        schuetzenstatistik.setMannschaftId(vo.getmannschaftId());
-        schuetzenstatistik.setMannschaftNummer(vo.getmannschaftNummer());
-        schuetzenstatistik.setVereinId(vo.getvereinId());
-        schuetzenstatistik.setVereinName(vo.getvereinName());
-        schuetzenstatistik.setMatchId(vo.getMatchId());
-        schuetzenstatistik.setMatchNr(vo.getMatchNr());
-        schuetzenstatistik.setDsbMitgliedId(vo.getDsbMitgliedId());
-        schuetzenstatistik.setDsbMitgliedName(vo.getDsbMitgliedName());
-        schuetzenstatistik.setRueckenNummer(vo.getRueckenNummer());
-        schuetzenstatistik.setPfeilpunkteSchnitt(vo.getPfeilpunkteSchnitt());
-        schuetzenstatistik.setschuetzeSatz1(vo.getschuetzeSatz1());
-        schuetzenstatistik.setschuetzeSatz2(vo.getschuetzeSatz2());
-        schuetzenstatistik.setschuetzeSatz3(vo.getschuetzeSatz3());
-        schuetzenstatistik.setschuetzeSatz4(vo.getschuetzeSatz4());
-        schuetzenstatistik.setschuetzeSatz5(vo.getschuetzeSatz5());
+         schuetzenstatistik.setVeranstaltungId(vo.getveranstaltungId());
+         schuetzenstatistik.setVeranstaltungName(vo.getveranstaltungName());
+         schuetzenstatistik.setWettkampfId(vo.getwettkampfId());
+         schuetzenstatistik.setWettkampfTag(vo.getwettkampfTag());
+         schuetzenstatistik.setMannschaftId(vo.getmannschaftId());
+         schuetzenstatistik.setMannschaftNummer(vo.getmannschaftNummer());
+         schuetzenstatistik.setVereinId(vo.getvereinId());
+         schuetzenstatistik.setVereinName(vo.getvereinName());
+         schuetzenstatistik.setMatchId(vo.getMatchId());
+         schuetzenstatistik.setMatchNr(vo.getMatchNr());
+         schuetzenstatistik.setDsbMitgliedId(vo.getDsbMitgliedId());
+         schuetzenstatistik.setDsbMitgliedName(vo.getDsbMitgliedName());
+         schuetzenstatistik.setRueckenNummer(vo.getRueckenNummer());
+         schuetzenstatistik.setPfeilpunkteSchnitt(vo.getPfeilpunkteSchnitt());
+         schuetzenstatistik.setschuetzeSatz1(removeCurlyBraces(vo.getschuetzeSatz1()));
+         schuetzenstatistik.setschuetzeSatz2(removeCurlyBraces(vo.getschuetzeSatz2()));
+         schuetzenstatistik.setschuetzeSatz3(removeCurlyBraces(vo.getschuetzeSatz3()));
+         schuetzenstatistik.setschuetzeSatz4(removeCurlyBraces(vo.getschuetzeSatz4()));
+         schuetzenstatistik.setschuetzeSatz5(removeCurlyBraces(vo.getschuetzeSatz5()));
 
-        return schuetzenstatistik;
-    };
-
-
+         return schuetzenstatistik;
+     };
+    // Method for removing the braces from Sätze
+    private static String removeCurlyBraces(String str) {
+        return str.substring(1, str.length() - 1);
+    }
 
     /**
      * Private constructor
