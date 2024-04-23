@@ -99,9 +99,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.schuetzeSatz5 = schuetzeSatz5;
     }
 
-    public SchuetzenstatistikDTO() {
-    }
-
     // Getters and Setters
     public Long getVeranstaltungId() {
         return veranstaltungId;
@@ -112,9 +109,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
 
     public String getVeranstaltungName() {
         return veranstaltungName;
-    }
-    public void setVeranstaltungName(String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
     }
 
     public Long getWettkampfId() {
@@ -141,9 +135,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public int getMannschaftNummer() {
         return mannschaftNummer;
     }
-    public void setMannschaftNummer(int mannschaftNummer) {
-        this.mannschaftNummer = mannschaftNummer;
-    }
 
     public Long getVereinId() {
         return vereinId;
@@ -155,22 +146,13 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getVereinName() {
         return vereinName;
     }
-    public void setVereinName(String vereinName) {
-        this.vereinName = vereinName;
-    }
 
     public Long getMatchId() {
         return matchId;
     }
-    public void setMatchId(Long matchId) {
-        this.matchId = matchId;
-    }
 
     public int getMatchNr() {
         return matchNr;
-    }
-    public void setMatchNr(int matchNr) {
-        this.matchNr = matchNr;
     }
 
     public Long getDsbMitgliedId() {
@@ -183,38 +165,24 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getDsbMitgliedName() {
         return dsbMitgliedName;
     }
-    public void setDsbMitgliedName(String dsbMitgliedName) {
-        this.dsbMitgliedName = dsbMitgliedName;
-    }
 
     public int getRueckenNummer() {
         return rueckenNummer;
-    }
-    public void setRueckenNummer(int rueckenNummer) {
-        this.rueckenNummer = rueckenNummer;
     }
 
     public float getPfeilpunkteSchnitt() {
         return pfeilpunkteSchnitt;
     }
-    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
-        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
-    }
 
     public String getSchuetzeSatz1() {return schuetzeSatz1;}
-    public void setSchuetzeSatz1(String schuetzeSatz1) {this.schuetzeSatz1 = schuetzeSatz1;}
 
     public String getSchuetzeSatz2() {return schuetzeSatz2;}
-    public void setSchuetzeSatz2(String schuetzeSatz2) {this.schuetzeSatz2 = schuetzeSatz2;}
 
     public String getSchuetzeSatz3() {return schuetzeSatz3;}
-    public void setSchuetzeSatz3(String schuetzeSatz3) {this.schuetzeSatz3 = schuetzeSatz3;}
 
     public String getSchuetzeSatz4() {return schuetzeSatz4;}
-    public void setSchuetzeSatz4(String schuetzeSatz4) {this.schuetzeSatz4 = schuetzeSatz4;}
 
     public String getSchuetzeSatz5() {return schuetzeSatz5;}
-    public void setSchuetzeSatz5(String schuetzeSatz5) {this.schuetzeSatz5 = schuetzeSatz5;}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
