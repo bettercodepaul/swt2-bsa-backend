@@ -33,7 +33,7 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
     private String schuetzeSatz3;
     private String schuetzeSatz4;
     private String schuetzeSatz5;
-
+    //NOSONAR
 
     public SchuetzenstatistikDO() {
         // no parameter-constructor
