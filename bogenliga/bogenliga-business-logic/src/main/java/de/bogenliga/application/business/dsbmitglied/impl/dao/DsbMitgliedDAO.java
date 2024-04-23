@@ -76,8 +76,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
     private static final String FIND_BY_SEARCH =
-            "SELECT * "
-                    + " FROM dsb_mitglied "
+            "SELECT dsb_mitglied.*, verein.verein_name "
+                    + " FROM dsb_mitglied"
+                    + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
                     + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
                     + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
 
