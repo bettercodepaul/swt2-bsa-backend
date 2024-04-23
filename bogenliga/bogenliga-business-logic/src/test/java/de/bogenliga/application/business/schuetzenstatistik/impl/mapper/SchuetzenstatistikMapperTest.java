@@ -30,11 +30,11 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedName());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikBE.getPfeilpunkteSchnitt());
-        assertThat(actual.getschuetzeSatz1()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz1() + "}");
-        assertThat(actual.getschuetzeSatz2()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz2() + "}");
-        assertThat(actual.getschuetzeSatz3()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz3() + "}");
-        assertThat(actual.getschuetzeSatz4()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz4() + "}");
-        assertThat(actual.getschuetzeSatz5()).isEqualTo("{" + schuetzenstatistikBE.getschuetzeSatz5() + "}");
+        assertThat(actual.getschuetzeSatz1()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz1()));
+        assertThat(actual.getschuetzeSatz2()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz2()));
+        assertThat(actual.getschuetzeSatz3()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz3()));
+        assertThat(actual.getschuetzeSatz4()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz4()));
+        assertThat(actual.getschuetzeSatz5()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz5()));
 
         SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO(
                 schuetzenstatistikBE.getVeranstaltungId(),
@@ -79,14 +79,19 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
         assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
-        assertThat(actual.getschuetzeSatz1()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz1()));
-        assertThat(actual.getschuetzeSatz2()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz2()));
-        assertThat(actual.getschuetzeSatz3()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz3()));
-        assertThat(actual.getschuetzeSatz4()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz4()));
-        assertThat(actual.getschuetzeSatz5()).isEqualTo(trimCurlyBrackets(schuetzenstatistikDO.getschuetzeSatz5()));
+        assertThat(actual.getschuetzeSatz1()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz1() + "}");
+        assertThat(actual.getschuetzeSatz2()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz2() + "}");
+        assertThat(actual.getschuetzeSatz3()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz3() + "}");
+        assertThat(actual.getschuetzeSatz4()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz4() + "}");
+        assertThat(actual.getschuetzeSatz5()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz5() + "}");
     }
 
     private String trimCurlyBrackets(String str) {
-        return str.substring(1, str.length() - 1);
+        if (str != null && str.length() > 1) {
+            return str.substring(1, str.length() - 1);
+        } else {
+            return "";
+        }
     }
+
 }
