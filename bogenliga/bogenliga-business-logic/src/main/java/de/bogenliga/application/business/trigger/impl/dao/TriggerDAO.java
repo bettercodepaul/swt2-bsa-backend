@@ -90,6 +90,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
+                    + "         where status != 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
 
