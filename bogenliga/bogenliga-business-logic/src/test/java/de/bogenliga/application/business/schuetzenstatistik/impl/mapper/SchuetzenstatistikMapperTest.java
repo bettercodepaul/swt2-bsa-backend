@@ -30,11 +30,11 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedName());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikBE.getPfeilpunkteSchnitt());
-        assertThat(actual.getschuetzeSatz1()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz1()));
-        assertThat(actual.getschuetzeSatz2()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz2()));
-        assertThat(actual.getschuetzeSatz3()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz3()));
-        assertThat(actual.getschuetzeSatz4()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz4()));
-        assertThat(actual.getschuetzeSatz5()).isEqualTo(trimCurlyBrackets(schuetzenstatistikBE.getschuetzeSatz5()));
+        assertThat(actual.getschuetzeSatz1()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikBE.getschuetzeSatz1()));
+        assertThat(actual.getschuetzeSatz2()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikBE.getschuetzeSatz2()));
+        assertThat(actual.getschuetzeSatz3()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikBE.getschuetzeSatz3()));
+        assertThat(actual.getschuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikBE.getschuetzeSatz4()));
+        assertThat(actual.getschuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikBE.getschuetzeSatz5()));
 
         SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO(
                 schuetzenstatistikBE.getVeranstaltungId(),
@@ -86,9 +86,9 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getschuetzeSatz5()).isEqualTo("{" + schuetzenstatistikDO.getschuetzeSatz5() + "}");
     }
 
-    private String trimCurlyBrackets(String str) {
-        if (str != null && str.length() > 1) {
-            return str.substring(1, str.length() - 1);
+    private String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
+        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
+            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
         } else {
             return "";
         }
