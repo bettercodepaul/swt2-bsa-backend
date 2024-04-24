@@ -99,7 +99,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_operation op"
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
@@ -109,7 +109,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_operation op"
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 1"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
@@ -119,20 +119,21 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_operation op"
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 2"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
+
     private static final String FIND_ALL_ERRORS =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status"
-                    + "         where status = 3"
-                    + " ORDER BY aenderung_id"
-                    + " LIMIT 500";
+            "SELECT * " +
+                    " FROM altsystem_aenderung" +
+                    "     LEFT JOIN altsystem_aenderung_operation op" +
+                    "         ON altsystem_aenderung.operation = op.operation_id" +
+                    "     LEFT JOIN altsystem_aenderung_status st" +
+                    "         ON altsystem_aenderung.status = st.status_id" +
+                    "         where status = 3" +
+                    " ORDER BY aenderung_id" +
+                    " LIMIT 500";
 
 
     private final BasicDAO basicDAO;
