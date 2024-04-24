@@ -74,12 +74,4 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getSchuetzeSaetze()).isEqualTo(schuetzenstatistikDO.getSchuetzeSaetze());
     }
 
-    private String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
-        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
-            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
-        } else {
-            return "";
-        }
-    }
-
 }

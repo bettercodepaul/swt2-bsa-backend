@@ -62,12 +62,9 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         schuetzenstatistikDO.setDsbMitgliedName(dto.getDsbMitgliedName());
         schuetzenstatistikDO.setRueckenNummer(dto.getRueckenNummer());
         schuetzenstatistikDO.setPfeilpunkteSchnitt(dto.getPfeilpunkteSchnitt());
-        schuetzenstatistikDO.setschuetzeSatz1(dto.getSchuetzeSatz1());
-        schuetzenstatistikDO.setschuetzeSatz2(dto.getSchuetzeSatz2());
-        schuetzenstatistikDO.setschuetzeSatz3(dto.getSchuetzeSatz3());
-        schuetzenstatistikDO.setschuetzeSatz4(dto.getSchuetzeSatz4());
-        schuetzenstatistikDO.setschuetzeSatz5(dto.getSchuetzeSatz5());
-
+        schuetzenstatistikDO.setSchuetzeSaetze( new String[]{dto.getSchuetzeSatz1(),
+                                                dto.getSchuetzeSatz2(), dto.getSchuetzeSatz3(),
+                                                dto.getSchuetzeSatz4(), dto.getSchuetzeSatz5()});
         return schuetzenstatistikDO;
     };
 
