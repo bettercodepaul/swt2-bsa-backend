@@ -14,6 +14,10 @@ public interface TriggerComponent extends ComponentFacade{
      */
     List<TriggerDO> findAll();
     List<TriggerDO> findAllLimited();
+    List<TriggerDO> findAllSuccessed();
+    List<TriggerDO> findAllErrors();
+    List<TriggerDO> findAllNews();
+    List<TriggerDO> findAllInProgress();
 
     List<TriggerDO> findAllUnprocessed();
 
