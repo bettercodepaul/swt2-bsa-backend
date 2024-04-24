@@ -154,9 +154,7 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
-    public String getschuetzeSatz1() {
-        return schuetzeSaetze[0];
-    }
+    public String getschuetzeSatz1() { return schuetzeSaetze[0]; }
 
     public String getschuetzeSatz2() {
         return schuetzeSaetze[1];

@@ -25,11 +25,6 @@ public class SchuetzenstatistikDOTest {
     private static final int rueckenNummer = 5;
     private static final float pfeilpunkteSchnitt = (float) 3.7;
     private static final String[] schuetzeSaetze = {"{10,9}", "{4,10}", "{10,6}", "{3,8}", "{8,7}"};
-    private static final String schuetzeSatz1 = "{10,9}";
-    private static final String schuetzeSatz2 = "{4,10}";
-    private static final String schuetzeSatz3 = "{10,6}";
-    private static final String schuetzeSatz4 = "{3,8}";
-    private static final String schuetzeSatz5 = "{8,7}";
 
 
     @Rule

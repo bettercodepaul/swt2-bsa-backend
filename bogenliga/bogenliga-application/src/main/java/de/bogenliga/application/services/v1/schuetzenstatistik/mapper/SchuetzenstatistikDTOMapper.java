@@ -29,11 +29,11 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedName = schuetzenstatistikDO.getDsbMitgliedName();
         final int rueckenNummer = schuetzenstatistikDO.getRueckenNummer();
         final float pfeilPunkteSchnitt = schuetzenstatistikDO.getPfeilpunkteSchnitt();
-        final String schuetzeSatz1 = schuetzenstatistikDO.getschuetzeSatz1();
-        final String schuetzeSatz2 = schuetzenstatistikDO.getschuetzeSatz2();
-        final String schuetzeSatz3 = schuetzenstatistikDO.getschuetzeSatz3();
-        final String schuetzeSatz4 = schuetzenstatistikDO.getschuetzeSatz4();
-        final String schuetzeSatz5 = schuetzenstatistikDO.getschuetzeSatz5();
+        final String schuetzeSatz1 = removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz1());
+        final String schuetzeSatz2 = removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz2());
+        final String schuetzeSatz3 = removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz3());
+        final String schuetzeSatz4 = removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4());
+        final String schuetzeSatz5 = removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5());
 
 
 
@@ -62,12 +62,20 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         schuetzenstatistikDO.setDsbMitgliedName(dto.getDsbMitgliedName());
         schuetzenstatistikDO.setRueckenNummer(dto.getRueckenNummer());
         schuetzenstatistikDO.setPfeilpunkteSchnitt(dto.getPfeilpunkteSchnitt());
-        schuetzenstatistikDO.setSchuetzeSaetze( new String[]{dto.getSchuetzeSatz1(),
-                                                dto.getSchuetzeSatz2(), dto.getSchuetzeSatz3(),
-                                                dto.getSchuetzeSatz4(), dto.getSchuetzeSatz5()});
+        schuetzenstatistikDO.setSchuetzeSaetze( new String[]{
+                                                "{"+ dto.getSchuetzeSatz1() + "}", "{"+ dto.getSchuetzeSatz2() + "}",
+                                                "{"+ dto.getSchuetzeSatz3() + "}", "{"+ dto.getSchuetzeSatz4() + "}",
+                                                "{"+ dto.getSchuetzeSatz5() + "}"});
         return schuetzenstatistikDO;
     };
-
+    // Method for removing the braces from Sätze
+    private static String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
+        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
+            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
+        } else {
+            return "";
+        }
+    }
 
     /**
      * Constructor
