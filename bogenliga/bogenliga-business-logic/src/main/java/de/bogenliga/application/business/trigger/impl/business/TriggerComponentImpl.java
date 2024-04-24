@@ -39,23 +39,23 @@ public class TriggerComponentImpl implements TriggerComponent {
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllSuccessed() {
-        final List<TriggerBE> triggerBEList = triggerDAO.findSuccessed();
+    public List<TriggerDO> findAllSuccessed(String multiplicator,String pageLimit) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findSuccessed(multiplicator,pageLimit);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllErrors() {
-        final List<TriggerBE> triggerBEList = triggerDAO.findErrors();
+    public List<TriggerDO> findAllErrors(String multiplicator,String pageLimit) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findErrors(multiplicator,pageLimit);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllInProgress() {
-        final List<TriggerBE> triggerBEList = triggerDAO.findInProgress();
+    public List<TriggerDO> findAllInProgress(String multiplicator,String pageLimit) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findInProgress(multiplicator,pageLimit);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllNews() {
-        final List<TriggerBE> triggerBEList = triggerDAO.findNews();
+    public List<TriggerDO> findAllNews(String multiplicator,String pageLimit) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findNews(multiplicator,pageLimit);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
