@@ -35,15 +35,11 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         final String dsbMitgliedName = be.getDsbMitgliedName();
         final int rueckenNummer = be.getRueckenNummer();
         final float pfeilPunkteSchnitt = be.getPfeilpunkteSchnitt();
-        final String schuetzeSatz1 = removeCurlyBracketsFromSchuetzeSatz(be.getschuetzeSatz1()); // Method for removing the braces from Sätze
-        final String schuetzeSatz2 = removeCurlyBracketsFromSchuetzeSatz(be.getschuetzeSatz2());
-        final String schuetzeSatz3 = removeCurlyBracketsFromSchuetzeSatz(be.getschuetzeSatz3());
-        final String schuetzeSatz4 = removeCurlyBracketsFromSchuetzeSatz(be.getschuetzeSatz4());
-        final String schuetzeSatz5 = removeCurlyBracketsFromSchuetzeSatz(be.getschuetzeSatz5());
+        final String[] schuetzeSaetze = be.getSchuetzeSaetze();
 
         return new SchuetzenstatistikDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt,
-                schuetzeSatz1, schuetzeSatz2, schuetzeSatz3, schuetzeSatz4, schuetzeSatz5);
+                schuetzeSaetze);
     };
 
      /**
@@ -67,22 +63,10 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
          schuetzenstatistik.setDsbMitgliedName(vo.getDsbMitgliedName());
          schuetzenstatistik.setRueckenNummer(vo.getRueckenNummer());
          schuetzenstatistik.setPfeilpunkteSchnitt(vo.getPfeilpunkteSchnitt());
-         schuetzenstatistik.setschuetzeSatz1("{" + vo.getschuetzeSatz1() + "}"); // Adding curly braces to Sätze
-         schuetzenstatistik.setschuetzeSatz2("{" + vo.getschuetzeSatz2() + "}");
-         schuetzenstatistik.setschuetzeSatz3("{" + vo.getschuetzeSatz3() + "}");
-         schuetzenstatistik.setschuetzeSatz4("{" + vo.getschuetzeSatz4() + "}");
-         schuetzenstatistik.setschuetzeSatz5("{" + vo.getschuetzeSatz5() + "}");
+         schuetzenstatistik.setSchuetzeSaetze(vo.getSchuetzeSaetze());
 
          return schuetzenstatistik;
      };
-    // Method for removing the braces from Sätze
-    private static String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
-        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
-            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
-        } else {
-            return "";
-        }
-    }
     /**
      * Private constructor
      */
