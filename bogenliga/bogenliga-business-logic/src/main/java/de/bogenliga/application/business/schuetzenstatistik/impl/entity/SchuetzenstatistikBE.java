@@ -25,15 +25,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float pfeilpunkteSchnitt;
-    private String schuetzeSatz1;
-    private String schuetzeSatz2;
-    private String schuetzeSatz3;
-    private String schuetzeSatz4;
-    private String schuetzeSatz5;
-
+    private String[] schuetzeSaetze;
 
     public SchuetzenstatistikBE() {
-        // nothing is here
+        schuetzeSaetze = new String[5];
     }
 
     @Override
@@ -53,11 +48,11 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
                 ", dsbMitgliedName='" + dsbMitgliedName +
                 ", rueckenNummer='" + rueckenNummer +
                 ", pfeilpunkteSchnitt='" + pfeilpunkteSchnitt +
-                ", schuetzeSatz1='" + schuetzeSatz1 +
-                ", schuetzeSatz2='" + schuetzeSatz2 +
-                ", schuetzeSatz3='" + schuetzeSatz3 +
-                ", schuetzeSatz4='" + schuetzeSatz4 +
-                ", schuetzeSatz5='" + schuetzeSatz5 +
+                ", schuetzeSatz1='" + schuetzeSaetze[0] +
+                ", schuetzeSatz2='" + schuetzeSaetze[1] +
+                ", schuetzeSatz3='" + schuetzeSaetze[2] +
+                ", schuetzeSatz4='" + schuetzeSaetze[3] +
+                ", schuetzeSatz5='" + schuetzeSaetze[4] +
                 '}';
     }
 
@@ -165,41 +160,39 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     }
 
     public String getschuetzeSatz1() {
-        return schuetzeSatz1;
+        return schuetzeSaetze[0];
     }
     public void setschuetzeSatz1(String schuetzeSatz1) {
-        this.schuetzeSatz1 = schuetzeSatz1;
+        this.schuetzeSaetze[0] = schuetzeSatz1;
     }
 
     public String getschuetzeSatz2() {
-        return schuetzeSatz2;
+        return schuetzeSaetze[1];
     }
     public void setschuetzeSatz2(String schuetzeSatz2) {
-        this.schuetzeSatz2 = schuetzeSatz2;
+        this.schuetzeSaetze[1] = schuetzeSatz2;
     }
 
-    public String getschuetzeSatz3() {
-        return schuetzeSatz3;
-    }
+    public String getschuetzeSatz3() {return schuetzeSaetze[2]; }
     public void setschuetzeSatz3(String schuetzeSatz3) {
-        this.schuetzeSatz3 = schuetzeSatz3;
+        this.schuetzeSaetze[2] = schuetzeSatz3;
     }
 
     public String getschuetzeSatz4() {
-        return schuetzeSatz4;
+        return schuetzeSaetze[3];
     }
     public void setschuetzeSatz4(String schuetzeSatz4) {
-        this.schuetzeSatz4 = schuetzeSatz4;
+        this.schuetzeSaetze[3] = schuetzeSatz4;
     }
 
     public String getschuetzeSatz5() {
-        return schuetzeSatz5;
+        return schuetzeSaetze[4];
     }
     public void setschuetzeSatz5(String schuetzeSatz5) {
-        this.schuetzeSatz5 = schuetzeSatz5;
+        this.schuetzeSaetze[4] = schuetzeSatz5;
     }
 
-
-
+    public String[] getSchuetzeSaetze() { return schuetzeSaetze; }
+    public void setSchuetzeSaetze(String[] schuetzeSaetze) { this.schuetzeSaetze = schuetzeSaetze; }
 
 }

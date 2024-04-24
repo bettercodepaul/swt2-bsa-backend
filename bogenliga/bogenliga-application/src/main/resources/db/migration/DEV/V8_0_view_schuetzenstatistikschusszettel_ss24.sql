@@ -6,7 +6,7 @@ create view schuetzenstatistik
              schuetzenstatistik_wettkampf_id, schuetzenstatistik_wettkampf_tag, schuetzenstatistik_wettkampf_datum, schuetzenstatistik_mannschaft_id,
              schuetzenstatistik_mannschaft_nummer, schuetzenstatistik_verein_id, schuetzenstatistik_verein_name,
              schuetzenstatistik_match_id, schuetzenstatistik_match_nr, schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_dsb_mitglied_name,
-             schuetzenstatistik_rueckennummer, schuetzenstatistik_schuetze_satz1, schuetzenstatistik_schuetze_satz1,
+             schuetzenstatistik_rueckennummer, schuetzenstatistik_schuetze_satz1, schuetzenstatistik_schuetze_satz2,
              schuetzenstatistik_schuetze_satz3, schuetzenstatistik_schuetze_satz4, schuetzenstatistik_schuetze_satz5,
              schuetzenstatistik_pfeilpunkte_schnitt)
 as

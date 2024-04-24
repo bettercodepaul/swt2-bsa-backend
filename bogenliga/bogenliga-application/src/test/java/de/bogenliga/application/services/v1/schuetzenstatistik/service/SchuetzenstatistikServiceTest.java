@@ -39,11 +39,12 @@ public class SchuetzenstatistikServiceTest {
         private static final String dsbMitgliedName = "Mitglied_Name";
         private static final int rueckenNummer = 5;
         private static final int pfeilpunkteSchnitt = 3;
-        private static final String schuetzeSatz1 = "5,8";
-        private static final String schuetzeSatz2 = "9,3";
-        private static final String schuetzeSatz3 = "4,8";
-        private static final String schuetzeSatz4 = "5,2";
-        private static final String schuetzeSatz5 = "3,7";
+        private static final String[] schuetzeSaetze = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
+        private static final String schuetzeSatz1 = "{5,8}";
+        private static final String schuetzeSatz2 = "{9,3}";
+        private static final String schuetzeSatz3 = "{4,8}";
+        private static final String schuetzeSatz4 = "{5,2}";
+        private static final String schuetzeSatz5 = "{3,7}";
 
 
 
