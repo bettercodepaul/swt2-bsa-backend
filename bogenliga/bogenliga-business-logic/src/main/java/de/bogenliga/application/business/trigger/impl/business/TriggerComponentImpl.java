@@ -38,8 +38,26 @@ public class TriggerComponentImpl implements TriggerComponent {
         final List<TriggerBE> triggerBEList = triggerDAO.findAllLimited();
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
-
-
+    @Override
+    public List<TriggerDO> findAllSuccessed() {
+        final List<TriggerBE> triggerBEList = triggerDAO.findSuccessed();
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
+    @Override
+    public List<TriggerDO> findAllErrors() {
+        final List<TriggerBE> triggerBEList = triggerDAO.findErrors();
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
+    @Override
+    public List<TriggerDO> findAllInProgress() {
+        final List<TriggerBE> triggerBEList = triggerDAO.findInProgress();
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
+    @Override
+    public List<TriggerDO> findAllNews() {
+        final List<TriggerBE> triggerBEList = triggerDAO.findNews();
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
     @Override
     public List<TriggerDO> findAllUnprocessed() {
         final List<TriggerBE> triggerBEList = triggerDAO.findAllUnprocessed();

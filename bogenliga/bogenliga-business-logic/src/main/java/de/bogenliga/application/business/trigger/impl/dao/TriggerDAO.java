@@ -93,6 +93,47 @@ public class TriggerDAO implements DataAccessObject {
                     + "         where status != 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
+    private static final String FIND_ALL_SUCCESSED =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         where status = 4"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+    private static final String FIND_ALL_NEWS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         where status = 1"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+    private static final String FIND_ALL_IN_PROGRESS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         where status = 2"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+    private static final String FIND_ALL_ERRORS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status"
+                    + "         where status = 3"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+
 
     private final BasicDAO basicDAO;
 
@@ -144,7 +185,18 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAll() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
     }
-
+    public List<TriggerBE> findSuccessed() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_SUCCESSED);
+    }
+    public List<TriggerBE> findNews() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_NEWS);
+    }
+    public List<TriggerBE> findErrors() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_ERRORS);
+    }
+    public List<TriggerBE> findInProgress() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_IN_PROGRESS);
+    }
     public List<TriggerBE> findAllUnprocessed() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_UNPROCESSED);
     }

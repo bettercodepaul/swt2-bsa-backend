@@ -142,6 +142,34 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+    @GetMapping("/findSuccessed")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllSuccessed() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
+    @GetMapping("/findErrors")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllErrors() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
+    @GetMapping("/findInProgress")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllInProgress() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
+    @GetMapping("/findNews")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllNews() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllNews();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
         if (timestamplist.isEmpty()){
