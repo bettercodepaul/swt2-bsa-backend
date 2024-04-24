@@ -31,8 +31,11 @@ public class TriggerComponentImpl implements TriggerComponent {
         final List<TriggerBE> triggerBEList = triggerDAO.findAll();
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
-
-
+    @Override
+    public List<TriggerDO> findAllWithPages(String multiplicator,String pageLimit) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findAllWithPages(multiplicator,pageLimit);
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
     @Override
     public List<TriggerDO> findAllLimited() {
         final List<TriggerBE> triggerBEList = triggerDAO.findAllLimited();

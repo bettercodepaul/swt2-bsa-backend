@@ -13,6 +13,7 @@ public interface TriggerComponent extends ComponentFacade{
      * @return list of all Trigger classes in the DB
      */
     List<TriggerDO> findAll();
+    List<TriggerDO> findAllWithPages(String multiplicator,String pageLimit);
     List<TriggerDO> findAllLimited();
     List<TriggerDO> findAllSuccessed(String multiplicator,String pageLimit);
     List<TriggerDO> findAllErrors(String multiplicator,String pageLimit);
