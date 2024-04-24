@@ -146,11 +146,11 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
             assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
-            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz1());
-            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz2());
-            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz3());
-            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz4());
-            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz5());
+            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz1()));
+            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz2()));
+            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz3()));
+            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4()));
+            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
 
             // verify invocations
             verify(schuetzenstatistikComponent).getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
@@ -191,15 +191,24 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
             assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
-            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz1());
-            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz2());
-            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz3());
-            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz4());
-            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(schuetzenstatistikDO.getschuetzeSatz5());
+            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz1()));
+            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz2()));
+            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz3()));
+            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4()));
+            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
             // verify invocations
             verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
 
         }
+
+    // Method for removing the braces from Sätze
+    private static String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
+        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
+            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
+        } else {
+            return "";
+        }
+    }
         @Test
         public void equalMethodSchuetzenstatistikDTOTest(){
 
