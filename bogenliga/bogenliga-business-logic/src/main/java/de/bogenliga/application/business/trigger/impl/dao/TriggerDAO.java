@@ -93,6 +93,15 @@ public class TriggerDAO implements DataAccessObject {
                     + "         where status != 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
+    private static final String FIND_ALL_WITH_PAGES =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_SUCCESSED =
             "SELECT * "
                     + " FROM altsystem_aenderung"
@@ -185,6 +194,11 @@ public class TriggerDAO implements DataAccessObject {
 
     public List<TriggerBE> findAll() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
+    }
+    public List<TriggerBE> findAllWithPages(String multiplicator,String pageLimit) {
+        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        String changedSQL = FIND_ALL_WITH_PAGES.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset));
+        return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findSuccessed(String multiplicator,String pageLimit) {
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);

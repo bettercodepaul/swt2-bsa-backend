@@ -136,6 +136,13 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+    @GetMapping("/findAllWithPages")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit);
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
     @GetMapping("/findAllUnprocessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllUnprocessed() {
