@@ -65,11 +65,7 @@ public class SchuetzenstatistikServiceTest {
             expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
             expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
             expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-            expectedSchuetzenstatistikDO.setschuetzeSatz1(schuetzeSatz1);
-            expectedSchuetzenstatistikDO.setschuetzeSatz2(schuetzeSatz2);
-            expectedSchuetzenstatistikDO.setschuetzeSatz3(schuetzeSatz3);
-            expectedSchuetzenstatistikDO.setschuetzeSatz4(schuetzeSatz4);
-            expectedSchuetzenstatistikDO.setschuetzeSatz5(schuetzeSatz5);
+            expectedSchuetzenstatistikDO.setSchuetzeSaetze(schuetzeSaetze);
             return expectedSchuetzenstatistikDO;
         }
 
