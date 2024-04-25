@@ -1,5 +1,8 @@
 package de.bogenliga.application.business.altsystem.liga.entity;
 
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -13,6 +16,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
+
 /**
  * Component to handle the import of a "Liga" entity
  *
@@ -25,6 +29,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
     private final LigaComponent ligaComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
 
     @Autowired
     public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent,
@@ -52,7 +57,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         try{
             vorhanden = ligaComponent.checkExistsLigaName(ligaDO.getName());
         }catch(Exception e){
-            e.printStackTrace();
+            LOGGER.debug(String.valueOf(e));
         }
         if (  vorhanden == null || vorhanden.getId() == null ){
             //neue Liga anlegen

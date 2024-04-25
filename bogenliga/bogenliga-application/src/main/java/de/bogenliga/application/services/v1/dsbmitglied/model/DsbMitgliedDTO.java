@@ -19,6 +19,7 @@ public class DsbMitgliedDTO implements DataTransferObject {
     private String nationalitaet;
     private String mitgliedsnummer;
     private Long vereinsId;
+    private String vereinsName;
     private Long userId;
     private Boolean kampfrichter;
 
@@ -33,7 +34,7 @@ public class DsbMitgliedDTO implements DataTransferObject {
 
     public DsbMitgliedDTO(final Long id, final String vorname, final String nachname, final String geburtsdatum,
                           final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
-                          final Long userId, final Boolean iskampfrichter) {
+                          final String vereinsName, final Long userId, final Boolean iskampfrichter) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -41,6 +42,7 @@ public class DsbMitgliedDTO implements DataTransferObject {
         this.nationalitaet = nationalitaet;
         this.mitgliedsnummer = mitgliedsnummer;
         this.vereinsId = vereinsId;
+        this.vereinsName = vereinsName;
         this.userId = userId;
         this.kampfrichter = iskampfrichter;
     }
@@ -108,6 +110,16 @@ public class DsbMitgliedDTO implements DataTransferObject {
 
     public void setVereinsId(final Long vereinsId) {
         this.vereinsId = vereinsId;
+    }
+
+
+    public String getVereinsName() {
+        return vereinsName;
+    }
+
+
+    public void setVereinsName(final String vereinsName) {
+        this.vereinsName = vereinsName;
     }
 
 

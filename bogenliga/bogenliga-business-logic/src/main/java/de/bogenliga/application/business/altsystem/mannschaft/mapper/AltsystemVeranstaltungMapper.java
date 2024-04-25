@@ -2,6 +2,9 @@ package de.bogenliga.application.business.altsystem.mannschaft.mapper;
 
 import java.sql.Date;
 import java.util.List;
+
+import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
@@ -31,6 +34,7 @@ public class AltsystemVeranstaltungMapper {
     private final LigaComponent ligaComponent;
     private final WettkampfTypComponent wettkampfTypComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final ConfigurationComponent configurationComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
     /**
@@ -46,11 +50,14 @@ public class AltsystemVeranstaltungMapper {
     @Autowired
     public AltsystemVeranstaltungMapper(final VeranstaltungComponent veranstaltungComponent,
                                         LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
-                                        DsbMannschaftComponent dsbMannschaftComponent, AltsystemUebersetzung altsystemUebersetzung) {
+                                        DsbMannschaftComponent dsbMannschaftComponent,
+                                        ConfigurationComponent configurationComponent,
+                                        AltsystemUebersetzung altsystemUebersetzung) {
         this.veranstaltungComponent = veranstaltungComponent;
         this.ligaComponent = ligaComponent;
         this.wettkampfTypComponent = wettkampfTypComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.configurationComponent = configurationComponent;
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
@@ -127,8 +134,19 @@ public class AltsystemVeranstaltungMapper {
         veranstaltungDO.setVeranstaltungMeldeDeadline(meldeDeadline);
         // groesse: default als Mindestgroesse auf 4 gesetzt, später in getOrCreateVeranstaltung updated
         veranstaltungDO.setVeranstaltungGroesse(4);
-        // phase: "geplant" setzen
-        veranstaltungDO.setVeranstaltungPhase("geplant");
+        // abhängig von dem Sportjahr der Veranstaltung und dem aktuellen Sportjahr
+        // in der BSAPP wird der Status gesetzt:
+
+        ConfigurationDO configurationDO = configurationComponent.findByKey("aktives-Sportjahr");
+        if (sportjahr < Long.parseLong(configurationDO.getValue()))
+            // Sportjahr < aktives Sportjahr --> abgeschlossen
+            veranstaltungDO.setVeranstaltungPhase("Abgeschlossen");
+        else if (sportjahr > Long.parseLong(configurationDO.getValue()))
+            // Sportjahr > aktives Sportjahr --> geplant
+            veranstaltungDO.setVeranstaltungPhase("Geplant");
+        else
+            // Sportjahr = aktives Sportjahr --> laufend
+            veranstaltungDO.setVeranstaltungPhase("Laufend");
         // Ligaleiter_id:
         veranstaltungDO.setVeranstaltungLigaleiterID(currentUserId);
         // Wettkampftyp: Satzsystem

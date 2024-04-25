@@ -125,7 +125,7 @@ public class SyncService implements ServiceFacade {
 
         final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleVeranstaltung(id);
 
-        return ligatabelleDOList.stream().map(LigaSyncLigatabelleDTOMapper.toDTO).collect(Collectors.toList());
+        return ligatabelleDOList.stream().map(LigaSyncLigatabelleDTOMapper.toDTO).toList();
     }
 
 
@@ -144,7 +144,7 @@ public class SyncService implements ServiceFacade {
         logger.debug("Receive 'Wettkampfid for Matches' request with ID '{}'", wettkampfid);
         List<LigamatchDO> wettkampfMatches = matchComponent.getLigamatchDOsByWettkampfId(wettkampfid);
 
-        return wettkampfMatches.stream().map(LigaSyncMatchDTOMapper.toDTO).collect(Collectors.toList());
+        return wettkampfMatches.stream().map(LigaSyncMatchDTOMapper.toDTO).toList();
     }
 
 
@@ -211,8 +211,7 @@ public class SyncService implements ServiceFacade {
             }
         }
 
-        return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).toList();
     }
 
 
@@ -296,8 +295,7 @@ public class SyncService implements ServiceFacade {
 
 
        return ResponseEntity.ok(
-               savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
-                       Collectors.toList()));
+               savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).toList());
     }
 
     /**
@@ -340,7 +338,7 @@ public class SyncService implements ServiceFacade {
             // Set List<PasseDTO> to MatchDTO where MatchId is the same
             matchDTO.setPassen(ligaSyncPasseDTOs.stream().map(LigaSyncPasseDTOMapper.toPasseDTO)
                     .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
-                    .collect(Collectors.toList()));
+                    .toList());
             logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
             for (PasseDTO passeDTO : matchDTO.getPassen()) {
                 passeDTO.setMatchNr(matchDTO.getNr());

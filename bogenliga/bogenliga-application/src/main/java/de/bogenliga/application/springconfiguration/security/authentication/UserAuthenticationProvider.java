@@ -3,7 +3,6 @@ package de.bogenliga.application.springconfiguration.security.authentication;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +81,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                 permissions = userDO.getPermissions().stream()
                         .map(UserPermission::fromValue)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                        .toList();
 
                 return new UsernamePasswordAuthenticationToken(
                         userDO, "", permissions);
