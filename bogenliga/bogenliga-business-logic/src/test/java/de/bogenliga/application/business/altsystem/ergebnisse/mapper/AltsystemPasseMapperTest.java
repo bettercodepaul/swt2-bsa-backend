@@ -4,6 +4,7 @@ package de.bogenliga.application.business.altsystem.ergebnisse.mapper;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -53,6 +54,8 @@ public class AltsystemPasseMapperTest{
     @Mock
     private WettkampfComponent wettkampfComponent;
     @Mock
+    private AltsystemMatchMapper altsystemMatchMapper;
+    @Mock
     private AltsystemUebersetzung altsystemUebersetzung;
     @InjectMocks
     private AltsystemPasseMapper altsystemPasseMapper;
@@ -61,7 +64,7 @@ public class AltsystemPasseMapperTest{
         List<MatchDO> matches = new LinkedList<>();
         MatchDO matchDO = new MatchDO();
         matchDO.setId(MATCH_ID);
-        matchDO.setNr(1L);
+        matchDO.setNr(4L);
         matchDO.setWettkampfId(WETTKAMPF_ID);
         matchDO.setMannschaftId(1L);
         matches.add(matchDO);
@@ -94,6 +97,7 @@ public class AltsystemPasseMapperTest{
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
         veranstaltungDO.setVeranstaltungGroesse(8);
+        veranstaltungDO.setVeranstaltungID(123L);
 
         List<WettkampfDO> wettkaempfe = getMockWettkaempfe();
 
@@ -119,6 +123,8 @@ public class AltsystemPasseMapperTest{
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkaempfe);
+        when(altsystemMatchMapper.getCurrentWettkampfTag(anyLong(), any())).thenReturn(wettkaempfe.get(0));
+        when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
 
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);
 
@@ -137,7 +143,7 @@ public class AltsystemPasseMapperTest{
             assertThat(currentPasse.getPasseDsbMitgliedId()).isEqualTo(DSBMITGLIED_ID);
             assertThat(currentPasse.getPasseMannschaftId()).isEqualTo(1L);
             assertThat(currentPasse.getPasseMatchId()).isEqualTo(MATCH_ID);
-            assertThat(currentPasse.getPasseMatchNr()).isEqualTo(1L);
+            assertThat(currentPasse.getPasseMatchNr()).isEqualTo(4L);
             assertThat(currentPasse.getPasseWettkampfId()).isEqualTo(WETTKAMPF_ID);
         }
 
@@ -171,6 +177,7 @@ public class AltsystemPasseMapperTest{
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
         veranstaltungDO.setVeranstaltungGroesse(8);
+        veranstaltungDO.setVeranstaltungID(123L);
 
         List<WettkampfDO> wettkaempfe = getMockWettkaempfe();
 
@@ -196,6 +203,8 @@ public class AltsystemPasseMapperTest{
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkaempfe);
+        when(altsystemMatchMapper.getCurrentWettkampfTag(anyLong(), any())).thenReturn(wettkaempfe.get(0));
+        when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
 
 
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);

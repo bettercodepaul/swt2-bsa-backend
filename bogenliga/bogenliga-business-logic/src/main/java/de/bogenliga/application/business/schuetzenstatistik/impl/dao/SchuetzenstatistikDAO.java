@@ -44,6 +44,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String DSBMITGLIEDNAME_BE = "dsbMitgliedName";
     private static final String RUECKENNUMMER_BE = "rueckenNummer";
     private static final String PFEILPUNKTESCHNITT_BE = "pfeilpunkteSchnitt";
+    private static final String SCHUETZESATZ1_BE = "schuetzeSatz1";
+    private static final String SCHUETZESATZ2_BE = "schuetzeSatz2";
+    private static final String SCHUETZESATZ3_BE = "schuetzeSatz3";
+    private static final String SCHUETZESATZ4_BE = "schuetzeSatz4";
+    private static final String SCHUETZESATZ5_BE = "schuetzeSatz5";
 
 
     private static final String VERANSTALTUNGID_TABLE = "schuetzenstatistik_veranstaltung_id";
@@ -60,6 +65,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String DSBMITGLIEDNAME_TABLE = "schuetzenstatistik_dsb_mitglied_name";
     private static final String RUECKENNUMMER_TABLE = "schuetzenstatistik_rueckennummer";
     private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
+    private static final String SCHUETZESATZ1_TABLE = "schuetzenstatistik_schuetze_satz1";
+    private static final String SCHUETZESATZ2_TABLE = "schuetzenstatistik_schuetze_satz2";
+    private static final String SCHUETZESATZ3_TABLE = "schuetzenstatistik_schuetze_satz3";
+    private static final String SCHUETZESATZ4_TABLE = "schuetzenstatistik_schuetze_satz4";
+    private static final String SCHUETZESATZ5_TABLE = "schuetzenstatistik_schuetze_satz5";
 
     /*
      * SQL queries
@@ -120,6 +130,12 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                 DSBMITGLIEDID_TABLE,
                 DSBMITGLIEDNAME_TABLE,
                 RUECKENNUMMER_TABLE,
+                MATCHNR_TABLE,
+                "ARRAY_remove("+SCHUETZESATZ1_TABLE+", NULL) as "+SCHUETZESATZ1_BE,
+                "ARRAY_remove("+SCHUETZESATZ2_TABLE+", NULL) as "+SCHUETZESATZ2_BE,
+                "ARRAY_remove("+SCHUETZESATZ3_TABLE+", NULL) as "+SCHUETZESATZ3_BE,
+                "ARRAY_remove("+SCHUETZESATZ4_TABLE+", NULL) as "+SCHUETZESATZ4_BE,
+                "ARRAY_remove("+SCHUETZESATZ5_TABLE+", NULL) as "+SCHUETZESATZ5_BE,
                 "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
@@ -139,6 +155,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE,
+                    SCHUETZESATZ1_TABLE,
+                    SCHUETZESATZ2_TABLE,
+                    SCHUETZESATZ3_TABLE,
+                    SCHUETZESATZ4_TABLE,
+                    SCHUETZESATZ5_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
@@ -174,6 +195,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
         columnsToFieldsMap.put(RUECKENNUMMER_TABLE, RUECKENNUMMER_BE);
         columnsToFieldsMap.put(PFEILPUNKTESCHNITT_TABLE, PFEILPUNKTESCHNITT_BE);
+        columnsToFieldsMap.put(SCHUETZESATZ1_TABLE, SCHUETZESATZ1_BE);
+        columnsToFieldsMap.put(SCHUETZESATZ2_TABLE, SCHUETZESATZ2_BE);
+        columnsToFieldsMap.put(SCHUETZESATZ3_TABLE, SCHUETZESATZ3_BE);
+        columnsToFieldsMap.put(SCHUETZESATZ4_TABLE, SCHUETZESATZ4_BE);
+        columnsToFieldsMap.put(SCHUETZESATZ5_TABLE, SCHUETZESATZ5_BE);
 
         return columnsToFieldsMap;
     }
@@ -191,7 +217,4 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long wettkampfId, final long vereinId) {
         return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, wettkampfId, vereinId);
     }
-
-
-    
 }

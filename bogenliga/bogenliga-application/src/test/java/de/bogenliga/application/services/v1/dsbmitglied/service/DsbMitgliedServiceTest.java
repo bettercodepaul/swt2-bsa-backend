@@ -44,6 +44,8 @@ public class DsbMitgliedServiceTest {
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final long VEREINSID = 2;
+
+    private static final String VEREINNAME = "TEST VEREIN";
     private static final long USERID = 4242;
     private static final long USERIDUPDATE = 2121;
 
@@ -77,6 +79,7 @@ public class DsbMitgliedServiceTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
+                VEREINNAME,
                 USERID,
                 KAMPFRICHTER);
     }
@@ -91,6 +94,7 @@ public class DsbMitgliedServiceTest {
         dsbMitgliedDTO.setNationalitaet(NATIONALITAET);
         dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
         dsbMitgliedDTO.setVereinsId(VEREINSID);
+        dsbMitgliedDTO.setVereinsName(VEREINNAME);
         dsbMitgliedDTO.setUserId(USERID);
         dsbMitgliedDTO.setKampfrichter(KAMPFRICHTER);
         return dsbMitgliedDTO;
@@ -206,6 +210,7 @@ public class DsbMitgliedServiceTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 vereinsId,
+                VEREINNAME,
                 USERID,
                 KAMPFRICHTER);
 

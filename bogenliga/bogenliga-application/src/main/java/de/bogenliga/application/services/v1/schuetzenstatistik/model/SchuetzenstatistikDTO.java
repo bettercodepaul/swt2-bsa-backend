@@ -26,6 +26,11 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float pfeilpunkteSchnitt;
+    private String schuetzeSatz1;
+    private String schuetzeSatz2;
+    private String schuetzeSatz3;
+    private String schuetzeSatz4;
+    private String schuetzeSatz5;
 
     /**
      * The Constructor with optional parameters
@@ -44,6 +49,12 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
      * @param dsbMitgliedName;
      * @param rueckenNummer;
      * @param pfeilpunkteSchnitt;
+     * @param schuetzeSatz1;
+     * @param schuetzeSatz2;
+     * @param schuetzeSatz3;
+     * @param schuetzeSatz4;
+     * @param schuetzeSatz5;
+     *
 
      */
     public SchuetzenstatistikDTO(
@@ -60,7 +71,12 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
             Long dsbMitgliedId,
             String dsbMitgliedName,
             int rueckenNummer,
-            float pfeilpunkteSchnitt
+            float pfeilpunkteSchnitt,
+            String schuetzeSatz1,
+            String schuetzeSatz2,
+            String schuetzeSatz3,
+            String schuetzeSatz4,
+            String schuetzeSatz5
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -76,9 +92,11 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.dsbMitgliedName = dsbMitgliedName;
         this.rueckenNummer = rueckenNummer;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
-    }
-
-    public SchuetzenstatistikDTO() {
+        this.schuetzeSatz1 = schuetzeSatz1;
+        this.schuetzeSatz2 = schuetzeSatz2;
+        this.schuetzeSatz3 = schuetzeSatz3;
+        this.schuetzeSatz4 = schuetzeSatz4;
+        this.schuetzeSatz5 = schuetzeSatz5;
     }
 
     // Getters and Setters
@@ -91,9 +109,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
 
     public String getVeranstaltungName() {
         return veranstaltungName;
-    }
-    public void setVeranstaltungName(String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
     }
 
     public Long getWettkampfId() {
@@ -120,9 +135,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public int getMannschaftNummer() {
         return mannschaftNummer;
     }
-    public void setMannschaftNummer(int mannschaftNummer) {
-        this.mannschaftNummer = mannschaftNummer;
-    }
 
     public Long getVereinId() {
         return vereinId;
@@ -134,22 +146,13 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getVereinName() {
         return vereinName;
     }
-    public void setVereinName(String vereinName) {
-        this.vereinName = vereinName;
-    }
 
     public Long getMatchId() {
         return matchId;
     }
-    public void setMatchId(Long matchId) {
-        this.matchId = matchId;
-    }
 
     public int getMatchNr() {
         return matchNr;
-    }
-    public void setMatchNr(int matchNr) {
-        this.matchNr = matchNr;
     }
 
     public Long getDsbMitgliedId() {
@@ -162,24 +165,24 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getDsbMitgliedName() {
         return dsbMitgliedName;
     }
-    public void setDsbMitgliedName(String dsbMitgliedName) {
-        this.dsbMitgliedName = dsbMitgliedName;
-    }
 
     public int getRueckenNummer() {
         return rueckenNummer;
-    }
-    public void setRueckenNummer(int rueckenNummer) {
-        this.rueckenNummer = rueckenNummer;
     }
 
     public float getPfeilpunkteSchnitt() {
         return pfeilpunkteSchnitt;
     }
-    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
-        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
-    }
 
+    public String getSchuetzeSatz1() {return schuetzeSatz1;}
+
+    public String getSchuetzeSatz2() {return schuetzeSatz2;}
+
+    public String getSchuetzeSatz3() {return schuetzeSatz3;}
+
+    public String getSchuetzeSatz4() {return schuetzeSatz4;}
+
+    public String getSchuetzeSatz5() {return schuetzeSatz5;}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -198,13 +201,19 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
                 rueckenNummer == that.rueckenNummer &&
-                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
+                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt &&
+                Objects.equals(schuetzeSatz1, that.schuetzeSatz1) &&
+                Objects.equals(schuetzeSatz2, that.schuetzeSatz2) &&
+                Objects.equals(schuetzeSatz3, that.schuetzeSatz3) &&
+                Objects.equals(schuetzeSatz4, that.schuetzeSatz4) &&
+                Objects.equals(schuetzeSatz5, that.schuetzeSatz5);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
                 mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, matchNr,
-                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt);
+                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt, schuetzeSatz1, schuetzeSatz2,
+                schuetzeSatz3, schuetzeSatz4, schuetzeSatz5);
     }
 }
