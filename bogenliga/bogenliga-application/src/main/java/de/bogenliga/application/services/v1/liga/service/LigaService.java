@@ -143,7 +143,7 @@ public class LigaService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
 
         checkPreconditions(ligaDTO);
