@@ -140,14 +140,14 @@ public class AltsystemPasseMapper {
         }
 
         // Exception, falls kein passendes Match gefunden wurde und ein Ergebnis >0 zu speichern ist
-        if (match.getId()== 0L && altsystemDataObject.getErgebnis()>0 ){
+        if (match.getId()== 0L && altsystemDataObject.getErgebniss()>0 ){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "When creating Passen Match for Mannschaft %s and MatchNr %s not found",dsbMannschaftDO.getId(),matchNr);
         }
         //keine Exception, wenn das Ergebnis = 0 ist
         //bei Gero werden alle Kombinationen von Schützen und Match in der Ergebnis-Tabelle abgelegt
         //in der Tabelle Wettkampf stehen aber nur Kombinationen für Schütze, die geschossen haben
         // da fehlen dann bei uns die Einträge in der Match-Tabelle
-        else if (match.getId()== 0L && altsystemDataObject.getErgebnis()==0) {
+        else if (match.getId()== 0L && altsystemDataObject.getErgebniss()==0) {
             // wir geben ein leeres Feld zurück - hier müssen keine Daten angelegt werden.
             return passen;
         }
@@ -157,7 +157,7 @@ public class AltsystemPasseMapper {
             AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Match_Saetze, match.getId());
             int anzahlSaetze = Integer.parseInt(satzUebersetzung.getWert());
 
-            int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), anzahlSaetze);
+            int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebniss(), anzahlSaetze);
 
             for (int i = 0; i < anzahlSaetze; i++) {
                 PasseDO passe = new PasseDO();
@@ -185,7 +185,7 @@ public class AltsystemPasseMapper {
      */
     public List<PasseDO> recalculatePassen(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject){
 
-        int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), passen.size());
+        int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebniss(), passen.size());
         for(int i = 0; i < passen.size(); i++){
             PasseDO passe = passen.get(i);
             passe.setPfeil1(punkte[i][0]);
