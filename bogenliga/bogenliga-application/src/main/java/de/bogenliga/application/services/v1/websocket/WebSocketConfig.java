@@ -1,24 +1,31 @@
 package de.bogenliga.application.services.v1.websocket;
 
-
+import java.util.concurrent.Executors;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+/*
 @Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(tradeWebSocketHandler(), "/websocket").setAllowedOrigins("*");
     }
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+    @Bean
+    public org.springframework.web.socket.WebSocketHandler tradeWebSocketHandler() {
+        return new WebSocketHandler();
+    }
+
+    @Bean
+    public TaskScheduler taskScheduler() {
+        return new ConcurrentTaskScheduler(Executors.newSingleThreadScheduledExecutor());
     }
 }
+
+ */
