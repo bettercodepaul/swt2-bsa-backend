@@ -87,7 +87,7 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(77);
+        altsystemErgebnisDO.setErgebniss(77L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
         altsystemErgebnisDO.setSchuetze_Id(2L);
 
@@ -168,7 +168,7 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(78);
+        altsystemErgebnisDO.setErgebniss(78L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
         altsystemErgebnisDO.setSchuetze_Id(2L);
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(1L);
@@ -222,7 +222,7 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(87);
+        altsystemErgebnisDO.setErgebniss(87L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
         altsystemErgebnisDO.setSchuetze_Id(2L);
 
