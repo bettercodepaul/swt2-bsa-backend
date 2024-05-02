@@ -68,7 +68,6 @@ public class TriggerComponentImplTest {
 		return expectedBE;
 	}
 
-
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
 	public static TriggerBE getErrorTriggerBE() {
