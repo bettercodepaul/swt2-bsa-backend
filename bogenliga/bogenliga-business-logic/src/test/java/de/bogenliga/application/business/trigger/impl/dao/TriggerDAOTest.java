@@ -16,6 +16,10 @@ import de.bogenliga.application.business.trigger.impl.entity.RawTriggerBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.business.trigger.impl.mapper.TriggerMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getErrorTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getInProgressTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getNewTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getSuccessTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -138,5 +142,99 @@ public class TriggerDAOTest {
 
 		assertThat(actual.get(0)).isNotNull();
 	}
+	@Test
+	public void testFindAllErrors() {
+		// prepare test data
+		final TriggerBE expectedBE = getErrorTriggerBE();
 
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findErrors("0","500");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllNews() {
+		// prepare test data
+		final TriggerBE expectedBE = getNewTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findNews("0","500");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllSuccess() {
+		// prepare test data
+		final TriggerBE expectedBE = getSuccessTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllInProgress() {
+		// prepare test data
+		final TriggerBE expectedBE = getInProgressTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllWithPages() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
 }
