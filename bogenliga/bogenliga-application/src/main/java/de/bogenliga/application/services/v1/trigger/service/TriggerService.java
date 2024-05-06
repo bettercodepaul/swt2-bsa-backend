@@ -178,6 +178,14 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+    @GetMapping("/deleteEntries")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> deleteEntries(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
+        //TODO
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit);
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
         if (timestamplist.isEmpty()){
