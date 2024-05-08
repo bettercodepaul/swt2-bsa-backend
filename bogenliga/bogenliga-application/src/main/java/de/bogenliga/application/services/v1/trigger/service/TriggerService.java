@@ -129,6 +129,62 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllUnprocessed() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    //TODO GetMapping der Methoden testen und bei Bedarf anpassen
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findAllCount() {
+        final TriggerDO triggerDO = triggerComponent.findAllCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findUnprocessedCount() {
+        final TriggerDO triggerDO = triggerComponent.findUnprocessedCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
+
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findSucceededCount() {
+        final TriggerDO triggerDO = triggerComponent.findSucceededCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
+
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findInProgressCount() {
+        final TriggerDO triggerDO = triggerComponent.findInProgressCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
+
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findNewCount() {
+        final TriggerDO triggerDO = triggerComponent.findNewCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
+
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerDTO findErrorCount() {
+        final TriggerDO triggerDO = triggerComponent.findErrorCount();
+
+        return TriggerDTOMapper.toDTO.apply(triggerDO);
+    }
 
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();

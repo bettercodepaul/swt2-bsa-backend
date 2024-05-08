@@ -88,8 +88,63 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
+                    + "         where status != 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
+    //TODO Alle neuen Abfragen nutzbringend einsetzen und bei Bedarf löschen
+    private static final String FIND_ALL_COUNT =
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + " ORDER BY aenderung_id";
+    private static final String FIND_UNPROCESSED_COUNT=
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         AND st.status_name != 'SUCCESS'"
+                            + "         where status != 4"
+                            + " LIMIT 500";
+    private static final String FIND_SUCCEEDED_COUNT =
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 4";
+    private static final String FIND_NEW_COUNT =
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 1";
+    private static final String FIND_IN_PROGRESS_COUNT =
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 2";
+
+    private static final String FIND_ERRORS_COUNT =
+            "SELECT COUNT(*) "
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 3";
+
+    //TODO Bis hier hin
 
     private final BasicDAO basicDAO;
 
@@ -147,6 +202,27 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAllLimited() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_LIMITED);
     }
+    //TODO Entsprechende Methoden schreiben und anpassen nachher bei Bedarf rausnehmen was nicht benötigt wird
+    public TriggerBE findAllCount(){ return basicDAO.selectSingleEntity(TRIGGER, FIND_ALL_COUNT);}
+    public TriggerBE findUnprocessedCount(){
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
+    }
+    public TriggerBE findSucceededCount() {
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_SUCCEEDED_COUNT);
+    }
+
+    public TriggerBE findNewCount() {
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_NEW_COUNT);
+    }
+
+    public TriggerBE findInProgressCount() {
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_IN_PROGRESS_COUNT);
+    }
+
+    public TriggerBE findErrorCount() {
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_ERRORS_COUNT);
+    }
+    //TODO Bis hier hin
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);
@@ -167,6 +243,7 @@ public class TriggerDAO implements DataAccessObject {
 
     TriggerBE resolveRawTrigger(RawTriggerBE raw) {
         TriggerBE created = new TriggerBE();
+        created.setCount(raw.getCount());
         created.setId(raw.getId());
         created.setKategorie(raw.getKategorie());
         created.setAltsystemId(raw.getAltsystemId());
