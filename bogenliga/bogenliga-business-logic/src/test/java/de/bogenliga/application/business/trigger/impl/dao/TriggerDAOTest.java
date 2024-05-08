@@ -151,7 +151,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findErrors("0","500");
+		final List<TriggerBE> actual = triggerDAO.findErrors("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -170,7 +170,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findNews("0","500");
+		final List<TriggerBE> actual = triggerDAO.findNews("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -189,7 +189,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500");
+		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -208,7 +208,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500");
+		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -227,7 +227,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500");
+		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)

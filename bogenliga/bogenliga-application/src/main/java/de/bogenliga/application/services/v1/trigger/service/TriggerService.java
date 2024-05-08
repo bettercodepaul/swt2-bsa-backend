@@ -182,10 +182,8 @@ public class TriggerService implements ServiceFacade {
     }
     @DeleteMapping("/deleteEntries")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
-        //TODO
-        final List<TriggerDO> triggerDOList = triggerComponent.deleteEntries(status,dateInterval);
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    public void deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
+        triggerComponent.deleteEntries(status,dateInterval);
     }
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();

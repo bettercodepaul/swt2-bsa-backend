@@ -177,10 +177,10 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAllErrors("0","500")).thenReturn(expectedDOList);
+		when(triggerComponent.findAllErrors("0","500", "1 MONTH")).thenReturn(expectedDOList);
 
 		// call test method
-		final List<TriggerDTO> actual = triggerServiceTest.findAllErrors("0","500");
+		final List<TriggerDTO> actual = triggerServiceTest.findAllErrors("0","500", "1 MONTH");
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -204,7 +204,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAllErrors("0","500");
+		verify(triggerComponent, times(1)).findAllErrors("0","500", "1 MONTH");
 	}
 	@Test
 	public void testFindAllNews() {
@@ -213,10 +213,10 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAllNews("0","500")).thenReturn(expectedDOList);
+		when(triggerComponent.findAllNews("0","500", "1 MONTH")).thenReturn(expectedDOList);
 
 		// call test method
-		final List<TriggerDTO> actual = triggerServiceTest.findAllNews("0","500");
+		final List<TriggerDTO> actual = triggerServiceTest.findAllNews("0","500", "1 MONTH");
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -240,7 +240,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAllNews("0","500");
+		verify(triggerComponent, times(1)).findAllNews("0","500", "1 MONTH");
 	}
 	@Test
 	public void testFindAllInProgress() {
@@ -249,10 +249,10 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAllInProgress("0","500")).thenReturn(expectedDOList);
+		when(triggerComponent.findAllInProgress("0","500", "1 MONTH")).thenReturn(expectedDOList);
 
 		// call test method
-		final List<TriggerDTO> actual = triggerServiceTest.findAllInProgress("0","500");
+		final List<TriggerDTO> actual = triggerServiceTest.findAllInProgress("0","500", "1 MONTH");
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -276,7 +276,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAllInProgress("0","500");
+		verify(triggerComponent, times(1)).findAllInProgress("0","500", "1 MONTH");
 	}
 	@Test
 	public void testFindAllSuccess() {
@@ -285,10 +285,10 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAllSuccessed("0","500")).thenReturn(expectedDOList);
+		when(triggerComponent.findAllSuccessed("0","500", "1 MONTH")).thenReturn(expectedDOList);
 
 		// call test method
-		final List<TriggerDTO> actual = triggerServiceTest.findAllSuccessed("0","500");
+		final List<TriggerDTO> actual = triggerServiceTest.findAllSuccessed("0","500", "1 MONTH");
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -312,7 +312,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAllSuccessed("0","500");
+		verify(triggerComponent, times(1)).findAllSuccessed("0","500", "1 MONTH");
 	}
 	@Test
 	public void testFindAllWithPages() {
@@ -321,10 +321,10 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAllWithPages("0","500")).thenReturn(expectedDOList);
+		when(triggerComponent.findAllWithPages("0","500", "1 MONTH")).thenReturn(expectedDOList);
 
 		// call test method
-		final List<TriggerDTO> actual = triggerServiceTest.findAllWithPages("0","500");
+		final List<TriggerDTO> actual = triggerServiceTest.findAllWithPages("0","500", "1 MONTH");
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -348,7 +348,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAllWithPages("0","500");
+		verify(triggerComponent, times(1)).findAllWithPages("0","500", "1 MONTH");
 	}
 
 	@Test
