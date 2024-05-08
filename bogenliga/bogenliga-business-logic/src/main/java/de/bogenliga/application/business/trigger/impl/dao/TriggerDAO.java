@@ -230,7 +230,7 @@ public class TriggerDAO implements DataAccessObject {
         String changedSQL = FIND_ALL_IN_PROGRESS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
-    public List<TriggerBE> deleteEntries(String status, String dateInterval) {
+    public void deleteEntries(String status, String dateInterval) {
         String actualStatus;
         switch (status){
             case("Neu"):
@@ -249,9 +249,8 @@ public class TriggerDAO implements DataAccessObject {
                 actualStatus = "LOL";
         }
         String actualDataInterval = dateInterval.replace("%20", " ");
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDataInterval);
-        return basicDAO.selectEntityList(TRIGGER,changedSQL);
+        basicDAO.executeQuery(changedSQL);
     }
 
     public List<TriggerBE> findAllUnprocessed() {

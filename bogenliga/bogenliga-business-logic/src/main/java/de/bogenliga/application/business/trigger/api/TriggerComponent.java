@@ -20,7 +20,7 @@ public interface TriggerComponent extends ComponentFacade{
     List<TriggerDO> findAllNews(String multiplicator,String pageLimit,String dateInterval);
     List<TriggerDO> findAllInProgress(String multiplicator,String pageLimit,String dateInterval);
 
-    List<TriggerDO> deleteEntries(String status, String dateInterval);
+    void deleteEntries(String status, String dateInterval);
 
     List<TriggerDO> findAllUnprocessed();
 
