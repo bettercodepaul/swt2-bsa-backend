@@ -60,9 +60,8 @@ public class TriggerComponentImpl implements TriggerComponent {
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> deleteEntries(String status, String dateInterval) {
-        final List<TriggerBE> triggerBEList = triggerDAO.deleteEntries(status,dateInterval);
-        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    public void deleteEntries(String status, String dateInterval) {
+        triggerDAO.deleteEntries(status,dateInterval);
     }
     @Override
     public List<TriggerDO> findAllUnprocessed() {
