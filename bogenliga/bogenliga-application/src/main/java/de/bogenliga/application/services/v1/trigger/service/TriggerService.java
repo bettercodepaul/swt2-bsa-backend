@@ -180,9 +180,9 @@ public class TriggerService implements ServiceFacade {
     }
     @GetMapping("/deleteEntries")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> deleteEntries(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
+    public List<TriggerDTO> deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
         //TODO
-        final List<TriggerDO> triggerDOList = triggerComponent.deleteAllSuccessedOneMonthAgo();
+        final List<TriggerDO> triggerDOList = triggerComponent.deleteEntries(status,dateInterval);
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
