@@ -136,13 +136,6 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
-    @GetMapping("/findAllWithPages")
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
-    }
     @GetMapping("/findAllUnprocessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllUnprocessed() {
@@ -150,31 +143,39 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+
+    @GetMapping("/findAllWithPages")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit,dateInterval);
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }
     @GetMapping("/findSuccessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllSuccessed(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit);
+    public List<TriggerDTO> findAllSuccessed(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
     @GetMapping("/findErrors")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllErrors(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit);
+    public List<TriggerDTO> findAllErrors(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit,dateInterval);
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
     @GetMapping("/findInProgress")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllInProgress(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit);
+    public List<TriggerDTO> findAllInProgress(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit,dateInterval);
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
     @GetMapping("/findNews")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllNews(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit);
+    public List<TriggerDTO> findAllNews(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit,dateInterval);
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
