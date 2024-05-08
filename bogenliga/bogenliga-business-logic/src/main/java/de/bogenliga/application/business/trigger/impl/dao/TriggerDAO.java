@@ -150,14 +150,11 @@ public class TriggerDAO implements DataAccessObject {
                     + " LIMIT $limit$ OFFSET $offset$";
 
     private static final String DELETE_ENTRIES =
-            "DELETE altsystem_aenderung, op, st"
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         where status = $status$"
-                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'";
+            "START TRANSACTION; " +
+                    "DELETE FROM altsystem_aenderung " +
+                    "WHERE status = $status$ " +
+                    "AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "COMMIT;";
     private final BasicDAO basicDAO;
 
 
@@ -209,39 +206,52 @@ public class TriggerDAO implements DataAccessObject {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
     }
     public List<TriggerBE> findAllWithPages(String multiplicator,String pageLimit,String dateInterval) {
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
         String changedSQL = FIND_ALL_WITH_PAGES.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findSuccessed(String multiplicator,String pageLimit,String dateInterval) {
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
         String changedSQL = FIND_ALL_SUCCESSED.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findNews(String multiplicator,String pageLimit,String dateInterval) {
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
         String changedSQL = FIND_ALL_NEWS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findErrors(String multiplicator,String pageLimit,String dateInterval) {
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
         String changedSQL = FIND_ALL_ERRORS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findInProgress(String multiplicator,String pageLimit,String dateInterval) {
-        LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
         String changedSQL = FIND_ALL_IN_PROGRESS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> deleteEntries(String status, String dateInterval) {
+        String actualStatus;
+        switch (status){
+            case("Neu"):
+                actualStatus = "1";
+                break;
+            case("Laufend"):
+                actualStatus = "2";
+                break;
+            case("Fehlgeschlagen"):
+                actualStatus = "3";
+                break;
+            case("Erfolgreich"):
+                actualStatus = "4";
+                break;
+            default:
+                actualStatus = "LOL";
+        }
+        String actualDataInterval = dateInterval.replace("%20", " ");
         LOGGER.warn("Hier ist das dateInterval: " + dateInterval);
-        String changedSQL = DELETE_ENTRIES.replace("$status$", status).replace("$dateInterval$", dateInterval);
-        return basicDAO.selectEntityList(TRIGGER,DELETE_ENTRIES);
+        String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDataInterval);
+        return basicDAO.selectEntityList(TRIGGER,changedSQL);
     }
 
     public List<TriggerBE> findAllUnprocessed() {
