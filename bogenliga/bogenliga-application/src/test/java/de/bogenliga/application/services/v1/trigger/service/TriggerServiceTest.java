@@ -350,6 +350,47 @@ public class TriggerServiceTest {
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllWithPages("0","500", "1 MONTH");
 	}
+	@Test
+	public void testDeleteNewEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Neu", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Neu", "1 MONTH");
+	}
+	@Test
+	public void testDeleteErrorEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Fehlgeschlagen", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Fehlgeschlagen", "1 MONTH");
+	}
+	@Test
+	public void testDeleteInProgressEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Laufend", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Laufend", "1 MONTH");
+	}
+	@Test
+	public void testDeleteSuccessEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Erfolgreich", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Erfolgreich", "1 MONTH");
+	}
+	@Test
+	public void testDeleteAllEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Alle", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Alle", "1 MONTH");
+	}
+
 
 	@Test
 	public void testLoadUnprocessedChanges() {
