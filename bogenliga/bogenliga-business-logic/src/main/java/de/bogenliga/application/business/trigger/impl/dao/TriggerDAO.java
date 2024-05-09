@@ -155,6 +155,11 @@ public class TriggerDAO implements DataAccessObject {
                     "WHERE status = $status$ " +
                     "AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
                     "COMMIT;";
+    private static final String DELETE_ALL_ENTRIES =
+            "START TRANSACTION; " +
+                    "DELETE FROM altsystem_aenderung " +
+                    "WHERE created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "COMMIT;";
     private final BasicDAO basicDAO;
 
 
@@ -246,11 +251,18 @@ public class TriggerDAO implements DataAccessObject {
                 actualStatus = "4";
                 break;
             default:
-                actualStatus = "LOL";
+                actualStatus = "5";
         }
-        String actualDataInterval = dateInterval.replace("%20", " ");
-        String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDataInterval);
-        basicDAO.executeQuery(changedSQL);
+        if(actualStatus.equals("5")){
+            String actualDataInterval = dateInterval.replace("%20", " ");
+            String changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDataInterval);
+            basicDAO.executeQuery(changedSQL);
+        }
+        else{
+            String actualDateInterval = dateInterval.replace("%20", " ");
+            String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDateInterval);
+            basicDAO.executeQuery(changedSQL);
+        }
     }
 
     public List<TriggerBE> findAllUnprocessed() {

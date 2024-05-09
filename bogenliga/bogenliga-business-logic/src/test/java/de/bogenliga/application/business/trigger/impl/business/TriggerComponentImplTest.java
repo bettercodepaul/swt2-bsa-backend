@@ -450,4 +450,44 @@ public class TriggerComponentImplTest {
 		// verify invocations
 		verify(triggerDAO, times(1)).findAllWithPages("0","500", "1 MONTH");
 	}
+	@Test
+	public void testDeleteNewEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Neu", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Neu", "1 MONTH");
+	}
+	@Test
+	public void testDeleteErrorEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Fehlgeschlagen", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Fehlgeschlagen", "1 MONTH");
+	}
+	@Test
+	public void testDeleteInProgressEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Laufend", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Laufend", "1 MONTH");
+	}
+	@Test
+	public void testDeleteSuccessEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Erfolgreich", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Erfolgreich", "1 MONTH");
+	}
+	@Test
+	public void testAllSuccessEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Alle", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Alle", "1 MONTH");
+	}
 }
