@@ -16,13 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
-import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
-import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -43,6 +41,10 @@ public class TriggerServiceTest {
 	private static final Long TRIGGER_ALTSYSTEMID = 234L;
 	private static final TriggerChangeOperation TRIGGER_OPERATION = null;
 	private static final TriggerChangeStatus TRIGGER_STATUS = null;
+	private static final TriggerChangeStatus TRIGGER_STATUS_ERROR = TriggerChangeStatus.ERROR;
+	private static final TriggerChangeStatus TRIGGER_STATUS_NEW = TriggerChangeStatus.NEW;
+	private static final TriggerChangeStatus TRIGGER_STATUS_SUCCSESS = TriggerChangeStatus.SUCCESS;
+	private static final TriggerChangeStatus TRIGGER_STATUS_IN_PROGRESS = TriggerChangeStatus.IN_PROGRESS;
 	private static final String TRIGGER_NACHRICHT = "see";
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
@@ -52,12 +54,9 @@ public class TriggerServiceTest {
 
 	@Mock
 	private BasicDAO basicDAO;
-	@Mock
-	private TriggerDAO triggerDAO;
+
 	@Mock
 	private TriggerComponent triggerComponent;
-	@Mock
-	private LigaComponent ligaComponent;
 	@Mock
 	private MigrationTimestampDAO migrationTimestampDAO;
 	@Mock
@@ -74,6 +73,54 @@ public class TriggerServiceTest {
 				TRIGGER_ALTSYSTEMID,
 				TRIGGER_OPERATION,
 				TRIGGER_STATUS,
+				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
+				TRIGGER_RUNATUTCO
+		);
+	}
+	public static TriggerDO getErrorTriggerDO() {
+		return new TriggerDO(
+				TRIGGER_ID,
+				TRIGGER_KATEGORIE,
+				TRIGGER_ALTSYSTEMID,
+				TRIGGER_OPERATION,
+				TRIGGER_STATUS_ERROR,
+				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
+				TRIGGER_RUNATUTCO
+		);
+	}
+	public static TriggerDO getNewTriggerDO() {
+		return new TriggerDO(
+				TRIGGER_ID,
+				TRIGGER_KATEGORIE,
+				TRIGGER_ALTSYSTEMID,
+				TRIGGER_OPERATION,
+				TRIGGER_STATUS_NEW,
+				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
+				TRIGGER_RUNATUTCO
+		);
+	}
+	public static TriggerDO getSuccsessTriggerDO() {
+		return new TriggerDO(
+				TRIGGER_ID,
+				TRIGGER_KATEGORIE,
+				TRIGGER_ALTSYSTEMID,
+				TRIGGER_OPERATION,
+				TRIGGER_STATUS_SUCCSESS,
+				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
+				TRIGGER_RUNATUTCO
+		);
+	}
+	public static TriggerDO getInProgressTriggerDO() {
+		return new TriggerDO(
+				TRIGGER_ID,
+				TRIGGER_KATEGORIE,
+				TRIGGER_ALTSYSTEMID,
+				TRIGGER_OPERATION,
+				TRIGGER_STATUS_IN_PROGRESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
 				TRIGGER_RUNATUTCO
@@ -123,6 +170,227 @@ public class TriggerServiceTest {
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllLimited();
 	}
+	@Test
+	public void testFindAllErrors() {
+		// prepare test data
+		final TriggerDO expectedDO = getErrorTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllErrors("0","500", "1 MONTH")).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAllErrors("0","500", "1 MONTH");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllErrors("0","500", "1 MONTH");
+	}
+	@Test
+	public void testFindAllNews() {
+		// prepare test data
+		final TriggerDO expectedDO = getNewTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllNews("0","500", "1 MONTH")).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAllNews("0","500", "1 MONTH");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllNews("0","500", "1 MONTH");
+	}
+	@Test
+	public void testFindAllInProgress() {
+		// prepare test data
+		final TriggerDO expectedDO = getInProgressTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllInProgress("0","500", "1 MONTH")).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAllInProgress("0","500", "1 MONTH");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllInProgress("0","500", "1 MONTH");
+	}
+	@Test
+	public void testFindAllSuccess() {
+		// prepare test data
+		final TriggerDO expectedDO = getSuccsessTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllSuccessed("0","500", "1 MONTH")).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAllSuccessed("0","500", "1 MONTH");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllSuccessed("0","500", "1 MONTH");
+	}
+	@Test
+	public void testFindAllWithPages() {
+		// prepare test data
+		final TriggerDO expectedDO = getTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllWithPages("0","500", "1 MONTH")).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAllWithPages("0","500", "1 MONTH");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllWithPages("0","500", "1 MONTH");
+	}
+	@Test
+	public void testDeleteNewEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Neu", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Neu", "1 MONTH");
+	}
+	@Test
+	public void testDeleteErrorEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Fehlgeschlagen", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Fehlgeschlagen", "1 MONTH");
+	}
+	@Test
+	public void testDeleteInProgressEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Laufend", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Laufend", "1 MONTH");
+	}
+	@Test
+	public void testDeleteSuccessEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Erfolgreich", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Erfolgreich", "1 MONTH");
+	}
+	@Test
+	public void testDeleteAllEntries() {
+		// Call the method
+		triggerComponent.deleteEntries("Alle", "1 MONTH");
+
+		// Verify that triggerComponent.deleteEntries was called with the correct parameters
+		verify(triggerComponent).deleteEntries("Alle", "1 MONTH");
+	}
+
 
 	@Test
 	public void testLoadUnprocessedChanges() {
