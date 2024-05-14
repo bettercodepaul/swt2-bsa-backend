@@ -11,7 +11,7 @@ public class AltsystemErgebnisseDO extends AltsystemDO {
 
     private Long schuetze_id =null;
     private int match = 0;
-    private int ergebniss = 0;
+    private Long ergebniss = 0L;
 
 
     public Long getSchuetze_Id() { return schuetze_id; }
@@ -26,11 +26,9 @@ public class AltsystemErgebnisseDO extends AltsystemDO {
         this.match = match;
     }
 
-    public int getErgebnis() {
+    public Long getErgebniss() {
         return ergebniss;
     }
 
-    public void setErgebnis(int ergebniss) {
-        this.ergebniss = (ergebniss);
-    }
+    public void setErgebniss(Long ergebniss) {this.ergebniss = ergebniss; }
 }

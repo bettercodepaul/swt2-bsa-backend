@@ -31,8 +31,11 @@ public class UserProfileComponentImplTest {
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final Long VEREINSID = 2L;
+    private static final String VEREINNAME = "TEST VEREIN";
     private static final Long USERID = 4242L;
     private static final String EMAIL = "Sorscha.Kratikoff@test.de";
+
+    private static final Boolean KAMPFRICHTER = true;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -58,13 +61,14 @@ public class UserProfileComponentImplTest {
         expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
         expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
         expectedBE.setDsbMitgliedVereinsId(VEREINSID);
+        expectedBE.setDsbMitgliedVereinName(VEREINNAME);
         expectedBE.setDsbMitgliedUserId(USERID);
 
         return expectedBE;
     }
 
     public static DsbMitgliedDO getDsbMitgliedDO() {
-        final DsbMitgliedDO expectedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, USERID, null, USERID, null, USERID, VERSION, true);
+        final DsbMitgliedDO expectedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, VEREINNAME, USERID, KAMPFRICHTER);
 
         return expectedDO;
     }

@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SchuetzenstatistikMapperTest {
 
+
     @Test
     public void toSchuetzenstatistikDO() throws Exception {
 
@@ -29,6 +30,7 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikBE.getDsbMitgliedName());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikBE.getPfeilpunkteSchnitt());
+        assertThat(actual.getSchuetzeSaetze()).isEqualTo(schuetzenstatistikBE.getSchuetzeSaetze());
 
         SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO(
                 schuetzenstatistikBE.getVeranstaltungId(),
@@ -44,9 +46,8 @@ public class SchuetzenstatistikMapperTest {
                 schuetzenstatistikBE.getDsbMitgliedId(),
                 schuetzenstatistikBE.getDsbMitgliedName(),
                 schuetzenstatistikBE.getRueckenNummer(),
-                schuetzenstatistikBE.getPfeilpunkteSchnitt());
-
-        assertThat(actual.hashCode()).isEqualTo(schuetzenstatistikDO.hashCode());
+                schuetzenstatistikBE.getPfeilpunkteSchnitt(),
+                schuetzenstatistikBE.getSchuetzeSaetze());
     }
 
 
@@ -70,5 +71,7 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
         assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
+        assertThat(actual.getSchuetzeSaetze()).isEqualTo(schuetzenstatistikDO.getSchuetzeSaetze());
     }
+
 }
