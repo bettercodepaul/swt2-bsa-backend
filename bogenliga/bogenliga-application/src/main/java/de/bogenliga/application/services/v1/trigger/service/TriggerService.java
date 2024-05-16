@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.trigger.service;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
 import de.bogenliga.application.business.altsystem.ergebnisse.entity.AltsystemErgebnisse;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -134,57 +137,147 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAll() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllLimited();
-
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
     @GetMapping("/findAllUnprocessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllUnprocessed() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
-
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/findAllWithPages")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit,dateInterval);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+            final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit,dateInterval);
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
     @GetMapping("/findSuccessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllSuccessed(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+            final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
     @GetMapping("/findErrors")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllErrors(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit,dateInterval);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+            final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit,
+                    dateInterval);
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
     @GetMapping("/findInProgress")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllInProgress(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit,dateInterval);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+            final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit,
+                    dateInterval);
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
     @GetMapping("/findNews")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllNews(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit,dateInterval);
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+            final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit,
+                    dateInterval);
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
     @DeleteMapping("/deleteEntries")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public void deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
-        triggerComponent.deleteEntries(status,dateInterval);
+        if(checkForMaliciousDeletionParams(status,dateInterval)) {
+            triggerComponent.deleteEntries(status, dateInterval);
+        }
     }
+    public boolean checkForMaliciousQueryParams(String offsetMuliplicator, String queryPageLimit, String dateInterval){
+        //returns true if Params are not malicious
+        try{
+            if(offsetMuliplicator != null && queryPageLimit != null){
+                int actualOffsetMuliplicator = Integer.parseInt(offsetMuliplicator);
+                int actualQueryPageLimit = Integer.parseInt(queryPageLimit);
+            }
+            else {
+                throw new IllegalArgumentException();
+            }
+        //Testing the DateInterval Param
+        ArrayList<Integer> possibleNumbersOfDateInterval = new ArrayList<>();
+        possibleNumbersOfDateInterval.add(1);
+        possibleNumbersOfDateInterval.add(3);
+        possibleNumbersOfDateInterval.add(6);
+        possibleNumbersOfDateInterval.add(12);
+        possibleNumbersOfDateInterval.add(20);
+        String[] parsedDateInterval = dateInterval.split(" ");
+        if(parsedDateInterval.length == 2){
+            int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
+            if(!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)){
+                throw new IllegalArgumentException();
+            }else if(!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))){
+                throw new IllegalArgumentException();
+            }
+        }else{
+            throw new IllegalArgumentException();
+        }
+        }
+        catch(IllegalArgumentException e){
+            LOGGER.warn("Invalid query parameters:{}", e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkForMaliciousDeletionParams(String status, String dateInterval){
+        //returns true if Params are not malicious
+        try {
+            if(status == null || dateInterval == null){
+                throw new IllegalArgumentException();
+            }
+            ArrayList<String> statusArray = new ArrayList<>();
+            statusArray.add("Fehlgeschlagen");
+            statusArray.add("Erfolgreich");
+            statusArray.add("Laufend");
+            statusArray.add("Neu");
+            statusArray.add("Alle");
+            if (!statusArray.contains(status)) {
+                throw new IllegalArgumentException();
+            }
+            //Testing the DateInterval Param
+            ArrayList<Integer> possibleNumbersOfDateInterval = new ArrayList<>();
+            possibleNumbersOfDateInterval.add(1);
+            possibleNumbersOfDateInterval.add(3);
+            possibleNumbersOfDateInterval.add(6);
+            possibleNumbersOfDateInterval.add(12);
+            possibleNumbersOfDateInterval.add(20);
+            String[] parsedDateInterval = dateInterval.split(" ");
+            if (parsedDateInterval.length == 2) {
+                int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
+                if (!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)) {
+                    throw new IllegalArgumentException();
+                } else if (!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))) {
+                    throw new IllegalArgumentException();
+                }
+            }else{
+                throw new IllegalArgumentException();
+            }
+        }
+        catch(IllegalArgumentException e){
+            LOGGER.warn("Invalid deletion parameters:{}", e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
         if (timestamplist.isEmpty()){
