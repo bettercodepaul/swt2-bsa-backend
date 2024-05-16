@@ -1,10 +1,11 @@
+Drop VIEW if exists schuetzenstatistik;
 drop VIEW if exists pfeilwerte_schuetze_match;
 create view pfeilwerte_schuetze_match
             (pfeilwerte_schuetze_match_match_id, pfeilwerte_schuetze_match_dsb_mitglied_id,
              pfeilwerte_schuetze_match_pfeilwerte1, pfeilwerte_schuetze_match_pfeilwerte2,
              pfeilwerte_schuetze_match_pfeilwerte3, pfeilwerte_schuetze_match_pfeilwerte4,
              pfeilwerte_schuetze_match_pfeilwerte5, pfeilwerte_schuetze_match_pfeilwerte6,
-             pfeilwerte_schuetze_match_pfeilpunkte_schnitt)
+             pfeilwerte_schuetze_match_pfeilwert_schnitt)
 as
 SELECT match.match_id                                                                                       AS  pfeilwerte_schuetze_match_match_id,
        dsb_mitglied.dsb_mitglied_id                                                                         AS  pfeilwerte_schuetze_match_dsb_mitglied_id,
@@ -49,7 +50,7 @@ SELECT match.match_id                                                           
                                                                                WHEN passe.passe_ringzahl_pfeil6 IS NOT NULL
                                                                                    THEN 1
                                                                                ELSE 0
-                                                                               END))::numeric             AS pfeilwerte_schuetze_match_pfeilpunkte_schnitt
+                                                                               END))::numeric             AS pfeilwerte_schuetze_match_pfeilwert_schnitt
 FROM match,
      dsb_mitglied,
      passe
@@ -116,7 +117,7 @@ SELECT veranstaltung.veranstaltung_id                                           
             pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte5[5], pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte6[5]]
                                                                                                           AS schuetzenstatistik_schuetze_satz5,
 
-       pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilpunkte_schnitt                            AS schuetzenstatistik_pfeilpunkte_schnitt
+       ROUND(pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwert_schnitt, 2)                            AS schuetzenstatistik_pfeilpunkte_schnitt
 FROM match,
      veranstaltung,
      wettkampf,
@@ -135,14 +136,12 @@ WHERE match.match_wettkampf_id = wettkampf.wettkampf_id
   AND pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id
 GROUP BY veranstaltung.veranstaltung_id, veranstaltung.veranstaltung_name, wettkampf.wettkampf_id,
          wettkampf.wettkampf_tag, mannschaft.mannschaft_id, mannschaft.mannschaft_nummer, verein.verein_id,
-         verein.verein_name, match.match_id, match.match_nr, dsb_mitglied.dsb_mitglied_id, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilpunkte_schnitt,
+         verein.verein_name, match.match_id, match.match_nr, dsb_mitglied.dsb_mitglied_id, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwert_schnitt,
          ((dsb_mitglied.dsb_mitglied_vorname::text || ' '::text) || dsb_mitglied.dsb_mitglied_nachname::text),
          mannschaftsmitglied.mannschaftsmitglied_rueckennummer,
          pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte1, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte2,
          pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte3, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte4,
-         pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte5, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte6
-
-;
+         pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte5, pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwerte6;
 
 alter table schuetzenstatistik
     owner to swt2;
