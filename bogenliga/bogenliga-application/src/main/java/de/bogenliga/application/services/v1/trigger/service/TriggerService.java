@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -211,24 +212,9 @@ public class TriggerService implements ServiceFacade {
             else {
                 throw new IllegalArgumentException();
             }
-        //Testing the DateInterval Param
-        ArrayList<Integer> possibleNumbersOfDateInterval = new ArrayList<>();
-        possibleNumbersOfDateInterval.add(1);
-        possibleNumbersOfDateInterval.add(3);
-        possibleNumbersOfDateInterval.add(6);
-        possibleNumbersOfDateInterval.add(12);
-        possibleNumbersOfDateInterval.add(20);
-        String[] parsedDateInterval = dateInterval.split(" ");
-        if(parsedDateInterval.length == 2){
-            int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
-            if(!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)){
-                throw new IllegalArgumentException();
-            }else if(!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))){
+            if(!checkDateInterval(dateInterval)){
                 throw new IllegalArgumentException();
             }
-        }else{
-            throw new IllegalArgumentException();
-        }
         }
         catch(IllegalArgumentException e){
             LOGGER.warn("Invalid query parameters:{}", e.getMessage());
@@ -240,34 +226,14 @@ public class TriggerService implements ServiceFacade {
     public boolean checkForMaliciousDeletionParams(String status, String dateInterval){
         //returns true if Params are not malicious
         try {
-            if(status == null || dateInterval == null){
+            if(status == null){
                 throw new IllegalArgumentException();
             }
-            ArrayList<String> statusArray = new ArrayList<>();
-            statusArray.add("Fehlgeschlagen");
-            statusArray.add("Erfolgreich");
-            statusArray.add("Laufend");
-            statusArray.add("Neu");
-            statusArray.add("Alle");
+            final List<String> statusArray = Arrays.asList("Fehlgeschlagen", "Erfolgreich", "Laufend", "Neu", "Alle");
             if (!statusArray.contains(status)) {
                 throw new IllegalArgumentException();
             }
-            //Testing the DateInterval Param
-            ArrayList<Integer> possibleNumbersOfDateInterval = new ArrayList<>();
-            possibleNumbersOfDateInterval.add(1);
-            possibleNumbersOfDateInterval.add(3);
-            possibleNumbersOfDateInterval.add(6);
-            possibleNumbersOfDateInterval.add(12);
-            possibleNumbersOfDateInterval.add(20);
-            String[] parsedDateInterval = dateInterval.split(" ");
-            if (parsedDateInterval.length == 2) {
-                int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
-                if (!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)) {
-                    throw new IllegalArgumentException();
-                } else if (!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))) {
-                    throw new IllegalArgumentException();
-                }
-            }else{
+            if(!checkDateInterval(dateInterval)){
                 throw new IllegalArgumentException();
             }
         }
@@ -277,7 +243,25 @@ public class TriggerService implements ServiceFacade {
         }
         return true;
     }
-
+    public boolean checkDateInterval(String dateInterval){
+        //Testing the DateInterval Param
+        if(dateInterval ==null){
+            return false;
+        }
+        final List<Integer> possibleNumbersOfDateInterval = Arrays.asList(1, 3, 6, 12, 20);
+        String[] parsedDateInterval = dateInterval.split(" ");
+        if (parsedDateInterval.length == 2) {
+            int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
+            if (!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)) {
+                return false;
+            } else if (!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))) {
+                return false;
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
         if (timestamplist.isEmpty()){
