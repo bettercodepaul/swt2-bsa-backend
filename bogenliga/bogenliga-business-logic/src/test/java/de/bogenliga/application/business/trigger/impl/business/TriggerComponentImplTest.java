@@ -257,10 +257,10 @@ public class TriggerComponentImplTest {
 		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
 
 		// configure mocks
-		when(triggerDAO.findErrors("0","500")).thenReturn(expectedBEList);
+		when(triggerDAO.findErrors("0","500", "1 MONTH")).thenReturn(expectedBEList);
 
 		// call test method
-		final List<TriggerDO> actual = underTest.findAllErrors("0","500");
+		final List<TriggerDO> actual = underTest.findAllErrors("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -288,7 +288,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerDAO, times(1)).findErrors("0","500");
+		verify(triggerDAO, times(1)).findErrors("0","500", "1 MONTH");
 	}
 	@Test
 	public void findAllNews() {
@@ -297,10 +297,10 @@ public class TriggerComponentImplTest {
 		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
 
 		// configure mocks
-		when(triggerDAO.findNews("0","500")).thenReturn(expectedBEList);
+		when(triggerDAO.findNews("0","500", "1 MONTH")).thenReturn(expectedBEList);
 
 		// call test method
-		final List<TriggerDO> actual = underTest.findAllNews("0","500");
+		final List<TriggerDO> actual = underTest.findAllNews("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -328,7 +328,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerDAO, times(1)).findNews("0","500");
+		verify(triggerDAO, times(1)).findNews("0","500", "1 MONTH");
 	}
 	@Test
 	public void findAllSuccess() {
@@ -337,10 +337,10 @@ public class TriggerComponentImplTest {
 		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
 
 		// configure mocks
-		when(triggerDAO.findSuccessed("0","500")).thenReturn(expectedBEList);
+		when(triggerDAO.findSuccessed("0","500", "1 MONTH")).thenReturn(expectedBEList);
 
 		// call test method
-		final List<TriggerDO> actual = underTest.findAllSuccessed("0","500");
+		final List<TriggerDO> actual = underTest.findAllSuccessed("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -368,7 +368,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerDAO, times(1)).findSuccessed("0","500");
+		verify(triggerDAO, times(1)).findSuccessed("0","500", "1 MONTH");
 	}
 	@Test
 	public void findAllInProgress() {
@@ -377,10 +377,10 @@ public class TriggerComponentImplTest {
 		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
 
 		// configure mocks
-		when(triggerDAO.findInProgress("0","500")).thenReturn(expectedBEList);
+		when(triggerDAO.findInProgress("0","500", "1 MONTH")).thenReturn(expectedBEList);
 
 		// call test method
-		final List<TriggerDO> actual = underTest.findAllInProgress("0","500");
+		final List<TriggerDO> actual = underTest.findAllInProgress("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -408,7 +408,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerDAO, times(1)).findInProgress("0","500");
+		verify(triggerDAO, times(1)).findInProgress("0","500", "1 MONTH");
 	}
 	@Test
 	public void findAllWithPages() {
@@ -417,10 +417,10 @@ public class TriggerComponentImplTest {
 		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
 
 		// configure mocks
-		when(triggerDAO.findAllWithPages("0","500")).thenReturn(expectedBEList);
+		when(triggerDAO.findAllWithPages("0","500", "1 MONTH")).thenReturn(expectedBEList);
 
 		// call test method
-		final List<TriggerDO> actual = underTest.findAllWithPages("0","500");
+		final List<TriggerDO> actual = underTest.findAllWithPages("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -448,6 +448,46 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerDAO, times(1)).findAllWithPages("0","500");
+		verify(triggerDAO, times(1)).findAllWithPages("0","500", "1 MONTH");
+	}
+	@Test
+	public void testDeleteNewEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Neu", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Neu", "1 MONTH");
+	}
+	@Test
+	public void testDeleteErrorEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Fehlgeschlagen", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Fehlgeschlagen", "1 MONTH");
+	}
+	@Test
+	public void testDeleteInProgressEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Laufend", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Laufend", "1 MONTH");
+	}
+	@Test
+	public void testDeleteSuccessEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Erfolgreich", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Erfolgreich", "1 MONTH");
+	}
+	@Test
+	public void testAllSuccessEntries() {
+		// Call the method
+		triggerDAO.deleteEntries("Alle", "1 MONTH");
+
+		// Verify that triggerDAO.deleteEntries was called with the correct parameters
+		verify(triggerDAO).deleteEntries("Alle", "1 MONTH");
 	}
 }

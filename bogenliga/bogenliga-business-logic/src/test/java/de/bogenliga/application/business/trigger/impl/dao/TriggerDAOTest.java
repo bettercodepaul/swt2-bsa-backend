@@ -24,7 +24,7 @@ import static de.bogenliga.application.business.trigger.impl.business.TriggerCom
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests the TriggerDAO class
@@ -151,7 +151,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findErrors("0","500");
+		final List<TriggerBE> actual = triggerDAO.findErrors("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -170,7 +170,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findNews("0","500");
+		final List<TriggerBE> actual = triggerDAO.findNews("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -189,7 +189,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500");
+		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -208,7 +208,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500");
+		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -227,7 +227,7 @@ public class TriggerDAOTest {
 		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
 		// call test method
-		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500");
+		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500", "1 MONTH");
 
 		// assert result
 		assertThat(actual)
@@ -237,4 +237,51 @@ public class TriggerDAOTest {
 
 		assertThat(actual.get(0)).isNotNull();
 	}
+	@Test
+	public void testDeleteEntriesSuccess() {
+		// Call test method
+		triggerDAO.deleteEntries("Erfolgreich", "1 MONTH");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 4 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesNew() {
+		// Call test method
+		triggerDAO.deleteEntries("Neu", "1 MONTH");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 1 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesError() {
+		// Call test method
+		triggerDAO.deleteEntries("Fehlgeschlagen", "1 MONTH");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 3 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesInProgress() {
+		// Call test method
+		triggerDAO.deleteEntries("Laufend", "1 MONTH");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 2 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesAll() {
+		// Call test method
+		triggerDAO.deleteEntries("Alle", "1 MONTH");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
 }
+
+

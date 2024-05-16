@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.tabletsession.impl.entity.TabletSessionBE;
-import de.bogenliga.application.business.tabletsession.impl.mapper.TabletSessionMapper;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
@@ -32,34 +30,38 @@ public class TriggerComponentImpl implements TriggerComponent {
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllWithPages(String multiplicator,String pageLimit) {
-        final List<TriggerBE> triggerBEList = triggerDAO.findAllWithPages(multiplicator,pageLimit);
-        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
-    }
-    @Override
     public List<TriggerDO> findAllLimited() {
         final List<TriggerBE> triggerBEList = triggerDAO.findAllLimited();
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllSuccessed(String multiplicator,String pageLimit) {
-        final List<TriggerBE> triggerBEList = triggerDAO.findSuccessed(multiplicator,pageLimit);
+    public List<TriggerDO> findAllWithPages(String multiplicator,String pageLimit,String dateInterval) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findAllWithPages(multiplicator,pageLimit,dateInterval);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllErrors(String multiplicator,String pageLimit) {
-        final List<TriggerBE> triggerBEList = triggerDAO.findErrors(multiplicator,pageLimit);
+    public List<TriggerDO> findAllSuccessed(String multiplicator,String pageLimit,String dateInterval) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findSuccessed(multiplicator,pageLimit,dateInterval);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllInProgress(String multiplicator,String pageLimit) {
-        final List<TriggerBE> triggerBEList = triggerDAO.findInProgress(multiplicator,pageLimit);
+    public List<TriggerDO> findAllErrors(String multiplicator,String pageLimit,String dateInterval) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findErrors(multiplicator,pageLimit,dateInterval);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
     @Override
-    public List<TriggerDO> findAllNews(String multiplicator,String pageLimit) {
-        final List<TriggerBE> triggerBEList = triggerDAO.findNews(multiplicator,pageLimit);
+    public List<TriggerDO> findAllInProgress(String multiplicator,String pageLimit,String dateInterval) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findInProgress(multiplicator,pageLimit,dateInterval);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
+    @Override
+    public List<TriggerDO> findAllNews(String multiplicator,String pageLimit,String dateInterval) {
+        final List<TriggerBE> triggerBEList = triggerDAO.findNews(multiplicator,pageLimit,dateInterval);
+        return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
+    }
+    @Override
+    public void deleteEntries(String status, String dateInterval) {
+        triggerDAO.deleteEntries(status,dateInterval);
     }
     @Override
     public List<TriggerDO> findAllUnprocessed() {
