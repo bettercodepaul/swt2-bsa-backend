@@ -568,4 +568,33 @@ public class TriggerServiceTest {
 
 		verify(migrationTimestampDAO, times(1)).update(any());
 	}
+	@Test
+	public void testCheckForMaliciousQueryParams(){
+
+		String falseOffset = "HACKER";
+		String falseLimit = "HACKER";
+		String falseDateInterval = "HACKER";
+		String workingOffset = "0";
+		String workingLimit = "500";
+		String workingDateInterval = "1 MONTH";
+
+		// Verify the behavior and the return values
+		assert !triggerServiceTest.checkForMaliciousQueryParams(falseOffset, workingLimit, workingDateInterval);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, falseLimit, workingDateInterval);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateInterval);
+		assert triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, workingDateInterval);
+	}
+	@Test
+	public void testCheckForMaliciousDeletionParams(){
+
+		String falseStatus = "HACKER";
+		String falseDateInterval = "HACKER";
+		String workingStatus = "Alle";
+		String workingDateInterval = "1 MONTH";
+
+		// Verify the behavior and the return values
+		assert !triggerServiceTest.checkForMaliciousDeletionParams(falseStatus, workingDateInterval);
+		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, falseDateInterval);
+		assert triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, workingDateInterval);
+	}
 }
