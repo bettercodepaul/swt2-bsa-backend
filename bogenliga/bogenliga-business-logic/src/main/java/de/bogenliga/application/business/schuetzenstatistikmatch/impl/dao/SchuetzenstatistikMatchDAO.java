@@ -14,9 +14,9 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * TODO [AL] class documentation
+ * Data access object that contains the SQL query to receive data about average match values of a Schütze on a certain Wettkampf
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Lennart Raach
  */
 @Repository
 public class SchuetzenstatistikMatchDAO implements DataAccessObject {
@@ -57,19 +57,19 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
 
     private static final String SQLSTRINGMAXPART = "MAX( CASE WHEN ";
-    private static final String SQLSTRINGELSEPART = "ELSE 0 AND AS ";
+    private static final String SQLSTRINGELSEPART = " ELSE 0 END) AS ";
 
     private static final String GET_SCHUETZENSTATISTIK_MATCH = new QueryBuilder().selectFields(
             DSBMITGLIEDNAME_TABLE,
             RUECKENNUMMER_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR1_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR2_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR3_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR4_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR5_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR6_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR7_TABLE,
-            "ROUND(AVG(CASE WHEN " + PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR1_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART  + MATCHNR2_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART  + MATCHNR3_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR4_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART  + MATCHNR5_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART  + MATCHNR6_TABLE,
+            SQLSTRINGMAXPART + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR7_TABLE,
+            "ROUND(AVG( CASE WHEN " + PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
             .whereEquals(VERANSTALTUNGID_TABLE)
@@ -88,19 +88,19 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
             SchuetzenstatistikMatchBE.class, TABLE, getColumnsToFieldsMap(), LOG);
 
 
-    /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
+    /* der Select liefert die aktuelle Match-Schuetzenstatistik zur Wettkampf-ID
      */
     private static final String GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF = new QueryBuilder().selectFields(
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR1_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR2_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR3_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR4_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR5_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR6_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR7_TABLE,
-                    "ROUND(AVG(CASE WHEN " + PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR1_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR2_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR3_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR4_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR5_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR6_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR7_TABLE,
+                    "ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
             .whereEquals(WETTKAMPFID_TABLE)
