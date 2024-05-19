@@ -29,13 +29,13 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
 
     private static final String DSBMITGLIEDNAME_BE = "dsbMitgliedName";
     private static final String RUECKENNUMMER_BE = "rueckenNummer";
-    private static final String MATCHNR_1_BE = "matchnr1";
-    private static final String MATCHNR_2_BE = "matchnr2";
-    private static final String MATCHNR_3_BE = "matchnr3";
-    private static final String MATCHNR_4_BE = "matchnr4";
-    private static final String MATCHNR_5_BE = "matchnr5";
-    private static final String MATCHNR_6_BE = "matchnr6";
-    private static final String MATCHNR_7_BE = "matchnr7";
+    private static final String MATCHNR1_BE = "match1";
+    private static final String MATCHNR2_BE = "match2";
+    private static final String MATCHNR3_BE = "match3";
+    private static final String MATCHNR4_BE = "match4";
+    private static final String MATCHNR5_BE = "match5";
+    private static final String MATCHNR6_BE = "match6";
+    private static final String MATCHNR7_BE = "match7";
     private static final String PFEILPUNKTESCHNITT_BE = "pfeilpunkteSchnitt";
 
 
@@ -47,18 +47,28 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String DSBMITGLIEDID_TABLE = "schuetzenstatistik_dsb_mitglied_id";
     private static final String DSBMITGLIEDNAME_TABLE = "schuetzenstatistik_dsb_mitglied_name";
     private static final String RUECKENNUMMER_TABLE = "schuetzenstatistik_rueckennummer";
+    private static final String MATCHNR1_TABLE = "matchnr_1";
+    private static final String MATCHNR2_TABLE = "matchnr_2";
+    private static final String MATCHNR3_TABLE = "matchnr_3";
+    private static final String MATCHNR4_TABLE = "matchnr_4";
+    private static final String MATCHNR5_TABLE = "matchnr_5";
+    private static final String MATCHNR6_TABLE = "matchnr_6";
+    private static final String MATCHNR7_TABLE = "matchnr_7";
     private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
+
+    private static final String SQLSTRINGMAXPART = "MAX( CASE WHEN ";
+    private static final String SQLSTRINGELSEPART = "ELSE 0 AND AS ";
 
     private static final String GET_SCHUETZENSTATISTIK_MATCH = new QueryBuilder().selectFields(
             DSBMITGLIEDNAME_TABLE,
             RUECKENNUMMER_TABLE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_1_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_2_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_3_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_4_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_5_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_6_BE,
-            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_7_BE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR1_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR2_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR3_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR4_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR5_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR6_TABLE,
+            "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR7_TABLE,
             "ROUND(AVG(CASE WHEN " + PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
@@ -83,13 +93,13 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF = new QueryBuilder().selectFields(
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_1_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_2_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_3_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_4_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_5_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_6_BE,
-                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR_7_BE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR1_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR2_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR3_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR4_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR5_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR6_TABLE,
+                    "MAX(CASE WHEN  " + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + " ELSE 0 END) AS " + MATCHNR7_TABLE,
                     "ROUND(AVG(CASE WHEN " + PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 ) AS " + PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
@@ -123,13 +133,13 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
         columnsToFieldsMap.put(RUECKENNUMMER_TABLE, RUECKENNUMMER_BE);
         columnsToFieldsMap.put(PFEILPUNKTESCHNITT_TABLE, PFEILPUNKTESCHNITT_BE);
-        columnsToFieldsMap.put(MATCHNR_1_BE, MATCHNR_1_BE);
-        columnsToFieldsMap.put(MATCHNR_2_BE, MATCHNR_2_BE);
-        columnsToFieldsMap.put(MATCHNR_3_BE, MATCHNR_3_BE);
-        columnsToFieldsMap.put(MATCHNR_4_BE, MATCHNR_4_BE);
-        columnsToFieldsMap.put(MATCHNR_5_BE, MATCHNR_7_BE);
-        columnsToFieldsMap.put(MATCHNR_6_BE, MATCHNR_6_BE);
-        columnsToFieldsMap.put(MATCHNR_7_BE, MATCHNR_7_BE);
+        columnsToFieldsMap.put(MATCHNR1_TABLE, MATCHNR1_BE);
+        columnsToFieldsMap.put(MATCHNR2_TABLE, MATCHNR2_BE);
+        columnsToFieldsMap.put(MATCHNR3_TABLE, MATCHNR3_BE);
+        columnsToFieldsMap.put(MATCHNR4_TABLE, MATCHNR4_BE);
+        columnsToFieldsMap.put(MATCHNR5_TABLE, MATCHNR5_BE);
+        columnsToFieldsMap.put(MATCHNR6_TABLE, MATCHNR6_BE);
+        columnsToFieldsMap.put(MATCHNR7_TABLE, MATCHNR7_BE);
 
         return columnsToFieldsMap;
     }

@@ -66,7 +66,6 @@ public class SchuetzenstatistikMatchComponentImpl implements SchuetzenstatistikM
 
         final ArrayList<SchuetzenstatistikMatchDO> returnList = new ArrayList<>();
         final List<SchuetzenstatistikMatchBE> schuetzenstatistikMatchBEList = schuetzenstatistikMatchDAO.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId);
-
         if (schuetzenstatistikMatchBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Wettkampf-ID " + wettkampfId) + " and Verein-ID " + vereinId);
         }
