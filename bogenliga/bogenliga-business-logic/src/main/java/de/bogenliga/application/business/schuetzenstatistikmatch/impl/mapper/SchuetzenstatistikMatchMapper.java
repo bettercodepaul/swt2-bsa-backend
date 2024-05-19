@@ -29,7 +29,6 @@ public class SchuetzenstatistikMatchMapper implements ValueObjectMapper {
         final float match6 = be.getMatch6();
         final float match7 = be.getMatch7();
         final float pfeilpunkteSchnitt = be.getPfeilpunkteSchnitt();
-
         return new SchuetzenstatistikMatchDO(rueckennummer, dsbMitgliedName, match1, match2,
                 match3, match4, match5, match6, match7, pfeilpunkteSchnitt);
     };
