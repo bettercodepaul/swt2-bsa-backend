@@ -19,17 +19,7 @@ public class RawTriggerBE extends CommonBusinessEntity implements BusinessEntity
     private Long changeStatusId;
     private String nachricht;
     private Timestamp runAtUtc;
-    //TODO Änderung bei Bedarf anpassen oder löschen
-    private Long count;
 
-
-    public Long getCount(){
-        return count;
-    }
-
-    public void setCount(Long count){
-        this.count = count;
-    }
     public Long getId() {
         return id;
     }

@@ -57,6 +57,8 @@ public class TriggerDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<RawTriggerBE> RAW_TRIGGER = new BusinessEntityConfiguration<>(
             RawTriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
+    private static final String selectCount = "SELECT COUNT(*) ";
+
     /**
      * SQL queries
      */
@@ -93,7 +95,7 @@ public class TriggerDAO implements DataAccessObject {
                     + " LIMIT 500";
     //TODO Alle neuen Abfragen nutzbringend einsetzen und bei Bedarf löschen
     private static final String FIND_ALL_COUNT =
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -101,7 +103,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         ON altsystem_aenderung.status = st.status_id"
                             + " ORDER BY aenderung_id";
     private static final String FIND_UNPROCESSED_COUNT=
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -111,7 +113,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         where status != 4"
                             + " LIMIT 500";
     private static final String FIND_SUCCEEDED_COUNT =
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -119,7 +121,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         ON altsystem_aenderung.status = st.status_id"
                             + "         where status = 4";
     private static final String FIND_NEW_COUNT =
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -127,7 +129,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         ON altsystem_aenderung.status = st.status_id"
                             + "         where status = 1";
     private static final String FIND_IN_PROGRESS_COUNT =
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -136,7 +138,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         where status = 2";
 
     private static final String FIND_ERRORS_COUNT =
-            "SELECT COUNT(*) "
+            selectCount
                             + " FROM altsystem_aenderung"
                             + "     LEFT JOIN altsystem_aenderung_operation op"
                             + "         ON altsystem_aenderung.operation = op.operation_id"
@@ -243,7 +245,6 @@ public class TriggerDAO implements DataAccessObject {
 
     TriggerBE resolveRawTrigger(RawTriggerBE raw) {
         TriggerBE created = new TriggerBE();
-        created.setCount(raw.getCount());
         created.setId(raw.getId());
         created.setKategorie(raw.getKategorie());
         created.setAltsystemId(raw.getAltsystemId());
