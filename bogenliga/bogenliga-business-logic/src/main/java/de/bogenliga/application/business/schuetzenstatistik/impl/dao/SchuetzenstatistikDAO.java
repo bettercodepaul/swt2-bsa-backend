@@ -76,8 +76,8 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
      */
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Veranstaltung
-    hierbei wird über die Wettkämpfe hinweg gemittelt - eigentlich falsch, da jeder Wettkampf abweiochende
-    Pfeilanzahlne hat --> Änderung an DB-View notwendig.-
+    hierbei wird über die Wettkämpfe hinweg gemittelt - eigentlich falsch, da jeder Wettkampf abweichende
+    Pfeilanzahlen hat --> Änderung an DB-View notwendig.-
     Hier wird der Group by jetzt ohne WettkampfID und WettkampfTag gemacht -> werden zu 0 gesetzt
      */
     private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
