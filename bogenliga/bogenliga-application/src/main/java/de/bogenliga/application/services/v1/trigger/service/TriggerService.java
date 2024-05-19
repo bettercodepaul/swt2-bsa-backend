@@ -33,6 +33,7 @@ import de.bogenliga.application.business.altsystem.wettkampfdaten.entity.Altsyst
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
@@ -47,6 +48,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.business.altsystem.sync.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerCountDTO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -129,62 +131,32 @@ public class TriggerService implements ServiceFacade {
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
-    @GetMapping(
+    /*@GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllUnprocessed() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
-    }
+    }*/
 
     //TODO GetMapping der Methoden testen und bei Bedarf anpassen
-    @GetMapping("/afterTime")
+    @GetMapping("/firstCount")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findAllCount() {
-        final TriggerDO triggerDO = triggerComponent.findAllCount();
+    public TriggerCountDTO findAllCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findAllCount();
 
-        return TriggerDTOMapper.toDTO.apply(triggerDO);
+        return TriggerDTOMapper.toCountDTO.apply(triggerDO);
     }
     @GetMapping("/afterTime")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findUnprocessedCount() {
-        final TriggerDO triggerDO = triggerComponent.findUnprocessedCount();
-
-        return TriggerDTOMapper.toDTO.apply(triggerDO);
-    }
-
-    @GetMapping("/afterTime")
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findSucceededCount() {
-        final TriggerDO triggerDO = triggerComponent.findSucceededCount();
+    public TriggerCountDTO findUnprocessedCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findUnprocessedCount();
 
         return TriggerDTOMapper.toDTO.apply(triggerDO);
     }
 
-    @GetMapping("/afterTime")
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findInProgressCount() {
-        final TriggerDO triggerDO = triggerComponent.findInProgressCount();
 
-        return TriggerDTOMapper.toDTO.apply(triggerDO);
-    }
-
-    @GetMapping("/afterTime")
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findNewCount() {
-        final TriggerDO triggerDO = triggerComponent.findNewCount();
-
-        return TriggerDTOMapper.toDTO.apply(triggerDO);
-    }
-
-    @GetMapping("/afterTime")
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public TriggerDTO findErrorCount() {
-        final TriggerDO triggerDO = triggerComponent.findErrorCount();
-
-        return TriggerDTOMapper.toDTO.apply(triggerDO);
-    }
 
     public void setMigrationTimestamp(Timestamp timestamp){
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();

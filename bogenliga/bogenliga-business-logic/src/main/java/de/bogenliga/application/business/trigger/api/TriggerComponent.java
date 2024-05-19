@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.trigger.api;
 import java.util.List;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 /**
@@ -16,17 +17,8 @@ public interface TriggerComponent extends ComponentFacade{
     List<TriggerDO> findAllLimited();
 
     List<TriggerDO> findAllUnprocessed();
-    TriggerDO findAllCount();
-    TriggerDO findUnprocessedCount();
-
-    TriggerDO findSucceededCount();
-
-    TriggerDO findNewCount();
-
-    TriggerDO findInProgressCount();
-
-    TriggerDO findErrorCount();
-
+    TriggerCountDO findAllCount();
+    TriggerCountDO findUnprocessedCount();
 
 
     TriggerDO create(TriggerDO triggerDO, Long currentUserId);

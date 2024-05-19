@@ -243,7 +243,6 @@ public class TriggerDAO implements DataAccessObject {
 
     TriggerBE resolveRawTrigger(RawTriggerBE raw) {
         TriggerBE created = new TriggerBE();
-        created.setCount(raw.getCount());
         created.setId(raw.getId());
         created.setKategorie(raw.getKategorie());
         created.setAltsystemId(raw.getAltsystemId());
