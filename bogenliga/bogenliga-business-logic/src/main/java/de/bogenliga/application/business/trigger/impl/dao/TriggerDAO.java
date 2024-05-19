@@ -167,6 +167,36 @@ public class TriggerDAO implements DataAccessObject {
         return resolveRawTrigger(rawTrigger);
     }
 
+    // Map to hold status strings and their corresponding IDs
+    private static final Map<String, Long> STATUS_MAP = new HashMap<>();
+
+    static {
+        // Populate the map with status strings and their corresponding IDs
+        STATUS_MAP.put("SUCCESS", 1L);
+        STATUS_MAP.put("FAILED", 2L);
+        STATUS_MAP.put("IN_PROGRESS", 3L);
+        STATUS_MAP.put("NEW", 4L);
+        // Add more status mappings as needed
+    }
+
+    // Helper method to get the change status ID
+    private Long getChangeStatusId(String status) {
+        return STATUS_MAP.get(status);
+    }
+
+    public void deleteEntries(String status, String dateInterval) {
+        Long statusId = getChangeStatusId(status);
+        if (statusId == null) {
+            throw new IllegalArgumentException("Invalid status: " + status);
+        }
+
+        TriggerBE triggerBE = new TriggerBE();
+        triggerBE.setChangeStatusId(statusId);
+
+        String[] fieldSelectors = {"changeStatusId", "runAtUtc"};
+        basicDAO.deleteEntity(RAW_TRIGGER, triggerBE, fieldSelectors);
+    }
+
 
     TriggerBE resolveRawTrigger(RawTriggerBE raw) {
         TriggerBE created = new TriggerBE();

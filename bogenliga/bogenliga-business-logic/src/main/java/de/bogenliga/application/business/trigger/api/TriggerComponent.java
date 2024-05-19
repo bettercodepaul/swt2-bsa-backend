@@ -20,4 +20,16 @@ public interface TriggerComponent extends ComponentFacade{
     TriggerDO create(TriggerDO triggerDO, Long currentUserId);
 
     TriggerDO update(TriggerDO triggerDO, Long currentUserId);
+
+    List<TriggerDO> findAllWithPages(String offsetMultiplicator, String queryPageLimit, String dateInterval);
+
+    List<TriggerDO> findAllSuccessed(String offsetMultiplicator, String queryPageLimit, String dateInterval);
+
+    List<TriggerDO> findAllErrors(String offsetMultiplicator, String queryPageLimit, String dateInterval);
+
+    List<TriggerDO> findAllInProgress(String offsetMultiplicator, String queryPageLimit, String dateInterval);
+
+    List<TriggerDO> findAllNews(String offsetMultiplicator, String queryPageLimit, String dateInterval);
+
+    void deleteEntries(String status, String dateInterval);
 }

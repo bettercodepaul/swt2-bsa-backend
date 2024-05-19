@@ -322,6 +322,7 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+
     /**
      * I update one or more {@link BusinessEntity} objects in the database.
      * <p>

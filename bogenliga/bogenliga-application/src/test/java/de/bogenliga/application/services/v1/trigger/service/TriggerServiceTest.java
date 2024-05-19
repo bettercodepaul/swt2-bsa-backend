@@ -198,14 +198,16 @@ public class TriggerServiceTest {
 	}
 
 	@Test
-	public void testScheduler() {
+	public void testScheduler() throws InterruptedException {
 		// call test method
 		triggerServiceTest.scheduler();
 
+		Thread.sleep(100);
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllUnprocessed();
 		verify(basicDAO, atLeastOnce()).selectEntityList(any(), anyString());
 	}
+
 
 	@Test
 	public void testDetermineOperationFromTimestamp() {

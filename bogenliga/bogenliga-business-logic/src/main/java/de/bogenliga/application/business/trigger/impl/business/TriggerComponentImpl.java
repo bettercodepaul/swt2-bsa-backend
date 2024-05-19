@@ -19,7 +19,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * @author Maximilian Fronmueller
  */
 @Component
-public class TriggerComponentImpl implements TriggerComponent {
+public abstract class TriggerComponentImpl implements TriggerComponent {
     public final TriggerDAO triggerDAO;
 
     @Autowired
@@ -64,5 +64,13 @@ public class TriggerComponentImpl implements TriggerComponent {
         final TriggerBE triggerBE = TriggerMapper.toTriggerBE.apply(triggerDO);
         TriggerBE tab2BE = triggerDAO.update(triggerBE, currentUserId);
         return TriggerMapper.toTriggerDO.apply(tab2BE);
+    }
+
+    @Override
+    public void deleteEntries(String status, String dateInterval) {
+        Preconditions.checkNotNull(status, "Status must not be null");
+        Preconditions.checkNotNull(dateInterval, "Date interval must not be null");
+
+        triggerDAO.deleteEntries(status, dateInterval);
     }
 }
