@@ -13,13 +13,13 @@ public class SchuetzenstatistikMatchBE extends CommonBusinessEntity implements B
 
     private int rueckennummer;
     private String dsbMitgliedName;
-    private float match1;
-    private float match2;
     private float match3;
     private float match4;
     private float match5;
     private float match6;
     private float match7;
+    private float match1;
+    private float match2;
     private float pfeilpunkteSchnitt;
 
     public SchuetzenstatistikMatchBE() {
