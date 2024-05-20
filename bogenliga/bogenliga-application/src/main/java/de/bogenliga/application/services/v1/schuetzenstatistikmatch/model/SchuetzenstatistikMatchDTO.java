@@ -1,43 +1,42 @@
 package de.bogenliga.application.services.v1.schuetzenstatistikmatch.model;
 
 import java.util.Objects;
-import de.bogenliga.application.business.schuetzenstatistikmatch.api.types.SchuetzenstatistikMatchDO;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
  * Data transfer object of schuetzenstatistikMatch
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Lennart Raach
  */
 public class SchuetzenstatistikMatchDTO implements DataTransferObject {
     /**
      *  attributes
      */
-    private int rueckennummer;
-    private String dsbMitgliedName;
-    private float match1;
-    private float match2;
-    private float match3;
-    private float match4;
-    private float match5;
-    private float match6;
-    private float match7;
-    private float pfeilpunkteSchnitt;
+    private final int rueckennummer;
+    private final String dsbMitgliedName;
+    private final float match1;
+    private final float match2;
+    private final float match3;
+    private final float match4;
+    private final float match5;
+    private final float match6;
+    private final float match7;
+    private final float pfeilpunkteSchnitt;
 
 
     /**
      * Constructor with optional parameters
      *
-     * @param rueckennummer
-     * @param dsbMitgliedName
-     * @param match1
-     * @param match2
-     * @param match3
-     * @param match4
-     * @param match5
-     * @param match6
-     * @param match7
-     * @param pfeilpunkteSchnitt
+     * @param rueckennummer rueckennummer
+     * @param dsbMitgliedName dsbmitgliedname
+     * @param match1 match1
+     * @param match2 match2
+     * @param match3 match3
+     * @param match4 match4
+     * @param match5 match5
+     * @param match6 match6
+     * @param match7 match7
+     * @param pfeilpunkteSchnitt pfeilpunkteSchnitt
      */
     public SchuetzenstatistikMatchDTO(
             int rueckennummer,
@@ -69,68 +68,28 @@ public class SchuetzenstatistikMatchDTO implements DataTransferObject {
     }
 
 
-    public void setRueckennummer(int rueckennummer) {
-        this.rueckennummer = rueckennummer;
-    }
-
-
     public String getDsbMitgliedName() {
         return dsbMitgliedName;
     }
-
-
-    public void setDsbMitgliedName(String dsbMitgliedName) {
-        this.dsbMitgliedName = dsbMitgliedName;
-    }
-
 
     public float getMatch1() {
         return match1;
     }
 
-
-    public void setMatch1(float match1) {
-        this.match1 = match1;
-    }
-
-
     public float getMatch2() {
         return match2;
     }
-
-
-    public void setMatch2(float match2) {
-        this.match2 = match2;
-    }
-
 
     public float getMatch3() {
         return match3;
     }
 
-
-    public void setMatch3(float match3) {
-        this.match3 = match3;
-    }
-
-
     public float getMatch4() {
         return match4;
     }
 
-
-    public void setMatch4(float match4) {
-        this.match4 = match4;
-    }
-
-
     public float getMatch5() {
         return match5;
-    }
-
-
-    public void setMatch5(float match5) {
-        this.match5 = match5;
     }
 
 
@@ -139,29 +98,14 @@ public class SchuetzenstatistikMatchDTO implements DataTransferObject {
     }
 
 
-    public void setMatch6(float match6) {
-        this.match6 = match6;
-    }
-
-
     public float getMatch7() {
         return match7;
     }
-
-
-    public void setMatch7(float match7) {
-        this.match7 = match7;
-    }
-
 
     public float getPfeilpunkteSchnitt() {
         return pfeilpunkteSchnitt;
     }
 
-
-    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
-        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
-    }
     @Override
     public int hashCode() {
         return Objects.hash(getRueckennummer(), getDsbMitgliedName(), getMatch1(), getMatch2(), getMatch3(),
