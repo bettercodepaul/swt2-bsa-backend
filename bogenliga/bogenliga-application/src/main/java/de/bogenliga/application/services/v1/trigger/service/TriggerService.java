@@ -121,7 +121,16 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
     public int startTheSync(final Principal principal) {
-        final long triggeringUserId = UserProvider.getCurrentUserId(principal);
+        //hotfix Gitlab Incident 1649 - wenn user-id = 0 dann setze sie auf 1
+        // User mit ID 1 ist der einzige der per Skript angelegt wird, daher hier für den hotfix
+        // TEMPORÄR bis zum finalen Fix  festes setzen auf 1
+        Long pricipalUserId = UserProvider.getCurrentUserId(principal);
+
+        if (pricipalUserId == 0L) {
+            pricipalUserId = 1L;
+        }
+        final Long triggeringUserId = pricipalUserId;
+        //end Hotfix
 
         executorService.submit(() -> {
             try {
@@ -292,7 +301,7 @@ public class TriggerService implements ServiceFacade {
         syncData(userId);
     }
 
-    public void syncData(long triggeringUserId) {
+    public void syncData(Long triggeringUserId) {
         LOGGER.info("Importing tables from old database");
         oldDBImport.sync();
 
