@@ -120,6 +120,10 @@ public class SchuetzenstatistikMatchDO {
     }
 
 
+    public float getPfeilpunkteSchnitt() {
+        return pfeilpunkteSchnitt;
+    }
+
     public void setMatch4(float match4) {
         this.match4 = match4;
     }
@@ -153,12 +157,6 @@ public class SchuetzenstatistikMatchDO {
     public void setMatch7(float match7) {
         this.match7 = match7;
     }
-
-
-    public float getPfeilpunkteSchnitt() {
-        return pfeilpunkteSchnitt;
-    }
-
 
     public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
