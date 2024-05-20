@@ -55,13 +55,13 @@ public class SchuetzenstatistikMatchDO {
     ) {
         this.rueckennummer = rueckennummer;
         this.dsbMitgliedName = dsbMitgliedName;
+        this.match6 = match6;
+        this.match7 = match7;
         this.match1 = match1;
         this.match2 = match2;
         this.match3 = match3;
         this.match4 = match4;
         this.match5 = match5;
-        this.match6 = match6;
-        this.match7 = match7;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
