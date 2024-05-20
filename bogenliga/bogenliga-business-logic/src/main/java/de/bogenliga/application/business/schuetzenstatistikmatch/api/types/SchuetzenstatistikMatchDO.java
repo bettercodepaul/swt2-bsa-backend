@@ -19,11 +19,10 @@ public class SchuetzenstatistikMatchDO {
     private float match2;
     private float match3;
     private float match4;
+    private float pfeilpunkteSchnitt;
     private float match5;
     private float match6;
     private float match7;
-    private float pfeilpunkteSchnitt;
-
     public SchuetzenstatistikMatchDO() {
         // empty constructor
     }
@@ -77,6 +76,15 @@ public class SchuetzenstatistikMatchDO {
     }
 
 
+    public float getMatch2() {
+        return match2;
+    }
+
+
+    public void setMatch2(float match2) {
+        this.match2 = match2;
+    }
+
     public String getDsbMitgliedName() {
         return dsbMitgliedName;
     }
@@ -94,16 +102,6 @@ public class SchuetzenstatistikMatchDO {
 
     public void setMatch1(float match1) {
         this.match1 = match1;
-    }
-
-
-    public float getMatch2() {
-        return match2;
-    }
-
-
-    public void setMatch2(float match2) {
-        this.match2 = match2;
     }
 
 
