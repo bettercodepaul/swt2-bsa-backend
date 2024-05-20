@@ -73,7 +73,7 @@ public class SchuetzenstatistikMatchService {
             value = "byWettkampfAndVerein/{wettkampfId}/{vereinId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<SchuetzenstatistikMatchDTO> getSchuetzenstatistikWettkampf(@PathVariable("wettkampfId") final long wettkampfId, @PathVariable("vereinId") final long vereinId) {
+    public List<SchuetzenstatistikMatchDTO> getSchuetzenstatistikMatchWettkampf(@PathVariable("wettkampfId") final long wettkampfId, @PathVariable("vereinId") final long vereinId) {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Receive 'Schuetzenstatistik für Wettkampf' request with Wettkampf-ID '{}' and Verein-ID '{}'", wettkampfId, vereinId);
