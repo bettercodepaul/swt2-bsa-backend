@@ -25,7 +25,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  * @author Lennart Raach
  */
 @RestController
-@CrossOrigin("app.bogenliga.de")
+@CrossOrigin(origins = {"http://bogenliga.de", "https://bogenliga.de",
+                        "http://app.bogenliga.de", "https://app.bogenliga.de"})
 @RequestMapping("v1/schuetzenstatistikmatch")
 public class SchuetzenstatistikMatchService {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
