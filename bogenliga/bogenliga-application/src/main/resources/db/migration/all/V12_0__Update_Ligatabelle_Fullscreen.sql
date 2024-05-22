@@ -1,4 +1,5 @@
-DROP VIEW IF EXISTS fullscreen_ligatabelle;
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'fullscreen_ligatabelle')
+BEGIN
 
 CREATE VIEW fullscreen_ligatabelle AS
 SELECT
@@ -19,11 +20,11 @@ SELECT
     COUNT(match.match_id) AS ligatabelle_match_count
 FROM
     match
-        INNER JOIN wettkampf ON match.match_wettkampf_id = wettkampf.wettkampf_id
-        INNER JOIN veranstaltung ON wettkampf.wettkampf_veranstaltung_id = veranstaltung.veranstaltung_id
-        INNER JOIN mannschaft ON match.match_mannschaft_id = mannschaft.mannschaft_id
-        INNER JOIN verein ON mannschaft.mannschaft_verein_id = verein.verein_id
-        INNER JOIN match AS match_gegen ON match.match_wettkampf_id = match_gegen.match_wettkampf_id
+    INNER JOIN wettkampf ON match.match_wettkampf_id = wettkampf.wettkampf_id
+    INNER JOIN veranstaltung ON wettkampf.wettkampf_veranstaltung_id = veranstaltung.veranstaltung_id
+    INNER JOIN mannschaft ON match.match_mannschaft_id = mannschaft.mannschaft_id
+    INNER JOIN verein ON mannschaft.mannschaft_verein_id = verein.verein_id
+    INNER JOIN match AS match_gegen ON match.match_wettkampf_id = match_gegen.match_wettkampf_id
         AND match.match_nr = match_gegen.match_nr
         AND match.match_begegnung = match_gegen.match_begegnung
         AND match.match_mannschaft_id != match_gegen.match_mannschaft_id
@@ -37,3 +38,5 @@ GROUP BY
     verein_id,
     verein_name,
     mannschaft_sortierung;
+
+END;
