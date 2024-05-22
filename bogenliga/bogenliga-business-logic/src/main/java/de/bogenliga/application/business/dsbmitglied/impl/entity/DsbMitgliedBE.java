@@ -25,6 +25,7 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
     private Long dsbMitgliedVereinsId;
     private String dsbMitgliedVereinName;
     private Long dsbMitgliedUserId;
+    private Date dsbMitgliedBeitrittsdatum;
 
 
     public DsbMitgliedBE(){
@@ -120,6 +121,15 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         this.dsbMitgliedUserId = dsbMitgliedUserId;
     }
 
+    public Date getDsbMitgliedBeitrittsdatum() {
+        return dsbMitgliedBeitrittsdatum;
+    }
+
+
+    public void setDsbMitgliedBeitrittsdatum(final Date dsbMitgliedBeitrittsdatum) {
+        this.dsbMitgliedBeitrittsdatum = dsbMitgliedBeitrittsdatum;
+    }
+
     @Override
     public String toString() {
         return "DsbMitgliedBE{" +
@@ -132,6 +142,7 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
                 ", dsbMitgliedVereinsId=" + dsbMitgliedVereinsId +
                 ", dsbMitgliedVereinName=" + dsbMitgliedVereinName +
                 ", dsbMitgliedUserId=" + dsbMitgliedUserId +
+                ", dsbMitgliedBeitrittsdatum=" + dsbMitgliedBeitrittsdatum +
                 '}';
     }
 }

@@ -41,6 +41,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_BE_CLUB_ID = "dsbMitgliedVereinsId";
     private static final String DSBMITGLIED_BE_CLUB_NAME = "dsbMitgliedVereinName";
     private static final String DSBMITGLIED_BE_USER_ID = "dsbMitgliedUserId";
+    private static final String DSBMITGLIED_BE_DATE_OF_JOINING = "dsbMitgliedBeitrittsdatum";
 
     private static final String DSBMITGLIED_TABLE_ID = "dsb_mitglied_id";
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
@@ -48,6 +49,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_BIRTHDATE = "dsb_mitglied_geburtsdatum";
     private static final String DSBMITGLIED_TABLE_NATIONALITY = "dsb_mitglied_nationalitaet";
     private static final String DSBMITGLIED_TABLE_MEMBERNUMBER = "dsb_mitglied_mitgliedsnummer";
+    private static final String DSBMITGLIED_TABLE_DATE_OF_JOINING = "dsb_mitglied_beitrittsdatum";
     private static final String DSBMITGLIED_TABLE_CLUB_ID = "dsb_mitglied_verein_id";
     private static final String DSBMITGLIED_TABLE_CLUB_NAME = "verein_name";
     private static final String DSBMITGLIED_TABLE_USER_ID = "dsb_mitglied_benutzer_id";
@@ -129,6 +131,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_BIRTHDATE, DSBMITGLIED_BE_BIRTHDATE);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_NATIONALITY, DSBMITGLIED_BE_NATIONALITY);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_MEMBERNUMBER, DSBMITGLIED_BE_MEMBERNUMBER);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_DATE_OF_JOINING, DSBMITGLIED_BE_DATE_OF_JOINING);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_ID, DSBMITGLIED_BE_CLUB_ID);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_NAME, DSBMITGLIED_BE_CLUB_NAME);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_USER_ID, DSBMITGLIED_BE_USER_ID);

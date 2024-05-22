@@ -33,6 +33,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         final String vereinName= be.getDsbMitgliedVereinName();
         final Long userId = be.getDsbMitgliedUserId();
         final Boolean kampfrichter = false;
+        final Date beitrittsdatum = be.getDsbMitgliedBeitrittsdatum();
 
 
         // technical parameter
@@ -45,7 +46,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
 
         return new DsbMitgliedDO(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId,
                 vereinName, userId, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version,
-                kampfrichter);
+                kampfrichter, beitrittsdatum);
     };
 
     /**
@@ -66,6 +67,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         dsbMitgliedBE.setDsbMitgliedVereinsId(dsbMitgliedDO.getVereinsId());
         dsbMitgliedBE.setDsbMitgliedVereinName(dsbMitgliedDO.getVereinName());
         dsbMitgliedBE.setDsbMitgliedUserId(dsbMitgliedDO.getUserId());
+        dsbMitgliedBE.setDsbMitgliedBeitrittsdatum(dsbMitgliedDO.getBeitrittsdatum());
 
         dsbMitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);
         dsbMitgliedBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
