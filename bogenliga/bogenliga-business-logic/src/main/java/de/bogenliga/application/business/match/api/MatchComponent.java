@@ -91,6 +91,13 @@ public interface MatchComponent {
     List<MatchDO> findByMannschaftId(Long mannschaftId);
 
     /**
+     * Return all matches entries from one Veranstaltung.
+     *
+     * @return list of all match from one verantstaltung in the database; empty list, if no match are found
+     */
+
+    List<MatchDO> findByVeranstaltungId(Long veranstaltungId);
+    /**
      * Create a new match in the database.
      *
      * @param matchDO       the new matchDO
