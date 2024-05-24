@@ -55,7 +55,6 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String MATCHNR6_TABLE = "matchnr_6";
     private static final String MATCHNR7_TABLE = "matchnr_7";
     private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
-
     private static final String SQLSTRINGMAXPART = "MAX( CASE WHEN ";
     private static final String SQLSTRINGELSEPART = " ELSE 0 END) AS ";
 

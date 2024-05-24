@@ -113,7 +113,6 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<SchuetzenstatistikBE> SCHUETZENSTATISTIK = new BusinessEntityConfiguration<>(
             SchuetzenstatistikBE.class, TABLE, getColumnsToFieldsMap(), LOG);
 
-
     /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
      */
     private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF = new QueryBuilder().selectFields(

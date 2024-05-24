@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
