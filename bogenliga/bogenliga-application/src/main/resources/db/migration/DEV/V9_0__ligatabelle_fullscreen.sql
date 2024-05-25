@@ -1,5 +1,3 @@
-DROP VIEW IF EXISTS fullscreen_ligatabelle;
-
 CREATE VIEW fullscreen_ligatabelle AS
 SELECT
     veranstaltung_id AS ligatabelle_veranstaltung_id,
