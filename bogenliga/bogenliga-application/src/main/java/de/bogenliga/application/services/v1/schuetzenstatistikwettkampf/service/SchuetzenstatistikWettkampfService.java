@@ -25,7 +25,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/schuetzenstatistik")
+@RequestMapping("v1/schuetzenstatistikwettkampf")
 public class SchuetzenstatistikWettkampfService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
