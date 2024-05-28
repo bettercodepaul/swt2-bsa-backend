@@ -32,12 +32,13 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         final int satzpktDifferenz = ligatabelleDO.getSatzpktDifferenz();
         final int sortierung = ligatabelleDO.getsortierung();
         final int tabellenplatz = ligatabelleDO.gettabellenplatz();
+        final int matchCount = ligatabelleDO.getMatchCount();
 
 
 
         return new LigatabelleDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt,
-                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
+                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz, matchCount);
     };
     /**
      * I map the {@link LigatabelleDTO} object to the {@link LigatabelleDO} object
@@ -61,7 +62,7 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         ligatabelleDO.setSatzpktDifferenz(dto.getSatzpktDifferenz());
         ligatabelleDO.setsortierung(dto.getSortierung());
         ligatabelleDO.settabellenplatz(dto.getTabellenplatz());
-
+        ligatabelleDO.setMatchCount(dto.getMatchCount());
 
         return ligatabelleDO;
     };
