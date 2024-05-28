@@ -29,7 +29,7 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     private int sortierung;
     private int tabellenplatz;
 
-
+    private int matchCount;
 
     /**
      * Constructor
@@ -79,6 +79,7 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
                 ", satzpktDifferenz='" + satzpktDifferenz +
                 ", sortierung='" + sortierung +
                 ", tabellenplatz='" + tabellenplatz +
+                ", matchCount='" + matchCount +
                 '}';
     }
 
@@ -188,10 +189,6 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
         this.tabellenplatz = tabellenplatz;
     }
 
-
-
-
-
-
-
+    public int getMatchCount() { return matchCount; }
+    public void setMatchCount(int matchCount) { this.matchCount = matchCount; }
 }
