@@ -20,7 +20,8 @@ CREATE VIEW ligatabelle (
                          ligatabelle_satzpkt,              -- Summe aller eigenen Satzpunkte
                          ligatabelle_satzpkt_gegen,        -- Summe aller gegnerischen Satzpunkte
                          ligatabelle_satzpkt_differenz,    -- Differrenz der Satzpunkte
-                         ligatabelle_sortierung            -- editierbares Attribut der Mannschaft für Sortierung bei Punkte-Gleichstand
+                         ligatabelle_sortierung,            -- editierbares Attribut der Mannschaft für Sortierung bei Punkte-Gleichstand
+                         ligatabelle_match_count            -- Anzahl der Matches pro Mannschaft
     )
 AS (
    select
