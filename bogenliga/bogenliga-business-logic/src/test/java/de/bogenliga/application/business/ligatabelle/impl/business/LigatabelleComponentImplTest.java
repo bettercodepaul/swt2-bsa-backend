@@ -44,6 +44,8 @@ public class LigatabelleComponentImplTest {
     private static int sortierung = 0;
     private static int tabellenplatz = 8;
 
+    private static int matchCount = 0;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -73,6 +75,7 @@ public class LigatabelleComponentImplTest {
         expectedLigatabelleBE.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleBE.setSortierung(sortierung);
         expectedLigatabelleBE.setTabellenplatz(tabellenplatz);
+        expectedLigatabelleBE.setMatchCount(matchCount);
 
         return expectedLigatabelleBE;
     }
@@ -95,6 +98,7 @@ public class LigatabelleComponentImplTest {
         expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
+        expectedLigatabelleDO.setMatchCount(matchCount);
 
 
         return expectedLigatabelleDO;
@@ -139,6 +143,7 @@ public class LigatabelleComponentImplTest {
         assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getsortierung()).isEqualTo(expectedLigatabelleBE.getSortierung());
         assertThat(actual.get(0).gettabellenplatz()).isEqualTo(expectedLigatabelleBE.getTabellenplatz());
+        assertThat(actual.get(0).getMatchCount()).isEqualTo(expectedLigatabelleBE.getMatchCount());
 
         // verify invocations
         verify(ligatabelleDAO).getLigatabelleVeranstaltung(expectedLigatabelleBE.getVeranstaltungId());
@@ -203,6 +208,7 @@ public class LigatabelleComponentImplTest {
         assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getsortierung()).isEqualTo(expectedLigatabelleBE.getSortierung());
         assertThat(actual.get(0).gettabellenplatz()).isEqualTo(expectedLigatabelleBE.getTabellenplatz());
+        assertThat(actual.get(0).getMatchCount()).isEqualTo(expectedLigatabelleBE.getMatchCount());
 
         // verify invocations
         verify(ligatabelleDAO).getLigatabelleWettkampf(expectedLigatabelleBE.getWettkampfId());
