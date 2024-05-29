@@ -208,7 +208,7 @@ public class SetzlisteComponentImplTest {
             when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
 
             //call test method
-            List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+            List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
             //assert
             Assertions.assertThat(actual).hasSize(entry.getValue());
@@ -227,7 +227,7 @@ public class SetzlisteComponentImplTest {
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
 
         //call test method
-        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
         //assert
         Assertions.assertThat(actual).isEmpty();
@@ -248,7 +248,7 @@ public class SetzlisteComponentImplTest {
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
 
         //call test method
-        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
         //assert
         Assertions.assertThat(actual).isEmpty();
@@ -275,7 +275,7 @@ public class SetzlisteComponentImplTest {
         when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
 
         //call test method
-        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
         //assert
         Assertions.assertThat(actual).hasSize(4);

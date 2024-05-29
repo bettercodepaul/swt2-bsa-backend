@@ -44,6 +44,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
+    private static final String PRECONDITION_USERID = "userId cannot be negative";
     private static final String SETZLISTE_MPKTE = "M.Pkte";
     private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
 
@@ -146,12 +147,14 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Generates list with all competing teams, forms Begegnungen and assigns them to match and Scheibe.
      * @param wettkampfID Key number of a Wettkampf
+     * @param userId Key number of a current user
      * @return matchDOList a list of all matches and Begegnungen in structure of SETZLISTE_STRUCTURE
      * */
     @Override
-    public List<MatchDO> generateMatchesBySetzliste(long wettkampfID) {
+    public List<MatchDO> generateMatchesBySetzliste(Long wettkampfID, Long userId) {
 
         Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_USERID);
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
@@ -170,7 +173,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                     long begegnung = Math.round((float) (j + 1) / 2);
                     long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[i][j], setzlisteBEList);
                     MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfID, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
-                    matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
+                    matchDOList.add(matchComponent.create(newMatchDO, userId));
                 }
             }
         }
