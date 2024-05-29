@@ -156,7 +156,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
         Preconditions.checkArgument(userId >= 0, PRECONDITION_USERID);
 
-        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
+        List<MatchDO> matchDOList;
+        matchDOList = matchComponent.findByWettkampfId(wettkampfID);
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
@@ -173,9 +174,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                     long begegnung = Math.round((float) (j + 1) / 2);
                     long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[i][j], setzlisteBEList);
                     MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfID, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
-                    matchDOList.add(matchComponent.create(newMatchDO, userId));
+                    matchComponent.create(newMatchDO, userId);
                 }
             }
+            matchDOList = matchComponent.findByWettkampfId(wettkampfID);
         }
         else{
             LOGGER.debug("Matches existieren bereits");
