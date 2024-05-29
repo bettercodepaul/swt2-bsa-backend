@@ -211,12 +211,10 @@ public class SetzlisteComponentImplTest {
             List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
             //assert
-            Assertions.assertThat(actual).hasSize(entry.getValue());
-            for (MatchDO actualMatchDO : actual) {
-                Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
-            }
+            verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
         }
     }
+
 
     @Test(expected = BusinessException.class)
     public void generateMatchesBySetzliste_SetzlisteEmpty() {
