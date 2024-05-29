@@ -186,17 +186,13 @@ public class SetzlisteComponentImplTest {
 
     }
 
+
     @Test
-    public void generateMatchesBySetzliste() {
-
-        HashMap<Integer, Integer> parameters = new HashMap<Integer, Integer>();
-        parameters.put(8, 56);
-        parameters.put(6, 30);
-        parameters.put(4, 24);
+    public void generateMatchesBySetzliste8() {
 
 
-        for (Map.Entry<Integer, Integer> entry : parameters.entrySet()) {
-            List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(entry.getKey());
+
+            List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(8);
             List<MatchDO> matchDOList = new ArrayList<>();
             MatchDO matchDO = MatchComponentImplTest.getMatchDO();
             matchDO.setWettkampfId(WETTKAMPFID);
@@ -211,10 +207,51 @@ public class SetzlisteComponentImplTest {
             List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
 
             //assert
-            verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
-        }
+            verify(matchComponent, times(56)).create(any(), anyLong());
+    }
+    @Test
+    public void generateMatchesBySetzliste4() {
+
+        List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(4);
+        List<MatchDO> matchDOList = new ArrayList<>();
+        MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+        matchDO.setWettkampfId(WETTKAMPFID);
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
+
+        //assert
+        verify(matchComponent, times(24)).create(any(), anyLong());
     }
 
+    @Test
+    public void generateMatchesBySetzliste6() {
+
+
+
+        List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(6);
+        List<MatchDO> matchDOList = new ArrayList<>();
+        MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+        matchDO.setWettkampfId(WETTKAMPFID);
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID, 0L);
+
+        //assert
+        verify(matchComponent, times(30)).create(any(), anyLong());
+    }
 
     @Test(expected = BusinessException.class)
     public void generateMatchesBySetzliste_SetzlisteEmpty() {
