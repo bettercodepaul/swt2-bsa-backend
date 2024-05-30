@@ -93,7 +93,6 @@ public class TriggerDAO implements DataAccessObject {
                     + "         where status != 4"
                     + " ORDER BY aenderung_id"
                     + " LIMIT 500";
-    //TODO Alle neuen Abfragen nutzbringend einsetzen und bei Bedarf löschen
     private static final String FIND_ALL_COUNT =
             selectCount
                             + " FROM altsystem_aenderung"
@@ -146,7 +145,6 @@ public class TriggerDAO implements DataAccessObject {
                             + "         ON altsystem_aenderung.status = st.status_id"
                             + "         where status = 3";
 
-    //TODO Bis hier hin
 
     private final BasicDAO basicDAO;
 
@@ -204,27 +202,10 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAllLimited() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_LIMITED);
     }
-    //TODO Entsprechende Methoden schreiben und anpassen nachher bei Bedarf rausnehmen was nicht benötigt wird
     public TriggerBE findAllCount(){ return basicDAO.selectSingleEntity(TRIGGER, FIND_ALL_COUNT);}
     public TriggerBE findUnprocessedCount(){
         return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
     }
-    public TriggerBE findSucceededCount() {
-        return basicDAO.selectSingleEntity(TRIGGER, FIND_SUCCEEDED_COUNT);
-    }
-
-    public TriggerBE findNewCount() {
-        return basicDAO.selectSingleEntity(TRIGGER, FIND_NEW_COUNT);
-    }
-
-    public TriggerBE findInProgressCount() {
-        return basicDAO.selectSingleEntity(TRIGGER, FIND_IN_PROGRESS_COUNT);
-    }
-
-    public TriggerBE findErrorCount() {
-        return basicDAO.selectSingleEntity(TRIGGER, FIND_ERRORS_COUNT);
-    }
-    //TODO Bis hier hin
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);

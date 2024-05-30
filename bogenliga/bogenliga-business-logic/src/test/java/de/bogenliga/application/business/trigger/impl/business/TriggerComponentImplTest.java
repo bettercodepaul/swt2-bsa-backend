@@ -12,11 +12,15 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAOTest;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerCountBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -35,11 +39,14 @@ public class TriggerComponentImplTest {
 	private static final String TRIGGER_NACHRICHT = "testmsg";
 	private static final Timestamp TRIGGER_RUNATUTC = null;
 	private static final Timestamp TRIGGER_SYNCTIMESTAMP = null;
+	private static final Long TRIGGERCOUNT_COUNT = 40000L;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
 	private TriggerDAO triggerDAO;
+	@Mock
+	private TriggerCountDAO triggerCountDAO;
 	@InjectMocks
 	private TriggerComponentImpl underTest;
 
@@ -79,6 +86,14 @@ public class TriggerComponentImplTest {
 				TRIGGER_CREATEDATUTCO,
 				TRIGGER_RUNATUTCO
 		);
+	}
+	public static TriggerCountDO getTriggerCountDO(){
+		return new TriggerCountDO(TRIGGERCOUNT_COUNT);
+	}
+	public static TriggerCountBE getTriggerCountBE(){
+		final TriggerCountBE triggerCountBE = new TriggerCountBE();
+		triggerCountBE.setCount(TRIGGERCOUNT_COUNT);
+		return triggerCountBE;
 	}
 
 	@Test
@@ -200,6 +215,51 @@ public class TriggerComponentImplTest {
 
 		// verify invocations
 		verify(triggerDAO, times(1)).findAllUnprocessed();
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	@Test
+	public void findAllCount() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.findAllCount()).thenReturn(expectedBE);
+
+
+		// call test method
+		final TriggerCountDO actual = underTest.findAllCount();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).findAllCount();
+	}
+	@Test
+	public void findUnprocessedCount() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.findUnprocessedCount()).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.findUnprocessedCount();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).findUnprocessedCount();
 	}
 
 
