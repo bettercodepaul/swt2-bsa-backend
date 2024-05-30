@@ -217,7 +217,6 @@ public class TriggerComponentImplTest {
 		verify(triggerDAO, times(1)).findAllUnprocessed();
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
 	@Test
 	public void findAllCount() {
 		// prepare test data
