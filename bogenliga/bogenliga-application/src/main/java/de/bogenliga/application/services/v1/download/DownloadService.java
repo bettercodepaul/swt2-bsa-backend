@@ -3,8 +3,10 @@ package de.bogenliga.application.services.v1.download;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -99,11 +101,11 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
+    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid, final Principal principal) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         SetzlisteService setzlisteService = new SetzlisteService(setzlisteComponent);
-        setzlisteService.generateSetzliste(wettkampfid);
+        setzlisteService.generateSetzliste(wettkampfid, principal);
 
         final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
 
