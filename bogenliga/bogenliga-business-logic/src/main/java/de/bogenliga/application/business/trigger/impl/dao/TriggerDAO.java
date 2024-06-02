@@ -59,6 +59,8 @@ public class TriggerDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<RawTriggerBE> RAW_TRIGGER = new BusinessEntityConfiguration<>(
             RawTriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
+    private static final String selectCount = "SELECT COUNT(*) ";
+
     /**
      * SQL queries
      */
@@ -91,6 +93,59 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
                     + "         where status != 4"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+    private static final String FIND_ALL_COUNT =
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + " ORDER BY aenderung_id";
+    private static final String FIND_UNPROCESSED_COUNT=
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         AND st.status_name != 'SUCCESS'"
+                            + "         where status != 4"
+                            + " LIMIT 500";
+    private static final String FIND_SUCCEEDED_COUNT =
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 4";
+    private static final String FIND_NEW_COUNT =
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 1";
+    private static final String FIND_IN_PROGRESS_COUNT =
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 2";
+
+    private static final String FIND_ERRORS_COUNT =
+            selectCount
+                            + " FROM altsystem_aenderung"
+                            + "     LEFT JOIN altsystem_aenderung_operation op"
+                            + "         ON altsystem_aenderung.operation = op.operation_id"
+                            + "     LEFT JOIN altsystem_aenderung_status st"
+                            + "         ON altsystem_aenderung.status = st.status_id"
+                            + "         where status = 3"
                     + " ORDER BY altsystem_id"
                     + " LIMIT 500";
     private static final String FIND_ALL_WITH_PAGES =
@@ -270,6 +325,10 @@ public class TriggerDAO implements DataAccessObject {
     }
     public List<TriggerBE> findAllLimited() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_LIMITED);
+    }
+    public TriggerBE findAllCount(){ return basicDAO.selectSingleEntity(TRIGGER, FIND_ALL_COUNT);}
+    public TriggerBE findUnprocessedCount(){
+        return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
     }
 
 
