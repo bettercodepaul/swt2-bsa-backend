@@ -298,7 +298,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
             addedMannschaftenList.add(mannschaftToCheck);
             final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
-            DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
+            DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, userId);
             // Copy Mannschaftsmitglieder for every Mannschaft
             // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
             MannschaftsmitgliedDO addedMitglied;
@@ -314,7 +314,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID) {
+    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
 
         List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId(oldMannschaftsID);
 
@@ -322,7 +322,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
             neuesMitglied = altesMitglied;
             neuesMitglied.setMannschaftId(newMannschaftsID);
-            mannschaftsmitgliedComponent.create(neuesMitglied, 0L);
+            mannschaftsmitgliedComponent.create(neuesMitglied, userId);
         }
 
     }
