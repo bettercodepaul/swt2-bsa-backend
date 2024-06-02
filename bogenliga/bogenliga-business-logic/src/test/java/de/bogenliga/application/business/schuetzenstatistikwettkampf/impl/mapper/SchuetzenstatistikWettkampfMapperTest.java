@@ -3,7 +3,7 @@ package de.bogenliga.application.business.schuetzenstatistikwettkampf.impl.mappe
 import org.junit.Test;
 import de.bogenliga.application.business.schuetzenstatistikwettkampf.api.types.SchuetzenstatistikWettkampftageDO;
 import de.bogenliga.application.business.schuetzenstatistikwettkampf.impl.entity.SchuetzenstatistikWettkampfBE;
-import static de.bogenliga.application.business.schuetzenstatistikwettkampf.api.types.SchuetzenstatistikWettkampfDOTest.getSchuetzenstatistikWettkampfDO;
+import static de.bogenliga.application.business.schuetzenstatistikwettkampf.api.types.SchuetzenstatistikDOTest.getSchuetzenstatistikWettkampfDO;
 import static de.bogenliga.application.business.schuetzenstatistikwettkampf.impl.business.SchuetzenstatistikWettkampfComponentImplTest.getSchuetzenstatistikWettkampfBE;
 import static org.assertj.core.api.Assertions.assertThat;
 

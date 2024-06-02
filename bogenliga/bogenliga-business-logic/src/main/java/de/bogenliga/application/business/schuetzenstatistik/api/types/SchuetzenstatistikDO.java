@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Contains the values of the schuetzenstatistik business entity.
  */
-public class SchuetzenstatistikWettkampfDO extends CommonDataObject implements DataObject {
+public class SchuetzenstatistikDO extends CommonDataObject implements DataObject {
 
     /**
      * DO attributes
@@ -30,7 +30,7 @@ public class SchuetzenstatistikWettkampfDO extends CommonDataObject implements D
     private float pfeilpunkteSchnitt;
     private String[] schuetzeSaetze;
 
-    public SchuetzenstatistikWettkampfDO() {
+    public SchuetzenstatistikDO() {
         // no parameter-constructor
         schuetzeSaetze = new String[5];
     }
@@ -53,7 +53,7 @@ public class SchuetzenstatistikWettkampfDO extends CommonDataObject implements D
      * @param rueckenNummer;
      * @param pfeilpunkteSchnitt;
      */
-    public SchuetzenstatistikWettkampfDO(
+    public SchuetzenstatistikDO(
             Long veranstaltungId,
             String veranstaltungName,
             Long wettkampfId,
@@ -177,7 +177,7 @@ public class SchuetzenstatistikWettkampfDO extends CommonDataObject implements D
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SchuetzenstatistikWettkampfDO that = (SchuetzenstatistikWettkampfDO) o;
+        SchuetzenstatistikDO that = (SchuetzenstatistikDO) o;
         return wettkampfTag == that.wettkampfTag &&
                 mannschaftNummer == that.mannschaftNummer &&
                 veranstaltungId.equals(that.veranstaltungId) &&
