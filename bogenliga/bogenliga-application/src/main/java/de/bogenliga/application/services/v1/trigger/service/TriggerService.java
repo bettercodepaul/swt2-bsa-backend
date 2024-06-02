@@ -41,6 +41,7 @@ import de.bogenliga.application.business.altsystem.wettkampfdaten.entity.Altsyst
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
@@ -55,6 +56,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.business.altsystem.sync.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerCountDTO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -155,6 +157,32 @@ public class TriggerService implements ServiceFacade {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
+    /*@GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public List<TriggerDTO> findAllUnprocessed() {
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
+
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+    }*/
+
+    //TODO GetMapping der Methoden testen und bei Bedarf anpassen
+    @GetMapping("/firstCount")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerCountDTO findAllCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findAllCount();
+
+        return TriggerDTOMapper.toCountDTO.apply(triggerDO);
+    }
+    @GetMapping("/afterTime")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerCountDTO findUnprocessedCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findUnprocessedCount();
+
+        return TriggerDTOMapper.toCountDTO.apply(triggerDO);
+    }
+
+
 
     @GetMapping("/findAllWithPages")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)

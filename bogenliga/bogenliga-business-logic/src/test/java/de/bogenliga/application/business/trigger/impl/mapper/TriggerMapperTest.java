@@ -4,9 +4,13 @@ import java.sql.Timestamp;
 import org.junit.Test;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerCountBE;
 import de.bogenliga.application.common.time.DateProvider;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerCountBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerCountDO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerDO;
@@ -27,6 +31,8 @@ public class TriggerMapperTest {
 	private static final String NACHRICHT = "testmsg";
 	private static final Timestamp CREATED_AT_UTC = null;
 	private static final Timestamp RUN_AT_UTC = null;
+	private static final Long count = 40000L;
+	private static final Long altCount =50000L;
 
 
 	@Test
@@ -59,6 +65,24 @@ public class TriggerMapperTest {
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
 		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
+	}
+
+	@Test
+	public void toCountBE() throws Exception{
+		final TriggerCountDO triggerCountDO = getTriggerCountDO();
+
+		final TriggerCountBE actual = TriggerMapper.toTriggerCountBE.apply(triggerCountDO);
+
+		assertThat(actual.getCount()).isEqualTo(count);
+	}
+
+	@Test
+	public void toCountDO() throws Exception{
+		final TriggerCountBE triggerCountBE = getTriggerCountBE();
+
+		final TriggerCountDO actual = TriggerMapper.toTriggerCountDO.apply(triggerCountBE);
+
+		assertThat(actual.getCount()).isEqualTo(count);
 	}
 
 }

@@ -8,6 +8,9 @@ import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerCountBE;
 import de.bogenliga.application.business.trigger.impl.mapper.TriggerMapper;
 import de.bogenliga.application.common.validation.Preconditions;
 
@@ -19,10 +22,12 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class TriggerComponentImpl implements TriggerComponent {
     public final TriggerDAO triggerDAO;
+    public final TriggerCountDAO triggerCountDAO;
 
     @Autowired
-    public TriggerComponentImpl (TriggerDAO triggerDAO){
+    public TriggerComponentImpl (TriggerDAO triggerDAO, TriggerCountDAO triggerCountDAO){
         this.triggerDAO = triggerDAO;
+        this.triggerCountDAO = triggerCountDAO;
     }
     @Override
     public List<TriggerDO> findAll() {
@@ -68,6 +73,17 @@ public class TriggerComponentImpl implements TriggerComponent {
         final List<TriggerBE> triggerBEList = triggerDAO.findAllUnprocessed();
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
+    @Override
+    public TriggerCountDO findAllCount(){
+        final TriggerCountBE triggerBECount = triggerCountDAO.findAllCount();
+        return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
+    }
+    @Override
+    public TriggerCountDO findUnprocessedCount(){
+        final TriggerCountBE triggerBECount = triggerCountDAO.findUnprocessedCount();
+        return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
+    }
+
 
     @Override
     public TriggerDO create(TriggerDO triggerDO, Long currentUserId) {
