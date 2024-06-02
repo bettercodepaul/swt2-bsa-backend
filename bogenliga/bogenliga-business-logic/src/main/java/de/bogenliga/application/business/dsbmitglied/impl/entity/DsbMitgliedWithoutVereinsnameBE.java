@@ -5,7 +5,9 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * I represent the dsbmitglied business entity.
+ * I represent the dsbmitglied business entity <b>BUT</b> with the omission of the club name ("Vereinsname").
+ * <p>
+ * This class is <b>ONLY</b> used for <u>updating</u> a DsbMitglied.
  * <p>
  * A dsbmitglied is a registered member of the DSB. The dsbmitglied is not necessarily a technical user of the system.
  * <p>
@@ -13,8 +15,10 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * control their lifecycle.
  *
  * @see CommonBusinessEntity
+ * @author Nikolas Orfanidis
  */
-public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntity {
+public class DsbMitgliedWithoutVereinsnameBE extends DsbMitgliedBE implements BusinessEntity {
+
     private static final long serialVersionUID = -76389969048178948L;
     private Long dsbMitgliedId;
     private String dsbMitgliedVorname;
@@ -23,12 +27,11 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
     private String dsbMitgliedNationalitaet;
     private String dsbMitgliedMitgliedsnummer;
     private Long dsbMitgliedVereinsId;
-    private String dsbMitgliedVereinName;
     private Long dsbMitgliedUserId;
     private Date dsbMitgliedBeitrittsdatum;
 
 
-    public DsbMitgliedBE(){
+    public DsbMitgliedWithoutVereinsnameBE(){
         // empty constructor
     }
 
@@ -102,15 +105,6 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         this.dsbMitgliedVereinsId = dsbMitgliedVereinsId;
     }
 
-    public String getDsbMitgliedVereinName() {
-        return dsbMitgliedVereinName;
-    }
-
-
-    public void setDsbMitgliedVereinName(final String dsbMitgliedVereinName) {
-        this.dsbMitgliedVereinName = dsbMitgliedVereinName;
-    }
-
     public Long getDsbMitgliedUserId() {
         return dsbMitgliedUserId;
     }
@@ -131,7 +125,7 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
 
     @Override
     public String toString() {
-        return "DsbMitgliedBE{" +
+        return "DsbMitgliedWithoutVereinsNameBE{" +
                 "dsbMitgliedId=" + dsbMitgliedId +
                 ", dsbMitgliedVorname='" + dsbMitgliedVorname + '\'' +
                 ", dsbMitgliedNachname='" + dsbMitgliedNachname + '\'' +
@@ -139,7 +133,6 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
                 ", dsbMitgliedNationalitaet='" + dsbMitgliedNationalitaet + '\'' +
                 ", dsbMitgliedMitgliedsnummer='" + dsbMitgliedMitgliedsnummer + '\'' +
                 ", dsbMitgliedVereinsId=" + dsbMitgliedVereinsId +
-                ", dsbMitgliedVereinName=" + dsbMitgliedVereinName +
                 ", dsbMitgliedUserId=" + dsbMitgliedUserId +
                 ", dsbMitgliedBeitrittsdatum=" + dsbMitgliedBeitrittsdatum +
                 '}';

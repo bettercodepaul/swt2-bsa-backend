@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -57,6 +58,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<DsbMitgliedBE> DSBMITGLIED = new BusinessEntityConfiguration<>(
             DsbMitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+
+    private static final BusinessEntityConfiguration<DsbMitgliedWithoutVereinsnameBE> DSBMITGLIED_WITHOUT_VEREINNAME = new BusinessEntityConfiguration<>(
+            DsbMitgliedWithoutVereinsnameBE.class, TABLE, getColumnsToFieldsMapWithoutVereinsName(), LOGGER);
 
     /*
      * SQL queries
@@ -142,6 +146,24 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+    private static Map<String, String> getColumnsToFieldsMapWithoutVereinsName() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_ID, DSBMITGLIED_BE_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_BIRTHDATE, DSBMITGLIED_BE_BIRTHDATE);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_NATIONALITY, DSBMITGLIED_BE_NATIONALITY);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_MEMBERNUMBER, DSBMITGLIED_BE_MEMBERNUMBER);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_DATE_OF_JOINING, DSBMITGLIED_BE_DATE_OF_JOINING);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_ID, DSBMITGLIED_BE_CLUB_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_USER_ID, DSBMITGLIED_BE_USER_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
 
     /**
      * @param id from DsbMitglied
@@ -234,16 +256,16 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
-    public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public DsbMitgliedWithoutVereinsnameBE update(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        DsbMitgliedWithoutVereinsnameBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
         UserDAO userDAO = new UserDAO(basicDao);
         UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
         if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && userBE != null) {
             updatedDsbMitgliedBE.setDsbMitgliedUserId(userBE.getUserId());
-            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
+            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
 
         return updatedDsbMitgliedBE;
