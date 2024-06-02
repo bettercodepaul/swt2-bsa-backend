@@ -10,11 +10,6 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class SchuetzenstatistikWettkampfBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 5734330182051890903L;
 
-    private Long veranstaltungId;
-    private Long wettkampfId;
-    private int wettkampfTag;
-    private Long vereinId;
-    private Long dsbMitgliedId;
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float wettkampftag1;
@@ -26,11 +21,6 @@ public class SchuetzenstatistikWettkampfBE extends CommonBusinessEntity implemen
     @Override
     public String toString() {
         return "SchuetzenstatistikBE{" +
-                "veranstaltungId=" + veranstaltungId +
-                ", wettkampfId='" + wettkampfId +
-                ", wettkampfTag='" + wettkampfTag +
-                ", vereinId='" + vereinId +
-                ", dsbMitgliedId='" + dsbMitgliedId +
                 ", dsbMitgliedName='" + dsbMitgliedName +
                 ", rueckenNummer='" + rueckenNummer +
                 ", wettkampftag1='" + wettkampftag1 +
@@ -42,45 +32,6 @@ public class SchuetzenstatistikWettkampfBE extends CommonBusinessEntity implemen
     }
 
 
-    public long getVeranstaltungId() {
-        return veranstaltungId;
-    }
-    public void setVeranstaltungId(final long veranstaltungId) {
-        this.veranstaltungId = veranstaltungId;
-    }
-
-    public long getWettkampfId() {
-        //bei der Schützenstatistik über mehr als einen Wettkampf gibt es keine gültige WettkampfID
-        if (wettkampfId == null) {
-            this.wettkampfTag = 0;
-            return 0;
-        }
-        else return wettkampfId;
-    }
-    public void setWettkampfId(final long wettkampfId) {
-        this.wettkampfId = wettkampfId;
-    }
-
-    public int getWettkampfTag() {
-        return wettkampfTag;
-    }
-    public void setWettkampfTag(final int wettkampfTag) {
-        this.wettkampfTag = wettkampfTag;
-    }
-
-    public long getVereinId() {
-        return vereinId;
-    }
-    public void setVereinId(final long vereinId) {
-        this.vereinId = vereinId;
-    }
-
-    public Long getDsbMitgliedId() {
-        return dsbMitgliedId;
-    }
-    public void setDsbMitgliedId(Long dsbMitgliedId) {
-        this.dsbMitgliedId = dsbMitgliedId;
-    }
 
     public String getDsbMitgliedName() {
         return dsbMitgliedName;

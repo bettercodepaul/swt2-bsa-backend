@@ -15,11 +15,6 @@ public class SchuetzenstatistikWettkampfDTOMapper implements DataTransferObjectM
 
     public static final Function<SchuetzenstatistikWettkampftageDO, SchuetzenstatistikWettkampfDTO> toDTO = schuetzenstatistikWettkampfDO -> {
 
-        final Long veranstaltungId = schuetzenstatistikWettkampfDO.getveranstaltungId();
-        final Long wettkampfId = schuetzenstatistikWettkampfDO.getwettkampfId();
-        final int wettkampfTag = schuetzenstatistikWettkampfDO.getwettkampfTag();
-        final Long vereinId = schuetzenstatistikWettkampfDO.getvereinId();
-        final Long dsbMitgliedId = schuetzenstatistikWettkampfDO.getDsbMitgliedId();
         final String dsbMitgliedName = schuetzenstatistikWettkampfDO.getDsbMitgliedName();
         final int rueckenNummer = schuetzenstatistikWettkampfDO.getRueckenNummer();
         final float wettkampftag1 = schuetzenstatistikWettkampfDO.getWettkampftag1();
@@ -31,8 +26,7 @@ public class SchuetzenstatistikWettkampfDTOMapper implements DataTransferObjectM
 
 
 
-        return new SchuetzenstatistikWettkampfDTO(veranstaltungId, wettkampfId, wettkampfTag, vereinId,
-                dsbMitgliedId, dsbMitgliedName, rueckenNummer, wettkampftag1,wettkampftag2,wettkampftag3,wettkampftag4
+        return new SchuetzenstatistikWettkampfDTO(dsbMitgliedName, rueckenNummer, wettkampftag1,wettkampftag2,wettkampftag3,wettkampftag4
                 ,wettkampftageSchnitt);
     };
     /**
@@ -42,11 +36,6 @@ public class SchuetzenstatistikWettkampfDTOMapper implements DataTransferObjectM
 
         SchuetzenstatistikWettkampftageDO schuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO();
 
-        schuetzenstatistikWettkampfDO.setveranstaltungId(dto.getVeranstaltungId());
-        schuetzenstatistikWettkampfDO.setwettkampfId(dto.getWettkampfId());
-        schuetzenstatistikWettkampfDO.setwettkampfTag(dto.getWettkampfTag());
-        schuetzenstatistikWettkampfDO.setvereinId(dto.getVereinId());
-        schuetzenstatistikWettkampfDO.setDsbMitgliedId(dto.getDsbMitgliedId());
         schuetzenstatistikWettkampfDO.setDsbMitgliedName(dto.getDsbMitgliedName());
         schuetzenstatistikWettkampfDO.setRueckenNummer(dto.getRueckenNummer());
         schuetzenstatistikWettkampfDO.setWettkampftag1(dto.getWettkampftag1());

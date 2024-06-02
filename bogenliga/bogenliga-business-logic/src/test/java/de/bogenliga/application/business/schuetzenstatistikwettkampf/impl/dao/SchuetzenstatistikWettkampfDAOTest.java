@@ -27,6 +27,9 @@ public class SchuetzenstatistikWettkampfDAOTest {
     private BasicDAO basicDao;
     @InjectMocks
     private SchuetzenstatistikWettkampfDAO underTest;
+    private static final Long wettkampfId = 2L;
+    private static final Long vereinId = 7L;
+    private static final Long veranstaltungId = 1L;
 
 
     @Test
@@ -37,7 +40,7 @@ public class SchuetzenstatistikWettkampfDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampfVeranstaltung(expectedBE.getVeranstaltungId(), expectedBE.getVereinId());
+        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampfVeranstaltung(veranstaltungId,vereinId);
 
         // assert result
         assertThat(actual)
@@ -47,11 +50,6 @@ public class SchuetzenstatistikWettkampfDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        assertThat(actual.get(0).getVeranstaltungId()).isEqualTo(expectedBE.getVeranstaltungId());
-        assertThat(actual.get(0).getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
-        assertThat(actual.get(0).getWettkampfTag()).isEqualTo(expectedBE.getWettkampfTag());
-        assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
         assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
         assertThat(actual.get(0).getWettkampftag1()).isEqualTo(expectedBE.getWettkampftag1());
@@ -72,7 +70,7 @@ public class SchuetzenstatistikWettkampfDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampf(expectedBE.getWettkampfId(), expectedBE.getVereinId());
+        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
 
         // assert result
         assertThat(actual)
@@ -82,13 +80,14 @@ public class SchuetzenstatistikWettkampfDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        assertThat(actual.get(0).getVeranstaltungId()).isEqualTo(expectedBE.getVeranstaltungId());
-        assertThat(actual.get(0).getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
-        assertThat(actual.get(0).getWettkampfTag()).isEqualTo(expectedBE.getWettkampfTag());
-        assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
+
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
         assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
+        assertThat(actual.get(0).getWettkampftag1()).isEqualTo(expectedBE.getWettkampftag1());
+        assertThat(actual.get(0).getWettkampftag2()).isEqualTo(expectedBE.getWettkampftag2());
+        assertThat(actual.get(0).getWettkampftag3()).isEqualTo(expectedBE.getWettkampftag3());
+        assertThat(actual.get(0).getWettkampftag4()).isEqualTo(expectedBE.getWettkampftag4());
+        assertThat(actual.get(0).getWettkampftageSchnitt()).isEqualTo(expectedBE.getWettkampftageSchnitt());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());

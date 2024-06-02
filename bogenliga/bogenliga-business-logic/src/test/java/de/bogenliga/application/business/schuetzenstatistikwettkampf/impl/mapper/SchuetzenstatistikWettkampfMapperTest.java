@@ -18,11 +18,7 @@ public class SchuetzenstatistikWettkampfMapperTest {
 
         final SchuetzenstatistikWettkampftageDO actual = SchuetzenstatistikWettkampfMapper.toSchuetzenstatistikWettkampfDO.apply(schuetzenstatistikWettkampfBE);
 
-        assertThat(actual.getveranstaltungId()).isEqualTo(schuetzenstatistikWettkampfBE.getVeranstaltungId());
-        assertThat(actual.getwettkampfId()).isEqualTo(schuetzenstatistikWettkampfBE.getWettkampfId());
-        assertThat(actual.getwettkampfTag()).isEqualTo(schuetzenstatistikWettkampfBE.getWettkampfTag());
-        assertThat(actual.getvereinId()).isEqualTo(schuetzenstatistikWettkampfBE.getVereinId());
-        assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikWettkampfBE.getDsbMitgliedId());
+
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikWettkampfBE.getDsbMitgliedName());
         assertThat(actual.getWettkampftag1()).isEqualTo(schuetzenstatistikWettkampfBE.getWettkampftag1());
         assertThat(actual.getWettkampftag2()).isEqualTo(schuetzenstatistikWettkampfBE.getWettkampftag2());
@@ -31,11 +27,6 @@ public class SchuetzenstatistikWettkampfMapperTest {
         assertThat(actual.getWettkampftageSchnitt()).isEqualTo(schuetzenstatistikWettkampfBE.getWettkampftageSchnitt());
 
         SchuetzenstatistikWettkampftageDO schuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO(
-                schuetzenstatistikWettkampfBE.getVeranstaltungId(),
-                schuetzenstatistikWettkampfBE.getWettkampfId(),
-                schuetzenstatistikWettkampfBE.getWettkampfTag(),
-                schuetzenstatistikWettkampfBE.getVereinId(),
-                schuetzenstatistikWettkampfBE.getDsbMitgliedId(),
                 schuetzenstatistikWettkampfBE.getDsbMitgliedName(),
                 schuetzenstatistikWettkampfBE.getRueckenNummer(),
                 schuetzenstatistikWettkampfBE.getWettkampftag1(),
@@ -52,11 +43,7 @@ public class SchuetzenstatistikWettkampfMapperTest {
 
         final SchuetzenstatistikWettkampfBE actual = SchuetzenstatistikWettkampfMapper.toSchuetzenstatistikWettkampfBE.apply(schuetzenstatistikWettkampfDO);
 
-        assertThat(actual.getVeranstaltungId()).isEqualTo(schuetzenstatistikWettkampfDO.getveranstaltungId());
-        assertThat(actual.getWettkampfId()).isEqualTo(schuetzenstatistikWettkampfDO.getwettkampfId());
-        assertThat(actual.getWettkampfTag()).isEqualTo(schuetzenstatistikWettkampfDO.getwettkampfTag());
-        assertThat(actual.getVereinId()).isEqualTo(schuetzenstatistikWettkampfDO.getvereinId());
-        assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikWettkampfDO.getDsbMitgliedId());
+
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikWettkampfDO.getDsbMitgliedName());
         assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikWettkampfDO.getRueckenNummer());
         assertThat(actual.getWettkampftag1()).isEqualTo(schuetzenstatistikWettkampfDO.getWettkampftag1());
