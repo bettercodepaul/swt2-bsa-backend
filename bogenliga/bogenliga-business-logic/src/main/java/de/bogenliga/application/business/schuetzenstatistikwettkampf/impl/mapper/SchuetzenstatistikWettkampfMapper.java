@@ -15,11 +15,7 @@ public class SchuetzenstatistikWettkampfMapper {
      */
     public static final Function<SchuetzenstatistikWettkampfBE, SchuetzenstatistikWettkampftageDO> toSchuetzenstatistikWettkampfDO = be -> {
 
-        final Long veranstaltungId = be.getVeranstaltungId();
-        final Long wettkampfId = be.getWettkampfId();
-        final int wettkampfTag = be.getWettkampfTag();
-        final Long vereinId = be.getVereinId();
-        final Long dsbMitgliedId = be.getDsbMitgliedId();
+
         final String dsbMitgliedName = be.getDsbMitgliedName();
         final int rueckenNummer = be.getRueckenNummer();
         final float wettkampftag1 = be.getWettkampftag1();
@@ -29,7 +25,7 @@ public class SchuetzenstatistikWettkampfMapper {
         final float wettkampftageSchnitt = be.getWettkampftageSchnitt();
 
 
-        return new SchuetzenstatistikWettkampftageDO(veranstaltungId, wettkampfId, wettkampfTag, vereinId, dsbMitgliedId, dsbMitgliedName, rueckenNummer,
+        return new SchuetzenstatistikWettkampftageDO(dsbMitgliedName, rueckenNummer,
                 wettkampftag1, wettkampftag2, wettkampftag3, wettkampftag4, wettkampftageSchnitt);
     };
 
@@ -40,11 +36,6 @@ public class SchuetzenstatistikWettkampfMapper {
 
         SchuetzenstatistikWettkampfBE schuetzenstatistikWettkampf = new SchuetzenstatistikWettkampfBE();
 
-        schuetzenstatistikWettkampf.setVeranstaltungId(vo.getveranstaltungId());
-        schuetzenstatistikWettkampf.setWettkampfId(vo.getwettkampfId());
-        schuetzenstatistikWettkampf.setWettkampfTag(vo.getwettkampfTag());
-        schuetzenstatistikWettkampf.setVereinId(vo.getvereinId());
-        schuetzenstatistikWettkampf.setDsbMitgliedId(vo.getDsbMitgliedId());
         schuetzenstatistikWettkampf.setDsbMitgliedName(vo.getDsbMitgliedName());
         schuetzenstatistikWettkampf.setRueckenNummer(vo.getRueckenNummer());
         schuetzenstatistikWettkampf.setWettkampftag1(vo.getWettkampftag1());

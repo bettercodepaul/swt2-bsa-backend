@@ -38,11 +38,7 @@ public class SchuetzenstatistikWettkampfDOTest {
     //create a SchuetzenstatistikWettkampfDO-Object for the test with values
     public static SchuetzenstatistikWettkampftageDO getSchuetzenstatistikWettkampfDO() {
         final SchuetzenstatistikWettkampftageDO expectedSchuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO();
-        expectedSchuetzenstatistikWettkampfDO.setveranstaltungId(veranstaltungId);
-        expectedSchuetzenstatistikWettkampfDO.setwettkampfId(wettkampfId);
-        expectedSchuetzenstatistikWettkampfDO.setwettkampfTag(wettkampfTag);
-        expectedSchuetzenstatistikWettkampfDO.setvereinId(vereinId);
-        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedId(dsbMitgliedId);
+
         expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(dsbMitgliedName);
         expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(wettkampftag1);

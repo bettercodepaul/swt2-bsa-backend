@@ -25,11 +25,8 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
     // table name in the database
     private static final String TABLE = "schuetzenstatistik";
     // business entity parameter names
-    private static final String VERANSTALTUNGID_BE = "veranstaltungId";
-    private static final String WETTKAMPFID_BE = "wettkampfId";
-    private static final String WETTKAMPFTAG_BE = "wettkampfTag";
-    private static final String VEREINID_BE = "vereinId";
-    private static final String DSBMITGLIEDID_BE = "dsbMitgliedId";
+
+
     private static final String DSBMITGLIEDNAME_BE = "dsbMitgliedName";
     private static final String RUECKENNUMMER_BE = "rueckenNummer";
     private static final String WETTKAMPFTAG1_BE = "wettkampftag1";
@@ -39,18 +36,13 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPFTAGESCHNITT_BE = "wettkampftageSchnitt";
 
 
-    private static final String VERANSTALTUNGID_TABLE = "schuetzenstatistik_veranstaltung_id";
-    private static final String WETTKAMPFID_TABLE = "schuetzenstatistik_wettkampf_id";
-    private static final String WETTKAMPFTAG_TABLE = "schuetzenstatistik_wettkampf_tag";
-    private static final String VEREINID_TABLE = "schuetzenstatistik_verein_id";
-    private static final String DSBMITGLIEDID_TABLE = "schuetzenstatistik_dsb_mitglied_id";
-    private static final String DSBMITGLIEDNAME_TABLE = "schuetzenstatistik_dsb_mitglied_name";
-    private static final String RUECKENNUMMER_TABLE = "schuetzenstatistik_rueckennummer";
+    private static final String DSBMITGLIEDNAME_TABLE = "dsb_mitglied_name";
+    private static final String RUECKENNUMMER_TABLE = "rueckennummer";
     private static final String WETTKAMPFTAG1_TABLE = "wettkampftag_1";
     private static final String WETTKAMPFTAG2_TABLE = "wettkampftag_2";
     private static final String WETTKAMPFTAG3_TABLE = "wettkampftag_3";
     private static final String WETTKAMPFTAG4_TABLE = "wettkampftag_4";
-    private static final String WETTKAMPFTAGESCHNITT_TABLE = "wettkampftage_schnitt";
+    private static final String WETTKAMPFTAGESCHNITT_TABLE = "veranstaltung_schnitt";
 
 
     private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF =
@@ -60,23 +52,23 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
                     "    schuetzenstatistik_wettkampf_id as wettkampf_id," +
                     "    schuetzenstatistik_wettkampf_tag as wettkampf_tag," +
                     "    schuetzenstatistik_veranstaltung_id as veranstaltung_id," +
-                    "    schuetzenstatistik_dsb_mitglied_name as dsb_mitglied_name," +
+                    "    schuetzenstatistik_dsb_mitglied_name as dsb_mitglied_name, schuetzenstatistik_rueckennummer as rueckennummer," +
                     "    schuetzenstatistik_verein_id as verein_id," +
                     "    ROUND(AVG(CASE WHEN schuetzenstatistik_pfeilpunkte_schnitt <> 0 THEN schuetzenstatistik_pfeilpunkte_schnitt END), 2) AS wettkampf_schnitt" +
-                    "FROM schuetzenstatistik" +
-                    "GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id," +
+                    " FROM schuetzenstatistik" +
+                    " GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id," +
                     "         schuetzenstatistik_wettkampf_id, schuetzenstatistik_wettkampf_tag," +
-                    "         schuetzenstatistik_verein_id, schuetzenstatistik_dsb_mitglied_name)" +
-                    "SELECT" +
-                    "    MAX(wettkampfschnitte.dsb_mitglied_name)," +
+                    "         schuetzenstatistik_verein_id, schuetzenstatistik_dsb_mitglied_name, schuetzenstatistik_rueckennummer)" +
+                    " SELECT" +
+                    "    MAX(wettkampfschnitte.dsb_mitglied_name) as dsb_mitglied_name," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 1 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_1," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 2 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_2," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 3 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_3," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 4 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_4," +
-                    "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt" +
-                    "FROM wettkampfschnitte" +
-                    "WHERE wettkampfschnitte_veranstaltung_id =? AND wettkampfschnitte_verein_id =?"+
-                    "GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
+                    "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt, MAX(wettkampfschnitte.rueckennummer) as rueckennummer" +
+                    " FROM wettkampfschnitte" +
+                    " WHERE wettkampfschnitte.veranstaltung_id =? AND wettkampfschnitte.verein_id =?"+
+                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
 
 
     // wrap all specific config parameters
@@ -93,20 +85,20 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
                     "    schuetzenstatistik_dsb_mitglied_name as dsb_mitglied_name," +
                     "    schuetzenstatistik_verein_id as verein_id," +
                     "    ROUND(AVG(CASE WHEN schuetzenstatistik_pfeilpunkte_schnitt <> 0 THEN schuetzenstatistik_pfeilpunkte_schnitt END), 2) AS wettkampf_schnitt" +
-                    "FROM schuetzenstatistik" +
-                    "GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id," +
+                    " FROM schuetzenstatistik" +
+                    " GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id," +
                     "         schuetzenstatistik_wettkampf_id, schuetzenstatistik_wettkampf_tag," +
                     "         schuetzenstatistik_verein_id, schuetzenstatistik_dsb_mitglied_name)" +
-                    "SELECT" +
+                    " SELECT" +
                     "    MAX(wettkampfschnitte.dsb_mitglied_name)," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 1 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_1," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 2 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_2," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 3 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_3," +
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 4 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_4," +
                     "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt" +
-                    "FROM wettkampfschnitte" +
-                    "WHERE wettkampfschnitte_wettkampf_id =? AND wettkampfschnitte_verein_id =?"+
-                    "GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
+                    " FROM wettkampfschnitte" +
+                    " WHERE wettkampfschnitte.wettkampf_id =? AND wettkampfschnitte.verein_id =?"+
+                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
 
 
 
@@ -125,17 +117,12 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
-        columnsToFieldsMap.put(VERANSTALTUNGID_TABLE, VERANSTALTUNGID_BE);
-        columnsToFieldsMap.put(WETTKAMPFID_TABLE, WETTKAMPFID_BE);
-        columnsToFieldsMap.put(WETTKAMPFTAG_TABLE, WETTKAMPFTAG_BE);
-        columnsToFieldsMap.put(VEREINID_TABLE, VEREINID_BE);
-        columnsToFieldsMap.put(DSBMITGLIEDID_TABLE, DSBMITGLIEDID_BE);
         columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
         columnsToFieldsMap.put(RUECKENNUMMER_TABLE, RUECKENNUMMER_BE);
         columnsToFieldsMap.put(WETTKAMPFTAG1_TABLE, WETTKAMPFTAG1_BE);
         columnsToFieldsMap.put(WETTKAMPFTAG2_TABLE, WETTKAMPFTAG2_BE);
         columnsToFieldsMap.put(WETTKAMPFTAG3_TABLE, WETTKAMPFTAG3_BE);
-        columnsToFieldsMap.put(WETTKAMPFTAG4_TABLE,WETTKAMPFTAG4_BE);
+        columnsToFieldsMap.put(WETTKAMPFTAG4_TABLE, WETTKAMPFTAG4_BE);
         columnsToFieldsMap.put(WETTKAMPFTAGESCHNITT_TABLE, WETTKAMPFTAGESCHNITT_BE);
 
         return columnsToFieldsMap;

@@ -28,7 +28,6 @@ public class SchuetzenstatistikWettkampfComponentImpl implements Schuetzenstatis
 
     /**
      * Constructor
-     *
      * dependency injection with {@link Autowired}
      * @param schuetzenstatistikWettkampfDAO to access the database and return user representations
      */

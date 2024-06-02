@@ -23,12 +23,9 @@ import static org.mockito.Mockito.*;
 public class SchuetzenstatistikWettkampfServiceTest {
 
     private static final long USER = 4L;
-    private static final Long VERSION = 0L;
     private static final Long veranstaltungId = 1L;
     private static final Long wettkampfId = 2L;
-    private static final int wettkampfTag = 3;
     private static final Long vereinId = 7L;
-    private static final Long dsbMitgliedId = 2L;
     private static final String dsbMitgliedName = "Mitglied_Name";
     private static final int rueckenNummer = 5;
     private static final float wettkampftag1 = (float) 8.2;
@@ -41,11 +38,6 @@ public class SchuetzenstatistikWettkampfServiceTest {
 
     public static SchuetzenstatistikWettkampftageDO getSchuetzenstatistikWettkampfDO() {
         final SchuetzenstatistikWettkampftageDO expectedSchuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO();
-        expectedSchuetzenstatistikWettkampfDO.setveranstaltungId(veranstaltungId);
-        expectedSchuetzenstatistikWettkampfDO.setwettkampfId(wettkampfId);
-        expectedSchuetzenstatistikWettkampfDO.setwettkampfTag(wettkampfTag);
-        expectedSchuetzenstatistikWettkampfDO.setvereinId(vereinId);
-        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedId(dsbMitgliedId);
         expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(dsbMitgliedName);
         expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(wettkampftag1);
@@ -59,11 +51,6 @@ public class SchuetzenstatistikWettkampfServiceTest {
 
     public static SchuetzenstatistikWettkampfDTO getSchuetzenstatistikWettkampfDTO() {
         return new SchuetzenstatistikWettkampfDTO(
-                veranstaltungId,
-                wettkampfId,
-                wettkampfTag,
-                vereinId,
-                dsbMitgliedId,
                 dsbMitgliedName,
                 rueckenNummer,
                 wettkampftag1,
@@ -113,11 +100,6 @@ public class SchuetzenstatistikWettkampfServiceTest {
         final SchuetzenstatistikWettkampfDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getVeranstaltungId()).isEqualTo(schuetzenstatistikWettkampftageDO.getveranstaltungId());
-        assertThat(actualDTO.getWettkampfId()).isEqualTo(schuetzenstatistikWettkampftageDO.getwettkampfId());
-        assertThat(actualDTO.getWettkampfTag()).isEqualTo(schuetzenstatistikWettkampftageDO.getwettkampfTag());
-        assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikWettkampftageDO.getvereinId());
-        assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikWettkampftageDO.getDsbMitgliedId());
         assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikWettkampftageDO.getDsbMitgliedName());
         assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikWettkampftageDO.getRueckenNummer());
         assertThat(actualDTO.getWettkampftag1()).isEqualTo(schuetzenstatistikWettkampftageDO.getWettkampftag1());
@@ -151,11 +133,6 @@ public class SchuetzenstatistikWettkampfServiceTest {
         final SchuetzenstatistikWettkampfDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getVeranstaltungId()).isEqualTo(schuetzenstatistikWettkampftageDO.getveranstaltungId());
-        assertThat(actualDTO.getWettkampfId()).isEqualTo(schuetzenstatistikWettkampftageDO.getwettkampfId());
-        assertThat(actualDTO.getWettkampfTag()).isEqualTo(schuetzenstatistikWettkampftageDO.getwettkampfTag());
-        assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikWettkampftageDO.getvereinId());
-        assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikWettkampftageDO.getDsbMitgliedId());
         assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikWettkampftageDO.getDsbMitgliedName());
         assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikWettkampftageDO.getRueckenNummer());
         assertThat(actualDTO.getWettkampftag1()).isEqualTo(schuetzenstatistikWettkampftageDO.getWettkampftag1());
