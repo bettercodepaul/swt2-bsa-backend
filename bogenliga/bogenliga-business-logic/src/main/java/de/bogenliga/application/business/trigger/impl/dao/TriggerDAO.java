@@ -145,7 +145,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "         ON altsystem_aenderung.operation = op.operation_id"
                             + "     LEFT JOIN altsystem_aenderung_status st"
                             + "         ON altsystem_aenderung.status = st.status_id"
-                            + "         where status = 3";
+                            + "         where status = 3"
                     + " ORDER BY altsystem_id"
                     + " LIMIT 500";
     private static final String FIND_ALL_WITH_PAGES =
