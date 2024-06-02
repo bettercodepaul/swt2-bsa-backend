@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * @author Anna Baur
  */
-public class SchuetzenstatistikWettkampfDOTest {
+public class SchuetzenstatistikDOTest {
 
     private static final Long veranstaltungId = 1L;
     private static final Long wettkampfId = 2L;
