@@ -65,17 +65,18 @@ public class AltsystemVereinMapperTest {
     @Test
     public void testGetVereinDO() {
         // Erstelle Beispiel-Daten
+        String vereinName = "Testvereio";
         String vereinIdentifier = "WT4424";
         List<VereinDO> mockVereinDOS = Arrays.asList(
-                new VereinDO(123L, " ", "WT4424", null, null, null, null, null, null, null, null, null, null),
+                new VereinDO(123L, "TestVerein", "WT4424", null, null, null, null, null, null, null, null, null, null),
                 new VereinDO(125L, " ", "XY4467", null, null, null, null, null, null, null, null, null, null)
         );
 
         // Setze das Mock-Verhalten für findBySearch
-        when(vereinComponent.findAll()).thenReturn(mockVereinDOS);
+        when(vereinComponent.findBySearch(anyString())).thenReturn(mockVereinDOS);
 
         // Führt die Methode aus
-        VereinDO result = altsystemVereinMapper.getVereinDO(vereinIdentifier);
+        VereinDO result = altsystemVereinMapper.getVereinDO(vereinName, vereinIdentifier);
 
         // Überprüfe das Ergebnis
         assertThat(result.getId()).isEqualTo(123L);

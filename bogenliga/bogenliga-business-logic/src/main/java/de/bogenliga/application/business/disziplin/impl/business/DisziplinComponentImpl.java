@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.disziplin.impl.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
@@ -60,7 +59,7 @@ public class DisziplinComponentImpl implements DisziplinComponent {
     @Override
     public List<DisziplinDO> findAll() {
         final List<DisziplinBE> disziplinBEList = disziplinDAO.findAll();
-        return disziplinBEList.stream().map(DisziplinMapper.toDisziplinDO).collect(Collectors.toList());
+        return disziplinBEList.stream().map(DisziplinMapper.toDisziplinDO).toList();
     }
 
 

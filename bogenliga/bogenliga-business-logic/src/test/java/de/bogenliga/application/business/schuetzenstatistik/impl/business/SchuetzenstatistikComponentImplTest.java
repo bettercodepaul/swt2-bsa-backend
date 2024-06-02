@@ -40,6 +40,11 @@ public class SchuetzenstatistikComponentImplTest {
     private static final String dsbMitgliedName = "Mitglied_Name";
     private static final int rueckenNummer = 5;
     private static final float pfeilpunkteSchnitt = (float) 3.7;
+    private static final String schuetzeSatz1 = "10,5,6,null,9,9";
+    private static final String schuetzeSatz2 = "4,10,null,null,7,8";
+    private static final String schuetzeSatz3 = "10,null,8,null,9,null";
+    private static final String schuetzeSatz4 = "null,3,8,null,10,3";
+    private static final String schuetzeSatz5 = "10,8,3,7,null,8";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -69,7 +74,11 @@ public class SchuetzenstatistikComponentImplTest {
         expectedSchuetzenstatistikBE.setDsbMitgliedName(dsbMitgliedName);
         expectedSchuetzenstatistikBE.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikBE.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-
+        expectedSchuetzenstatistikBE.setschuetzeSatz1(schuetzeSatz1);
+        expectedSchuetzenstatistikBE.setschuetzeSatz2(schuetzeSatz2);
+        expectedSchuetzenstatistikBE.setschuetzeSatz3(schuetzeSatz3);
+        expectedSchuetzenstatistikBE.setschuetzeSatz4(schuetzeSatz4);
+        expectedSchuetzenstatistikBE.setschuetzeSatz5(schuetzeSatz5);
         return expectedSchuetzenstatistikBE;
     }
 

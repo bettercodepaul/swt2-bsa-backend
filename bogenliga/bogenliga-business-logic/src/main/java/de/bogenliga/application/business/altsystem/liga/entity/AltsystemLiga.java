@@ -1,5 +1,8 @@
 package de.bogenliga.application.business.altsystem.liga.entity;
 
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -13,6 +16,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
+
 /**
  * Component to handle the import of a "Liga" entity
  *
@@ -25,6 +29,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
     private final LigaComponent ligaComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
 
     @Autowired
     public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent,
@@ -46,11 +51,26 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemLigaDO);
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
-        // Add data to table
-        ligaDO = ligaComponent.create(ligaDO, currentUserId);
 
-        // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+        // Schaut, ob Verein bereits vorhanden ist
+        LigaDO vorhanden = null;
+        try{
+            vorhanden = ligaComponent.checkExistsLigaName(ligaDO.getName());
+        }catch(Exception e){
+            LOGGER.debug(String.valueOf(e));
+        }
+        if (  vorhanden == null || vorhanden.getId() == null ){
+            //neue Liga anlegen
+            ligaDO = ligaComponent.create(ligaDO, currentUserId);
+            // Add to translation table
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+
+        }else {
+            //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), vorhanden.getId(), "");
+        }
+
+        // Add data to table
     }
 
     /**
@@ -68,7 +88,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         // Check if the translation data has been found
         if(ligaUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemLigaDO.getId()));
+                    String.format("No result found for ligaUebersetzung in update altsystem-ID '%s'", altsystemLigaDO.getId()));
         }
 
         // Find data in table with corresponding id

@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.configuration.impl.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
@@ -15,7 +14,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * I´m the implementation of {@link ConfigurationComponent}.
- *
  * The global application configuration consists of a key-value pairs.
  * The configuration is stored in the database.
  *
@@ -33,7 +31,6 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
     /**
      * Constructor
-     *
      * dependency injection with {@link Autowired}
      *
      * @param configurationDAO to access the database and return configuration representations
@@ -47,7 +44,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
     @Override
     public List<ConfigurationDO> findAll() {
         final List<ConfigurationBE> configurationBEList = configurationDAO.findAll();
-        return configurationBEList.stream().map(ConfigurationMapper.toDO).collect(Collectors.toList());
+        return configurationBEList.stream().map(ConfigurationMapper.toDO).toList();
     }
 
 
@@ -84,6 +81,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
+        configurationBE.setCreatedByUserId(currentUser);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
@@ -97,6 +95,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
+        configurationBE.setLastModifiedByUserId(currentUser);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }

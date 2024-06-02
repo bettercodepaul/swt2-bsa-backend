@@ -2,9 +2,7 @@ package de.bogenliga.application.services.v1.schuetzenstatistik.service;
 
 import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
-import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
-import de.bogenliga.application.services.v1.ligatabelle.service.LigatabelleService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,8 +39,17 @@ public class SchuetzenstatistikServiceTest {
         private static final String dsbMitgliedName = "Mitglied_Name";
         private static final int rueckenNummer = 5;
         private static final int pfeilpunkteSchnitt = 3;
+        private static final String[] schuetzeSaetze = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
+        private static final String schuetzeSatz1 = "{5,8}";
+        private static final String schuetzeSatz2 = "{9,3}";
+        private static final String schuetzeSatz3 = "{4,8}";
+        private static final String schuetzeSatz4 = "{5,2}";
+        private static final String schuetzeSatz5 = "{3,7}";
 
-        public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
+
+
+
+    public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
             final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
             expectedSchuetzenstatistikDO.setveranstaltungId(veranstaltungId);
             expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
@@ -58,7 +65,7 @@ public class SchuetzenstatistikServiceTest {
             expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
             expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
             expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-
+            expectedSchuetzenstatistikDO.setSchuetzeSaetze(schuetzeSaetze);
             return expectedSchuetzenstatistikDO;
         }
 
@@ -77,7 +84,12 @@ public class SchuetzenstatistikServiceTest {
                     dsbMitgliedId,
                     dsbMitgliedName,
                     rueckenNummer,
-                    pfeilpunkteSchnitt
+                    pfeilpunkteSchnitt,
+                    schuetzeSatz1,
+                    schuetzeSatz2,
+                    schuetzeSatz3,
+                    schuetzeSatz4,
+                    schuetzeSatz5
             );
         }
 
@@ -134,6 +146,11 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
             assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
+            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz1()));
+            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz2()));
+            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz3()));
+            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4()));
+            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
 
             // verify invocations
             verify(schuetzenstatistikComponent).getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
@@ -174,9 +191,31 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
             assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
-
+            assertThat(actualDTO.getSchuetzeSatz1()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz1()));
+            assertThat(actualDTO.getSchuetzeSatz2()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz2()));
+            assertThat(actualDTO.getSchuetzeSatz3()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz3()));
+            assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4()));
+            assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
             // verify invocations
             verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
+
+        }
+
+    // Method for removing the braces from Sätze
+    private static String removeCurlyBracketsFromSchuetzeSatz(String schuetzeSatz) {
+        if (schuetzeSatz != null && schuetzeSatz.length() > 1) {
+            return schuetzeSatz.substring(1, schuetzeSatz.length() - 1);
+        } else {
+            return "";
+        }
+    }
+        @Test
+        public void equalMethodSchuetzenstatistikDTOTest(){
+
+            SchuetzenstatistikDTO schuetzenstatistikDTOToCompareWith = SchuetzenstatistikServiceTest.getSchuetzenstatistikDTO();
+            SchuetzenstatistikDTO schuetzenstatistikDTOComparator = SchuetzenstatistikServiceTest.getSchuetzenstatistikDTO();
+
+            assertThat(schuetzenstatistikDTOToCompareWith.equals(schuetzenstatistikDTOComparator)).isTrue();
 
         }
 }

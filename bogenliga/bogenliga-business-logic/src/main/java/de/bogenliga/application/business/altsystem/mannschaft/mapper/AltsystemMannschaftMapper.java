@@ -53,14 +53,19 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         String num = "1234567890";
 
 
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
-            return null;
+        // wenn keine Manschaftsnummer als Teil des Vereinsnamen auftaucht
+        // dann vergeben wir die 0 - die wird von den Anwendern nicht selbst vergeben
+        // so sind wir auf der sicheren Seite, weil die 1 mehrfach vergeben wurde.
+        if (currentName.contains("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
+            mannNr = 0;
         }
-        //Letztes zeichen Zahl, dann diese Zahl benutzen. Sonst 1
-        if (num.contains(lastCharAsString)){
-            mannNr = Integer.parseInt(lastCharAsString);
-        } else {
-            mannNr = 1;
+        else {
+            //Letztes zeichen Zahl, dann diese Zahl benutzen. Sonst 0
+            if (num.contains(lastCharAsString)) {
+                mannNr = Integer.parseInt(lastCharAsString);
+            } else {
+                mannNr = 0;
+            }
         }
 
         dsbMannschaftDO.setNummer(mannNr);

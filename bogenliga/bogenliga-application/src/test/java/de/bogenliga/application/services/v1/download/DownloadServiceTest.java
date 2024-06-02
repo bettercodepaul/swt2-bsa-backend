@@ -1,5 +1,7 @@
 package de.bogenliga.application.services.v1.download;
 
+import com.google.protobuf.StringValue;
+import de.bogenliga.application.services.v1.setzliste.service.SetzlisteService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,6 +14,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+
+import java.security.Principal;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,6 +40,9 @@ public class DownloadServiceTest {
     private SetzlisteComponent setzlisteComponent;
 
     @Mock
+    private SetzlisteService setzlisteService;
+
+    @Mock
     private WettkampfComponent wettkampfComponent;
 
     @InjectMocks
@@ -53,9 +61,15 @@ public class DownloadServiceTest {
 
         //configure Mocks
         when(setzlisteComponent.getPDFasByteArray(WETTKAMPF_ID)).thenReturn(test);
-
+        when(setzlisteService.generateSetzliste(anyLong(), any()).iterator()).thenReturn(null);
+        final Principal principal = new Principal() {
+            @Override
+            public String getName() {
+                return String.valueOf("1");
+            }
+        };
         //call test method
-        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadSetzlistePdf(WETTKAMPF_ID);
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadSetzlistePdf(WETTKAMPF_ID, principal);
 
         //assert result
         Assertions.assertThat(actual).isNotNull();

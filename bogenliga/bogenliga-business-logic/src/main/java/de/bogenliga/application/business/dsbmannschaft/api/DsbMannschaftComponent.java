@@ -71,7 +71,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long currentDsbMannschaftId);
+    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long userId);
 
 
     /**
@@ -104,8 +104,10 @@ public interface DsbMannschaftComponent extends ComponentFacade {
 
     /**
      * Copys the Mitglieder of an old Mannschaft into a new Mannschaft
+     *
      * @param oldMannschaftsID
      * @param newMannschaftsID
+     * @param userId
      */
-    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID);
+    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId);
 }

@@ -3,6 +3,14 @@ package de.bogenliga.application.business.altsystem.ergebnisse.mapper;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -28,17 +36,25 @@ import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
  */
 public class AltsystemPasseMapperTest{
 
-    private static final long MATCH_ID = 4L;
-    private static final long MATCH_NR = 1L;
-    private static final long WETTKAMPF_ID = 17L;
-    private static final long DSBMITGLIED_ID = 10L;
-    private static final long MANNSCHAFT_ID = 5L;
+    private static final Long MATCH_ID = 4L;
+    private static final int MATCH_NR = 1;
+    private static final Long WETTKAMPF_ID = 17L;
+    private static final Long DSBMITGLIED_ID = 10L;
+    private static final Long MANNSCHAFT_ID = 5L;
 
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private MatchComponent matchComponent;
+    @Mock
+    private DsbMannschaftComponent dsbMannschaftComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
+    @Mock
+    private AltsystemMatchMapper altsystemMatchMapper;
     @Mock
     private AltsystemUebersetzung altsystemUebersetzung;
     @InjectMocks
@@ -48,11 +64,22 @@ public class AltsystemPasseMapperTest{
         List<MatchDO> matches = new LinkedList<>();
         MatchDO matchDO = new MatchDO();
         matchDO.setId(MATCH_ID);
-        matchDO.setNr(MATCH_NR);
+        matchDO.setNr(4L);
         matchDO.setWettkampfId(WETTKAMPF_ID);
-        matchDO.setMannschaftId(MANNSCHAFT_ID);
+        matchDO.setMannschaftId(1L);
         matches.add(matchDO);
         return matches;
+    }
+    public List<WettkampfDO> getMockWettkaempfe(){
+        List<WettkampfDO> wettkaempfe = new LinkedList<>();
+        for (long i = 0; i < 4; i++){
+            WettkampfDO wettkampfDO = new WettkampfDO();
+            wettkampfDO.setId(i + 1);
+            wettkampfDO.setWettkampfTag(i + 1);
+            wettkampfDO.setWettkampfVeranstaltungsId(1L);
+            wettkaempfe.add(wettkampfDO);
+        }
+        return wettkaempfe;
     }
 
     @Test
@@ -60,9 +87,19 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(77);
+        altsystemErgebnisDO.setErgebniss(77L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
+
+        DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(1L);
+        dsbMannschaftDO.setVeranstaltungId(123L);
+        dsbMannschaftDO.setId(1L);
+
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        veranstaltungDO.setVeranstaltungID(123L);
+
+        List<WettkampfDO> wettkaempfe = getMockWettkaempfe();
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -83,9 +120,15 @@ public class AltsystemPasseMapperTest{
 
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_Mannschaft), anyLong())).thenReturn(mannschaftUebersetzung);
 
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkaempfe);
+        when(altsystemMatchMapper.getCurrentWettkampfTag(anyLong(), any())).thenReturn(wettkaempfe.get(0));
+        when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
+
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);
 
-        when(matchComponent.findByMannschaftId(anyLong())).thenReturn(getMockMatches());
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(getMockMatches());
 
         // call test function
         List<PasseDO> passeList = altsystemPasseMapper.toDO(new LinkedList<>(), altsystemErgebnisDO);
@@ -98,9 +141,9 @@ public class AltsystemPasseMapperTest{
             assertThat(currentPasse.getPasseLfdnr()).isEqualTo(i + 1);
             assertThat(currentPasse.getPasseMatchId()).isEqualTo(MATCH_ID);
             assertThat(currentPasse.getPasseDsbMitgliedId()).isEqualTo(DSBMITGLIED_ID);
-            assertThat(currentPasse.getPasseMannschaftId()).isEqualTo(MANNSCHAFT_ID);
+            assertThat(currentPasse.getPasseMannschaftId()).isEqualTo(1L);
             assertThat(currentPasse.getPasseMatchId()).isEqualTo(MATCH_ID);
-            assertThat(currentPasse.getPasseMatchNr()).isEqualTo(MATCH_NR);
+            assertThat(currentPasse.getPasseMatchNr()).isEqualTo(4L);
             assertThat(currentPasse.getPasseWettkampfId()).isEqualTo(WETTKAMPF_ID);
         }
 
@@ -125,9 +168,19 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(78);
+        altsystemErgebnisDO.setErgebniss(78L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
+        DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(1L);
+        dsbMannschaftDO.setVeranstaltungId(123L);
+        dsbMannschaftDO.setId(1L);
+
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        veranstaltungDO.setVeranstaltungID(123L);
+
+        List<WettkampfDO> wettkaempfe = getMockWettkaempfe();
+
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -147,6 +200,12 @@ public class AltsystemPasseMapperTest{
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied), anyLong())).thenReturn(schuetzeUebersetzung);
 
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_Mannschaft), anyLong())).thenReturn(mannschaftUebersetzung);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkaempfe);
+        when(altsystemMatchMapper.getCurrentWettkampfTag(anyLong(), any())).thenReturn(wettkaempfe.get(0));
+        when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
+
 
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);
 
@@ -163,9 +222,9 @@ public class AltsystemPasseMapperTest{
         // Prepare Test data
         AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
         altsystemErgebnisDO.setId(5L);
-        altsystemErgebnisDO.setErgebnis(87);
+        altsystemErgebnisDO.setErgebniss(87L);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
 
         // Liste von existierenden Passen erstellen
         List<PasseDO> passen = new LinkedList<>();

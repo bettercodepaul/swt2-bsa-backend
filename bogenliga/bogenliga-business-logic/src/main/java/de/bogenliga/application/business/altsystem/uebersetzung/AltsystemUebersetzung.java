@@ -28,7 +28,7 @@ public class AltsystemUebersetzung {
      @param bogenligaID id in the new system
      @param wert any kind of information that should be stored with this data
      */
-    public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, long altsystemID, long bogenligaID, String wert) {
+    public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, Long altsystemID, Long bogenligaID, String wert) {
         altsystemUebersetzungDAO.updateOrInsertUebersetzung(kategorie, altsystemID, bogenligaID, wert);
     }
 

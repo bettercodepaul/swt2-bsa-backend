@@ -1,5 +1,8 @@
 package de.bogenliga.application.business.altsystem.verein.entity;
 
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
@@ -26,6 +29,8 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
     private final VereinComponent vereinComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
+
 
     @Autowired
     public AltsystemVerein (final AltsystemVereinMapper altsystemVereinMapper, final VereinComponent vereinComponent,
@@ -45,29 +50,34 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
          * @param currentUserId The ID of the current user performing the operation.
          */
 
+        // wir mappen mal den Namen und den DSB Identifier aus den Alsystemdaten
         VereinDO vereinDO = new VereinDO();
+        vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
         //parsed den Identifier
-        String parsedIdentifier = altsystemVereinMapper.parseIdentifier(altsystemDataObject);
 
-        VereinDO vorhanden = null;
-        try{
-            vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
-        }catch(Exception e){
-            e.printStackTrace();
+        //prüfen ob der Verein ein leerer Verein ist
+        if (vereinDO.getName().contains("fehlender Verein")){
+            //es ist der leere Verein- wir müssen auf unseren "Standard umlenken...
+            vereinDO.setDsbIdentifier("Platzhalter");
         }
         // Schaut, ob Verein bereits vorhanden ist
-        if (vorhanden == null || vorhanden.getId() == null){
+        VereinDO vorhanden = null;
+        try{
+            vorhanden = altsystemVereinMapper.getVereinDO(vereinDO.getName(), vereinDO.getDsbIdentifier());
+        }catch(Exception e){
+            LOGGER.debug(String.valueOf(e));
+        }
+        if (  vorhanden == null ){
             //Führt mapper aus
-            vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
-            //Create in Neue Tabele
-            vereinComponent.create(vereinDO, currentUserId);
+            //Create in Verein Tabelle
+            vereinDO = vereinComponent.create(vereinDO, currentUserId);
             //Create in Uebersetzungstabele
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId(), vereinDO.getId(), "");
 
         }else {
             //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId(), vorhanden.getId(), "");
         }
 
     }

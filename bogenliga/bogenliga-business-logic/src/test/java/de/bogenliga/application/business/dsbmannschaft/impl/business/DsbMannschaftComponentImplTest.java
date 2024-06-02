@@ -3,12 +3,10 @@ package de.bogenliga.application.business.dsbmannschaft.impl.business;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Rule;
@@ -899,7 +897,7 @@ public class DsbMannschaftComponentImplTest {
         when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
 
         // call test method
-        underTest.copyMitgliederFromMannschaft(oldMannschaftId, newMannschaftId);
+        underTest.copyMitgliederFromMannschaft(oldMannschaftId, newMannschaftId, 0L);
 
         // verify result
         verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedDOArgumentCaptor.capture(), any());

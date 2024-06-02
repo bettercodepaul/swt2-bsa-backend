@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Philip Dengler
@@ -71,7 +70,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public List<DsbMannschaftDO> findAll() {
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAll();
         return this.fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -84,7 +83,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -97,7 +96,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -110,7 +109,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
 
@@ -130,11 +129,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
-        checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
+    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+        checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentDsbMannschaftId);
+        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentUserId);
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
@@ -142,27 +141,27 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO update(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
-        checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
+    public DsbMannschaftDO update(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+        checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         checkSortierung(dsbMannschaftDO); //To avoid corruption of the Sortierung
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMannschaftId);
+        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentUserId);
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
 
 
     @Override
-    public void delete(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
+    public void delete(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
         Preconditions.checkNotNull(dsbMannschaftDO, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
-        Preconditions.checkArgument(currentDsbMannschaftId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
 
-        dsbMannschaftDAO.delete(dsbMannschaftBE, currentDsbMannschaftId);
+        dsbMannschaftDAO.delete(dsbMannschaftBE, currentUserId);
 
     }
 
@@ -174,7 +173,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * @return the same Mannschaften as given but with their names filled.
      */
     private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
-        return mannschaften.stream().map(this::fillName).collect(Collectors.toList());
+        return mannschaften.stream().map(this::fillName).toList();
     }
 
     /**
@@ -196,9 +195,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
 
-    private void checkDsbMannschaftDO(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
+    private void checkDsbMannschaftDO(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
         Preconditions.checkNotNull(dsbMannschaftDO, PRECONDITION_MSG_DSBMANNSCHAFT);
-        Preconditions.checkArgument(currentDsbMannschaftId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getNummer() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkArgument(dsbMannschaftDO.getBenutzerId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
@@ -288,7 +287,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
 
         // creates a new database entry for every Mannschaft with the current VeranstaltungId
         List<DsbMannschaftDO> addedMannschaftenList = new ArrayList<>();
@@ -299,7 +298,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
             addedMannschaftenList.add(mannschaftToCheck);
             final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
-            DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
+            DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, userId);
             // Copy Mannschaftsmitglieder for every Mannschaft
             // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
             MannschaftsmitgliedDO addedMitglied;
@@ -315,7 +314,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID) {
+    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
 
         List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId(oldMannschaftsID);
 
@@ -323,7 +322,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
             neuesMitglied = altesMitglied;
             neuesMitglied.setMannschaftId(newMannschaftsID);
-            mannschaftsmitgliedComponent.create(neuesMitglied, 0L);
+            mannschaftsmitgliedComponent.create(neuesMitglied, userId);
         }
 
     }

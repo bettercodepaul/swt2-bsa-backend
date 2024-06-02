@@ -24,6 +24,8 @@ public class SchuetzenstatistikDOTest {
     private static final String dsbMitgliedName = "Mitglied_Name";
     private static final int rueckenNummer = 5;
     private static final float pfeilpunkteSchnitt = (float) 3.7;
+    private static final String[] schuetzeSaetze = {"{10,9}", "{4,10}", "{10,6}", "{3,8}", "{8,7}"};
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -47,7 +49,7 @@ public class SchuetzenstatistikDOTest {
         expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
         expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-
+        expectedSchuetzenstatistikDO.setSchuetzeSaetze(schuetzeSaetze);
         return expectedSchuetzenstatistikDO;
     }
 

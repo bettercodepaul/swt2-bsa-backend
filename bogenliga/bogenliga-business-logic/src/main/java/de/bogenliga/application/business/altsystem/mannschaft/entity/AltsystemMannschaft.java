@@ -46,7 +46,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
     @Override
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
-        /**
+        /*
          * Creates a new entry for the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
          *
          * @param altsystemDataObject The AltsystemMannschaftDO object to be created.
@@ -54,27 +54,31 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
          */
 
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO();
-        //Vereinmethede aufrufen
+        //Verein-Methode aufrufen, falls der Verein existiert, wird kein neuer angelegt
         altsystemVerein.create(altsystemDataObject, currentUserId);
-        //Veranstalltung der zugehörigen Mannschaft abrufen und zurückgeben
+        //Veranstaltung der zugehörigen Mannschaft abrufen und zurückgeben
         VeranstaltungDO veranstaltungDO = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemDataObject, currentUserId);
 
         //Mapper ausführen
         dsbMannschaftDO = altsystemMannschaftMapper.toDO(altsystemDataObject, dsbMannschaftDO);
         dsbMannschaftDO = altsystemMannschaftMapper.addDefaultFields(dsbMannschaftDO, currentUserId, altsystemDataObject, veranstaltungDO);
+        dsbMannschaftDO.setBenutzerId(currentUserId);
 
-        //In die Mannschafts Tabele schreiben
-        dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
+        //In die Mannschaftstabelle schreiben
+        dsbMannschaftDO = dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
 
-        //Altsystem ID und Neusystem ID in die Uebersetzungstabele schreiben.
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
-                (int) altsystemDataObject.getId(), dsbMannschaftDO.getId().longValue(), "");
+        //Altsystem ID und Neusystem ID in die Uebersetzungstabelle schreiben.
+        altsystemUebersetzung.updateOrInsertUebersetzung(
+                AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
+                altsystemDataObject.getId(),
+                dsbMannschaftDO.getId(),
+                "");
     }
 
 
     @Override
     public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
-        /**
+        /*
          * Updates the information of the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
          *
          * @param altsystemDataObject The AltsystemMannschaftDO object containing the updated information.
@@ -87,10 +91,10 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getId());
 
-        //Wenn die Mannschaft noch nicht in der Uebersetzungstabele vorhanden ist Exception
+        //Wenn die Mannschaft noch nicht in der Uebersetzungstabelle vorhanden ist Exception
         if(mannschaftUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
+                    String.format("No result found for mannschaftUebersetzung in Update ID'%s'", altsystemDataObject.getId()));
         }
         //Dataobjekt der Mannschaft suchen und zurückgeben
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenligaId());

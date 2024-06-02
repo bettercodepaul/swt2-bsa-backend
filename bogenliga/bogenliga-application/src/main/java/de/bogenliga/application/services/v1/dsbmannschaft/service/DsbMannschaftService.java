@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
@@ -116,7 +115,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public List<DsbMannschaftDTO> findAll() {
         final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
 
-        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
 
@@ -148,7 +147,7 @@ public class DsbMannschaftService implements ServiceFacade {
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
-        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
 
@@ -166,7 +165,7 @@ public class DsbMannschaftService implements ServiceFacade {
         LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
 
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVeranstaltungsId(id);
-        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
 
@@ -406,6 +405,9 @@ public class DsbMannschaftService implements ServiceFacade {
                                               @PathVariable("MannschaftId") final long mannschaftId,
                                               final Principal principal) {
 
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
@@ -413,8 +415,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
-        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
-        dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
+        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, userId);
+        dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId(), userId);
 
 
         LOG.debug("Mannschaft '{}' in Veranstaltung mit id '{}' kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);

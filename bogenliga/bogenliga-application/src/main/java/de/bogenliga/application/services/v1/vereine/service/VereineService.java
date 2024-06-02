@@ -69,14 +69,14 @@ public class VereineService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VereineDTO> findAll() {
         final List<VereinDO> vereinDOList = vereinComponent.findAll();
-        return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
+        return vereinDOList.stream().map(VereineDTOMapper.toDTO).toList();
     }
 
     @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VereineDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
         final List<VereinDO> vereinDOList = vereinComponent.findBySearch(searchTerm);
-        return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
+        return vereinDOList.stream().map(VereineDTOMapper.toDTO).toList();
     }
 
 
