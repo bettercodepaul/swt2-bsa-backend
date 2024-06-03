@@ -26,6 +26,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private Long vereinsId;
     private String vereinName;
     private Long userId;
+    private Date beitrittsdatum;
 
 
     public Boolean getKampfrichter() {
@@ -53,6 +54,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param vereinsId
      * @param vereinName
      * @param userId
+     * @param beitrittsdatum
      * @param createdAtUtc
      * @param createdByUserId
      * @param lastModifiedAtUtc
@@ -63,7 +65,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
                          final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
                          final String vereinName, final Long userId, final OffsetDateTime createdAtUtc,
                          final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final Long lastModifiedByUserId, final Long version, boolean lizenz) {
+                         final Long lastModifiedByUserId, final Long version, boolean lizenz, final Date beitrittsdatum) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -78,7 +80,8 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
-        this.kampfrichter =lizenz;
+        this.kampfrichter = lizenz;
+        this.beitrittsdatum = beitrittsdatum;
     }
 
     /**
@@ -90,13 +93,15 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param nationalitaet
      * @param mitgliedsnummer
      * @param vereinsId
+     * @param beitrittsdatum
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
                          final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
-                         final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
+                         final Date beitrittsdatum, final OffsetDateTime createdAtUtc,
+                         final Long createdByUserId, final Long version) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -104,6 +109,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.nationalitaet = nationalitaet;
         this.mitgliedsnummer = mitgliedsnummer;
         this.vereinsId = vereinsId;
+        this.beitrittsdatum = beitrittsdatum;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -120,10 +126,12 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param vereinsId
      * @param vereinName
      * @param userId
+     * @param beitrittsdatum
      */
     public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
                          final String nationalitaet, final String mitgliedsnummer,
-                         final Long vereinsId, final String vereinName, final Long userId, final Boolean kampfrichter) {
+                         final Long vereinsId, final String vereinName, final Long userId, final Boolean kampfrichter,
+                         final Date beitrittsdatum) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -134,6 +142,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.vereinName = vereinName;
         this.userId = userId;
         this.kampfrichter = kampfrichter;
+        this.beitrittsdatum = beitrittsdatum;
     }
 
     /**
@@ -236,11 +245,20 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.kampfrichter = kampfrichter;
     }
 
+    public Date getBeitrittsdatum() {
+        return beitrittsdatum;
+    }
+
+
+    public void setBeitrittsdatum(final Date beitrittsdatum) {
+        this.beitrittsdatum = beitrittsdatum;
+    }
+
 
     @Override
     public int hashCode() {
         return Objects.hash(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, vereinName,
-                userId, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+                userId, beitrittsdatum, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     }
 
 
@@ -264,6 +282,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
                 Objects.equals(geburtsdatum, that.geburtsdatum) &&
                 Objects.equals(nationalitaet, that.nationalitaet) &&
                 Objects.equals(vereinName, that.vereinName) &&
+                Objects.equals(beitrittsdatum, that.beitrittsdatum) &&
                 Objects.equals(mitgliedsnummer, that.mitgliedsnummer) &&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
     }
