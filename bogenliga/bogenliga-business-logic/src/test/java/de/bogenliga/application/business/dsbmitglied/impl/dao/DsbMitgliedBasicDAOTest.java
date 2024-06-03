@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
 import org.junit.Test;
@@ -241,7 +242,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void update() {
         // prepare test data
-        final DsbMitgliedBE input = new DsbMitgliedBE();
+        final DsbMitgliedWithoutVereinsnameBE input = new DsbMitgliedWithoutVereinsnameBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
         input.setDsbMitgliedUserId(USERID);
