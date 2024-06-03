@@ -35,9 +35,10 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_ID = "matchId";
     private static final String MATCH_BE_MATCH_ID_GEGNER = "matchIdGegner";
     private static final String MATCH_BE_MATCH_NR = "matchNr";
-    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER = "scheibennummer";
+    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER = "matchScheibennummer";
     private static final String MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER = "scheibennummerGegner";
     private static final String MATCH_BE_MATCH_MANSCHAFT_ID = "mannschaftId";
+    private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_NAECHSTE_MATCH_ID = "naechsteMatchId";
     private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechsteNaechsteMatchId";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1 = "strafpunkteSatz1";
@@ -45,7 +46,6 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3 = "strafpunkteSatz3";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4 = "strafpunkteSatz4";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5 = "strafpunkteSatz5";
-    private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_WETTKAMPFTYP_ID = "wettkampftypId";
     private static final String MATCH_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
@@ -57,11 +57,13 @@ public class LigamatchDAO implements DataAccessObject {
     // table columns
     private static final String MATCH_TABLE_WETTKAMPF_ID = "ligamatch_match_wettkampf_id";
     private static final String MATCH_TABLE_MATCH_ID = "ligamatch_match_id";
-    private static final String MATCH_TABLE_MATCH_ID_GEGNER = "ligamatch_match_id_gegner";
     private static final String MATCH_TABLE_MATCH_NR = "ligamatch_match_nr";
     private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER = "ligamatch_match_scheibennummer";
-    private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER = "ligamatch_match_scheibennummer_gegner";
     private static final String MATCH_TABLE_MATCH_MANSCHAFT_ID = "ligamatch_match_mannschaft_id";
+    private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
+    private static final String MATCH_TABLE_MANNSCHAFT_NAME_GEGNER = "ligamatch_mannschaft__name_gegner";
+    private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER = "ligamatch_match_scheibennummer_gegner";
+    private static final String MATCH_TABLE_MATCH_ID_GEGNER = "ligamatch_match_id_gegner";
     private static final String MATCH_TABLE_NAECHSTE_MATCH_ID = "ligamatch_naechste_match_id";
     private static final String MATCH_TABLE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "ligamatch_naechste_naechste_match_nr_match_id";
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_1 = "ligamatch_match_strafpunkte_satz_1";
@@ -72,8 +74,6 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_BEGEGNUNG = "ligamatch_begegnung";
     private static final String MATCH_TABLE_WETTKAMPFTYP_ID = "ligamatch_wettkampftyp_id";
     private static final String MATCH_TABLE_WETTKAMPF_TAG = "ligamatch_wettkampf_tag";
-    private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
-    private static final String MATCH_TABLE_MANNSCHAFT_NAME_GEGNER = "ligamatch_mannschaft__name_gegner";
     private static final String MATCH_TABLE_SATZPUNKTE = "ligamatch_satzpunkte";
     private static final String MATCH_TABLE_MATCHPUNKTE = "ligamatch_matchpunkte";
 

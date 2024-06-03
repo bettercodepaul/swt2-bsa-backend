@@ -1,7 +1,10 @@
 package de.bogenliga.application.services.v1.setzliste.service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.bogenliga.application.common.service.UserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -58,10 +61,11 @@ public class SetzlisteService implements ServiceFacade {
     @GetMapping(path = "/generate")
     @RequiresOnePermissions(perm = {UserPermission.CAN_READ_WETTKAMPF, UserPermission.CAN_READ_MY_VERANSTALTUNG})
     public @ResponseBody
-    List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
+    List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid, final Principal principal) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");
 
-        List<MatchDO>  matchDOList = this.setzlisteComponent.generateMatchesBySetzliste(wettkampfid);
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        List<MatchDO>  matchDOList = this.setzlisteComponent.generateMatchesBySetzliste(wettkampfid, userId);
         ArrayList<MatchDTO> matchDTOList = new ArrayList<>();
         for (MatchDO matchDO : matchDOList) {
             matchDTOList.add(MatchDTOMapper.toDTO.apply(matchDO));

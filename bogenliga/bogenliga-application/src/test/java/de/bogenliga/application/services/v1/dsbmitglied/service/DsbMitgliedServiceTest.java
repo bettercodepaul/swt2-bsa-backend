@@ -50,6 +50,7 @@ public class DsbMitgliedServiceTest {
     private static final long USERIDUPDATE = 2121;
 
     private static final boolean KAMPFRICHTER = true;
+    private static final Date BEITRITTSDATUM = Date.valueOf("2001-01-01");
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -81,7 +82,9 @@ public class DsbMitgliedServiceTest {
                 VEREINSID,
                 VEREINNAME,
                 USERID,
-                KAMPFRICHTER);
+                KAMPFRICHTER,
+                BEITRITTSDATUM
+        );
     }
 
 
@@ -97,6 +100,7 @@ public class DsbMitgliedServiceTest {
         dsbMitgliedDTO.setVereinsName(VEREINNAME);
         dsbMitgliedDTO.setUserId(USERID);
         dsbMitgliedDTO.setKampfrichter(KAMPFRICHTER);
+        dsbMitgliedDTO.setBeitrittsdatum(BEITRITTSDATUM.toString());
         return dsbMitgliedDTO;
     }
 
@@ -212,7 +216,9 @@ public class DsbMitgliedServiceTest {
                 vereinsId,
                 VEREINNAME,
                 USERID,
-                KAMPFRICHTER);
+                KAMPFRICHTER,
+                BEITRITTSDATUM
+        );
 
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
 
