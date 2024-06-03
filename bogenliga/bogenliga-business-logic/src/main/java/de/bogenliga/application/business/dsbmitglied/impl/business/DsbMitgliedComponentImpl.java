@@ -121,10 +121,10 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     public DsbMitgliedDO create(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         checkDsbMitgliedDO(dsbMitgliedDO, currentDsbMitgliedId);
 
-        final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
-        final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
+        final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedWithoutVereinsnameBE.apply(dsbMitgliedDO);
+        final DsbMitgliedWithoutVereinsnameBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDOWithoutVereinsname.apply(persistedDsbMitgliedBE);
 
         if (Boolean.FALSE.equals(dsbMitgliedDO.isKampfrichter())) {
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
@@ -167,7 +167,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDO.getId()),
                     currentDsbMitgliedId);
         }
-        final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedWithoutVereinsnameBE.apply(dsbMitgliedDO);
         dsbMitgliedDAO.delete(dsbMitgliedBE, currentDsbMitgliedId);
 
     }

@@ -224,7 +224,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final DsbMitgliedBE actual = underTest.create(input, USER);
+        final DsbMitgliedWithoutVereinsnameBE actual = underTest.create(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -251,7 +251,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final DsbMitgliedBE actual = underTest.update(input, USER);
+        final DsbMitgliedWithoutVereinsnameBE actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();

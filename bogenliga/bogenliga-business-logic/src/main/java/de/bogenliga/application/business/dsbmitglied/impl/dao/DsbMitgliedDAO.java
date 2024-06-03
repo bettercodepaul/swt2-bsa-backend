@@ -241,10 +241,10 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
-    public DsbMitgliedBE create(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public DsbMitgliedWithoutVereinsnameBE create(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setCreationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        return basicDao.insertEntity(DSBMITGLIED, dsbMitgliedBE);
+        return basicDao.insertEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE);
     }
 
 
@@ -278,9 +278,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId
      */
-    public void delete(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public void delete(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        basicDao.deleteEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        basicDao.deleteEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE, DSBMITGLIED_BE_ID);
     }
 }
