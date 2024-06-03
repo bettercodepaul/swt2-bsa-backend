@@ -72,6 +72,20 @@ public class LigaService implements ServiceFacade {
         return ligaDOList.stream().map(LigaDTOMapper.toDTO).toList();
     }
 
+    /**
+     * Returns the Lowest Liga for each Region
+     *
+     * @Return list of the Lowest Ligas
+     */
+    @GetMapping(
+            value ="/lowest",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)//TODO aendern auf CAN READ MY LIGA
+    public List<LigaDTO> findByLowest(){
+        final List<LigaDO> ligaDOList = ligaComponent.findByLowest();
+        return ligaDOList.stream().map(LigaDTOMapper.toDTO).toList();
+    }
 
     /**
      * Returns a liga entry of the given id
