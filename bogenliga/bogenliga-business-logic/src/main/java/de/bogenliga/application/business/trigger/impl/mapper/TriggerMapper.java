@@ -7,6 +7,8 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerCountBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -58,5 +60,19 @@ public class TriggerMapper implements ValueObjectMapper {
 
 
         return triggerBE;
+    };
+    public static final Function<TriggerCountDO, TriggerCountBE> toTriggerCountBE = triggerCountDO -> {
+        TriggerCountBE triggerCountBE = new TriggerCountBE();
+        triggerCountBE.setCount(triggerCountDO.getCount());
+        return triggerCountBE;
+
+    };
+
+    public static final Function<TriggerCountBE, TriggerCountDO> toTriggerCountDO = triggerCountBE -> {
+        final Long count = triggerCountBE.getCount();
+
+        TriggerCountDO vo = new TriggerCountDO(count);
+
+        return vo;
     };
 }

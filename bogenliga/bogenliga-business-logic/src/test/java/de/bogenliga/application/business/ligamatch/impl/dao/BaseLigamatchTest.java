@@ -82,7 +82,6 @@ public class BaseLigamatchTest {
         ligamatchBE.setWettkampfTag(WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MANNSCHAFT_NAME);
         ligamatchBE.setMannschaftNameGegner(MANNSCHAFT_NAME_GEGNER);
-        ligamatchBE.setRueckennummer(RUECKENNUMMER);
         ligamatchBE.setSatzpunkte(SATZPUNKTE);
         ligamatchBE.setMatchpunkte(MATCHPUNKTE);
         return ligamatchBE;
@@ -109,7 +108,6 @@ public class BaseLigamatchTest {
         assertThat(actual.getWettkampfTag()).isEqualTo(ligamatchBE.getWettkampfTag()).isEqualTo(WETTKAMPF_TAG);
         assertThat(actual.getMannschaftName()).isEqualTo(ligamatchBE.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
         assertThat(actual.getMannschaftNameGegner()).isEqualTo(ligamatchBE.getMannschaftNameGegner()).isEqualTo(MANNSCHAFT_NAME_GEGNER);
-        assertThat(actual.getRueckennummer()).isEqualTo(ligamatchBE.getRueckennummer()).isEqualTo(RUECKENNUMMER);
         assertThat(actual.getSatzpunkte()).isEqualTo(ligamatchBE.getSatzpunkte()).isEqualTo(SATZPUNKTE);
         assertThat(actual.getMatchpunkte()).isEqualTo(ligamatchBE.getMatchpunkte()).isEqualTo(MATCHPUNKTE);
     }
