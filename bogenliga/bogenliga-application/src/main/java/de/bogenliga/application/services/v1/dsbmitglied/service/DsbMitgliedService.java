@@ -46,7 +46,6 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_VORNAME = "DsbMitglied vorname must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_NACHNAME = "DsbMitglied nachname must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM = "DsbMitglied geburtsdatum must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_BEITRITTSDATUM = "DsbMitglied beitrittsdatum must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET = "DsbMitglied nationalitaet must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
@@ -158,7 +157,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 

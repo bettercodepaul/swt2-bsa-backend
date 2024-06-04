@@ -7,7 +7,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 /**
  * I represent the dsbmitglied business entity <b>BUT</b> with the omission of the club name ("Vereinsname").
  * <p>
- * This class is <b>ONLY</b> used for <u>updating</u> a DsbMitglied.
+ * This class is <b>ONLY used for creating, updating and deleting</b> a DsbMitglied.
  * <p>
  * A dsbmitglied is a registered member of the DSB. The dsbmitglied is not necessarily a technical user of the system.
  * <p>
