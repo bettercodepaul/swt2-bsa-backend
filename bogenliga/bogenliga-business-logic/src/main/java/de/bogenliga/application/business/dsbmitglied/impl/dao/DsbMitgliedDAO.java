@@ -86,7 +86,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied"
                     + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
                     + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
-                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer), ' ', LOWER(verein.verein_name)) LIKE LOWER(?) ";
 
 
     private static final String FIND_DSB_KAMPFRICHTER =
