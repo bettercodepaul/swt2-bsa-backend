@@ -59,6 +59,8 @@ public class TriggerDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<RawTriggerBE> RAW_TRIGGER = new BusinessEntityConfiguration<>(
             RawTriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
+    private static final String selectCount = "SELECT COUNT(*) ";
+
     /**
      * SQL queries
      */
@@ -91,8 +93,9 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
                     + "         where status != 4"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY aenderung_id"
                     + " LIMIT 500";
+
     private static final String FIND_ALL_WITH_PAGES =
             "SELECT * "
                     + " FROM altsystem_aenderung"

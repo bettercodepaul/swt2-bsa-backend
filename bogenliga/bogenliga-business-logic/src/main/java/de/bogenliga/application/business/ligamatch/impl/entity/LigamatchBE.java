@@ -31,7 +31,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfTag;
     private String mannschaftName;
     private String mannschaftNameGegner;
-    private Integer rueckennummer;
     private Long satzpunkte;
     private Long matchpunkte;
 
@@ -127,9 +126,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public void setMannschaftNameGegner(String mannschaftNameGegner) {
         this.mannschaftNameGegner = mannschaftNameGegner;
     }
-
-    public Integer getRueckennummer() {return rueckennummer;}
-    public void setRueckennummer(Integer rueckennummer) {this.rueckennummer = rueckennummer;}
 
     public Long getSatzpunkte() {return satzpunkte;}
     public void setSatzpunkte(Long satzpunkte) {this.satzpunkte = satzpunkte;}
