@@ -158,7 +158,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
