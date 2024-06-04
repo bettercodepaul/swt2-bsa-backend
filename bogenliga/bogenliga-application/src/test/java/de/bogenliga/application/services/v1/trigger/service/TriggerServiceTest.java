@@ -19,12 +19,14 @@ import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLiga
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerCountDTO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import static org.mockito.Mockito.*;
 
