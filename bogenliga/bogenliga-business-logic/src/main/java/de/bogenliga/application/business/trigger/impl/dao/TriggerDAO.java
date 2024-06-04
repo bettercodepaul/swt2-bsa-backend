@@ -52,6 +52,8 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
     private static final String TRIGGER_TABLE_RUNATUTC = "run_at_utc";
     private static final String TRIGGER_TABLE_CREATEUSER = "created_by";
+    private static final String DATE_INTERVAL_PLACEHOLDER = "$dateInterval$";
+    private static final String STATUS_PLACEHOLDER = "$status$";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
             TriggerBE.class, TABLE, getColumsToFieldsMapWithJoin(), LOGGER);
@@ -295,19 +297,20 @@ public class TriggerDAO implements DataAccessObject {
         String changedSQL = buildQuery(FIND_ALL_IN_PROGRESS,pageLimit,actualOffset,actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
+
     public void deleteEntries(String status, String dateInterval) {
         String actualStatus;
-        switch (status){
-            case("Neu"):
+        switch (status) {
+            case "Neu":
                 actualStatus = "1";
                 break;
-            case("Laufend"):
+            case "Laufend":
                 actualStatus = "2";
                 break;
-            case("Fehlgeschlagen"):
+            case "Fehlgeschlagen":
                 actualStatus = "3";
                 break;
-            case("Erfolgreich"):
+            case "Erfolgreich":
                 actualStatus = "4";
                 break;
             default:
@@ -315,14 +318,21 @@ public class TriggerDAO implements DataAccessObject {
         }
         String actualDateInterval = changeTimestampToInterval(dateInterval);
         String changedSQL;
-        if(actualStatus.equals("5")){
-            changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDateInterval);
-        }
-        else{
-            changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDateInterval);
+        if ("5".equals(actualStatus)) {
+            changedSQL = DELETE_ALL_ENTRIES.replace(DATE_INTERVAL_PLACEHOLDER, actualDateInterval);
+        } else {
+            changedSQL = DELETE_ENTRIES.replace(STATUS_PLACEHOLDER, actualStatus)
+                    .replace(DATE_INTERVAL_PLACEHOLDER, actualDateInterval);
         }
         basicDAO.executeQuery(changedSQL);
     }
+
+    // ... [Rest des Codes bleibt unverändert]
+
+    private static final String DELETE_ENTRIES_TEMPLATE =
+            "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = " + STATUS_PLACEHOLDER + " AND " + DATE_INTERVAL_PLACEHOLDER + "; COMMIT;";
+    private static final String DELETE_ALL_ENTRIES_TEMPLATE =
+            "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE " + DATE_INTERVAL_PLACEHOLDER + "; COMMIT;";
     public int calcOffset(String multiplicator,String pageLimit){
         return Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
     }
@@ -338,8 +348,7 @@ public class TriggerDAO implements DataAccessObject {
     }
     public String changeTimestampToInterval(String timestamp){
         String interval = "";
-        String actualTimestamp = timestamp.replace("%20", " ");
-        switch (timestamp){
+        switch (timestamp.replace("%20", " ")){
             case "alle":
                 interval = "created_at_utc <= CURRENT_DATE";
                 break;
