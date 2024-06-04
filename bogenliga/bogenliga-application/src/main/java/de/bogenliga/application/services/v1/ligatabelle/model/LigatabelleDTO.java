@@ -96,92 +96,38 @@ public class LigatabelleDTO implements DataTransferObject {
         // empty constructor
     }
 
-    public Long getVeranstaltungId() {
-        return veranstaltungId;
-    }
-
-    public void setVeranstaltungId(Long veranstaltungId) {
-        this.veranstaltungId = veranstaltungId;
-    }
-
-    public String getVeranstaltungName() {
-        return veranstaltungName;
-    }
-
-    public Long getWettkampfId() {
-        return wettkampfId;
-    }
-
-    public void setWettkampfId(Long wettkampfId) {
-        this.wettkampfId = wettkampfId;
-    }
-
-    public int getWettkampfTag() {
-        return wettkampfTag;
-    }
-
-    public void setWettkampfTag(int wettkampfTag) {
-        this.wettkampfTag = wettkampfTag;
-    }
-
-    public Long getMannschaftId() {
-        return mannschaftId;
-    }
-
-    public void setMannschaftId(Long mannschaftId) {
-        this.mannschaftId = mannschaftId;
-    }
-
-    public int getMannschaftNummer() {
-        return mannschaftNummer;
-    }
-
-    public Long getVereinId() {
-        return vereinId;
-    }
-
-    public void setVereinId(Long vereinId) {
-        this.vereinId = vereinId;
-    }
-
-    public String getVereinName() {
-        return vereinName;
-    }
-
-    public int getMatchpkt() {
-        return matchpkt;
-    }
-
-    public int getMatchpktGegen() {
-        return matchpktGegen;
-    }
-
-    public int getSatzpkt() {
-        return satzpkt;
-    }
-
-    public int getSatzpktGegen() {
-        return satzpktGegen;
-    }
-
-    public int getSatzpktDifferenz() {
-        return satzpktDifferenz;
-    }
-
-    public int getSortierung() {
-        return sortierung;
-    }
-
-    public void setSortierung(int sortierung) {
-        this.sortierung = sortierung;
-    }
-
-    public int getTabellenplatz() {
-        return tabellenplatz;
-    }
-
+    public Long getVeranstaltungId() {return veranstaltungId;}
+    public void setVeranstaltungId(Long veranstaltungId) {this.veranstaltungId = veranstaltungId;}
+    public String getVeranstaltungName() {return veranstaltungName;}
+    public void setVeranstaltungName(String veranstaltungName) {this.veranstaltungName = veranstaltungName;}
+    public Long getWettkampfId() {return wettkampfId;}
+    public void setWettkampfId(Long wettkampfId) {this.wettkampfId = wettkampfId;}
+    public int getWettkampfTag() {return wettkampfTag;}
+    public void setWettkampfTag(int wettkampfTag) {this.wettkampfTag = wettkampfTag;}
+    public Long getMannschaftId(){return mannschaftId;}
+    public void setMannschaftId(Long mannschaftId) {this.mannschaftId = mannschaftId;}
+    public int getMannschaftNummer() {return mannschaftNummer;}
+    public void setMannschaftNummer(int mannschaftNummer) {this.mannschaftNummer = mannschaftNummer;}
+    public Long getVereinId() {return vereinId;}
+    public void setVereinId(Long vereinId) {this.vereinId = vereinId;}
+    public String getVereinName() {return vereinName;}
+    public void setVereinName(String vereinName) {this.vereinName = vereinName;}
+    public int getMatchpkt() {return matchpkt;}
+    public void setMatchpkt(int matchpkt) {this.matchpkt = matchpkt;}
+    public int getMatchpktGegen() {return matchpktGegen;}
+    public void setMatchpktGegen(int matchpktGegen) {this.matchpktGegen = matchpktGegen;}
+    public int getSatzpkt() {return satzpkt;}
+    public void setSatzpkt(int satzpkt) {this.satzpkt = satzpkt;}
+    public int getSatzpktGegen() {return satzpktGegen;}
+    public void setSatzpktGegen(int satzpktGegen) {this.satzpktGegen = satzpktGegen;}
+    public int getSatzpktDifferenz() {return satzpktDifferenz;}
+    public void setSatzpktDifferenz(int satzpktDifferenz) {this.satzpktDifferenz = satzpktDifferenz;}
+    public int getSortierung() {return sortierung;}
+    public void setSortierung(int sortierung) {this.sortierung = sortierung;}
+    public int getTabellenplatz() {return tabellenplatz;}
+    public void setTabellenplatz(int tabellenplatz) {this.tabellenplatz = tabellenplatz;}
     public int getMatchCount() { return matchCount; }
-
+    public void setMatchCount(int matchCount) {this.matchCount = matchCount;}
 
 
     @Override
