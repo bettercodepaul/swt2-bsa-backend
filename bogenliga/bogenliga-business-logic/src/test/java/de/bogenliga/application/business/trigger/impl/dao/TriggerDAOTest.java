@@ -23,6 +23,7 @@ import static de.bogenliga.application.business.trigger.impl.business.TriggerCom
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -281,6 +282,40 @@ public class TriggerDAOTest {
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testChangeTimestampToDateInterval() {
+		String expectedValueForAll = "created_at_utc <= CURRENT_DATE";
+		String actualValueForAll = triggerDAO.changeTimestampToInterval("alle");
+		assertEquals(expectedValueForAll, actualValueForAll);
+
+		String expectedValueForOneMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'";
+		String actualValueForOneMonth = triggerDAO.changeTimestampToInterval("letzter Monat");
+		assertEquals(expectedValueForOneMonth, actualValueForOneMonth);
+
+		String expectedValueForLastThreeMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH'";
+		String actualValueForLastThreeMonth = triggerDAO.changeTimestampToInterval("letzten drei Monate");
+		assertEquals(expectedValueForLastThreeMonth, actualValueForLastThreeMonth);
+
+		String expectedValueForLastSixMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH'";
+		String actualValueForLastSixMonth = triggerDAO.changeTimestampToInterval("letzten sechs Monate");
+		assertEquals(expectedValueForLastSixMonth, actualValueForLastSixMonth);
+
+		String expectedValueForLastYear = "created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH'";
+		String actualValueForLastYear = triggerDAO.changeTimestampToInterval("im letzten Jahr");
+		assertEquals(expectedValueForLastYear, actualValueForLastYear);
+
+		String expectedValueForOlderThanOneMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH'";
+		String actualValueForOlderThanOneMonth = triggerDAO.changeTimestampToInterval("älter als ein Monat");
+		assertEquals(expectedValueForOlderThanOneMonth, actualValueForOlderThanOneMonth);
+
+		String expectedValueForOlderThanThreeMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH'";
+		String actualValueForOlderThanThreeMonth = triggerDAO.changeTimestampToInterval("älter als drei Monate");
+		assertEquals(expectedValueForOlderThanThreeMonth, actualValueForOlderThanThreeMonth);
+
+		String expectedValueForOlderThanSixMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'";
+		String actualValueForOlderThanSixMonth = triggerDAO.changeTimestampToInterval("älter als sechs Monate");
+		assertEquals(expectedValueForOlderThanSixMonth, actualValueForOlderThanSixMonth);
 	}
 }
 
