@@ -7,6 +7,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
  * Responsible for the user database requests.
  *
  * @author Anna Baur
+ * & Alessa Hackh
  */
 public interface SchuetzenstatistikWettkampfComponent  extends ComponentFacade{
 
@@ -21,6 +22,5 @@ public interface SchuetzenstatistikWettkampfComponent  extends ComponentFacade{
      */
     List<SchuetzenstatistikWettkampftageDO> getSchuetzenstatistikWettkampf(Long wettkampfId, Long vereinId);
 
-
-
+    List<SchuetzenstatistikWettkampftageDO> getSchuetzenstatistikAlleLigen(Long sportjahr, Long vereinId);
 }

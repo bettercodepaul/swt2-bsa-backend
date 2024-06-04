@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 /**
  *  Implementation of {@link SchuetzenstatistikWettkampfComponent}
  * @author Anna Baur
+ * & Alessa Hackh
  */
 @Component
 public class SchuetzenstatistikWettkampfComponentImpl implements SchuetzenstatistikWettkampfComponent {
@@ -25,6 +26,7 @@ public class SchuetzenstatistikWettkampfComponentImpl implements Schuetzenstatis
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfID cannot be null or negative";
     private static final String PRECONDITION_VEREINID = "vereinID cannot be null or negative";
+    private static final String PRECONDITION_SPORTJAHR = "sportjahr cannot be negative";
 
     /**
      * Constructor
@@ -35,7 +37,6 @@ public class SchuetzenstatistikWettkampfComponentImpl implements Schuetzenstatis
     public SchuetzenstatistikWettkampfComponentImpl(final SchuetzenstatistikWettkampfDAO schuetzenstatistikWettkampfDAO) {
         this.schuetzenstatistikWettkampfDAO = schuetzenstatistikWettkampfDAO;
     }
-
 
     @Override
     public List<SchuetzenstatistikWettkampftageDO> getSchuetzenstatistikWettkampfVeranstaltung(Long veranstaltungId, Long vereinId) {
@@ -65,6 +66,23 @@ public class SchuetzenstatistikWettkampfComponentImpl implements Schuetzenstatis
 
         if (schuetzenstatistikWettkampfBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Wettkampf-ID " + wettkampfId) + " and Verein-ID " + vereinId);
+        }
+
+        for (int i = 0; i < schuetzenstatistikWettkampfBEList.size(); i++) {
+            returnList.add(i, SchuetzenstatistikWettkampfMapper.toSchuetzenstatistikWettkampfDO.apply(schuetzenstatistikWettkampfBEList.get(i)));
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<SchuetzenstatistikWettkampftageDO> getSchuetzenstatistikAlleLigen(Long sportjahr, Long vereinId) {
+        Preconditions.checkArgument(sportjahr >= 0, PRECONDITION_SPORTJAHR);
+
+        final ArrayList<SchuetzenstatistikWettkampftageDO> returnList = new ArrayList<>();
+        final List<SchuetzenstatistikWettkampfBE> schuetzenstatistikWettkampfBEList = schuetzenstatistikWettkampfDAO.getSchuetzenstatistikAlleLigen(sportjahr, vereinId);
+
+        if (schuetzenstatistikWettkampfBEList == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Sportjahr " + sportjahr));
         }
 
         for (int i = 0; i < schuetzenstatistikWettkampfBEList.size(); i++) {

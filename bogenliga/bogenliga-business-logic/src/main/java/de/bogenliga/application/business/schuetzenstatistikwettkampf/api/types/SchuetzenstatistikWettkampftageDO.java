@@ -53,7 +53,6 @@ public class SchuetzenstatistikWettkampftageDO extends CommonDataObject implemen
         this.wettkampftag3 = wettkampftag3;
         this.wettkampftag4 = wettkampftag4;
         this.wettkampftageSchnitt = wettkampftageSchnitt;
-
     }
 
 
@@ -102,7 +101,6 @@ public class SchuetzenstatistikWettkampftageDO extends CommonDataObject implemen
 
     @Override
     public int hashCode() {
-        return Objects.hash(dsbMitgliedName, rueckenNummer, wettkampftag1, wettkampftag2, wettkampftag3,
-                wettkampftag4, wettkampftageSchnitt);
+        return Objects.hash(dsbMitgliedName, rueckenNummer, wettkampftag1, wettkampftag2, wettkampftag3, wettkampftag4, wettkampftageSchnitt);
     }
 }

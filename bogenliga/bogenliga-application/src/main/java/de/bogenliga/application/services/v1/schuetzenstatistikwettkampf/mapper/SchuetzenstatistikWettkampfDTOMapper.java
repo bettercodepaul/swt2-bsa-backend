@@ -23,12 +23,10 @@ public class SchuetzenstatistikWettkampfDTOMapper implements DataTransferObjectM
         final float wettkampftag4 = schuetzenstatistikWettkampfDO.getWettkampftag4();
         final float wettkampftageSchnitt = schuetzenstatistikWettkampfDO.getWettkampftageSchnitt();
 
-
-
-
         return new SchuetzenstatistikWettkampfDTO(dsbMitgliedName, rueckenNummer, wettkampftag1,wettkampftag2,wettkampftag3,wettkampftag4
                 ,wettkampftageSchnitt);
     };
+
     /**
      * I map the {@link SchuetzenstatistikWettkampfDTO} object to the {@link SchuetzenstatistikWettkampftageDO} object
      */

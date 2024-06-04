@@ -13,11 +13,6 @@ import static org.junit.Assert.*;
  */
 public class SchuetzenstatistikDOTest {
 
-    private static final Long veranstaltungId = 1L;
-    private static final Long wettkampfId = 2L;
-    private static final int wettkampfTag = 3;
-    private static final Long vereinId = 7L;
-    private static final Long dsbMitgliedId = 2L;
     private static final String dsbMitgliedName = "Mitglied_Name";
     private static final int rueckenNummer = 5;
     private static final float wettkampftag1 = (float) 8.5;
@@ -25,10 +20,6 @@ public class SchuetzenstatistikDOTest {
     private static final float wettkampftag3 = (float) 9.1;
     private static final float wettkampftag4 = (float) 4.2;
     private static final float wettkampftageSchnitt = (float) 8.6;
-
-
-
-
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Anna Baur
+ * & Alessa Hackh
  */
 public class SchuetzenstatistikWettkampfDAOTest {
 
@@ -30,6 +31,7 @@ public class SchuetzenstatistikWettkampfDAOTest {
     private static final Long wettkampfId = 2L;
     private static final Long vereinId = 7L;
     private static final Long veranstaltungId = 1L;
+    private static final Long sportjahr = 0L;
 
 
     @Test
@@ -80,6 +82,36 @@ public class SchuetzenstatistikWettkampfDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
+
+        assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
+        assertThat(actual.get(0).getWettkampftag1()).isEqualTo(expectedBE.getWettkampftag1());
+        assertThat(actual.get(0).getWettkampftag2()).isEqualTo(expectedBE.getWettkampftag2());
+        assertThat(actual.get(0).getWettkampftag3()).isEqualTo(expectedBE.getWettkampftag3());
+        assertThat(actual.get(0).getWettkampftag4()).isEqualTo(expectedBE.getWettkampftag4());
+        assertThat(actual.get(0).getWettkampftageSchnitt()).isEqualTo(expectedBE.getWettkampftageSchnitt());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+    @Test
+    public void getSchuetzenstatistikAlleLigen_oktest() {
+        final SchuetzenstatistikWettkampfBE expectedBE = getSchuetzenstatistikWettkampfBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikAlleLigen(sportjahr,vereinId);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
 
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
         assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());

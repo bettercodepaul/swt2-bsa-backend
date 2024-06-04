@@ -22,6 +22,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  *
  * @author Anna Baur
+ * & Alessa Hackh
  */
 @RestController
 @CrossOrigin
@@ -30,6 +31,7 @@ public class SchuetzenstatistikWettkampfService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
+    private static final String PRECONDITION_MSG_SPORTJAHR = "sportjahr must not be negative";
 
     private final Logger logger = LoggerFactory.getLogger(SchuetzenstatistikWettkampfService.class);
 
@@ -84,6 +86,20 @@ public class SchuetzenstatistikWettkampfService implements ServiceFacade {
         logger.debug("Receive 'Schuetzenstatistik für Wettkampf' request with Wettkampf-ID '{}' and Verein-ID '{}'", wettkampfId, vereinId);
 
         final List<SchuetzenstatistikWettkampftageDO> schuetzenstatistikWettkampftageDOList = schuetzenstatistikWettkampfComponent.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
+
+        return schuetzenstatistikWettkampftageDOList.stream().map(SchuetzenstatistikWettkampfDTOMapper.toDTO).toList();
+    }
+
+    @GetMapping(
+            value = "bySportjahrAndVerein/{sportjahr}/{vereinId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<SchuetzenstatistikWettkampfDTO> getSchuetzenstatistikAlleLigen(@PathVariable("sportjahr") final long sportjahr,
+                                                                               @PathVariable("vereinId") final long vereinId) {
+        Preconditions.checkArgument(sportjahr >= 0, PRECONDITION_MSG_SPORTJAHR);
+        logger.debug("Receive 'Schuetzenstatistik für Sportjahr' request with Sportjahr", sportjahr);
+
+        final List<SchuetzenstatistikWettkampftageDO> schuetzenstatistikWettkampftageDOList = schuetzenstatistikWettkampfComponent.getSchuetzenstatistikAlleLigen(sportjahr, vereinId);
 
         return schuetzenstatistikWettkampftageDOList.stream().map(SchuetzenstatistikWettkampfDTOMapper.toDTO).toList();
     }

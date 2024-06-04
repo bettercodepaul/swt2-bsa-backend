@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 /**
  *
  * @author Anna Baur
+ * & Alessa Hackh
  */
 public class SchuetzenstatistikWettkampfComponentImplTest {
     private static final Long USER = 0L;
@@ -36,6 +37,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
     private static final float wettkampftag3 = (float) 6.3;
     private static final float wettkampftag4 = (float) 8.2;
     private static final float wettkampftageSchnitt = (float) 8.12;
+    private static final Long sportjahr = 4L;
 
 
 
@@ -190,4 +192,60 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
         // verify invocations
         verify(SchuetzenstatistikWettkampfDAO).getSchuetzenstatistikWettkampf(0L, 0L);
     }
+
+    @Test
+    public void getSchuetzenstatistikAlleLigen_allesok() {
+        // prepare test data
+        final SchuetzenstatistikWettkampfBE expectedSchuetzenstatistikWettkampfBE = getSchuetzenstatistikWettkampfBE();
+        final List<SchuetzenstatistikWettkampfBE> expectedBEList = Collections.singletonList(expectedSchuetzenstatistikWettkampfBE);
+
+        // configure mocks
+        when(SchuetzenstatistikWettkampfDAO.getSchuetzenstatistikAlleLigen(anyLong(), anyLong())).thenReturn(expectedBEList);
+
+        // call test method
+        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikAlleLigen(sportjahr, vereinId);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual).isNotNull();
+
+
+        assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getRueckenNummer());
+        assertThat(actual.get(0).getWettkampftag1()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftag1());
+        assertThat(actual.get(0).getWettkampftag2()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftag2());
+        assertThat(actual.get(0).getWettkampftag3()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftag3());
+        assertThat(actual.get(0).getWettkampftag4()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftag4());
+        assertThat(actual.get(0).getWettkampftageSchnitt()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftageSchnitt());
+
+        // verify invocations
+        verify(SchuetzenstatistikWettkampfDAO)
+                .getSchuetzenstatistikAlleLigen(sportjahr,vereinId);
+    }
+
+    @Test
+    public void getSchuetzenstatistikAlleLigen_IDnull() {
+        // prepare test data
+        final SchuetzenstatistikWettkampfBE expectedSchuetzenstatistikWettkampfBE = getSchuetzenstatistikWettkampfBE();
+        final List<SchuetzenstatistikWettkampfBE> expectedBEList = Collections.singletonList(expectedSchuetzenstatistikWettkampfBE);
+
+        // configure mocks
+        when(SchuetzenstatistikWettkampfDAO.getSchuetzenstatistikAlleLigen(anyLong(), anyLong())).thenReturn(null);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.getSchuetzenstatistikAlleLigen(anyLong(), anyLong()))
+                .withMessageContaining("ENTITY_NOT_FOUND_ERROR: No result found for Sportjahr 0")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verify(SchuetzenstatistikWettkampfDAO).getSchuetzenstatistikAlleLigen(0L, 0L);
+    }
+
 }

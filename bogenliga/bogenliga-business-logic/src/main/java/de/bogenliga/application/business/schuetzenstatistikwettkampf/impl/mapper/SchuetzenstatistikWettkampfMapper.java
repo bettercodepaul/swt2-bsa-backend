@@ -24,7 +24,6 @@ public class SchuetzenstatistikWettkampfMapper {
         final float wettkampftag4 = be.getWettkampftag4();
         final float wettkampftageSchnitt = be.getWettkampftageSchnitt();
 
-
         return new SchuetzenstatistikWettkampftageDO(dsbMitgliedName, rueckenNummer,
                 wettkampftag1, wettkampftag2, wettkampftag3, wettkampftag4, wettkampftageSchnitt);
     };
@@ -43,7 +42,6 @@ public class SchuetzenstatistikWettkampfMapper {
         schuetzenstatistikWettkampf.setWettkampftag3(vo.getWettkampftag3());
         schuetzenstatistikWettkampf.setWettkampftag4(vo.getWettkampftag4());
         schuetzenstatistikWettkampf.setWettkampftageSchnitt(vo.getWettkampftageSchnitt());
-
 
         return schuetzenstatistikWettkampf;
     };
