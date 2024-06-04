@@ -335,12 +335,12 @@ public class TriggerDAO implements DataAccessObject {
     public TriggerBE findUnprocessedCount(){
         return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
     }
-    private String changeTimestampToInterval(String timestamp){
+    public String changeTimestampToInterval(String timestamp){
         String interval = "";
         String actualTimestamp = timestamp.replace("%20", " ");
         switch (timestamp){
             case "alle":
-                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '20 YEAR'";
+                interval = "created_at_utc <= CURRENT_DATE";
                 break;
             case "letzter Monat":
                 interval = "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'";
@@ -362,6 +362,8 @@ public class TriggerDAO implements DataAccessObject {
                 break;
             case "älter als sechs Monate":
                 interval = "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'";
+                break;
+            default:
                 break;
         }
         return interval;
