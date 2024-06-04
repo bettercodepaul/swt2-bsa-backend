@@ -267,31 +267,31 @@ public class TriggerDAO implements DataAccessObject {
     }
     public List<TriggerBE> findAllWithPages(String multiplicator,String pageLimit,String dateInterval) {
         String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        int actualOffset = calcOffset(multiplicator,pageLimit);
         String changedSQL = FIND_ALL_WITH_PAGES.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findSuccessed(String multiplicator,String pageLimit,String dateInterval) {
         String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        int actualOffset = calcOffset(multiplicator,pageLimit);
         String changedSQL = FIND_ALL_SUCCESSED.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findNews(String multiplicator,String pageLimit,String dateInterval) {
         String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        int actualOffset = calcOffset(multiplicator,pageLimit);
         String changedSQL = FIND_ALL_NEWS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findErrors(String multiplicator,String pageLimit,String dateInterval) {
         String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        int actualOffset = calcOffset(multiplicator,pageLimit);
         String changedSQL = FIND_ALL_ERRORS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findInProgress(String multiplicator,String pageLimit,String dateInterval) {
         String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+        int actualOffset = calcOffset(multiplicator,pageLimit);
         String changedSQL = FIND_ALL_IN_PROGRESS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
@@ -313,18 +313,19 @@ public class TriggerDAO implements DataAccessObject {
             default:
                 actualStatus = "5";
         }
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
+        String changedSQL;
         if(actualStatus.equals("5")){
-            String actualDateInterval = changeTimestampToInterval(dateInterval);
-            String changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDateInterval);
-            basicDAO.executeQuery(changedSQL);
+            changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDateInterval);
         }
         else{
-            String actualDateInterval = changeTimestampToInterval(dateInterval);
-            String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDateInterval);
-            basicDAO.executeQuery(changedSQL);
+            changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDateInterval);
         }
+        basicDAO.executeQuery(changedSQL);
     }
-
+    public int calcOffset(String multiplicator,String pageLimit){
+        return Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
+    }
     public List<TriggerBE> findAllUnprocessed() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_UNPROCESSED);
     }
