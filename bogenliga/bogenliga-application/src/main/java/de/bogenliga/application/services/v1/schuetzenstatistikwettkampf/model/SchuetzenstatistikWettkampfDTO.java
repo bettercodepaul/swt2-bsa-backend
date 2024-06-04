@@ -33,7 +33,6 @@ public class SchuetzenstatistikWettkampfDTO implements DataTransferObject {
      * @param wettkampftag3;
      * @param wettkampftag4;
      * @param wettkampftageSchnitt;
-     *
      */
 
     public SchuetzenstatistikWettkampfDTO(
