@@ -54,6 +54,22 @@ public class TriggerCountDAOTest{
 
     }
     @Test
+    public void testFindInProgressCount() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.findInProgressCount();
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+
+    }
+    @Test
     public void testFindUnprocessedCount() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();

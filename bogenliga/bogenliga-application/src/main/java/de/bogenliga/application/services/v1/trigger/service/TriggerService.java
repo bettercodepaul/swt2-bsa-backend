@@ -157,14 +157,6 @@ public class TriggerService implements ServiceFacade {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
-    /*@GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllUnprocessed() {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
-    }*/
 
     //TODO GetMapping der Methoden testen und bei Bedarf anpassen
     @GetMapping("/firstCount")
