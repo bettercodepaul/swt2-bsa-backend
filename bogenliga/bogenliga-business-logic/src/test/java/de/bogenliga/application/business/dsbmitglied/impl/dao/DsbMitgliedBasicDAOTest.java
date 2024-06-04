@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
 import org.junit.Test;
@@ -223,7 +224,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final DsbMitgliedBE actual = underTest.create(input, USER);
+        final DsbMitgliedWithoutVereinsnameBE actual = underTest.create(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -241,7 +242,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void update() {
         // prepare test data
-        final DsbMitgliedBE input = new DsbMitgliedBE();
+        final DsbMitgliedWithoutVereinsnameBE input = new DsbMitgliedWithoutVereinsnameBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
         input.setDsbMitgliedUserId(USERID);
@@ -250,7 +251,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final DsbMitgliedBE actual = underTest.update(input, USER);
+        final DsbMitgliedWithoutVereinsnameBE actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();

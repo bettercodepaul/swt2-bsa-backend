@@ -510,6 +510,28 @@ public class TriggerComponentImplTest {
 		verify(triggerDAO, times(1)).findAllWithPages("0","500", "1 MONTH");
 	}
 	@Test
+	public void findInProgressCount() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.findInProgressCount()).thenReturn(expectedBE);
+
+
+		// call test method
+		final TriggerCountDO actual = underTest.findInProgressCount();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).findInProgressCount();
+	}
+	@Test
 	public void testDeleteNewEntries() {
 		// Call the method
 		triggerDAO.deleteEntries("Neu", "1 MONTH");

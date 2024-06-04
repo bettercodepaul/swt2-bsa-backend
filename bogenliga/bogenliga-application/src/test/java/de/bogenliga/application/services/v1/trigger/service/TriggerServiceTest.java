@@ -19,12 +19,14 @@ import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLiga
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerCountDTO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import static org.mockito.Mockito.*;
 
@@ -48,6 +50,7 @@ public class TriggerServiceTest {
 	private static final String TRIGGER_NACHRICHT = "see";
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
+	public static final Long TRIGGERCOUNT_IN_PROGRESS_COUNT = 2L;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -66,6 +69,11 @@ public class TriggerServiceTest {
 	private TriggerService triggerServiceTest;
 
 
+	public static TriggerCountDO getTriggerCountDO() {
+		return new TriggerCountDO(
+				TRIGGERCOUNT_IN_PROGRESS_COUNT
+		);
+	}
 	public static TriggerDO getTriggerDO() {
 		return new TriggerDO(
 				TRIGGER_ID,
@@ -169,6 +177,60 @@ public class TriggerServiceTest {
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllLimited();
+	}
+	@Test
+	public void testFindInProgressCount() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.findInProgressCount()).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.findInProgressCount();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findInProgressCount();
+	}
+	@Test
+	public void testFindUnprocessedCount() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.findUnprocessedCount()).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.findUnprocessedCount();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findUnprocessedCount();
+	}
+	@Test
+	public void testFindAllCount() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.findAllCount()).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.findAllCount();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllCount();
 	}
 	@Test
 	public void testFindAllErrors() {
