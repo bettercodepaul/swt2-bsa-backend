@@ -609,15 +609,4 @@ public class TriggerServiceTest {
 		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, falseDateInterval);
 		assert triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, workingDateInterval);
 	}
-	@Test
-	public void testCheckDateInterval(){
-		String nullDateInterval = null;
-		String falseDateInterval = "HACKER";
-		String workingDateInterval = "1 MONTH";
-
-		// Verify the behavior and the return values
-		assert !triggerServiceTest.checkDateInterval(nullDateInterval);
-		assert !triggerServiceTest.checkDateInterval(falseDateInterval);
-		assert triggerServiceTest.checkDateInterval(workingDateInterval);
-	}
 }

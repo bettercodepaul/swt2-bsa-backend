@@ -155,7 +155,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         WHERE created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + "         WHERE $dateInterval$"
                     + " ORDER BY altsystem_id"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_SUCCESSED =
@@ -166,7 +166,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 4"
-                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + "         AND $dateInterval$"
                     + " ORDER BY altsystem_id"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_NEWS =
@@ -177,7 +177,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 1"
-                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + "         AND $dateInterval$"
                     + " ORDER BY altsystem_id"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_IN_PROGRESS =
@@ -188,7 +188,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 2"
-                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + "         AND $dateInterval$"
                     + " ORDER BY altsystem_id"
                     + " LIMIT $limit$ OFFSET $offset$";
 
@@ -200,7 +200,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 3"
-                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + "         AND $dateInterval$"
                     + " ORDER BY altsystem_id"
                     + " LIMIT $limit$ OFFSET $offset$";
 
@@ -208,12 +208,12 @@ public class TriggerDAO implements DataAccessObject {
             "START TRANSACTION; " +
                     "DELETE FROM altsystem_aenderung " +
                     "WHERE status = $status$ " +
-                    "AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "AND $dateInterval$; " +
                     "COMMIT;";
     private static final String DELETE_ALL_ENTRIES =
             "START TRANSACTION; " +
                     "DELETE FROM altsystem_aenderung " +
-                    "WHERE created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "WHERE $dateInterval$; " +
                     "COMMIT;";
     private final BasicDAO basicDAO;
 
@@ -266,28 +266,33 @@ public class TriggerDAO implements DataAccessObject {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
     }
     public List<TriggerBE> findAllWithPages(String multiplicator,String pageLimit,String dateInterval) {
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
-        String changedSQL = FIND_ALL_WITH_PAGES.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
+        String changedSQL = FIND_ALL_WITH_PAGES.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findSuccessed(String multiplicator,String pageLimit,String dateInterval) {
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
-        String changedSQL = FIND_ALL_SUCCESSED.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
+        String changedSQL = FIND_ALL_SUCCESSED.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findNews(String multiplicator,String pageLimit,String dateInterval) {
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
-        String changedSQL = FIND_ALL_NEWS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
+        String changedSQL = FIND_ALL_NEWS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findErrors(String multiplicator,String pageLimit,String dateInterval) {
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
-        String changedSQL = FIND_ALL_ERRORS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
+        String changedSQL = FIND_ALL_ERRORS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public List<TriggerBE> findInProgress(String multiplicator,String pageLimit,String dateInterval) {
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
         int actualOffset = Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
-        String changedSQL = FIND_ALL_IN_PROGRESS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", dateInterval);
+        String changedSQL = FIND_ALL_IN_PROGRESS.replace("$limit$", pageLimit).replace("$offset$", Integer.toString(actualOffset)).replace("$dateInterval$", actualDateInterval);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
     public void deleteEntries(String status, String dateInterval) {
@@ -309,12 +314,12 @@ public class TriggerDAO implements DataAccessObject {
                 actualStatus = "5";
         }
         if(actualStatus.equals("5")){
-            String actualDataInterval = dateInterval.replace("%20", " ");
-            String changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDataInterval);
+            String actualDateInterval = changeTimestampToInterval(dateInterval);
+            String changedSQL = DELETE_ALL_ENTRIES.replace("$dateInterval$", actualDateInterval);
             basicDAO.executeQuery(changedSQL);
         }
         else{
-            String actualDateInterval = dateInterval.replace("%20", " ");
+            String actualDateInterval = changeTimestampToInterval(dateInterval);
             String changedSQL = DELETE_ENTRIES.replace("$status$", actualStatus).replace("$dateInterval$", actualDateInterval);
             basicDAO.executeQuery(changedSQL);
         }
@@ -330,7 +335,37 @@ public class TriggerDAO implements DataAccessObject {
     public TriggerBE findUnprocessedCount(){
         return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
     }
-
+    private String changeTimestampToInterval(String timestamp){
+        String interval = "";
+        String actualTimestamp = timestamp.replace("%20", " ");
+        switch (timestamp){
+            case "alle":
+                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '20 YEAR'";
+                break;
+            case "letzter Monat":
+                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'";
+                break;
+            case "letzten drei Monate":
+                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH'";
+                break;
+            case "letzten sechs Monate":
+                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH'";
+                break;
+            case "im letzten Jahr":
+                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH'";
+                break;
+            case  "älter als ein Monat":
+                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH'";
+                break;
+            case "älter als drei Monate":
+                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH'";
+                break;
+            case "älter als sechs Monate":
+                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'";
+                break;
+        }
+        return interval;
+    }
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);
