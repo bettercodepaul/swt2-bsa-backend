@@ -240,7 +240,7 @@ public class TriggerDAOTest {
 	@Test
 	public void testDeleteEntriesSuccess() {
 		// Call test method
-		triggerDAO.deleteEntries("Erfolgreich", "1 MONTH");
+		triggerDAO.deleteEntries("Erfolgreich", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 4 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
@@ -249,7 +249,7 @@ public class TriggerDAOTest {
 	@Test
 	public void testDeleteEntriesNew() {
 		// Call test method
-		triggerDAO.deleteEntries("Neu", "1 MONTH");
+		triggerDAO.deleteEntries("Neu", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 1 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
@@ -258,7 +258,7 @@ public class TriggerDAOTest {
 	@Test
 	public void testDeleteEntriesError() {
 		// Call test method
-		triggerDAO.deleteEntries("Fehlgeschlagen", "1 MONTH");
+		triggerDAO.deleteEntries("Fehlgeschlagen", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 3 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
@@ -267,7 +267,7 @@ public class TriggerDAOTest {
 	@Test
 	public void testDeleteEntriesInProgress() {
 		// Call test method
-		triggerDAO.deleteEntries("Laufend", "1 MONTH");
+		triggerDAO.deleteEntries("Laufend", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 2 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
@@ -276,7 +276,7 @@ public class TriggerDAOTest {
 	@Test
 	public void testDeleteEntriesAll() {
 		// Call test method
-		triggerDAO.deleteEntries("Alle", "1 MONTH");
+		triggerDAO.deleteEntries("Alle", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
 		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
