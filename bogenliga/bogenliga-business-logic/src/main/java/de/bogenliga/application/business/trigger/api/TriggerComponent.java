@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.trigger.api;
 import java.util.List;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 /**
@@ -23,8 +24,13 @@ public interface TriggerComponent extends ComponentFacade{
     void deleteEntries(String status, String dateInterval);
 
     List<TriggerDO> findAllUnprocessed();
+    TriggerCountDO findAllCount();
+    TriggerCountDO findUnprocessedCount();
+    TriggerCountDO findInProgressCount();
+
 
     TriggerDO create(TriggerDO triggerDO, Long currentUserId);
 
     TriggerDO update(TriggerDO triggerDO, Long currentUserId);
 }
+
