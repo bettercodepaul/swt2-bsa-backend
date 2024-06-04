@@ -182,6 +182,14 @@ public class TriggerService implements ServiceFacade {
         return TriggerDTOMapper.toCountDTO.apply(triggerDO);
     }
 
+    @GetMapping("/check")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerCountDTO findInProgressCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findInProgressCount();
+
+        return TriggerDTOMapper.toCountDTO.apply(triggerDO);
+    }
+
 
 
     @GetMapping("/findAllWithPages")
