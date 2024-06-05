@@ -39,6 +39,7 @@ public class LigatabelleMapper implements ValueObjectMapper {
         final int satzpktDifferenz=be.getSatzpktDifferenz();
         final int sortierung=be.getSortierung();
         final int tabellenplatz=be.getTabellenplatz();
+        final int matchCount=be.getMatchCount();
 
         // technical parameter
        
@@ -50,7 +51,7 @@ public class LigatabelleMapper implements ValueObjectMapper {
 
         return new LigatabelleDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt, satzpktGegen,
-                satzpktDifferenz, sortierung,tabellenplatz);
+                satzpktDifferenz, sortierung,tabellenplatz, matchCount);
 
     };
 
@@ -79,6 +80,7 @@ public class LigatabelleMapper implements ValueObjectMapper {
         ligatabelleBE.setSatzpktDifferenz(vo.getSatzpktDifferenz());
         ligatabelleBE.setSortierung(vo.getsortierung());
         ligatabelleBE.setTabellenplatz(vo.gettabellenplatz());
+        ligatabelleBE.setMatchCount(vo.getMatchCount());
 
 
         return ligatabelleBE;

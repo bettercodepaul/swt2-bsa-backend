@@ -41,6 +41,7 @@ public class LigatabelleServiceTest {
     private static final int satzpktDifferenz = 15;
     private static final int sortierung = 0;
     private static final int tabellenplatz = 8;
+    private static final int matchCount = 0;
 
     public static LigatabelleDO getLigatabelleDO() {
         final LigatabelleDO expectedLigatabelleDO = new LigatabelleDO();
@@ -59,7 +60,7 @@ public class LigatabelleServiceTest {
         expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
-
+        expectedLigatabelleDO.setMatchCount(matchCount);
 
         return expectedLigatabelleDO;
     }
@@ -79,7 +80,8 @@ public class LigatabelleServiceTest {
         satzpktGegen,
         satzpktDifferenz,
         sortierung,
-        tabellenplatz
+        tabellenplatz,
+                matchCount
         );
     }
 
@@ -137,6 +139,7 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+        assertThat(actualDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         // verify invocations
         verify(ligatabelleComponent).getLigatabelleVeranstaltung(veranstaltungId);
@@ -178,6 +181,7 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+        assertThat(actualDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         // verify invocations
         verify(ligatabelleComponent).getLigatabelleWettkampf(wettkampfId);
