@@ -161,7 +161,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     SCHUETZESATZ5_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
-            .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
+            .orderBy(MATCHNR_TABLE)
             .compose().toString();
 
 
