@@ -303,7 +303,6 @@ public class MatchServiceTest {
         ligamatchBE.setWettkampftypId(MATCH_WETTKAMP_TYP_ID);
         ligamatchBE.setWettkampfTag(MATCH_WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MATCH_MANNSCHAFT_NAME);
-        ligamatchBE.setRueckennummer(MATCH_RUECKENNUMMER);
         return ligamatchBE;
     }
 

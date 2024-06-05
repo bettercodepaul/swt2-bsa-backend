@@ -306,7 +306,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public List<Long> getAllowedMitglieder(long wettkampfid, long mannschaft1Id, long mannschaft2Id){
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         //
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft1Id,wettkampfid);
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList =new ArrayList<>();
+        mannschaftsmitgliedDOList.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft1Id,wettkampfid));
         mannschaftsmitgliedDOList.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft2Id,wettkampfid));
         List<Long> allowedList=new ArrayList<>();
         for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
