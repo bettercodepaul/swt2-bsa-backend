@@ -79,7 +79,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE
             )
-            .orderBy(DSBMITGLIEDID_TABLE)
+            .orderBy(RUECKENNUMMER_TABLE)
             .compose().toString();
 
     // wrap all specific config parameters
@@ -110,7 +110,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE
             )
-            .orderBy(DSBMITGLIEDID_TABLE)
+            .orderBy(RUECKENNUMMER_TABLE)
             .compose().toString();
 
 
