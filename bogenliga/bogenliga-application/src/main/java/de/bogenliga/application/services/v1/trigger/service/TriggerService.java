@@ -324,9 +324,15 @@ public class TriggerService implements ServiceFacade {
     }
 
     @Scheduled(cron = "0 0 22 * * ?")
-    public void scheduler(){
+    public void scheduler() {
         final long userId = 0;
-        syncData(userId);
+        executorService.submit(() -> {
+            try {
+                syncData(userId);
+            } catch (Exception e) {
+                LOGGER.debug("Scheduled sync failed.", e);
+            }
+        });
     }
 
     public void syncData(Long triggeringUserId) {
@@ -339,14 +345,25 @@ public class TriggerService implements ServiceFacade {
         List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId, lastSync);
         LOGGER.info("Computed {} changes", changes.size());
 
+        boolean hasChanges = !changes.isEmpty();
+        boolean allSuccessful = true;
+
         for (TriggerChange<?> change : changes) {
             boolean success = change.tryMigration();
             LOGGER.debug("Migrated {} (Success: {})", change.getAltsystemDataObject(), success);
+            if (!success) {
+                allSuccessful = false;
+            }
         }
-        LOGGER.info("Was nettes :)");
 
-        //Updated den Timestamp nach dem sync
-        setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
+        if (hasChanges && allSuccessful) {
+            LOGGER.info("Updating migration timestamp");
+            setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
+        } else if (hasChanges) {
+            LOGGER.info("Some changes were not successfully processed");
+        } else {
+            LOGGER.info("No changes to process");
+        }
     }
 
 
