@@ -114,7 +114,7 @@ public class LigatabelleDAO implements DataAccessObject {
                     "ligatabelle_satzpkt_gegen," +
                     "ligatabelle_satzpkt_differenz," +
                     "ligatabelle_sortierung," +
-                    "ligatabelle_match_count" +
+                    "ligatabelle_match_count, " +
                     "row_number()  over (" +
                         "order by ligatabelle_matchpkt desc ," +
                         "ligatabelle_matchpkt_gegen," +
