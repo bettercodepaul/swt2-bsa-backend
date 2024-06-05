@@ -25,7 +25,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  * & Alessa Hackh
  */
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = {"http://bogenliga.de", "https://bogenliga.de",
+        "http://app.bogenliga.de", "https://app.bogenliga.de"})
 @RequestMapping("v1/schuetzenstatistikwettkampf")
 public class SchuetzenstatistikWettkampfService implements ServiceFacade {
 
