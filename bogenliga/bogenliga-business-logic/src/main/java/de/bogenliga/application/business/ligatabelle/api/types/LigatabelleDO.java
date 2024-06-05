@@ -32,6 +32,7 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     private int satzpktDifferenz;
     private int sortierung;
     private int tabellenplatz;
+    private int matchCount;
 
 
 
@@ -76,7 +77,8 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
             final int satzpktGegen,
             final int satzpktDifferenz,
             final int sortierung,
-            final int tabellenplatz
+            final int tabellenplatz,
+            final int matchCount
             ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -93,6 +95,7 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
         this.satzpktDifferenz = satzpktDifferenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
+        this.matchCount = matchCount;
     }
 
 
@@ -145,13 +148,15 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     public int gettabellenplatz() { return tabellenplatz; }
     public void settabellenplatz(int tabellenplatz) { this.tabellenplatz = tabellenplatz; }
 
+    public int getMatchCount() { return matchCount; }
+    public void setMatchCount(int matchCount) { this.matchCount = matchCount; }
 
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt,
-                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
+                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz, matchCount);
     }
 
     @Override
@@ -177,7 +182,8 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
                 satzpktGegen == that.satzpktGegen &&
                 satzpktDifferenz == that.satzpktDifferenz &&
                 sortierung == that.sortierung &&
-                tabellenplatz == that.tabellenplatz;
+                tabellenplatz == that.tabellenplatz &&
+                matchCount == that.matchCount;
 
     }
 

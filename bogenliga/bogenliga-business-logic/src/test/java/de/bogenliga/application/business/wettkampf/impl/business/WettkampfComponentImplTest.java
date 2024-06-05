@@ -289,7 +289,7 @@ public class WettkampfComponentImplTest {
     {
         LigatabelleDO ligaTabelle = new LigatabelleDO(wettkampf_Veranstaltung_Id,"Test Veranstaltung",1l,
                 (int)wettkampf_Tag,mannschaft_id,42,42l,"Bogensport Muster Hausen",1,2,
-                3,4,5,1,1);
+                3,4,5,1,1,0);
         return ligaTabelle;
     }
 

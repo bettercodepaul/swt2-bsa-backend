@@ -157,14 +157,6 @@ public class TriggerService implements ServiceFacade {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
-    /*@GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public List<TriggerDTO> findAllUnprocessed() {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
-
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
-    }*/
 
     //TODO GetMapping der Methoden testen und bei Bedarf anpassen
     @GetMapping("/firstCount")
@@ -178,6 +170,14 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public TriggerCountDTO findUnprocessedCount() {
         final TriggerCountDO triggerDO = triggerComponent.findUnprocessedCount();
+
+        return TriggerDTOMapper.toCountDTO.apply(triggerDO);
+    }
+
+    @GetMapping("/check")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerCountDTO findInProgressCount() {
+        final TriggerCountDO triggerDO = triggerComponent.findInProgressCount();
 
         return TriggerDTOMapper.toCountDTO.apply(triggerDO);
     }

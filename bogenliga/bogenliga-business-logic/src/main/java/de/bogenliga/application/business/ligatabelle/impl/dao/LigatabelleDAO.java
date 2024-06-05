@@ -45,6 +45,7 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String SATZPKTDIFFERENZ_BE = "satzpktDifferenz";
     private static final String SORTIERUNG_BE = "sortierung";
     private static final String TABELLENPLATZ_BE = "tabellenplatz";
+    private static final String MATCH_COUNT_BE = "matchCount";
 
     private static final String VERANSTALTUNGID_TABLE = "ligatabelle_veranstaltung_id";
     private static final String VERANSTALTUNGNAME_TABLE = "ligatabelle_veranstaltung_name";
@@ -61,6 +62,7 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String SATZPKTDIFFERENZ_TABLE = "ligatabelle_satzpkt_differenz";
     private static final String SORTIERUNG_TABLE = "ligatabelle_sortierung";
     private static final String TABELLENPLATZ_TABLE = "tabellenplatz";
+    private static final String MATCH_COUNT_TABLE = "ligatabelle_match_count";
 
     /*
      * SQL queries
@@ -78,6 +80,7 @@ public class LigatabelleDAO implements DataAccessObject {
            "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag, lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
                 "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name, lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
            "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
+                "lt.ligatabelle_match_count," +
            "row_number()  over (" +
              "order by lt.ligatabelle_matchpkt desc NULLS LAST, lt.ligatabelle_matchpkt_gegen NULLS LAST," +
                "lt.ligatabelle_satzpkt_differenz desc NULLS LAST, lt.ligatabelle_satzpkt desc NULLS LAST," +
@@ -111,6 +114,7 @@ public class LigatabelleDAO implements DataAccessObject {
                     "ligatabelle_satzpkt_gegen," +
                     "ligatabelle_satzpkt_differenz," +
                     "ligatabelle_sortierung," +
+                    "ligatabelle_match_count" +
                     "row_number()  over (" +
                         "order by ligatabelle_matchpkt desc ," +
                         "ligatabelle_matchpkt_gegen," +
@@ -171,6 +175,7 @@ public class LigatabelleDAO implements DataAccessObject {
         columnsToFieldsMap.put(SATZPKTDIFFERENZ_TABLE, SATZPKTDIFFERENZ_BE);
         columnsToFieldsMap.put(SORTIERUNG_TABLE, SORTIERUNG_BE);
         columnsToFieldsMap.put(TABELLENPLATZ_TABLE, TABELLENPLATZ_BE);
+        columnsToFieldsMap.put(MATCH_COUNT_TABLE, MATCH_COUNT_BE);
 
         return columnsToFieldsMap;
     }

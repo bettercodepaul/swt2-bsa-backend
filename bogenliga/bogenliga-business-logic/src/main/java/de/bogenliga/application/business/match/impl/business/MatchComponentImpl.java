@@ -223,6 +223,15 @@ public class MatchComponentImpl implements MatchComponent {
 
 
     @Override
+    public List<MatchDO> findByVeranstaltungId(Long veranstaltungId) {
+        checkPreconditions(veranstaltungId, PRECONDITION_MSG_WT0_VERANSTALTUNG);
+
+        final List<MatchBE> matchBEList = matchDAO.findByVeranstaltungId(veranstaltungId);
+        return  matchBEList.stream().map(MatchMapper.toMatchDO).toList();
+    }
+
+
+    @Override
     public MatchDO create(MatchDO matchDO, Long currentUserId) {
         checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
