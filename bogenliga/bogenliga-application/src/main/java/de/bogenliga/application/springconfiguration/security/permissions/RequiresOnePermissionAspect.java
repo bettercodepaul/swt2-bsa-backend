@@ -174,7 +174,6 @@ public class RequiresOnePermissionAspect {
         }
         return false;
     }
-
     /**
      * method to check, if a user has a Specific permission and
      * UserId is matching the AusrichterID of the wettkampf
