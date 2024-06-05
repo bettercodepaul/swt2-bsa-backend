@@ -67,6 +67,7 @@ public class LigatabelleDAOTest {
         assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
         assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
+        assertThat(actual.get(0).getMatchCount()).isEqualTo(expectedBE.getMatchCount());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -105,6 +106,7 @@ public class LigatabelleDAOTest {
         assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
         assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
+        assertThat(actual.get(0).getMatchCount()).isEqualTo(expectedBE.getMatchCount());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
