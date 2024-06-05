@@ -33,6 +33,7 @@ public class LigatabelleMapperTest {
         assertThat(actual.getSatzpktDifferenz()).isEqualTo(ligatabelleBE.getSatzpktDifferenz());
         assertThat(actual.getsortierung()).isEqualTo(ligatabelleBE.getSortierung());
         assertThat(actual.gettabellenplatz()).isEqualTo(ligatabelleBE.getTabellenplatz());
+        assertThat(actual.getMatchCount()).isEqualTo(ligatabelleBE.getMatchCount());
 
         LigatabelleDO ligatabelleDO = new LigatabelleDO(
                 ligatabelleBE.getVeranstaltungId(),
@@ -49,7 +50,8 @@ public class LigatabelleMapperTest {
                 ligatabelleBE.getSatzpktGegen(),
                 ligatabelleBE.getSatzpktDifferenz(),
                 ligatabelleBE.getSortierung(),
-                ligatabelleBE.getTabellenplatz());
+                ligatabelleBE.getTabellenplatz(),
+                ligatabelleBE.getMatchCount());
 
         assertThat(actual.hashCode()).isEqualTo(ligatabelleDO.hashCode());
     }
@@ -76,6 +78,7 @@ public class LigatabelleMapperTest {
         assertThat(actual.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actual.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actual.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+        assertThat(actual.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
     }
 
 }

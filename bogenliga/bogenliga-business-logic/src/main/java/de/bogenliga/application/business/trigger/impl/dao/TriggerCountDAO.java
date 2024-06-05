@@ -34,6 +34,11 @@ public class TriggerCountDAO implements DataAccessObject {
                     + " WHERE altsystem_aenderung.status = 4"
                     + " OR altsystem_aenderung.status = 3";
 
+    private static final String FIND_IN_PROGRESS_COUNT =
+            selectCount
+                    + " FROM altsystem_aenderung"
+                    + " WHERE altsystem_aenderung.status = 2";
+
     @Autowired
     public TriggerCountDAO(final BasicDAO basicDAO){
         this.basicDAO = basicDAO;
@@ -50,8 +55,7 @@ public class TriggerCountDAO implements DataAccessObject {
     }
 
     public TriggerCountBE findAllCount(){ return basicDAO.selectSingleEntity(TRIGGER, FIND_ALL_COUNT);}
-    public TriggerCountBE findUnprocessedCount(){
-        return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
-    }
+    public TriggerCountBE findUnprocessedCount(){return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);}
+    public TriggerCountBE findInProgressCount(){return basicDAO.selectSingleEntity(TRIGGER, FIND_IN_PROGRESS_COUNT);}
 
 }
