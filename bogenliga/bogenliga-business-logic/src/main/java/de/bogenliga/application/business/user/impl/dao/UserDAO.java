@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -166,7 +167,7 @@ public class UserDAO implements DataAccessObject {
         DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsbMitgliedId());
         if(dsbMitgliedBE != null) {
             dsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-            dsbMitgliedDAO.update(dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
+            dsbMitgliedDAO.update((DsbMitgliedWithoutVereinsnameBE) dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
         }
 
         return persistedUser;

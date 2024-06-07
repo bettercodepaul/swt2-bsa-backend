@@ -36,6 +36,7 @@ public class UserProfileComponentImplTest {
     private static final String EMAIL = "Sorscha.Kratikoff@test.de";
 
     private static final Boolean KAMPFRICHTER = true;
+    private static final Date BEITRITTSDATUM = Date.valueOf("2001-01-01");
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -63,12 +64,13 @@ public class UserProfileComponentImplTest {
         expectedBE.setDsbMitgliedVereinsId(VEREINSID);
         expectedBE.setDsbMitgliedVereinName(VEREINNAME);
         expectedBE.setDsbMitgliedUserId(USERID);
+        expectedBE.setDsbMitgliedBeitrittsdatum(BEITRITTSDATUM);
 
         return expectedBE;
     }
 
     public static DsbMitgliedDO getDsbMitgliedDO() {
-        final DsbMitgliedDO expectedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, VEREINNAME, USERID, KAMPFRICHTER);
+        final DsbMitgliedDO expectedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, VEREINNAME, USERID, KAMPFRICHTER, BEITRITTSDATUM);
 
         return expectedDO;
     }

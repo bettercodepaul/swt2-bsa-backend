@@ -61,37 +61,37 @@ public class WettkampfTypComponentImpl implements WettkampfTypComponent {
 
 
     @Override
-    public WettkampfTypDO create(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
-        checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
+    public WettkampfTypDO create(final WettkampfTypDO wettkampftypDO, final long userId) {
+        checkDsbMitgliedDO(wettkampftypDO, userId);
 
         final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
-        final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.create(wettkampftypBE, currentWettkampftypID);
+        final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.create(wettkampftypBE, userId);
 
         return WettkampfTypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
     @Override
-    public WettkampfTypDO update(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
-        checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
+    public WettkampfTypDO update(final WettkampfTypDO wettkampftypDO, final long userId) {
+        checkDsbMitgliedDO(wettkampftypDO, userId);
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
         final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
-        final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.update(wettkampftypBE, currentWettkampftypID);
+        final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.update(wettkampftypBE, userId);
 
         return WettkampfTypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
     @Override
-    public void delete(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
+    public void delete(final WettkampfTypDO wettkampftypDO, final long userId) {
         Preconditions.checkNotNull(wettkampftypDO, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
-        Preconditions.checkArgument(currentWettkampftypID >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
         final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
 
-        wettkampftypDAO.delete(wettkampftypBE, currentWettkampftypID);
+        wettkampftypDAO.delete(wettkampftypBE, userId);
 
     }
 

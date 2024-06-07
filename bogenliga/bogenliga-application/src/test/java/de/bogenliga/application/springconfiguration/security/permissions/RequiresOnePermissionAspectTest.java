@@ -102,7 +102,7 @@ public class RequiresOnePermissionAspectTest {
 
     protected DsbMitgliedDO getDsbMitgliedDO(Long dsb_id, Long vereinid) {
         return new DsbMitgliedDO(dsb_id, "Vor-Na-Me", "Nach-Na-Me",
-                Date.valueOf("1991-09-01"), "nat", "nr", vereinid, "Vereinname", Long.valueOf(1), false);
+                Date.valueOf("1991-09-01"), "nat", "nr", vereinid, "Vereinname", Long.valueOf(1), false, Date.valueOf("2001-01-01"));
      }
 
 

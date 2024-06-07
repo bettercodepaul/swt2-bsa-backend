@@ -125,8 +125,8 @@ public class WettkampfTypDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the updated wettkampftyp entry
      */
-    public WettkampfTypBE update(final WettkampfTypBE wettkampftypBE, final long currentWettkampftypId) {
-        basicDao.setModificationAttributes(wettkampftypBE, currentWettkampftypId);
+    public WettkampfTypBE update(final WettkampfTypBE wettkampftypBE, final long userId) {
+        basicDao.setModificationAttributes(wettkampftypBE, userId);
 
         return basicDao.updateEntity(WETTKAMPFTYP, wettkampftypBE, WETTKAMPFTYP_BE_ID);
     }

@@ -20,11 +20,9 @@ public class RawTriggerBE extends CommonBusinessEntity implements BusinessEntity
     private String nachricht;
     private Timestamp runAtUtc;
 
-
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;

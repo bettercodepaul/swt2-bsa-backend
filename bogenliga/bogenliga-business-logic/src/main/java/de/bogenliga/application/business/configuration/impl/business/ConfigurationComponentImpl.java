@@ -81,6 +81,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
+        configurationBE.setCreatedByUserId(currentUser);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
@@ -94,6 +95,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
+        configurationBE.setLastModifiedByUserId(currentUser);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }

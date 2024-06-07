@@ -76,8 +76,8 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
      */
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Veranstaltung
-    hierbei wird über die Wettkämpfe hinweg gemittelt - eigentlich falsch, da jeder Wettkampf abweiochende
-    Pfeilanzahlne hat --> Änderung an DB-View notwendig.-
+    hierbei wird über die Wettkämpfe hinweg gemittelt - eigentlich falsch, da jeder Wettkampf abweichende
+    Pfeilanzahlen hat --> Änderung an DB-View notwendig.-
     Hier wird der Group by jetzt ohne WettkampfID und WettkampfTag gemacht -> werden zu 0 gesetzt
      */
     private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
@@ -112,7 +112,6 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<SchuetzenstatistikBE> SCHUETZENSTATISTIK = new BusinessEntityConfiguration<>(
             SchuetzenstatistikBE.class, TABLE, getColumnsToFieldsMap(), LOG);
-
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
      */
@@ -162,7 +161,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     SCHUETZESATZ5_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
-            .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
+            .orderBy(MATCHNR_TABLE)
             .compose().toString();
 
 
