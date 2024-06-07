@@ -90,6 +90,18 @@ public class LigaComponentImpl implements LigaComponent {
         return completeLiga(result);
     }
 
+    @Override
+    public List<LigaDO> findByLowest(){
+        final ArrayList<LigaDO> lowestList = new ArrayList<>();
+        final List<LigaBE> ligaBEList = ligaDAO.findByLowest();
+
+        for (int i = 0; i < ligaBEList.size(); i++) {
+
+            lowestList.add(i, completeLiga(ligaBEList.get(i)));
+
+        }
+        return lowestList;
+    }
 
     @Override
     public LigaDO checkExist(long id) {
