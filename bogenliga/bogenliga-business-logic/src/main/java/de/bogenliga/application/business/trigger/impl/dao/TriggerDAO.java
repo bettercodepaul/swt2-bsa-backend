@@ -52,8 +52,6 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
     private static final String TRIGGER_TABLE_RUNATUTC = "run_at_utc";
     private static final String TRIGGER_TABLE_CREATEUSER = "created_by";
-    private static final String DATE_INTERVAL_PLACEHOLDER = "$dateInterval$";
-    private static final String STATUS_PLACEHOLDER = "$status$";
     private static final String SORTING = " ORDER BY altsystem_aenderung.last_modified_at_utc DESC";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
@@ -75,7 +73,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
+                    + SORTING
                     + " LIMIT 500";
 
     private static final String FIND_ALL_UNPROCESSED =
@@ -87,7 +85,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
                     + "         where status != 4"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
+                    + SORTING
                     + " LIMIT 500";
     private static final String FIND_ALL_COUNT =
             selectCount
@@ -286,11 +284,7 @@ public class TriggerDAO implements DataAccessObject {
         }
         return interval;
     }
-    private String buildQuery(String baseQuery, String pageLimit, int actualOffset, String dateInterval) {
-        return baseQuery.replace("$limit$", pageLimit)
-                .replace("$offset$", Integer.toString(actualOffset))
-                .replace("$dateInterval$", dateInterval);
-    }
+
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);
 
