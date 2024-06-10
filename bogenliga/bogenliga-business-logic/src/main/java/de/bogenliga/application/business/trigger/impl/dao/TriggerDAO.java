@@ -54,6 +54,7 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_TABLE_CREATEUSER = "created_by";
     private static final String DATE_INTERVAL_PLACEHOLDER = "$dateInterval$";
     private static final String STATUS_PLACEHOLDER = "$status$";
+    private static final String SORTING = " ORDER BY altsystem_aenderung.last_modified_at_utc DESC";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
             TriggerBE.class, TABLE, getColumsToFieldsMapWithJoin(), LOGGER);
@@ -66,15 +67,6 @@ public class TriggerDAO implements DataAccessObject {
     /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC";
-
     private static final String FIND_ALL_LIMITED =
             "SELECT * "
                     + " FROM altsystem_aenderung"
@@ -115,108 +107,6 @@ public class TriggerDAO implements DataAccessObject {
                             + "         AND st.status_name != 'SUCCESS'"
                             + "         where status != 4"
                             + " LIMIT 500";
-    private static final String FIND_SUCCEEDED_COUNT =
-            selectCount
-                            + " FROM altsystem_aenderung"
-                            + "     LEFT JOIN altsystem_aenderung_operation op"
-                            + "         ON altsystem_aenderung.operation = op.operation_id"
-                            + "     LEFT JOIN altsystem_aenderung_status st"
-                            + "         ON altsystem_aenderung.status = st.status_id"
-                            + "         where status = 4";
-    private static final String FIND_NEW_COUNT =
-            selectCount
-                            + " FROM altsystem_aenderung"
-                            + "     LEFT JOIN altsystem_aenderung_operation op"
-                            + "         ON altsystem_aenderung.operation = op.operation_id"
-                            + "     LEFT JOIN altsystem_aenderung_status st"
-                            + "         ON altsystem_aenderung.status = st.status_id"
-                            + "         where status = 1";
-    private static final String FIND_IN_PROGRESS_COUNT =
-            selectCount
-                            + " FROM altsystem_aenderung"
-                            + "     LEFT JOIN altsystem_aenderung_operation op"
-                            + "         ON altsystem_aenderung.operation = op.operation_id"
-                            + "     LEFT JOIN altsystem_aenderung_status st"
-                            + "         ON altsystem_aenderung.status = st.status_id"
-                            + "         where status = 2";
-
-    private static final String FIND_ERRORS_COUNT =
-            selectCount
-                            + " FROM altsystem_aenderung"
-                            + "     LEFT JOIN altsystem_aenderung_operation op"
-                            + "         ON altsystem_aenderung.operation = op.operation_id"
-                            + "     LEFT JOIN altsystem_aenderung_status st"
-                            + "         ON altsystem_aenderung.status = st.status_id"
-                            + "         where status = 3"
-                    + " ORDER BY last_modified_at_utc"
-                    + " LIMIT 500";
-    private static final String FIND_ALL_WITH_PAGES =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         WHERE $dateInterval$"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
-                    + " LIMIT $limit$ OFFSET $offset$";
-    private static final String FIND_ALL_SUCCESSED =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         where status = 4"
-                    + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
-                    + " LIMIT $limit$ OFFSET $offset$";
-    private static final String FIND_ALL_NEWS =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         where status = 1"
-                    + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
-                    + " LIMIT $limit$ OFFSET $offset$";
-    private static final String FIND_ALL_IN_PROGRESS =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         where status = 2"
-                    + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
-                    + " LIMIT $limit$ OFFSET $offset$";
-
-    private static final String FIND_ALL_ERRORS =
-            "SELECT * "
-                    + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op"
-                    + "         ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st"
-                    + "         ON altsystem_aenderung.status = st.status_id"
-                    + "         where status = 3"
-                    + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
-                    + " LIMIT $limit$ OFFSET $offset$";
-
-    private static final String DELETE_ENTRIES =
-            "START TRANSACTION; " +
-                    "DELETE FROM altsystem_aenderung " +
-                    "WHERE status = $status$ " +
-                    "AND $dateInterval$; " +
-                    "COMMIT;";
-    private static final String DELETE_ALL_ENTRIES =
-            "START TRANSACTION; " +
-                    "DELETE FROM altsystem_aenderung " +
-                    "WHERE $dateInterval$; " +
-                    "COMMIT;";
     private final BasicDAO basicDAO;
 
 
@@ -265,60 +155,91 @@ public class TriggerDAO implements DataAccessObject {
      */
 
     public List<TriggerBE> findAll() {
-        return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
+        return basicDAO.selectEntityList(TRIGGER, buildFindAllQuery(null, null, null));
     }
-    public List<TriggerBE> findAllWithPages(String multiplicator,String pageLimit,String dateInterval) {
-        String changedSQL = executeQuery(FIND_ALL_WITH_PAGES,multiplicator,pageLimit,dateInterval);
-        return basicDAO.selectEntityList(TRIGGER, changedSQL);
+
+    public List<TriggerBE> findAllWithPages(String multiplicator, String pageLimit, String dateInterval) {
+        String query = buildFindAllQuery(pageLimit, multiplicator, dateInterval);
+        return basicDAO.selectEntityList(TRIGGER, query);
     }
-    public List<TriggerBE> findSuccessed(String multiplicator,String pageLimit,String dateInterval) {
-        String changedSQL = executeQuery(FIND_ALL_SUCCESSED,multiplicator,pageLimit,dateInterval);
-        return basicDAO.selectEntityList(TRIGGER, changedSQL);
+
+    public List<TriggerBE> findSuccessed(String multiplicator, String pageLimit, String dateInterval) {
+        String query = buildFindByStatusQuery(4, pageLimit, multiplicator, dateInterval);
+        return basicDAO.selectEntityList(TRIGGER, query);
     }
-    public List<TriggerBE> findNews(String multiplicator,String pageLimit,String dateInterval) {
-        String changedSQL = executeQuery(FIND_ALL_NEWS,multiplicator,pageLimit,dateInterval);
-        return basicDAO.selectEntityList(TRIGGER, changedSQL);
+
+    public List<TriggerBE> findNews(String multiplicator, String pageLimit, String dateInterval) {
+        String query = buildFindByStatusQuery(1, pageLimit, multiplicator, dateInterval);
+        return basicDAO.selectEntityList(TRIGGER, query);
     }
-    public List<TriggerBE> findErrors(String multiplicator,String pageLimit,String dateInterval) {
-        String changedSQL = executeQuery(FIND_ALL_ERRORS,multiplicator,pageLimit,dateInterval);
-        return basicDAO.selectEntityList(TRIGGER, changedSQL);
+
+    public List<TriggerBE> findErrors(String multiplicator, String pageLimit, String dateInterval) {
+        String query = buildFindByStatusQuery(3, pageLimit, multiplicator, dateInterval);
+        return basicDAO.selectEntityList(TRIGGER, query);
     }
-    public List<TriggerBE> findInProgress(String multiplicator,String pageLimit,String dateInterval) {
-        String changedSQL = executeQuery(FIND_ALL_IN_PROGRESS,multiplicator,pageLimit,dateInterval);
-        return basicDAO.selectEntityList(TRIGGER, changedSQL);
+
+    public List<TriggerBE> findInProgress(String multiplicator, String pageLimit, String dateInterval) {
+        String query = buildFindByStatusQuery(2, pageLimit, multiplicator, dateInterval);
+        return basicDAO.selectEntityList(TRIGGER, query);
     }
-    private String executeQuery(String query,String multiplicator,String pageLimit,String dateInterval){
-        String actualDateInterval = changeTimestampToInterval(dateInterval);
-        int actualOffset = calcOffset(multiplicator,pageLimit);
-        return buildQuery(FIND_ALL_IN_PROGRESS,pageLimit,actualOffset,actualDateInterval);
+
+    private String buildFindAllQuery(String pageLimit, String multiplicator, String dateInterval) {
+        StringBuilder query = new StringBuilder("SELECT * FROM altsystem_aenderung");
+        query.append(" LEFT JOIN altsystem_aenderung_operation op ON altsystem_aenderung.operation = op.operation_id");
+        query.append(" LEFT JOIN altsystem_aenderung_status st ON altsystem_aenderung.status = st.status_id");
+        if (dateInterval != null) {
+            query.append(" WHERE ").append(changeTimestampToInterval(dateInterval));
+        }
+        query.append(SORTING);
+        if (pageLimit != null && multiplicator != null) {
+            int offset = calcOffset(multiplicator, pageLimit);
+            query.append(" LIMIT ").append(pageLimit).append(" OFFSET ").append(offset);
+        }
+        return query.toString();
     }
+
+    private String buildFindByStatusQuery(int status, String pageLimit, String multiplicator, String dateInterval) {
+        StringBuilder query = new StringBuilder("SELECT * FROM altsystem_aenderung");
+        query.append(" LEFT JOIN altsystem_aenderung_operation op ON altsystem_aenderung.operation = op.operation_id");
+        query.append(" LEFT JOIN altsystem_aenderung_status st ON altsystem_aenderung.status = st.status_id");
+        query.append(" WHERE altsystem_aenderung.status = ").append(status);
+        if (dateInterval != null) {
+            query.append(" AND ").append(changeTimestampToInterval(dateInterval));
+        }
+        query.append(SORTING);
+        if (pageLimit != null && multiplicator != null) {
+            int offset = calcOffset(multiplicator, pageLimit);
+            query.append(" LIMIT ").append(pageLimit).append(" OFFSET ").append(offset);
+        }
+        return query.toString();
+    }
+
     public void deleteEntries(String status, String dateInterval) {
-        String actualStatus;
+        String actualStatus = resolveStatus(status);
+        String actualDateInterval = changeTimestampToInterval(dateInterval);
+        String query = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE ";
+        if ("5".equals(actualStatus)) {
+            query += actualDateInterval;
+        } else {
+            query += "status = " + actualStatus + " AND " + actualDateInterval;
+        }
+        query += "; COMMIT;";
+        basicDAO.executeQuery(query);
+    }
+
+    private String resolveStatus(String status) {
         switch (status) {
             case "Neu":
-                actualStatus = "1";
-                break;
+                return "1";
             case "Laufend":
-                actualStatus = "2";
-                break;
+                return "2";
             case "Fehlgeschlagen":
-                actualStatus = "3";
-                break;
+                return "3";
             case "Erfolgreich":
-                actualStatus = "4";
-                break;
+                return "4";
             default:
-                actualStatus = "5";
+                return "5";
         }
-        String actualDateInterval = changeTimestampToInterval(dateInterval);
-        String changedSQL;
-        if ("5".equals(actualStatus)) {
-            changedSQL = DELETE_ALL_ENTRIES.replace(DATE_INTERVAL_PLACEHOLDER, actualDateInterval);
-        } else {
-            changedSQL = DELETE_ENTRIES.replace(STATUS_PLACEHOLDER, actualStatus)
-                    .replace(DATE_INTERVAL_PLACEHOLDER, actualDateInterval);
-        }
-        basicDAO.executeQuery(changedSQL);
     }
     public int calcOffset(String multiplicator,String pageLimit){
         return Integer.parseInt(multiplicator) * Integer.parseInt(pageLimit);
