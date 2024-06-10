@@ -266,14 +266,6 @@ public class TriggerDAO implements DataAccessObject {
         return intervalMap.getOrDefault(timestamp.replace("%20", " "), "");
     }
 
-    public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
-        basicDAO.setCreationAttributes(triggerBE, currentUserId);
-
-        RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
-        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
-        return resolveRawTrigger(rawTrigger);
-    }
-
     public TriggerBE update(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setModificationAttributes(triggerBE, currentUserId);
 
@@ -281,25 +273,12 @@ public class TriggerDAO implements DataAccessObject {
         rawTrigger = basicDAO.updateEntity(RAW_TRIGGER, rawTrigger, TRIGGER_TABLE_ID);
         return resolveRawTrigger(rawTrigger);
     }
+    public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setCreationAttributes(triggerBE, currentUserId);
 
-
-    TriggerBE resolveRawTrigger(RawTriggerBE raw) {
-        TriggerBE created = new TriggerBE();
-        created.setId(raw.getId());
-        created.setKategorie(raw.getKategorie());
-        created.setAltsystemId(raw.getAltsystemId());
-        created.setChangeOperationId(raw.getChangeOperationId());
-        created.setChangeStatusId(raw.getChangeStatusId());
-        created.setNachricht(raw.getNachricht());
-        created.setRunAtUtc(raw.getRunAtUtc());
-
-        TriggerChangeOperation operation = TriggerChangeOperation.parse(raw.getChangeOperationId());
-        TriggerChangeStatus status = TriggerChangeStatus.parse(raw.getChangeStatusId());
-
-        created.setChangeOperation(operation);
-        created.setChangeStatus(status);
-
-        return created;
+        RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
+        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
+        return resolveRawTrigger(rawTrigger);
     }
 
     private RawTriggerBE resolveTrigger(TriggerBE raw) {
@@ -318,6 +297,24 @@ public class TriggerDAO implements DataAccessObject {
 
         created.setChangeOperationId(operationId);
         created.setChangeStatusId(statusId);
+
+        return created;
+    }
+    TriggerBE resolveRawTrigger(RawTriggerBE raw) {
+        TriggerBE created = new TriggerBE();
+        created.setId(raw.getId());
+        created.setKategorie(raw.getKategorie());
+        created.setAltsystemId(raw.getAltsystemId());
+        created.setChangeOperationId(raw.getChangeOperationId());
+        created.setChangeStatusId(raw.getChangeStatusId());
+        created.setNachricht(raw.getNachricht());
+        created.setRunAtUtc(raw.getRunAtUtc());
+
+        TriggerChangeOperation operation = TriggerChangeOperation.parse(raw.getChangeOperationId());
+        TriggerChangeStatus status = TriggerChangeStatus.parse(raw.getChangeStatusId());
+
+        created.setChangeOperation(operation);
+        created.setChangeStatus(status);
 
         return created;
     }
