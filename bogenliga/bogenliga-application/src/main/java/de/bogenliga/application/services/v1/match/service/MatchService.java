@@ -93,6 +93,7 @@ public class MatchService implements ServiceFacade {
     private static final String SERVICE_FIND_BY_ID = "findById";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
     private static final String SERVICE_FIND_BY_MANNSCHAFT_ID = "findByMannschaftId";
+    private static final String SERVICE_FIND_BY_VERANSTALTUNG_ID = "findByVeranstaltungId";
     private static final String SERVICE_SAVE_MATCHES = "saveMatches";
     private static final String SERVICE_CREATE = "create";
     private static final String SERVICE_NEXT = "next";
@@ -290,7 +291,20 @@ public class MatchService implements ServiceFacade {
         return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
     }
 
+    @GetMapping(value = "byVeranstaltungId/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<MatchDTO> findAllByVeranstaltungId(@PathVariable("id") final Long id) {
+        Preconditions.checkNotNull(id,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_VERANSTALTUNG_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(id >= 0,
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_VERANSTALTUNG_ID, CHECKED_PARAM_MATCH_ID));
 
+        LOG.debug("Receive 'findAllByVeranstaltungId' request with ID '{}'", id);
+
+        List<MatchDO> matchDOList = matchComponent.findByVeranstaltungId(id);
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
+    }
 
     /**
      * Save the two edited matches from the findMatchesByIds service.

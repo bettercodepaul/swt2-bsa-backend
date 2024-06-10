@@ -84,6 +84,12 @@ public class TriggerComponentImpl implements TriggerComponent {
         return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
     }
 
+    @Override
+    public TriggerCountDO findInProgressCount(){
+        final TriggerCountBE triggerBECount = triggerCountDAO.findInProgressCount();
+        return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
+    }
+
 
     @Override
     public TriggerDO create(TriggerDO triggerDO, Long currentUserId) {
