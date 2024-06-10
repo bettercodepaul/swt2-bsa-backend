@@ -252,37 +252,18 @@ public class TriggerDAO implements DataAccessObject {
     public TriggerBE findUnprocessedCount(){
         return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
     }
-    public String changeTimestampToInterval(String timestamp){
-        String interval = "";
-        switch (timestamp.replace("%20", " ")){
-            case "alle":
-                interval = "created_at_utc <= CURRENT_DATE";
-                break;
-            case "letzter Monat":
-                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'";
-                break;
-            case "letzten drei Monate":
-                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH'";
-                break;
-            case "letzten sechs Monate":
-                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH'";
-                break;
-            case "im letzten Jahr":
-                interval = "created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH'";
-                break;
-            case  "älter als ein Monat":
-                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH'";
-                break;
-            case "älter als drei Monate":
-                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH'";
-                break;
-            case "älter als sechs Monate":
-                interval = "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'";
-                break;
-            default:
-                break;
-        }
-        return interval;
+    public String changeTimestampToInterval(String timestamp) {
+        Map<String, String> intervalMap = new HashMap<>();
+        intervalMap.put("alle", "created_at_utc <= CURRENT_DATE");
+        intervalMap.put("letzter Monat", "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'");
+        intervalMap.put("letzten drei Monate", "created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH'");
+        intervalMap.put("letzten sechs Monate", "created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH'");
+        intervalMap.put("im letzten Jahr", "created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH'");
+        intervalMap.put("älter als ein Monat", "created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH'");
+        intervalMap.put("älter als drei Monate", "created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH'");
+        intervalMap.put("älter als sechs Monate", "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'");
+
+        return intervalMap.getOrDefault(timestamp.replace("%20", " "), "");
     }
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
