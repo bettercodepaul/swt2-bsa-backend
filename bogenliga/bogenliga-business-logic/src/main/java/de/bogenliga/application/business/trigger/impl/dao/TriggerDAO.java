@@ -87,6 +87,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         where status != 4"
                     + SORTING
                     + " LIMIT 500";
+<<<<<<< #1591-Anpassung-Löschfunktion-vom-Protokoll-der-Datenmigration_EPIC_API_ENTPUNKT
     private static final String FIND_ALL_COUNT =
             selectCount
                             + " FROM altsystem_aenderung"
@@ -105,6 +106,76 @@ public class TriggerDAO implements DataAccessObject {
                             + "         AND st.status_name != 'SUCCESS'"
                             + "         where status != 4"
                             + " LIMIT 500";
+=======
+
+    private static final String FIND_ALL_WITH_PAGES =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         WHERE created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + " ORDER BY altsystem_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
+    private static final String FIND_ALL_SUCCESSED =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         where status = 4"
+                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + " ORDER BY altsystem_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
+    private static final String FIND_ALL_NEWS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         where status = 1"
+                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + " ORDER BY altsystem_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
+    private static final String FIND_ALL_IN_PROGRESS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         where status = 2"
+                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + " ORDER BY altsystem_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
+
+    private static final String FIND_ALL_ERRORS =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         where status = 3"
+                    + "         AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'"
+                    + " ORDER BY altsystem_id"
+                    + " LIMIT $limit$ OFFSET $offset$";
+
+    private static final String DELETE_ENTRIES =
+            "START TRANSACTION; " +
+                    "DELETE FROM altsystem_aenderung " +
+                    "WHERE status = $status$ " +
+                    "AND created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "COMMIT;";
+    private static final String DELETE_ALL_ENTRIES =
+            "START TRANSACTION; " +
+                    "DELETE FROM altsystem_aenderung " +
+                    "WHERE created_at_utc >= CURRENT_DATE - INTERVAL '$dateInterval$'; " +
+                    "COMMIT;";
+>>>>>>> develop
     private final BasicDAO basicDAO;
 
 
@@ -248,6 +319,7 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAllLimited() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_LIMITED);
     }
+<<<<<<< #1591-Anpassung-Löschfunktion-vom-Protokoll-der-Datenmigration_EPIC_API_ENTPUNKT
     public TriggerBE findAllCount(){ return basicDAO.selectSingleEntity(TRIGGER, FIND_ALL_COUNT);}
     public TriggerBE findUnprocessedCount(){
         return basicDAO.selectSingleEntity(TRIGGER, FIND_UNPROCESSED_COUNT);
@@ -264,6 +336,16 @@ public class TriggerDAO implements DataAccessObject {
         intervalMap.put("älter als sechs Monate", "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'");
 
         return intervalMap.getOrDefault(timestamp.replace("%20", " "), "");
+=======
+
+
+    public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setCreationAttributes(triggerBE, currentUserId);
+
+        RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
+        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
+        return resolveRawTrigger(rawTrigger);
+>>>>>>> develop
     }
 
     public TriggerBE update(TriggerBE triggerBE, Long currentUserId) {
