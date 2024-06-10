@@ -196,11 +196,8 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/findSuccessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllSuccessed(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
-            final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
-            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
     @GetMapping("/findErrors")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -249,9 +246,6 @@ public class TriggerService implements ServiceFacade {
             else {
                 throw new IllegalArgumentException();
             }
-            if(!checkDateInterval(dateInterval)){
-                throw new IllegalArgumentException();
-            }
         }
         catch(IllegalArgumentException e){
             LOGGER.warn("Invalid query parameters:{}", e.getMessage());
@@ -270,31 +264,9 @@ public class TriggerService implements ServiceFacade {
             if (!statusArray.contains(status)) {
                 throw new IllegalArgumentException();
             }
-            if(!checkDateInterval(dateInterval)){
-                throw new IllegalArgumentException();
-            }
         }
         catch(IllegalArgumentException e){
             LOGGER.warn("Invalid deletion parameters:{}", e.getMessage());
-            return false;
-        }
-        return true;
-    }
-    public boolean checkDateInterval(String dateInterval){
-        //Testing the DateInterval Param
-        if(dateInterval ==null){
-            return false;
-        }
-        final List<Integer> possibleNumbersOfDateInterval = Arrays.asList(1, 3, 6, 12, 20);
-        String[] parsedDateInterval = dateInterval.split(" ");
-        if (parsedDateInterval.length == 2) {
-            int parsedNumberOfDateInterval = Integer.parseInt(parsedDateInterval[0]);
-            if (!possibleNumbersOfDateInterval.contains(parsedNumberOfDateInterval)) {
-                return false;
-            } else if (!(parsedDateInterval[1].equals("MONTH") || parsedDateInterval[1].equals("YEAR"))) {
-                return false;
-            }
-        }else{
             return false;
         }
         return true;
