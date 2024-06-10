@@ -73,7 +73,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
-                    + " ORDER BY aenderung_id";
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC";
 
     private static final String FIND_ALL_LIMITED =
             "SELECT * "
@@ -83,7 +83,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT 500";
 
     private static final String FIND_ALL_UNPROCESSED =
@@ -95,7 +95,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         AND st.status_name != 'SUCCESS'"
                     + "         where status != 4"
-                    + " ORDER BY aenderung_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT 500";
     private static final String FIND_ALL_COUNT =
             selectCount
@@ -148,7 +148,7 @@ public class TriggerDAO implements DataAccessObject {
                             + "     LEFT JOIN altsystem_aenderung_status st"
                             + "         ON altsystem_aenderung.status = st.status_id"
                             + "         where status = 3"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY last_modified_at_utc"
                     + " LIMIT 500";
     private static final String FIND_ALL_WITH_PAGES =
             "SELECT * "
@@ -158,7 +158,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         WHERE $dateInterval$"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_SUCCESSED =
             "SELECT * "
@@ -169,7 +169,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 4"
                     + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_NEWS =
             "SELECT * "
@@ -180,7 +180,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 1"
                     + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT $limit$ OFFSET $offset$";
     private static final String FIND_ALL_IN_PROGRESS =
             "SELECT * "
@@ -191,7 +191,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 2"
                     + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT $limit$ OFFSET $offset$";
 
     private static final String FIND_ALL_ERRORS =
@@ -203,7 +203,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = 3"
                     + "         AND $dateInterval$"
-                    + " ORDER BY altsystem_id"
+                    + " ORDER BY altsystem_aenderung.last_modified_at_utc DESC"
                     + " LIMIT $limit$ OFFSET $offset$";
 
     private static final String DELETE_ENTRIES =
