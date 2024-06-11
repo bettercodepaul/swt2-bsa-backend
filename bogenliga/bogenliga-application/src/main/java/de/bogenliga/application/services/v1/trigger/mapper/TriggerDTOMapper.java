@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.trigger.mapper;
 
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import org.h2.api.Trigger;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
@@ -28,12 +27,13 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final TriggerChangeOperation operation = triggerDO.getOperation();
         final TriggerChangeStatus status = triggerDO.getStatus();
         final String nachricht = triggerDO.getNachricht();
-        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAtUtc();
+        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAt();
         final OffsetDateTime runAtUtc = triggerDO.getRunAtUtc();
+        final OffsetDateTime lastModifiedAtUtc= triggerDO.getUpdatedAtUtc();
 
 
 
-        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc, lastModifiedAtUtc);
     };
 
     /**
@@ -49,8 +49,9 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final String nachricht = triggerDTO.getNachricht();
         final OffsetDateTime createdAtUtc = triggerDTO.getCreatedAtUtc();
         final OffsetDateTime runAtUtc = triggerDTO.getRunAtUtc();
+        final OffsetDateTime lastModifiedAtUtc = triggerDTO.getlastModifiedAtUtc();
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc,runAtUtc, lastModifiedAtUtc);
     };
     public static final Function<TriggerCountDO, TriggerCountDTO> toCountDTO = triggerCountDO -> {
         final Long count = triggerCountDO.getCount();

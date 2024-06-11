@@ -33,6 +33,8 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 	private static final String NACHRICHT = "ree";
 	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MIN;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
+	private static final OffsetDateTime LAST_MODIFIED_AT_UTC = OffsetDateTime.MIN;
+
 
 
 	@Rule
@@ -50,7 +52,8 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 
 
 	private TriggerDO getExpectedDO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC,RUN_AT_UTC,
+                LAST_MODIFIED_AT_UTC);
 	}
 
 	private TriggerChange<?> getExpectedTC(){
