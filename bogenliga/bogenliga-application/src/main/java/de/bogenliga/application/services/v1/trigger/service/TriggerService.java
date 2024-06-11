@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
 import de.bogenliga.application.business.altsystem.ergebnisse.entity.AltsystemErgebnisse;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -397,8 +396,8 @@ public class TriggerService implements ServiceFacade {
                     TriggerChangeStatus.NEW,
                     "",
                     null,
-                    null
-            );
+                    null,
+                    null);
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
             changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
