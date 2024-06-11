@@ -84,7 +84,6 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
                 TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getErrorTriggerDO() {
@@ -96,7 +95,6 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_ERROR,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
 				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getNewTriggerDO() {
@@ -108,7 +106,6 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_NEW,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
 				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getSuccsessTriggerDO() {
@@ -120,7 +117,6 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_SUCCSESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
 				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getInProgressTriggerDO() {
@@ -132,7 +128,6 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_IN_PROGRESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
 				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 
@@ -299,8 +294,6 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
 				.isEqualTo(expectedDO.getCreatedAtUtc());
-		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
-				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllNews("0","500", "1 MONTH");
@@ -335,8 +328,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
 				.isEqualTo(expectedDO.getCreatedAtUtc());
-		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
-				.isEqualTo(expectedDO.getRunAtUtc());
+
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllInProgress("0","500", "1 MONTH");
@@ -371,8 +363,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
 				.isEqualTo(expectedDO.getCreatedAtUtc());
-		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
-				.isEqualTo(expectedDO.getRunAtUtc());
+
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllSuccessed("0","500", "1 MONTH");

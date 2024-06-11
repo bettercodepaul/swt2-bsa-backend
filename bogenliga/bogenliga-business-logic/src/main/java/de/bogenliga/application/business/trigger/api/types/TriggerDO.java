@@ -23,7 +23,7 @@ public class TriggerDO extends CommonDataObject implements DataObject {
 
 
 
-    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAtUtc, final OffsetDateTime runAtUtc,final OffsetDateTime updatedAtUtc){
+    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAtUtc, final OffsetDateTime updatedAtUtc){
         this.id = id;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
@@ -31,7 +31,6 @@ public class TriggerDO extends CommonDataObject implements DataObject {
         this.status = status;
         this.nachricht = nachricht;
         this.createdAtUtc = createdAtUtc;
-        this.runAtUtc = runAtUtc;
         this.updatedAtUtc = updatedAtUtc;
     }
 

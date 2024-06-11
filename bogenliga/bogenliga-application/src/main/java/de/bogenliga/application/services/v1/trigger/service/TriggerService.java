@@ -396,7 +396,6 @@ public class TriggerService implements ServiceFacade {
                     TriggerChangeStatus.NEW,
                     "",
                     null,
-                    null,
                     null);
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
