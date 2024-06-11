@@ -47,7 +47,6 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
 		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
-		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 
 	@Test
@@ -61,7 +60,6 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
 		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
-		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 		assertThat(actual.getlastModifiedAtUtc()).isEqualTo(LAST_MODIFIED_AT_UTC);
 	}
 

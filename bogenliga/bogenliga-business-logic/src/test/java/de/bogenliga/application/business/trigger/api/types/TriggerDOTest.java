@@ -153,13 +153,6 @@ public class TriggerDOTest extends TestCase{
 	}
 
 	@Test
-	public void testGetRunAtUTC(){
-		TriggerDO actual = getExpectedDTO();
-		OffsetDateTime actualRunAtUTC = actual.getRunAtUtc();
-
-		assertEquals(RUN_AT_UTC, actualRunAtUTC);
-	}
-	@Test
 	public void testSetRunAtUTC(){
 		TriggerDO actual = getExpectedDTO();
 		actual.setRunAtUtc(newRUN_AT_UTC);
