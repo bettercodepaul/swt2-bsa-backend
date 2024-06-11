@@ -139,15 +139,15 @@ public class TriggerDOTest extends TestCase{
 	@Test
 	public void testGetCreatedAtUTC(){
 		TriggerDO actual = getExpectedDTO();
-		OffsetDateTime actualCreatedAtUTC = actual.getCreatedAtUtc();
+		OffsetDateTime actualCreatedAtUTC = actual.getCreatedAt();
 
 		assertEquals(CREATED_AT_UTC, actualCreatedAtUTC);
 	}
 	@Test
 	public void testSetCreatedAtUTC(){
 		TriggerDO actual = getExpectedDTO();
-		actual.setCreatedAtUtc(newCREATED_AT_UTC);
-		OffsetDateTime actualCreatedAtUtc = actual.getCreatedAtUtc();
+		actual.setCreatedAt(newCREATED_AT_UTC);
+		OffsetDateTime actualCreatedAtUtc = actual.getCreatedAt();
 
 		assertEquals(newCREATED_AT_UTC, actualCreatedAtUtc);
 	}

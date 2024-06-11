@@ -178,7 +178,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -218,7 +218,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -258,7 +258,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -298,7 +298,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -338,7 +338,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -378,7 +378,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -418,7 +418,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
@@ -501,7 +501,7 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
-		assertThat(actual.get(0).getCreatedAtUtc())
+		assertThat(actual.get(0).getCreatedAt())
 				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());

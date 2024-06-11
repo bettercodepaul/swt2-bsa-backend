@@ -46,7 +46,7 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
-		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
+		assertThat(actual.getCreatedAt()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 

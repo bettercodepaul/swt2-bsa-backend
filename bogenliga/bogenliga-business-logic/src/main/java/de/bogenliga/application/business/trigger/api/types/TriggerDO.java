@@ -16,23 +16,23 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     private TriggerChangeOperation operation;
     private TriggerChangeStatus status;
     private String nachricht;
-    private OffsetDateTime createdAtUtc;
+    private OffsetDateTime createdAt;
     private OffsetDateTime runAtUtc;
-    private OffsetDateTime lastModifiedAtUtc;
+    private OffsetDateTime updatedAtUtc;
 
 
 
 
-    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAtUtc, final OffsetDateTime runAtUtc, OffsetDateTime lastModifiedAtUtc){
+    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAt, final OffsetDateTime runAtUtc, OffsetDateTime updatedAtUtc){
         this.id = id;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
         this.operation = operation;
         this.status = status;
         this.nachricht = nachricht;
-        this.createdAtUtc = createdAtUtc;
+        this.createdAt = createdAt;
         this.runAtUtc = runAtUtc;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
+        this.updatedAtUtc = updatedAtUtc;
     }
 
 
@@ -94,11 +94,11 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     public void setNachricht(String nachricht) {
         this.nachricht = nachricht;
     }
-    public OffsetDateTime getCreatedAtUtc(){
-        return createdAtUtc;
+    public OffsetDateTime getCreatedAt(){
+        return createdAt;
     }
-    public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
-        this.createdAtUtc = createdAtUtc;
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
 
@@ -112,14 +112,12 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     }
 
 
-    @Override
-    public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
+    public void setUpdatedAtUtc(OffsetDateTime updatedAtUtc) {
+        this.updatedAtUtc = updatedAtUtc;
     }
 
 
-    @Override
-    public OffsetDateTime getLastModifiedAtUtc() {
-        return lastModifiedAtUtc;
+    public OffsetDateTime getUpdatedAtUtc() {
+        return updatedAtUtc;
     }
 }
