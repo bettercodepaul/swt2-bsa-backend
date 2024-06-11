@@ -113,13 +113,13 @@ public class TriggerDO extends CommonDataObject implements DataObject {
 
 
     @Override
-    public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
-        this.AtUtc = lastModifiedAtUtc;
+    public void setLastModifiedAtUtc(OffsetDateTime updatedAtUtc) {
+        this.updatedAtUtc = updatedAtUtc;
     }
 
 
     @Override
     public OffsetDateTime getLastModifiedAtUtc() {
-        return AtUtc;
+        return updatedAtUtc;
     }
 }
