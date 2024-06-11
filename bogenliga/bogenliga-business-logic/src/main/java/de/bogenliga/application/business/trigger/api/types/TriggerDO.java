@@ -110,4 +110,16 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     public void setRunAtUtc(OffsetDateTime runAtUtc) {
         this.runAtUtc = runAtUtc;
     }
+
+
+    @Override
+    public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
+        this.lastModifiedAtUtc = lastModifiedAtUtc;
+    }
+
+
+    @Override
+    public OffsetDateTime getLastModifiedAtUtc() {
+        return lastModifiedAtUtc;
+    }
 }
