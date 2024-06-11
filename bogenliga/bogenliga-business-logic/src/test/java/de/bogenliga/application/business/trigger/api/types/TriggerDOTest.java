@@ -36,7 +36,7 @@ public class TriggerDOTest extends TestCase{
 	private static final OffsetDateTime newLAST_MODIFIED_AT_UTC = OffsetDateTime.MAX;
 
 	private TriggerDO getExpectedDTO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC,
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC,
                 LAST_MODIFIED_AT_UTC);
 	}
 
