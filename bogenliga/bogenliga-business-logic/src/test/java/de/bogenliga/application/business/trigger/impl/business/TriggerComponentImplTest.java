@@ -14,9 +14,7 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperatio
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
-import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO;
-import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAOTest;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
@@ -78,6 +76,8 @@ public class TriggerComponentImplTest {
 
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
+	public static final OffsetDateTime TRIGGER_LASTMODIFIEDATUTCO = null;
+
 	public static TriggerBE getErrorTriggerBE() {
 		final TriggerBE expectedBE = new TriggerBE();
 		expectedBE.setId(TRIGGER_ID);
@@ -135,8 +135,8 @@ public class TriggerComponentImplTest {
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+                TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerCountDO getTriggerCountDO(){
 		return new TriggerCountDO(TRIGGERCOUNT_COUNT);

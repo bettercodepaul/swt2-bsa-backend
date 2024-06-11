@@ -51,6 +51,7 @@ public class TriggerServiceTest {
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
 	public static final Long TRIGGERCOUNT_IN_PROGRESS_COUNT = 2L;
+	private static final OffsetDateTime TRIGGER_LASTMODIFIEDATUTCO = null;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -83,8 +84,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+                TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getErrorTriggerDO() {
 		return new TriggerDO(
@@ -95,8 +96,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_ERROR,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getNewTriggerDO() {
 		return new TriggerDO(
@@ -107,8 +108,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_NEW,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getSuccsessTriggerDO() {
 		return new TriggerDO(
@@ -119,8 +120,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_SUCCSESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getInProgressTriggerDO() {
 		return new TriggerDO(
@@ -131,8 +132,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_IN_PROGRESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 
 	private static AltsystemDO createRawAltsystemDO(Timestamp createdAt, Timestamp updatedAt) {
