@@ -51,7 +51,7 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime runAtUtc = triggerDTO.getRunAtUtc();
         final OffsetDateTime lastModifiedAtUtc = triggerDTO.getlastModifiedAtUtc();
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc, lastModifiedAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, lastModifiedAtUtc);
     };
     public static final Function<TriggerCountDO, TriggerCountDTO> toCountDTO = triggerCountDO -> {
         final Long count = triggerCountDO.getCount();

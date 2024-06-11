@@ -36,7 +36,7 @@ public class TriggerDOTest extends TestCase{
 	private static final OffsetDateTime newLAST_MODIFIED_AT_UTC = OffsetDateTime.MAX;
 
 	private TriggerDO getExpectedDTO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC,
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC,
                 LAST_MODIFIED_AT_UTC);
 	}
 
@@ -152,13 +152,6 @@ public class TriggerDOTest extends TestCase{
 		assertEquals(newCREATED_AT_UTC, actualCreatedAtUtc);
 	}
 
-	@Test
-	public void testGetRunAtUTC(){
-		TriggerDO actual = getExpectedDTO();
-		OffsetDateTime actualRunAtUTC = actual.getRunAtUtc();
-
-		assertEquals(RUN_AT_UTC, actualRunAtUTC);
-	}
 	@Test
 	public void testSetRunAtUTC(){
 		TriggerDO actual = getExpectedDTO();
