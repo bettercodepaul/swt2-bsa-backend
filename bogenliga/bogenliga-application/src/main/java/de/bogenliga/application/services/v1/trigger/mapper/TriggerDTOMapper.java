@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.trigger.mapper;
 
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import org.h2.api.Trigger;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
@@ -28,9 +27,9 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final TriggerChangeOperation operation = triggerDO.getOperation();
         final TriggerChangeStatus status = triggerDO.getStatus();
         final String nachricht = triggerDO.getNachricht();
-        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAtUtc();
+        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAt();
         final OffsetDateTime runAtUtc = triggerDO.getRunAtUtc();
-        final OffsetDateTime lastModifiedAtUtc= triggerDO.getLastModifiedAtUtc();
+        final OffsetDateTime lastModifiedAtUtc= triggerDO.getUpdatedAtUtc();
 
 
 

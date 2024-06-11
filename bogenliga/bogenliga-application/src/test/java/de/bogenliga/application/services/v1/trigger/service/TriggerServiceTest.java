@@ -172,7 +172,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -262,7 +262,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -298,7 +298,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -334,7 +334,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -370,7 +370,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -406,7 +406,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
