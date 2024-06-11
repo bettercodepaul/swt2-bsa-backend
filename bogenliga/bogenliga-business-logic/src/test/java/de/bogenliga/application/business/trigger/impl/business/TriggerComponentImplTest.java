@@ -135,7 +135,6 @@ public class TriggerComponentImplTest {
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO,
                 TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerCountDO getTriggerCountDO(){
