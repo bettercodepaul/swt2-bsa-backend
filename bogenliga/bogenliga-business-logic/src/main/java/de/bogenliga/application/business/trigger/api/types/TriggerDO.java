@@ -18,12 +18,12 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     private String nachricht;
     private OffsetDateTime createdAtUtc;
     private OffsetDateTime runAtUtc;
-    private OffsetDateTime lastModifiedAtUtc;
+    private OffsetDateTime updatedAtUtc;
 
 
 
 
-    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAtUtc, final OffsetDateTime runAtUtc, OffsetDateTime lastModifiedAtUtc){
+    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final TriggerChangeOperation operation, final TriggerChangeStatus status, final String nachricht, final OffsetDateTime createdAtUtc, final OffsetDateTime runAtUtc, OffsetDateTime updatedAtUtc){
         this.id = id;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
@@ -32,7 +32,7 @@ public class TriggerDO extends CommonDataObject implements DataObject {
         this.nachricht = nachricht;
         this.createdAtUtc = createdAtUtc;
         this.runAtUtc = runAtUtc;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
+        this.updatedAtUtc = updatedAtUtc;
     }
 
 
@@ -114,12 +114,12 @@ public class TriggerDO extends CommonDataObject implements DataObject {
 
     @Override
     public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
+        this.AtUtc = lastModifiedAtUtc;
     }
 
 
     @Override
     public OffsetDateTime getLastModifiedAtUtc() {
-        return lastModifiedAtUtc;
+        return AtUtc;
     }
 }
