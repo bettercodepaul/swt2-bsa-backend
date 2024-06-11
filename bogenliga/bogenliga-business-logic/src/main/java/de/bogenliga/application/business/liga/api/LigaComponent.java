@@ -15,6 +15,11 @@ public interface LigaComponent {
     List<LigaDO> findBySearch(final String searchTerm);
 
     /**
+     *
+     * @return list containing all Lowest Liga in each Region
+     */
+    List<LigaDO> findByLowest();
+    /**
      * Return a liga entry with the given id.
      *
      * @param id of the liga
