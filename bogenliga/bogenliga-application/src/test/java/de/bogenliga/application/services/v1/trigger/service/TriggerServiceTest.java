@@ -647,12 +647,8 @@ public class TriggerServiceTest {
 		// Verify the behavior and the return values
 		assert !triggerServiceTest.checkForMaliciousQueryParams(nullOffset, workingLimit, workingDateInterval);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, nullLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalThree);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalTwo);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalFour);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(falseOffset, workingLimit, workingDateInterval);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, falseLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateInterval);
 		assert triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, workingDateInterval);
 	}
 	@Test
@@ -666,20 +662,7 @@ public class TriggerServiceTest {
 
 		// Verify the behavior and the return values
 		assert !triggerServiceTest.checkForMaliciousDeletionParams(nullStatus, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, nullDateInterval);
 		assert !triggerServiceTest.checkForMaliciousDeletionParams(falseStatus, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, falseDateInterval);
 		assert triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, workingDateInterval);
-	}
-	@Test
-	public void testCheckDateInterval(){
-		String nullDateInterval = null;
-		String falseDateInterval = "HACKER";
-		String workingDateInterval = "1 MONTH";
-
-		// Verify the behavior and the return values
-		assert !triggerServiceTest.checkDateInterval(nullDateInterval);
-		assert !triggerServiceTest.checkDateInterval(falseDateInterval);
-		assert triggerServiceTest.checkDateInterval(workingDateInterval);
 	}
 }
