@@ -568,7 +568,10 @@ public class QueryBuilderTest {
                 .havingGt(DEFAULT_FIELD)
                 .compose();
         String builtQuery = this.queryBuilder.toString();
-
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GT_COMPARATOR.trim());
         assertThat(builtQuery).contains(" HAVING field >?");
     }
 }
