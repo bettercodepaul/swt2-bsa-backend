@@ -244,7 +244,8 @@ public class TriggerDAOTest {
 		triggerDAO.deleteEntries("Erfolgreich", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
-		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 4 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 4 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
 	}
 	@Test
@@ -253,7 +254,8 @@ public class TriggerDAOTest {
 		triggerDAO.deleteEntries("Neu", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
-		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 1 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 1 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
 	}
 	@Test
@@ -262,7 +264,8 @@ public class TriggerDAOTest {
 		triggerDAO.deleteEntries("Fehlgeschlagen", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
-		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 3 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 3 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
 	}
 	@Test
@@ -271,7 +274,8 @@ public class TriggerDAOTest {
 		triggerDAO.deleteEntries("Laufend", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
-		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 2 AND created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 2 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
 	}
 	@Test
@@ -280,40 +284,49 @@ public class TriggerDAOTest {
 		triggerDAO.deleteEntries("Alle", "letzter Monat");
 
 		// Verify that basicDAO.executeQuery was called with the correct SQL
-		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'; COMMIT;";
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
 		verify(basicDAO).executeQuery(expectedSQL);
 	}
 	@Test
 	public void testChangeTimestampToDateInterval() {
-		String expectedValueForAll = "created_at_utc <= CURRENT_DATE";
+		String expectedValueForAll = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE + INTERVAL '1 day' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE + INTERVAL '1 day')";
 		String actualValueForAll = triggerDAO.changeTimestampToInterval("alle");
 		assertEquals(expectedValueForAll, actualValueForAll);
 
-		String expectedValueForOneMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'";
+		String expectedValueForOneMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH')";
 		String actualValueForOneMonth = triggerDAO.changeTimestampToInterval("letzter Monat");
 		assertEquals(expectedValueForOneMonth, actualValueForOneMonth);
 
-		String expectedValueForLastThreeMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH'";
+		String expectedValueForLastThreeMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH')";
 		String actualValueForLastThreeMonth = triggerDAO.changeTimestampToInterval("letzten drei Monate");
 		assertEquals(expectedValueForLastThreeMonth, actualValueForLastThreeMonth);
 
-		String expectedValueForLastSixMonth = "created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH'";
+		String expectedValueForLastSixMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH')";
 		String actualValueForLastSixMonth = triggerDAO.changeTimestampToInterval("letzten sechs Monate");
 		assertEquals(expectedValueForLastSixMonth, actualValueForLastSixMonth);
 
-		String expectedValueForLastYear = "created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH'";
+		String expectedValueForLastYear = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH')";
 		String actualValueForLastYear = triggerDAO.changeTimestampToInterval("im letzten Jahr");
 		assertEquals(expectedValueForLastYear, actualValueForLastYear);
 
-		String expectedValueForOlderThanOneMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH'";
+		String expectedValueForOlderThanOneMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH')";
 		String actualValueForOlderThanOneMonth = triggerDAO.changeTimestampToInterval("älter als ein Monat");
 		assertEquals(expectedValueForOlderThanOneMonth, actualValueForOlderThanOneMonth);
 
-		String expectedValueForOlderThanThreeMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH'";
+		String expectedValueForOlderThanThreeMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH')";
 		String actualValueForOlderThanThreeMonth = triggerDAO.changeTimestampToInterval("älter als drei Monate");
 		assertEquals(expectedValueForOlderThanThreeMonth, actualValueForOlderThanThreeMonth);
 
-		String expectedValueForOlderThanSixMonth = "created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH'";
+		String expectedValueForOlderThanSixMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH')";
 		String actualValueForOlderThanSixMonth = triggerDAO.changeTimestampToInterval("älter als sechs Monate");
 		assertEquals(expectedValueForOlderThanSixMonth, actualValueForOlderThanSixMonth);
 	}
