@@ -74,8 +74,9 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
                     "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 4 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_4," +
                     "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt, MAX(wettkampfschnitte.rueckennummer) as rueckennummer" +
                     " FROM wettkampfschnitte" +
-                    " WHERE wettkampfschnitte.veranstaltung_id =? AND wettkampfschnitte.verein_id =?"+
-                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
+                    " WHERE wettkampfschnitte.veranstaltung_id =? AND wettkampfschnitte.verein_id =?" +
+                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id " +
+                    " HAVING ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2)  > 0;";
 
 
     // wrap all specific config parameters
@@ -105,7 +106,7 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
                     "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt" +
                     " FROM wettkampfschnitte" +
                     " WHERE wettkampfschnitte.wettkampf_id =? AND wettkampfschnitte.verein_id =?"+
-                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;";
+                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id;" ;
 
     // for statistics for one archer in a season across ALL leagues
     private static final String GET_SCHUETZENSTATISTIK_ALLELIGEN =
@@ -128,7 +129,8 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
                     "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as wettkampftageSchnitt" +
                     " FROM wettkampfschnitte" +
                     " WHERE wettkampfschnitte.sportjahr = ? AND wettkampfschnitte.verein_id =?" +
-                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.sportjahr;";
+                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.sportjahr" +
+                    " HAVING ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2)  > 0;";
 
     private final BasicDAO basicDao;
     /**

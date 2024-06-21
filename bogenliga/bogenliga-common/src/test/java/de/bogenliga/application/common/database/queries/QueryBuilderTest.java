@@ -560,4 +560,18 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_FALSE_COMPARATOR.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
+    @Test
+    public void havingGt() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME)
+                .groupBy(DEFAULT_FIELD)
+                .havingGt(DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GT_COMPARATOR.trim());
+        assertThat(builtQuery).contains(" HAVING field >?");
+    }
 }
