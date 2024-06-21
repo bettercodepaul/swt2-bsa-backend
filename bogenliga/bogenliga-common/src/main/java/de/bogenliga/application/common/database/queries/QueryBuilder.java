@@ -74,6 +74,7 @@ public class QueryBuilder {
     public static final String SQL_IN = " IN ";
     public static final String SQL_IN_VALUE = SQL_IN + SQL_VALUE_PLACEHOLDER;
     public static final String SQL_GROUP_BY = " GROUP BY ";
+    public static final String SQL_HAVING = " HAVING ";
     public static final String SQL_ORDER_BY = " ORDER BY ";
     public static final String SQL_ORDER_ASC = " ASC ";
     public static final String SQL_ORDER_DESC = " DESC ";
@@ -620,6 +621,13 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * HAVING > operation
+     */
+    public QueryBuilder havingGt(final String fieldName) {
+        this.queryString += SQL_HAVING + fieldName + SQL_GT_COMPARATOR;
+        return this;
+    }
 
     /**
      * ORDER BY operations
