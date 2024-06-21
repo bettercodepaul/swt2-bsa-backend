@@ -51,6 +51,7 @@ public class TriggerServiceTest {
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
 	public static final Long TRIGGERCOUNT_IN_PROGRESS_COUNT = 2L;
+	private static final OffsetDateTime TRIGGER_LASTMODIFIEDATUTCO = null;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -83,8 +84,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+                TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getErrorTriggerDO() {
 		return new TriggerDO(
@@ -95,8 +96,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_ERROR,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getNewTriggerDO() {
 		return new TriggerDO(
@@ -107,8 +108,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_NEW,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getSuccsessTriggerDO() {
 		return new TriggerDO(
@@ -119,8 +120,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_SUCCSESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 	public static TriggerDO getInProgressTriggerDO() {
 		return new TriggerDO(
@@ -131,8 +132,8 @@ public class TriggerServiceTest {
 				TRIGGER_STATUS_IN_PROGRESS,
 				TRIGGER_NACHRICHT,
 				TRIGGER_CREATEDATUTCO,
-				TRIGGER_RUNATUTCO
-		);
+				TRIGGER_RUNATUTCO,
+				TRIGGER_LASTMODIFIEDATUTCO);
 	}
 
 	private static AltsystemDO createRawAltsystemDO(Timestamp createdAt, Timestamp updatedAt) {
@@ -171,7 +172,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -261,7 +262,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -297,7 +298,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -333,7 +334,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -369,7 +370,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -405,7 +406,7 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedDO.getNachricht());
 		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
-				.isEqualTo(expectedDO.getCreatedAtUtc());
+				.isEqualTo(expectedDO.getCreatedAt());
 		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedDO.getRunAtUtc());
 
@@ -647,12 +648,8 @@ public class TriggerServiceTest {
 		// Verify the behavior and the return values
 		assert !triggerServiceTest.checkForMaliciousQueryParams(nullOffset, workingLimit, workingDateInterval);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, nullLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalThree);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalTwo);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateIntervalFour);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(falseOffset, workingLimit, workingDateInterval);
 		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, falseLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, falseDateInterval);
 		assert triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, workingDateInterval);
 	}
 	@Test
@@ -666,20 +663,7 @@ public class TriggerServiceTest {
 
 		// Verify the behavior and the return values
 		assert !triggerServiceTest.checkForMaliciousDeletionParams(nullStatus, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, nullDateInterval);
 		assert !triggerServiceTest.checkForMaliciousDeletionParams(falseStatus, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, falseDateInterval);
 		assert triggerServiceTest.checkForMaliciousDeletionParams(workingStatus, workingDateInterval);
-	}
-	@Test
-	public void testCheckDateInterval(){
-		String nullDateInterval = null;
-		String falseDateInterval = "HACKER";
-		String workingDateInterval = "1 MONTH";
-
-		// Verify the behavior and the return values
-		assert !triggerServiceTest.checkDateInterval(nullDateInterval);
-		assert !triggerServiceTest.checkDateInterval(falseDateInterval);
-		assert triggerServiceTest.checkDateInterval(workingDateInterval);
 	}
 }

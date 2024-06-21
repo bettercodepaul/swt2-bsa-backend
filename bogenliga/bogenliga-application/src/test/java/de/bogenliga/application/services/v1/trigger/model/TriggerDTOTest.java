@@ -22,6 +22,8 @@ public class TriggerDTOTest extends TestCase{
 	private static final String NACHRICHT = "horrible"; //I did choose this
 	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MIN;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
+	private static final OffsetDateTime LAST_MODIFIED_AT_UTC = OffsetDateTime.MIN;
+
 
 
 	//Test data for setters
@@ -33,10 +35,12 @@ public class TriggerDTOTest extends TestCase{
 	private static final String newNACHRICHT = "perfect";
 	private static final OffsetDateTime newCREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime newRUN_AT_UTC = OffsetDateTime.MAX;
+	private static final OffsetDateTime newLAST_MODIFIED_AT_UTC = OffsetDateTime.MAX;
+
 
 
 	private TriggerDTO getExpectedDTO(){
-		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
+		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC, LAST_MODIFIED_AT_UTC);
 	}
 
 	@Test
@@ -165,5 +169,21 @@ public class TriggerDTOTest extends TestCase{
 		OffsetDateTime actualRunAtUtc = actual.getRunAtUtc();
 
 		assertEquals(newRUN_AT_UTC, actualRunAtUtc);
+	}
+
+	@Test
+	public void testGetLastModiefiedAtUTC(){
+		TriggerDTO actual = getExpectedDTO();
+		OffsetDateTime actualLastModifiedAtUTC = actual.getlastModifiedAtUtc();
+
+		assertEquals(LAST_MODIFIED_AT_UTC, actualLastModifiedAtUTC);
+	}
+	@Test
+	public void testSetLastModifiedAtUTC(){
+		TriggerDTO actual = getExpectedDTO();
+		actual.setLastModifiedAtUtc(newRUN_AT_UTC);
+		OffsetDateTime actualLastModifiedAtUtc = actual.getlastModifiedAtUtc();
+
+		assertEquals(newLAST_MODIFIED_AT_UTC, actualLastModifiedAtUtc);
 	}
 }

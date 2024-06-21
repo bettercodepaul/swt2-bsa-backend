@@ -23,14 +23,16 @@ public class TriggerDTOMapperTest{
 	private static final String NACHRICHT = "too bad!";
 	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MAX;
+	private static final OffsetDateTime LAST_MODIFIED_AT_UTC = OffsetDateTime.MAX;
 
 
 	private TriggerDTO getDTO(){
-		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
+		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC, LAST_MODIFIED_AT_UTC);
 	}
 
 	private TriggerDO getDO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC,
+                LAST_MODIFIED_AT_UTC);
 	}
 
 
@@ -44,7 +46,7 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
-		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
+		assertThat(actual.getCreatedAt()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 
@@ -60,6 +62,7 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
 		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
+		assertThat(actual.getlastModifiedAtUtc()).isEqualTo(LAST_MODIFIED_AT_UTC);
 	}
 
 }
