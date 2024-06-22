@@ -22,6 +22,7 @@ public class TriggerDTO implements DataTransferObject {
     private String nachricht;
     private OffsetDateTime createdAtUtc;
     private OffsetDateTime runAtUtc;
+    private OffsetDateTime lastModifiedAtUtc;
 
 
     /**
@@ -34,9 +35,10 @@ public class TriggerDTO implements DataTransferObject {
      * @param nachricht
      * @param createdAtUtc
      * @param runAtUtc
+     * @param lastModifiedAtUtc
      */
 
-    public TriggerDTO(Long id, String kategorie, Long altsystemId, TriggerChangeOperation operation, TriggerChangeStatus status, String nachricht, OffsetDateTime createdAtUtc, OffsetDateTime runAtUtc){
+    public TriggerDTO(Long id, String kategorie, Long altsystemId, TriggerChangeOperation operation, TriggerChangeStatus status, String nachricht, OffsetDateTime createdAtUtc, OffsetDateTime runAtUtc, OffsetDateTime lastModifiedAtUtc){
         this.id = id;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
@@ -45,6 +47,7 @@ public class TriggerDTO implements DataTransferObject {
         this.nachricht = nachricht;
         this.createdAtUtc = createdAtUtc;
         this.runAtUtc = runAtUtc;
+        this.lastModifiedAtUtc = lastModifiedAtUtc;
     }
 
     public Long getId() {
@@ -124,4 +127,10 @@ public class TriggerDTO implements DataTransferObject {
         this.runAtUtc = runAtUtc;
     }
 
+    public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc){
+        this.lastModifiedAtUtc = lastModifiedAtUtc;
+    }
+    public OffsetDateTime getlastModifiedAtUtc(){
+        return lastModifiedAtUtc;
+    }
 }

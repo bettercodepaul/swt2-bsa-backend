@@ -47,7 +47,7 @@ public class TriggerMapperTest {
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
-		assertThat(actual.getCreatedAtUtc()).isEqualTo(DateProvider.convertTimestamp(CREATED_AT_UTC));
+		assertThat(actual.getCreatedAt()).isEqualTo(DateProvider.convertTimestamp(CREATED_AT_UTC));
 		assertThat(actual.getRunAtUtc()).isEqualTo(DateProvider.convertTimestamp(RUN_AT_UTC));
 	}
 
