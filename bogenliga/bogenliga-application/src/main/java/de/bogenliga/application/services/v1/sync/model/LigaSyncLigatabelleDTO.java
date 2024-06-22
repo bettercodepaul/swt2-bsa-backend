@@ -168,26 +168,19 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         }
         LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
 
-        Boolean condition1 = this.getVeranstaltungName().equals(that.getVeranstaltungName());
-        Boolean condition2 = this.getVeranstaltungId().equals(that.getVeranstaltungId());
-        Boolean condition3 = this.getWettkampfId().equals(that.getWettkampfId());
-        Boolean condition4 = this.getWettkampfTag().equals(that.getWettkampfTag());
-        Boolean condition5 = this.getMannschaftId().equals(that.getMannschaftId());
-        Boolean condition6 = this.getMannschaftName().equals(that.getMannschaftName());
-        Boolean condition7 = this.getMatchpkt().equals(that.getMatchpkt());
-        Boolean condition8 = this.getMatchpktGegen().equals(that.getMatchpktGegen());
-        Boolean condition9 = this.getSatzpkt().equals(that.getSatzpkt());
-        Boolean condition10 = this.getSatzpktGegen().equals(that.getSatzpktGegen());
-        Boolean condition11 = this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz());
-        Boolean condition12 = this.getSortierung().equals(that.getSortierung());
-        Boolean condition13 = this.getMatchCount().equals(that.getMatchCount());
-
-        return condition1 && condition2 && condition3
-                && condition4 && condition5
-                && condition6 && condition7
-                && condition8 &&condition9
-                && condition10 && condition11 && condition12
-                && condition13;
+        return this.getVeranstaltungName().equals(that.getVeranstaltungName()) &&
+                this.getVeranstaltungId().equals(that.getVeranstaltungId()) &&
+                this.getWettkampfId().equals(that.getWettkampfId()) &&
+                this.getWettkampfTag().equals(that.getWettkampfTag()) &&
+                this.getMannschaftId().equals(that.getMannschaftId()) &&
+                this.getMannschaftName().equals(that.getMannschaftName()) &&
+                this.getMatchpkt().equals(that.getMatchpkt()) &&
+                this.getMatchpktGegen().equals(that.getMatchpktGegen()) &&
+                this.getSatzpkt().equals(that.getSatzpkt()) &&
+                this.getSatzpktGegen().equals(that.getSatzpktGegen()) &&
+                this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz()) &&
+                this.getSortierung().equals(that.getSortierung()) &&
+                this.getMatchCount().equals(that.getMatchCount());
     }
 
 
