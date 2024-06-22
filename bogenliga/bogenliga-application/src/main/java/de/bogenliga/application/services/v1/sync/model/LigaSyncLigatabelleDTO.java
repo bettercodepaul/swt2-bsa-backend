@@ -23,6 +23,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private Integer satzpktDifferenz;
     private Integer sortierung;
     private Integer tabellenplatz;
+    private Integer matchCount;
 
 
     public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
@@ -31,7 +32,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
                                   Integer matchpkt, Integer matchpktGegen,
                                   Integer satzpkt, Integer satzpktGegen,
                                   Integer satzpktDifferenz, Integer sortierung,
-                                  Integer tabellenplatz) {
+                                  Integer tabellenplatz, Integer matchCount) {
         this.veranstaltungId = veranstaltungId;
         this.veranstaltungName = veranstaltungName;
         this.wettkampfId = wettkampfId;
@@ -45,6 +46,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         this.satzpktDifferenz = satzpktDifferenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
+        this.matchCount = matchCount;
     }
 
     public Long getVeranstaltungId() {
@@ -151,6 +153,10 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         this.tabellenplatz = tabellenplatz;
     }
 
+    public Integer getMatchCount() {return matchCount;}
+
+    public void setMatchCount(Integer matchCount) {this.matchCount = matchCount;}
+
 
     @Override
     public boolean equals(Object o) {
@@ -174,12 +180,14 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         Boolean condition10 = this.getSatzpktGegen().equals(that.getSatzpktGegen());
         Boolean condition11 = this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz());
         Boolean condition12 = this.getSortierung().equals(that.getSortierung());
+        Boolean condition13 = this.getMatchCount().equals(that.getMatchCount());
 
         return condition1 && condition2 && condition3
                 && condition4 && condition5
                 && condition6 && condition7
                 && condition8 &&condition9
-                && condition10 && condition11 && condition12;
+                && condition10 && condition11
+                && condition12 && condition13;
     }
 
 
@@ -198,6 +206,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         result = 31 * result + (this.satzpktDifferenz != null ? this.satzpktDifferenz.hashCode() : 0);
         result = 31 * result + (this.sortierung != null ? this.sortierung.hashCode() : 0);
         result = 31 * result + (this.tabellenplatz != null ? this.tabellenplatz.hashCode() : 0);
+        result = 31 * result + (this.matchCount != null ? this.matchCount.hashCode() : 0);
         return result;
     }
 
@@ -217,6 +226,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
                         ",                             satzpktDifferenz=" + this.satzpktDifferenz +
                         ",                             sortierung=" + this.sortierung +
                         ",                             tabellenplatz=" + this.tabellenplatz +
+                        ",                             matchCount=" + this.matchCount +
                         '}';
     }
 }
