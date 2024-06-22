@@ -210,6 +210,8 @@ public class SyncServiceTest {
     private static final int sortierung = 0;
     private static final int tabellenplatz = 8;
 
+    private static final int matchCount = 0;
+
     //MannschaftsmitgliedDO
     //private static final Long USER = 0L;
     private static final Long id = 1L;
@@ -264,6 +266,7 @@ public class SyncServiceTest {
         expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
+        expectedLigatabelleDO.setMatchCount(matchCount);
 
         return expectedLigatabelleDO;
     }
@@ -568,7 +571,8 @@ public class SyncServiceTest {
                 satzpktGegen,
                 satzpktDifferenz,
                 sortierung,
-                tabellenplatz
+                tabellenplatz,
+                matchCount
         );
     }
 
@@ -808,6 +812,21 @@ public class SyncServiceTest {
         assertNotEquals(test1.getSortierung(),test2.getSortierung());
     }
 
+    @Test
+    public void equals25(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchCount(),test2.getMatchCount());
+    }
+    @Test
+    public void equals26(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchCount(99);
+        assertNotEquals(test1.getMatchCount(),test2.getMatchCount());
+    }
+
 
     // Start of testing
     // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
@@ -828,11 +847,12 @@ public class SyncServiceTest {
         Integer satzpktDifferenz01 = 14;
         Integer sortierung01 = 2;
         Integer tabellenplatz01 = 17;
+        Integer matchCount01 = 1;
         // see, now this does look better!
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
                 veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
                 mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
-                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01, matchCount01
         );
 
         Long veranstaltungId = 17L;
@@ -885,6 +905,10 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
+        final Integer matchCount = 0;
+        ligaSyncLigatabelleDTO.setTabellenplatz(matchCount);
+        assertEquals(matchCount,ligaSyncLigatabelleDTO.getMatchCount());
+
 
     }
 
@@ -910,11 +934,12 @@ public class SyncServiceTest {
         Integer satzpktDifferenz01 = 99;
         Integer sortierung01 = 99;
         Integer tabellenplatz01 = 99;
+        Integer matchCount01 = 0;
         // see, now this does look better!
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
                 veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
                 mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
-                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01, matchCount01
         );
 
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO03 = getLigaSyncLigatabelleDTO();
@@ -995,6 +1020,8 @@ public class SyncServiceTest {
         assertNotEquals(test01.hashCode(), test02.hashCode());
         test01.setTabellenplatz(null);
         assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchCount(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
     }
 
 
@@ -1032,6 +1059,7 @@ public class SyncServiceTest {
         assertThat(actualLigaSyncTabelleDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualLigaSyncTabelleDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualLigaSyncTabelleDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+        assertThat(actualLigaSyncTabelleDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         //verify invocations
         verify(ligatabelleComponent).getLigatabelleVeranstaltung(wettkampfId);
