@@ -186,8 +186,8 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
                 && condition4 && condition5
                 && condition6 && condition7
                 && condition8 &&condition9
-                && condition10 && condition11 && condition12
-                && condition13;
+                && condition10 && condition11
+                && condition12 && condition13;
     }
 
 
