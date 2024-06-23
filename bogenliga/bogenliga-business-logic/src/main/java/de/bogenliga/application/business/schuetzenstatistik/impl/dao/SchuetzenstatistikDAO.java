@@ -106,6 +106,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE
             )
+            .havingGt("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
 
@@ -161,6 +162,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     SCHUETZESATZ5_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
+            .havingGt("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .orderBy(MATCHNR_TABLE)
             .compose().toString();
 
@@ -207,13 +209,13 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
      * Lesen der aktuellen Liga-Tabelle zur Veranstaltung
      */
     public List<SchuetzenstatistikBE> getSchuetzenstatistikVeranstaltung(final long veranstaltungId, final long vereinId) {
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK, veranstaltungId, vereinId);
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK, veranstaltungId, vereinId, 0);
     }
 
     /**
      * Lesen der aktuellen Schuetzenstatistik zum Wettkampf (ID)
      */
     public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long wettkampfId, final long vereinId) {
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, wettkampfId, vereinId);
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, wettkampfId, vereinId, 0);
     }
 }
