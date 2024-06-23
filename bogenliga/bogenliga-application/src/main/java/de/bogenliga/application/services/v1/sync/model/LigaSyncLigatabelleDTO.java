@@ -9,7 +9,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
     // Annahme: für die Steuerung im Wettkampf benötigen die Teams aktuelle Rückmeldung über ihre
     // derzeitige Tabellenposition - aber nur über diese.
     // wir lesen Ligatabelle intial und berechnen die aktuelle Ligatabelle im Client auf Basis der
-    // Daten von Ligamatch in Summe mit Ligatabelle.
+    // Daten von Ligamatch in Summe mit  Ligatabelle.
     private Long veranstaltungId;
     private String veranstaltungName;
     private Long wettkampfId;
