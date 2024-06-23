@@ -80,6 +80,7 @@ public class TriggerService implements ServiceFacade {
     private final OldDbImport oldDBImport;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private boolean dataRecieved = false;
 
     @Autowired
     public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
@@ -301,23 +302,40 @@ public class TriggerService implements ServiceFacade {
     }
 
     public void syncData(Long triggeringUserId) {
+        boolean changesSuccessful = true;
+        dataRecieved = false;
         LOGGER.info("Importing tables from old database");
-        oldDBImport.sync();
+        try{
+            oldDBImport.sync();
 
-        Timestamp lastSync = getMigrationTimestamp();
+            Timestamp lastSync = getMigrationTimestamp();
 
-        LOGGER.info("Computing changes");
-        List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId, lastSync);
-        LOGGER.info("Computed {} changes", changes.size());
+            LOGGER.info("Computing changes");
+            List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId, lastSync);
+            LOGGER.info("Computed {} changes", changes.size());
 
-        for (TriggerChange<?> change : changes) {
-            boolean success = change.tryMigration();
-            LOGGER.debug("Migrated {} (Success: {})", change.getAltsystemDataObject(), success);
+            for (TriggerChange<?> change : changes) {
+                boolean success = change.tryMigration();
+                LOGGER.debug("Migrated {} (Success: {})", change.getAltsystemDataObject(), success);
+                if(!success){
+                    LOGGER.debug("UNSUCCESFUL "+ success);
+                    changesSuccessful = false;
+                    break;
+                }
+            }
+            /*TODO changesSuccessful && dataRecieved müssen beide true sein
+
+            dataRecieved ist zu Beginn false und wird auf true gesetzt wenn Daten ankommen
+            Muss geklärt werden wie wir die variable initialisieren un wo...*/
+            if(changesSuccessful && dataRecieved){
+                LOGGER.debug("CHANGES SUCCESSFUL");
+                LOGGER.info("Was nettes :)");//Updated den Timestamp nach dem sync
+                setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));}else{
+                LOGGER.warn("Nicht alle Daten konnten erfolgreich migriert werden;");}
+
+        }catch(Exception e){
+            LOGGER.error("Sync fehlgeschlagen: ", e);
         }
-        LOGGER.info("Was nettes :)");
-
-        //Updated den Timestamp nach dem sync
-        setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
     }
 
 
@@ -342,6 +360,9 @@ public class TriggerService implements ServiceFacade {
 
                 AltsystemEntity<?> entity = dataObjectToEntity.get(retrievedObject.getClass());
                 changes.add(new TriggerChange(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
+                if(!changes.isEmpty()){
+                    dataRecieved = true;
+                }
             } catch (TechnicalException e) {
                 LOGGER.error("Failed to load old model for " + oldTableName, e);
             }
