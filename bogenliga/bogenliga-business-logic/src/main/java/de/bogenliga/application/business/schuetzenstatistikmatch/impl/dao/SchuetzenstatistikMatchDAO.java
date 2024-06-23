@@ -79,6 +79,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE
             )
+            .havingGt("ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 )")
             .orderBy(RUECKENNUMMER_TABLE)
             .compose().toString();
 
@@ -110,6 +111,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
                     DSBMITGLIEDNAME_TABLE,
                     RUECKENNUMMER_TABLE
             )
+            .havingGt("ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 )")
             .orderBy(RUECKENNUMMER_TABLE)
             .compose().toString();
 
@@ -154,7 +156,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
      * Lesen der aktuellen Schuetzenstatistik zum Wettkampf (ID)
      */
     public List<SchuetzenstatistikMatchBE> getSchuetzenstatistikMatchWettkampf(final long wettkampfId, final long vereinId) {
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK_MATCH, GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF, wettkampfId, vereinId);
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK_MATCH, GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF, wettkampfId, vereinId, 0);
     }
 
 
