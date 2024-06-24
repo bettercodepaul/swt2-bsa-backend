@@ -71,7 +71,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long userId);
+    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, Long userId);
 
 
     /**
@@ -100,7 +100,18 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param userId
      * @return
      */
+
     List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
+
+    /**
+     * Return all dsbmannschaft entries with the given Veranstaltungs-Id.
+     *
+     * @param null of the Veranstaltung
+     * @return all dsbmannschaft entries with the given Veranstaltungs-Id.
+     * null, if no dsbmannschaft is found.
+     */
+
+    List<DsbMannschaftDO> findAllByWarteschlange();
 
     /**
      * Copys the Mitglieder of an old Mannschaft into a new Mannschaft

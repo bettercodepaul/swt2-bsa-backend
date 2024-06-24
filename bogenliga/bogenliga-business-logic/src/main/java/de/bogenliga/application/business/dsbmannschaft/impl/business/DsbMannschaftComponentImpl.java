@@ -74,6 +74,13 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
     @Override
+    public List<DsbMannschaftDO> findAllByWarteschlange() {
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWarteschlange();
+        return this.fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+    }
+
+    @Override
     public List<DsbMannschaftDO> findAllByVereinsId(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVereinsId(id);
@@ -129,7 +136,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final Long currentUserId) {
         checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
@@ -201,7 +208,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(dsbMannschaftDO.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getNummer() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkArgument(dsbMannschaftDO.getBenutzerId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
-        Preconditions.checkArgument(dsbMannschaftDO.getVeranstaltungId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
+        //Preconditions.checkArgument(dsbMannschaftDO.getVeranstaltungId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
 
     }
 

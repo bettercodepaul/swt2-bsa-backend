@@ -74,6 +74,11 @@ public class DsbMannschaftDAO implements DataAccessObject {
                     "AND w.wettkampf_id = ?\n" +
                     "group by m.mannschaft_id";
 
+    private static final String FIND_ALL_BY_WARTSCHLANGE =
+            "SELECT * "
+                    + " FROM mannschaft"
+                    + " WHERE mannschaft_veranstaltung_id IS NULL";
+
     private final BasicDAO basicDao;
 
 
@@ -146,6 +151,16 @@ public class DsbMannschaftDAO implements DataAccessObject {
 
     public List<DsbMannschaftBE> findAllByWettkampfId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
+
+    /**
+     * Return all dsbmannschaft entries with the given Wettkampf-Id
+     *
+     * @param id from the Wettkampf
+     * @return all dbsmannschaft entries with the given Wettkampf-Id
+     */
+
+    public List<DsbMannschaftBE> findAllByWarteschlange() {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE);}
 
 
     /**
