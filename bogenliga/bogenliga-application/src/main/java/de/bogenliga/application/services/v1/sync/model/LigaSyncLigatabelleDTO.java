@@ -180,14 +180,15 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         Boolean condition10 = this.getSatzpktGegen().equals(that.getSatzpktGegen());
         Boolean condition11 = this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz());
         Boolean condition12 = this.getSortierung().equals(that.getSortierung());
-        Boolean condition13 = this.getMatchCount().equals(that.getMatchCount());
+        Boolean condition13 = this.getTabellenplatz().equals(that.getTabellenplatz());
+        Boolean condition14 = this.getMatchCount().equals(that.getMatchCount());
 
         return condition1 && condition2 && condition3
                 && condition4 && condition5
                 && condition6 && condition7
                 && condition8 &&condition9
                 && condition10 && condition11
-                && condition12 && condition13;
+                && condition12 && condition13 && condition14;
     }
 
 
