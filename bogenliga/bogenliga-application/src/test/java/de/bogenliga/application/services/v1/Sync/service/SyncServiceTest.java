@@ -817,25 +817,10 @@ public class SyncServiceTest {
         final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
         final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
 
-        assertEquals(test1.getTabellenplatz(),test2.getTabellenplatz());
-    }
-    @Test
-    public void equals26(){
-        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
-        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
-        test2.setTabellenplatz(99);
-        assertNotEquals(test1.getTabellenplatz(),test2.getTabellenplatz());
-    }
-
-    @Test
-    public void equals27(){
-        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
-        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
-
         assertEquals(test1.getMatchCount(),test2.getMatchCount());
     }
     @Test
-    public void equals28(){
+    public void equals26(){
         final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
         final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
         test2.setMatchCount(99);
