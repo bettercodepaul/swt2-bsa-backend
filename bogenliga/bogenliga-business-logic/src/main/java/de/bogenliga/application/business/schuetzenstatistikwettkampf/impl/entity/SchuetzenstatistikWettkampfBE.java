@@ -18,13 +18,6 @@ public class SchuetzenstatistikWettkampfBE extends CommonBusinessEntity implemen
     private float wettkampftag4;
     private float wettkampftageSchnitt;
 
-    // for statistics across ALL leagues
-    private float schnitt_wettkampftage1;
-    private float schnitt_wettkampftage2;
-    private float schnitt_wettkampftage3;
-    private float schnitt_wettkampftage4;
-    private float schnitt_sportjahr;
-
     @Override
     public String toString() {
         return "SchuetzenstatistikWettkampfBE{" +
@@ -35,11 +28,6 @@ public class SchuetzenstatistikWettkampfBE extends CommonBusinessEntity implemen
                 ", wettkampftag3='" + wettkampftag3 +
                 ", wettkampftag4='" + wettkampftag4 +
                 ", wettkampftageSchnitt='" + wettkampftageSchnitt +
-                ", schnitt_wettkampftage1='" + schnitt_wettkampftage1 +
-                ", schnitt_wettkampftage2='" + schnitt_wettkampftage2 +
-                ", schnitt_wettkampftage3='" + schnitt_wettkampftage3 +
-                ", schnitt_wettkampftage4='" + schnitt_wettkampftage4 +
-                ", schnitt_sportjahr='" + schnitt_sportjahr +
                 '}';
     }
 
