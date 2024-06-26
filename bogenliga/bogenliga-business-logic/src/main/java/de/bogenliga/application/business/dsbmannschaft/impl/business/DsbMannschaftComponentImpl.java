@@ -31,7 +31,6 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaftDO Verein ID must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaftDO Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaftDO Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaftDO Veranstaltung ID must not be negative";
     private static final String PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT = "Current dsbmannschaft id must not be negative";
     private static final String PRECONDITION_MSG_SORTIERUNG = "The Sortierung must not be null or negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs ID must not be negative";
@@ -79,6 +78,15 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         return this.fillAllNames(dsbMannschaftBeList.stream()
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
+
+
+    @Override
+    public List<DsbMannschaftDO> findAllByName(String name) {
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByName(name);
+        return this.fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+    }
+
 
     @Override
     public List<DsbMannschaftDO> findAllByVereinsId(long id){
@@ -208,8 +216,6 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(dsbMannschaftDO.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getNummer() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkArgument(dsbMannschaftDO.getBenutzerId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
-        //Preconditions.checkArgument(dsbMannschaftDO.getVeranstaltungId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
-
     }
 
     //for sorting:

@@ -127,18 +127,6 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
             .compose().toString();
 
-    // hier suchen wir die Anzahl aller Teammtiglieder, die potentiell eingesetzt werden könnten
-    // d.h. sie wurden für die Mannschaft gemeldet.
-    private static final String COUNT_ALL_SCHUETZE_TEAM = new QueryBuilder()
-            .selectCount()
-            .from(TABLE, TABLE_ALIAS)
-            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
-            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
-                    DSB_MITGLIED_TABLE_MITGLIED_ID)
-            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
-            .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
-            .compose().toString();
-
 
 
 
@@ -275,10 +263,6 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public List<MannschaftsmitgliedExtendedBE> findAllSchuetzeInTeam(final long id) {
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_ALL_SCHUETZE_TEAM, id);
-    }
-
-    public List<MannschaftsmitgliedExtendedBE> countAllSchuetzeInTeam(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, COUNT_ALL_SCHUETZE_TEAM, id);
     }
 
     public List<MannschaftsmitgliedExtendedBE> findSchuetzenInUebergelegenerLiga( final long mannschaftsId, final long wettkampfId) {

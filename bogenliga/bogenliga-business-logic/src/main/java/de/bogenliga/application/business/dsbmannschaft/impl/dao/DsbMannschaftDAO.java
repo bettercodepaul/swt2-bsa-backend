@@ -78,6 +78,13 @@ public class DsbMannschaftDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM mannschaft"
                     + " WHERE mannschaft_veranstaltung_id IS NULL";
+    private static final String FIND_ALL_BY_NAME =
+            "SELECT a.* "
+                    + "FROM mannschaft a, verein b "
+                    + "WHERE a.mannschaft_verein_id = b.verein_id "
+                    + "AND CONCAT(LOWER(b.verein_name), ' ' , "
+                    + "LOWER(CAST(a.mannschaft_nummer AS TEXT))) LIKE LOWER(?) "
+                    + "AND mannschaft_veranstaltung_id IS NULL";
 
     private final BasicDAO basicDao;
 
@@ -153,15 +160,27 @@ public class DsbMannschaftDAO implements DataAccessObject {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
 
     /**
-     * Return all dsbmannschaft entries with the given Wettkampf-Id
+     * Return all dsbmannschaft entries that are currently in the waiting queue
      *
-     * @param id from the Wettkampf
-     * @return all dbsmannschaft entries with the given Wettkampf-Id
+     * @return all dsbmannschaft entries in the waiting queue
      */
 
     public List<DsbMannschaftBE> findAllByWarteschlange() {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE);}
 
+    /**
+     * Return all dsbmannschaft entries with the given name
+     *
+     * @param name of the dsbmannschaft
+     * @return all dbsmannschaft entries with the given name
+     */
+
+    public List<DsbMannschaftBE> findAllByName(final String name) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_NAME, new StringBuilder()
+                                                                            .append("%")
+                                                                            .append(name)
+                                                                            .append("%")
+                                                                            .toString());}
 
     /**
      * Return dsbmitglied entry with specific id

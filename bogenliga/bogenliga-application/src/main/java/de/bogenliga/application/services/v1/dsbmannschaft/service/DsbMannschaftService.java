@@ -152,9 +152,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
     /**
-     * I return the dsbMannschaft entries of the database with the given Veranstaltungs-Id.
+     * Returns all dsbMannschaft entries that are currently in the waiting queue.
      *
-     * @param null the given Veranstaltungs-Id
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
     @GetMapping(value = "byWarteschlangeID/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -162,8 +161,6 @@ public class DsbMannschaftService implements ServiceFacade {
     public List<DsbMannschaftDTO> findAllbyWarteschlangeID()
 
     {
-       // LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID null);
-
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange();
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
@@ -185,6 +182,15 @@ public class DsbMannschaftService implements ServiceFacade {
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
+    @GetMapping(value = "byName/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllByName(@PathVariable("name") final String name) {
+
+        LOG.debug("Receive 'findAllByName' request with Name '{}'", name);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
+    }
 
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
@@ -240,7 +246,6 @@ public class DsbMannschaftService implements ServiceFacade {
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
         //and if the user has the permission to modify his verein.
-        System.out.println("Dumme Ficke " + dsbMannschaftDTO.getVeranstaltungId());
         if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
                 this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
 

@@ -129,11 +129,6 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder selectCount() {
-        this.queryString += SQL_SELECT + "COUNT(*) ";
-        return this;
-    }
-
 
     public QueryBuilder selectField(String fieldName) {
         this.queryString += SQL_SELECT + fieldName;

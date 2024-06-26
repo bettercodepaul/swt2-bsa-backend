@@ -104,15 +104,22 @@ public interface DsbMannschaftComponent extends ComponentFacade {
     List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 
     /**
-     * Return all dsbmannschaft entries with the given Veranstaltungs-Id.
+     * Return all dsbmannschaft entries that are currently in the waiting queue.
      *
-     * @param null of the Veranstaltung
-     * @return all dsbmannschaft entries with the given Veranstaltungs-Id.
+     * @return all dsbmannschaft entries in the waiting queue.
      * null, if no dsbmannschaft is found.
      */
 
     List<DsbMannschaftDO> findAllByWarteschlange();
 
+    /**
+     * Return all dsbmannschaft entries with the given name.
+     *
+     * @return all dsbmannschaft entries with the given name
+     * null, if no dsbmannschaft is found.
+     */
+
+    List<DsbMannschaftDO> findAllByName(String name);
     /**
      * Copys the Mitglieder of an old Mannschaft into a new Mannschaft
      *
