@@ -71,7 +71,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, Long userId);
+    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long userId);
 
 
     /**
@@ -90,7 +90,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param dsbMannschaftDO dsbmannschaft to delete
      */
 
-    void delete(DsbMannschaftDO dsbMannschaftDO, long currentDsbMitgliedId);
+    void delete(DsbMannschaftDO dsbMannschaftDO, Long currentDsbMitgliedId);
 
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung

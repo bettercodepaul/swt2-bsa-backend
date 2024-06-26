@@ -385,7 +385,7 @@ public class DsbMannschaftService implements ServiceFacade {
                 // If the new team isn´t and Platzhalter
                 // And the Veranstaltung already has an Platzhalter
                 // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
-                if (platzhalterVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()
+                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
                         && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
                         && dsbMannschaftDTO.getVereinId() != platzhalterId) {
                     delete(platzhalterId, principal);
@@ -518,11 +518,11 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public void delete(@PathVariable("id") final Long id, final Principal principal) throws NoPermissionException {
+    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
-        final Long userId = UserProvider.getCurrentUserId(principal);
+        final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 

@@ -144,7 +144,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final Long currentUserId) {
+    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
         checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
@@ -169,7 +169,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public void delete(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+    public void delete(final DsbMannschaftDO dsbMannschaftDO, final Long currentUserId) {
         Preconditions.checkNotNull(dsbMannschaftDO, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);

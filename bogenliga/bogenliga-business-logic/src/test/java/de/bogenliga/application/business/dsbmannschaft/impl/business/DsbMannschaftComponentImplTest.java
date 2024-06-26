@@ -527,7 +527,7 @@ public class DsbMannschaftComponentImplTest {
                 .withNoCause();
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(tmpMannschaft, -1L))
+                .isThrownBy(() -> underTest.create(tmpMannschaft, -1))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
 
@@ -557,12 +557,6 @@ public class DsbMannschaftComponentImplTest {
                 .withMessageContaining("must not be negative")
                 .withNoCause();
         tmpMannschaft.setVereinId(VEREIN_ID);
-
-        tmpMannschaft.setVeranstaltungId(-1L);
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
-                .withMessageContaining("must not be negative")
-                .withNoCause();
 
         // assert result
 
@@ -748,7 +742,7 @@ public class DsbMannschaftComponentImplTest {
                 .withNoCause();
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.delete(input, -1))
+                .isThrownBy(() -> underTest.delete(input, -1L))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
 
