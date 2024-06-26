@@ -236,46 +236,43 @@ public class LigaComponentImplTest {
 
     @Test
     public void findByLowest(){
-
         // prepare test data
         final LigaBE expectedLigaBE = getLigaBE();
-        final List<LigaBE> expectedBEList = Collections.singletonList(expectedLigaBE);
-        final LigaBE expectedLigaUebergeordnetBE = expectedLigaBE;
         final RegionenDO expectedRegionBE = getRegionenDO();
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
 
         // configure mocks
-        when(ligaDao.findByLowest()).thenReturn(expectedBEList);
+        when(ligaDao.findByLowest(anyLong())).thenReturn(expectedLigaBE);
         when(ligaDao.findById(anyLong())).thenReturn(expectedLigaBE);
         when(regionenComponentImpl.findById(anyLong())).thenReturn(expectedRegionBE);
         when(userComponentImpl.findById(anyLong())).thenReturn(expectedUserDO);
         when(disziplinComponentImpl.findById(anyLong())).thenReturn(expectedDisziplinDO);
+
         // call test method
-        final List<LigaDO> actual = underTest.findByLowest();
+        final LigaDO actual = underTest.findByLowest(LIGAID);
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
+        assertThat(actual).isNotNull();
 
-        assertThat(actual.get(0).getId()).isEqualTo(expectedLigaBE.getLigaId());
-        assertThat(actual.get(0).getName()).isEqualTo(expectedLigaBE.getLigaName());
-        assertThat(actual.get(0).getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
-        assertThat(actual.get(0).getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
-        assertThat(actual.get(0).getLigaUebergeordnetId()).isEqualTo(expectedLigaUebergeordnetBE.getLigaId());
-        assertThat(actual.get(0).getLigaUebergeordnetName()).isEqualTo(expectedLigaUebergeordnetBE.getLigaName());
-        assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
-        assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
-        assertThat(actual.get(0).getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
-        assertThat(actual.get(0).getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
-        assertThat(actual.get(0).getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
-        assertThat(actual.get(0).getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
-        assertThat(actual.get(0).getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
+        assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
+        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+        assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
+        assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
+        assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
-        // verify invocations
-        verify(ligaDao).findByLowest();
+
+        // verify invocation
+        verify(regionenComponentImpl).findById(expectedLigaBE.getLigaRegionId());
+        verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
+        verify(disziplinComponentImpl).findById(expectedLigaBE.getLigaDisziplinId());
 
     }
 
