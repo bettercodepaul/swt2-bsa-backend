@@ -55,26 +55,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        // allow unauthorized access to
+        // allow unauthorized access to...
         web.ignoring()
-                // allow insecure access to example endpoints
+                //...example endpoints
                 .antMatchers("/v2/hello-world")
-                .and()
-                .ignoring()
                 .antMatchers("/v1/hello-world")
-                .and()
-                // allow insecure access to swagger
-                .ignoring()
+                //... swagger endpoints
                 .antMatchers("/swagger-ui.html")
-                .and()
-                .ignoring()
+                .antMatchers("/swagger-ui/**")
+                .antMatchers("/swagger-resources/**")
                 .antMatchers("/v2/api-docs")
-                .and()
-                .ignoring()
+                .antMatchers("/webjars/**")
                 .antMatchers(HttpMethod.POST, "/v1/signin")
-                .and()
-                .ignoring()
-                .antMatchers(HttpMethod.POST,"/v1/user/signin");
+                .antMatchers(HttpMethod.POST, "/v1/user/signin");
     }
 
 
@@ -92,8 +85,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/v1/user/signin").permitAll()
-                .antMatchers("/webjars/springfox-swagger-ui/**").permitAll() // swagger-ui resources
-                .antMatchers("/swagger-resources/**").permitAll() // swagger-ui resources
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/v2/api-docs").permitAll()
                 //.antMatchers("/v1/*").permitAll() // TODO allow all in pupose of the failing angular application
                 //.antMatchers("/v1/**").permitAll() // TODO allow all in pupose of the failing angular application
                 //.antMatchers("/v1/configuration/*").permitAll() // TODO allow all in pupose of the failing angular application

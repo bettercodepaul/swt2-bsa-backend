@@ -90,7 +90,7 @@ public class LigatabelleDAO implements DataAccessObject {
                "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
                "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name" +
              ")as tabellenplatz from ligatabelle as lt where lt.ligatabelle_veranstaltung_id = ?" +
-        "and lt.ligatabelle_wettkampf_tag = (" +
+        " and lt.ligatabelle_wettkampf_tag = (" +
             "select max(ligat.ligatabelle_wettkampf_tag) " +
             "from ligatabelle as ligat where ligat.ligatabelle_veranstaltung_id = lt.ligatabelle_veranstaltung_id)";
 
@@ -130,7 +130,7 @@ public class LigatabelleDAO implements DataAccessObject {
                         "ligatabelle_mannschaft_nummer," +
                         "ligatabelle_verein_id," +
                          VEREINNAME_TABLE +
-                        ")as tabellenplatz " +
+                        ") as tabellenplatz " +
                     "from ligatabelle " +
                     "where ligatabelle_wettkampf_id = ?" ;
 

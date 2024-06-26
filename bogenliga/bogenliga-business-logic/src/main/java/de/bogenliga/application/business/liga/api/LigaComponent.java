@@ -16,9 +16,9 @@ public interface LigaComponent {
 
     /**
      *
-     * @return list containing all Lowest Liga in each Region
+     * @return Lowest Liga with specific id
      */
-    List<LigaDO> findByLowest();
+    LigaDO findByLowest(long id);
     /**
      * Return a liga entry with the given id.
      *
