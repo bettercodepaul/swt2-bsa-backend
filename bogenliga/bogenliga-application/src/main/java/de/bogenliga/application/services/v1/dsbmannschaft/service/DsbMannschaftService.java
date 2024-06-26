@@ -262,7 +262,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
-            if(dsbMannschaftDTO.getVereinId() == PLATZHALTER_VEREIN_ID) {
+            if(dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID)) {
                 int veranstaltungsgroesse = 8;
                 VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(
                         dsbMannschaftDTO.getVeranstaltungId());
@@ -298,7 +298,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
             final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
 
-            if(newDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID){
+            if(newDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID)){
                 createMannschaftsMitgliedForPlatzhalter(savedDsbMannschaftDO, principal);
             }
 
@@ -317,7 +317,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
                                                         final Principal principal) throws NoPermissionException {
 
-        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID, "tja");
+        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
         MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
         try {
@@ -379,7 +379,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
                 // Check if in this Veranstaltung is already and Platzhalter
                 // And if the new team isn´t an Platzhalter
-                Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() != PLATZHALTER_VEREIN_ID,
+                Preconditions.checkArgument(!dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
                         PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
 
                 // If the new team isn´t and Platzhalter
@@ -387,7 +387,7 @@ public class DsbMannschaftService implements ServiceFacade {
                 // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
                 if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
                         && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
-                        && dsbMannschaftDTO.getVereinId() != platzhalterId) {
+                        && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
                     delete(platzhalterId, principal);
                     break;
                 }
