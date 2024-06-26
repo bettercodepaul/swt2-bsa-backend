@@ -55,69 +55,24 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
         return schuetzenname;
     }
 
-
-    public void setSchuetzenname(String schuetzenname) {
-        this.schuetzenname = schuetzenname;
+    public long getSportjahr3() {
+        return sportjahr3;
     }
-
-
-    public long getSportjahr1() {
-        return sportjahr1;
-    }
-
-
-    public void setSportjahr1(long sportjahr1) {
-        this.sportjahr1 = sportjahr1;
-    }
-
 
     public long getSportjahr2() {
         return sportjahr2;
     }
 
-
-    public void setSportjahr2(long sportjahr2) {
-        this.sportjahr2 = sportjahr2;
+    public long getSportjahr1() {
+        return sportjahr1;
     }
-
-
-    public long getSportjahr3() {
-        return sportjahr3;
-    }
-
-
-    public void setSportjahr3(long sportjahr3) {
-        this.sportjahr3 = sportjahr3;
-    }
-
-
     public long getSportjahr4() {
         return sportjahr4;
     }
-
-
-    public void setSportjahr4(long sportjahr4) {
-        this.sportjahr4 = sportjahr4;
-    }
-
+    public long getAllejahre_schnitt() { return allejahre_schnitt; }
 
     public long getSportjahr5() {
         return sportjahr5;
-    }
-
-
-    public void setSportjahr5(long sportjahr5) {
-        this.sportjahr5 = sportjahr5;
-    }
-
-
-    public long getAllejahre_schnitt() {
-        return allejahre_schnitt;
-    }
-
-
-    public void setAllejahre_schnitt(long allejahre_schnitt) {
-        this.allejahre_schnitt = allejahre_schnitt;
     }
 
     @Override
