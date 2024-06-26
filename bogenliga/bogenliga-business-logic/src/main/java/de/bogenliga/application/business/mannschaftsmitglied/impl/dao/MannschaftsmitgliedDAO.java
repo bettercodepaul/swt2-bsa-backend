@@ -129,6 +129,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
 
+
         /*The query gets a competition ID and team ID.
     In the first part of the query it is ensured that the shooters have not already participated in another competition on the same day.
     It is filtered by the competition ID and team ID. Then it is checked if the dsb_member has not already participated under another teamId.

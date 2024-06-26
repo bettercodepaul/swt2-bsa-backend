@@ -167,6 +167,75 @@ public class DsbMannschaftBasicDAOTest {
     }
 
     @Test
+    public void findAllByWarteschlange() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        expectedBE.setVeranstaltungId(null);
+
+        // call test method
+        final List<DsbMannschaftBE> actual = underTest.findAllByWarteschlange();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+
+
+    }
+
+    @Test
+    public void findAllByName() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<DsbMannschaftBE> actual = underTest.findAllByName("111");
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+
+
+    }
+
+    @Test
     public void findById() {
         // prepare test data
         final DsbMannschaftBE expectedBE = new DsbMannschaftBE();

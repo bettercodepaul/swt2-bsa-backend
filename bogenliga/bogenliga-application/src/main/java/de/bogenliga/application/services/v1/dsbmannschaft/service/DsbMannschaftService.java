@@ -54,7 +54,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING = "Already an existing Platzhalter in this Veranstaltung";
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
 
-    private static final long PLATZHALTER_VEREIN_ID = 99;
+    private static final Long PLATZHALTER_VEREIN_ID = 99L;
 
 
 
@@ -141,7 +141,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "byVereinsID/{vereinsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
+    public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final Long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
@@ -152,6 +152,20 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
     /**
+     * Returns all dsbMannschaft entries that are currently in the waiting queue.
+     *
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @GetMapping(value = "byWarteschlangeID/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllbyWarteschlangeID()
+
+    {
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange();
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
+    }
+
+    /**
      * I return the dsbMannschaft entries of the database with the given Veranstaltungs-Id.
      *
      * @param id the given Veranstaltungs-Id
@@ -159,7 +173,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "byVeranstaltungsID/{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMannschaftDTO> findAllByVeranstaltungsId(@PathVariable("veranstaltungsId") final long id) {
+    public List<DsbMannschaftDTO> findAllByVeranstaltungsId(@PathVariable("veranstaltungsId") final Long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
@@ -168,6 +182,21 @@ public class DsbMannschaftService implements ServiceFacade {
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
+    /**
+     * I return the dsbMannschaft entries of the database having the given SearchTerm.
+     *
+     * @param name the given SearchTerm
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @GetMapping(value = "byName/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllByName(@PathVariable("name") final String name) {
+
+        LOG.debug("Receive 'findAllByName' request with Name '{}'", name);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
+    }
 
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
@@ -186,7 +215,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public DsbMannschaftDTO findById(@PathVariable("id") final long id) {
+    public DsbMannschaftDTO findById(@PathVariable("id") final Long id) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
@@ -231,32 +260,33 @@ public class DsbMannschaftService implements ServiceFacade {
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
-            int veranstaltungsgroesse = 8;
-            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId());
-            if (veranstaltungDO != null){
-                veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
+            if(dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID)) {
+                int veranstaltungsgroesse = 8;
+                VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(
+                        dsbMannschaftDTO.getVeranstaltungId());
+                if (veranstaltungDO != null) {
+                    veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
+                }
+
+                // Get the current number of teams from the Veranstaltung
+                List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(
+                        dsbMannschaftDTO.getVeranstaltungId());
+                List<DsbMannschaftDO> allExistingPlatzhalterList = dsbMannschaftComponent.findAllByVereinsId(
+                        PLATZHALTER_VEREIN_ID);
+
+                // If the list isn´t empty, call the method
+                if (!allExistingPlatzhalterList.isEmpty()) {
+                    checkForPlatzhalter(actualMannschaftInVeranstaltungCount, allExistingPlatzhalterList,
+                            dsbMannschaftDTO, veranstaltungsgroesse, principal);
+                }
+
+
+                Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
+
+                        , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
             }
-
-
-            // Get the current number of teams from the Veranstaltung
-            List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
-            List<DsbMannschaftDO> allExistingPlatzhalterList = dsbMannschaftComponent.findAllByVereinsId(
-                    PLATZHALTER_VEREIN_ID);
-
-            // If the list isn´t empty, call the method
-            if(!allExistingPlatzhalterList.isEmpty()) {
-                checkForPlatzhalter(actualMannschaftInVeranstaltungCount, allExistingPlatzhalterList,
-                        dsbMannschaftDTO, veranstaltungsgroesse, principal);
-            }
-
-
-            Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
-
-                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
-
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
                     dsbMannschaftDTO.getVereinId(),
@@ -268,7 +298,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
             final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
 
-            if(newDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID){
+            if(newDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID)){
                 createMannschaftsMitgliedForPlatzhalter(savedDsbMannschaftDO, principal);
             }
 
@@ -287,7 +317,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
                                                         final Principal principal) throws NoPermissionException {
 
-        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID, "tja");
+        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
         MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
         try {
@@ -344,20 +374,20 @@ public class DsbMannschaftService implements ServiceFacade {
                         dsbMannschaftDTO.getVeranstaltungId()))) {
                     continue;
                 }
-                long platzhalterVeranstaltungsId = allExistingPlatzhalterList.get(i).getVeranstaltungId();
-                long platzhalterId = allExistingPlatzhalterList.get(i).getId();
+                Long platzhalterVeranstaltungsId = allExistingPlatzhalterList.get(i).getVeranstaltungId();
+                Long platzhalterId = allExistingPlatzhalterList.get(i).getId();
 
                 // Check if in this Veranstaltung is already and Platzhalter
                 // And if the new team isn´t an Platzhalter
-                Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() != PLATZHALTER_VEREIN_ID,
+                Preconditions.checkArgument(!dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
                         PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
 
                 // If the new team isn´t and Platzhalter
                 // And the Veranstaltung already has an Platzhalter
                 // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
-                if (platzhalterVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()
+                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
                         && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
-                        && dsbMannschaftDTO.getVereinId() != platzhalterId) {
+                        && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
                     delete(platzhalterId, principal);
                     break;
                 }
@@ -378,8 +408,8 @@ public class DsbMannschaftService implements ServiceFacade {
     @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final long lastVeranstaltungsId,
-                                              @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
+    public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final Long lastVeranstaltungsId,
+                                              @PathVariable("currentVeranstaltungsId") final Long currentVeranstaltungsId,
                                               final Principal principal) {
 
         Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -401,11 +431,11 @@ public class DsbMannschaftService implements ServiceFacade {
     @GetMapping(value = "copyMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void insertMannschaftIntoVeranstaltung(@PathVariable("VeranstaltungsId") final long veranstaltungsId,
-                                              @PathVariable("MannschaftId") final long mannschaftId,
+    public void insertMannschaftIntoVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
+                                              @PathVariable("MannschaftId") final Long mannschaftId,
                                               final Principal principal) {
 
-        final long userId = UserProvider.getCurrentUserId(principal);
+        final Long userId = UserProvider.getCurrentUserId(principal);
 
 
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -473,7 +503,7 @@ public class DsbMannschaftService implements ServiceFacade {
                 dsbMannschaftDTO.getVeranstaltungId());
 
         final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
+        final Long userId = UserProvider.getCurrentUserId(principal);
 
         final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO, userId);
         return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
@@ -509,14 +539,12 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkNotNull(dsbMannschaftDTO, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVereinId(), PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getNummer(), PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
-        Preconditions.checkNotNull(dsbMannschaftDTO.getVeranstaltungId(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
 
 
         Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getNummer() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE);
-        Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
-                PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
+
     }
 }

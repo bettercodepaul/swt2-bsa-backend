@@ -319,6 +319,85 @@ public class DsbMannschaftComponentImplTest {
     }
 
     @Test
+    public void findAllByName() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByName(MA_NAME)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByName(MA_NAME);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByName(MA_NAME);
+        verify(vereinComponent).findById(anyLong());
+    }
+
+    @Test
+    public void findAllByWarteschlange() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        expectedBE.setVeranstaltungId(null);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByWarteschlange()).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByWarteschlange();
+        verify(vereinComponent).findById(anyLong());
+    }
+
+    @Test
     public void findById() {
         // prepare test data
         final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
@@ -478,12 +557,6 @@ public class DsbMannschaftComponentImplTest {
                 .withMessageContaining("must not be negative")
                 .withNoCause();
         tmpMannschaft.setVereinId(VEREIN_ID);
-
-        tmpMannschaft.setVeranstaltungId(-1);
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
-                .withMessageContaining("must not be negative")
-                .withNoCause();
 
         // assert result
 
@@ -669,7 +742,7 @@ public class DsbMannschaftComponentImplTest {
                 .withNoCause();
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.delete(input, -1))
+                .isThrownBy(() -> underTest.delete(input, -1L))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
 

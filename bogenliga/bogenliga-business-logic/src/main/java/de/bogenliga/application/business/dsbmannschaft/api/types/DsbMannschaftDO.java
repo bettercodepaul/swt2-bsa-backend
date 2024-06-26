@@ -38,7 +38,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param version
      */
 
-    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
+    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final Long veranstaltungId,
                            final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,
                            final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId, final Long version) {
         this.id = id;
@@ -71,7 +71,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param createdByUserId
      * @param version
      */
-    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
+    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final Long veranstaltungId,
                            final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,final Long version) {
         this.id = id;
         this.name = name;
@@ -96,7 +96,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
 
      */
     public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer,
-                           final long benutzerId,final long veranstaltungId, final Long sortierung) {
+                           final long benutzerId,final Long veranstaltungId, final Long sortierung) {
         this.id = id;
         this.name = name;
         this.vereinId=vereinId;
@@ -158,7 +158,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
 
     public Long getVeranstaltungId(){return veranstaltungId;}
 
-    public void setVeranstaltungId(final long veranstaltungId){this.veranstaltungId=veranstaltungId;}
+    public void setVeranstaltungId(final Long veranstaltungId){this.veranstaltungId=veranstaltungId;}
 
 
     public Long getSortierung(){return sortierung;}
