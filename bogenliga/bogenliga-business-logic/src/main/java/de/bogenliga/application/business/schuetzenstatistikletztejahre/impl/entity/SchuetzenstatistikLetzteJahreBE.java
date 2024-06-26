@@ -41,6 +41,16 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
     }
 
 
+    public long getAllejahre_schnitt() {
+        return allejahre_schnitt;
+    }
+
+
+    public void setAllejahre_schnitt(long allejahre_schnitt) {
+        this.allejahre_schnitt = allejahre_schnitt;
+    }
+
+
     public long getSportjahr1() {
         return sportjahr1;
     }
@@ -61,16 +71,6 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
     }
 
 
-    public long getSportjahr3() {
-        return sportjahr3;
-    }
-
-
-    public void setSportjahr3(long sportjahr3) {
-        this.sportjahr3 = sportjahr3;
-    }
-
-
     public long getSportjahr4() {
         return sportjahr4;
     }
@@ -78,6 +78,16 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
 
     public void setSportjahr4(long sportjahr4) {
         this.sportjahr4 = sportjahr4;
+    }
+
+
+    public long getSportjahr3() {
+        return sportjahr3;
+    }
+
+
+    public void setSportjahr3(long sportjahr3) {
+        this.sportjahr3 = sportjahr3;
     }
 
 
@@ -90,13 +100,4 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
         this.sportjahr5 = sportjahr5;
     }
 
-
-    public long getAllejahre_schnitt() {
-        return allejahre_schnitt;
-    }
-
-
-    public void setAllejahre_schnitt(long allejahre_schnitt) {
-        this.allejahre_schnitt = allejahre_schnitt;
-    }
 }

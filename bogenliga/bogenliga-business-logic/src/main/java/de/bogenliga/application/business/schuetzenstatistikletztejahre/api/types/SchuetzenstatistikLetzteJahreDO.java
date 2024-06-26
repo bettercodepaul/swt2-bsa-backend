@@ -62,6 +62,15 @@ public class SchuetzenstatistikLetzteJahreDO extends CommonDataObject implements
         this.schuetzenname = schuetzenname;
     }
 
+    public long getSportjahr4() {
+        return sportjahr4;
+    }
+
+
+    public void setSportjahr4(long sportjahr4) {
+        this.sportjahr4 = sportjahr4;
+    }
+
 
     public long getSportjahr1() {
         return sportjahr1;
@@ -77,6 +86,21 @@ public class SchuetzenstatistikLetzteJahreDO extends CommonDataObject implements
         return sportjahr2;
     }
 
+    public void setAllejahre_schnitt(long allejahre_schnitt) {
+        this.allejahre_schnitt = allejahre_schnitt;
+    }
+
+    public long getAllejahre_schnitt() {
+        return allejahre_schnitt;
+    }
+
+    public long getSportjahr5() {
+        return sportjahr5;
+    }
+
+    public void setSportjahr5(long sportjahr5) {
+        this.sportjahr5 = sportjahr5;
+    }
 
     public void setSportjahr2(long sportjahr2) {
         this.sportjahr2 = sportjahr2;
@@ -90,36 +114,6 @@ public class SchuetzenstatistikLetzteJahreDO extends CommonDataObject implements
 
     public void setSportjahr3(long sportjahr3) {
         this.sportjahr3 = sportjahr3;
-    }
-
-
-    public long getSportjahr4() {
-        return sportjahr4;
-    }
-
-
-    public void setSportjahr4(long sportjahr4) {
-        this.sportjahr4 = sportjahr4;
-    }
-
-
-    public long getSportjahr5() {
-        return sportjahr5;
-    }
-
-
-    public void setSportjahr5(long sportjahr5) {
-        this.sportjahr5 = sportjahr5;
-    }
-
-
-    public long getAllejahre_schnitt() {
-        return allejahre_schnitt;
-    }
-
-
-    public void setAllejahre_schnitt(long allejahre_schnitt) {
-        this.allejahre_schnitt = allejahre_schnitt;
     }
 
 
