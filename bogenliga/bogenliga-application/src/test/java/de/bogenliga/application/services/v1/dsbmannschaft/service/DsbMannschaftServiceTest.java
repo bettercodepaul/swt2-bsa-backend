@@ -209,6 +209,58 @@ public class DsbMannschaftServiceTest {
         verify(dsbMannschaftComponent).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
     }
 
+    @Test
+    public void findAllbyWarteschlangeID() {
+        // prepare test data
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByWarteschlange()).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllbyWarteschlangeID();
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMannschaftDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
+        assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
+        assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllByWarteschlange();
+    }
+
+    @Test
+    public void findAllByName() {
+        // prepare test data
+        final String name = String.valueOf(ID);
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByName(name)).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllByName(name);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMannschaftDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
+        assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
+        assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllByName(name);
+    }
 
     @Test
     public void findById() {

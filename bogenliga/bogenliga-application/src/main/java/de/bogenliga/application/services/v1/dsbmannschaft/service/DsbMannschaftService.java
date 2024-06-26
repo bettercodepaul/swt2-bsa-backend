@@ -182,6 +182,12 @@ public class DsbMannschaftService implements ServiceFacade {
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
+    /**
+     * I return the dsbMannschaft entries of the database having the given SearchTerm.
+     *
+     * @param name the given SearchTerm
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
     @GetMapping(value = "byName/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByName(@PathVariable("name") final String name) {
@@ -254,32 +260,33 @@ public class DsbMannschaftService implements ServiceFacade {
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-/*
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
-            int veranstaltungsgroesse = 8;
-            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId());
-            if (veranstaltungDO != null){
-                veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
+            if(dsbMannschaftDTO.getVereinId() == PLATZHALTER_VEREIN_ID) {
+                int veranstaltungsgroesse = 8;
+                VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(
+                        dsbMannschaftDTO.getVeranstaltungId());
+                if (veranstaltungDO != null) {
+                    veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
+                }
+
+                // Get the current number of teams from the Veranstaltung
+                List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(
+                        dsbMannschaftDTO.getVeranstaltungId());
+                List<DsbMannschaftDO> allExistingPlatzhalterList = dsbMannschaftComponent.findAllByVereinsId(
+                        PLATZHALTER_VEREIN_ID);
+
+                // If the list isn´t empty, call the method
+                if (!allExistingPlatzhalterList.isEmpty()) {
+                    checkForPlatzhalter(actualMannschaftInVeranstaltungCount, allExistingPlatzhalterList,
+                            dsbMannschaftDTO, veranstaltungsgroesse, principal);
+                }
+
+
+                Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
+
+                        , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
             }
-
-
-            // Get the current number of teams from the Veranstaltung
-            List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
-            List<DsbMannschaftDO> allExistingPlatzhalterList = dsbMannschaftComponent.findAllByVereinsId(
-                    PLATZHALTER_VEREIN_ID);
-
-            // If the list isn´t empty, call the method
-            if(!allExistingPlatzhalterList.isEmpty()) {
-                checkForPlatzhalter(actualMannschaftInVeranstaltungCount, allExistingPlatzhalterList,
-                        dsbMannschaftDTO, veranstaltungsgroesse, principal);
-            }
-
-
-            Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
-
-                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);*/
-
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
                     dsbMannschaftDTO.getVereinId(),
