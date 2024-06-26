@@ -67,29 +67,26 @@ public class LigaDAOTest {
     @Test
     public void findByLowest(){
         // prepare test data
-        final LigaBE expectedBE = getLigaBE();
+        final LigaBE expectedBE = new LigaBE();
+        expectedBE.setLigaId(ID);
+        expectedBE.setLigaName(LIGANAME);
 
         // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final List<LigaBE> actual = underTest.findByLowest();
+        final LigaBE actual = underTest.findByLowest(ID);
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
+        assertThat(actual).isNotNull();
 
-        assertThat(actual.get(0)).isNotNull();
-
-        assertThat(actual.get(0).getLigaId())
+        assertThat(actual.getLigaId())
                 .isEqualTo(expectedBE.getLigaId());
-        assertThat(actual.get(0).getLigaName())
+        assertThat(actual.getLigaName())
                 .isEqualTo(expectedBE.getLigaName());
 
         // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
+        verify(basicDao).selectSingleEntity(any(), any(), any());
 
     }
 

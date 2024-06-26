@@ -206,27 +206,21 @@ public class LigaServiceTest {
         final List<LigaDO> ligaDOList = Collections.singletonList(ligaDO);
 
         // configure mocks
-        when(ligaComponent.findByLowest()).thenReturn(ligaDOList);
+        when(ligaComponent.findByLowest(ID)).thenReturn(ligaDO);
 
         // call test method
-        final List<LigaDTO> actual = underTest.findByLowest();
+        final LigaDTO actual = underTest.findByLowest(ID);
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
-
-        final LigaDTO actualDTO = actual.get(0);
-
-        assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getId()).isEqualTo(ligaDO.getId());
-        assertThat(actualDTO.getName()).isEqualTo(ligaDO.getName());
-        assertThat(actualDTO.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDoFileBase64());
-        assertThat(actualDTO.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDoFileName());
-        assertThat(actualDTO.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDoFileType());
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(ligaDO.getId());
+        assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDoFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDoFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDoFileType());
 
         // verify invocations
-        verify(ligaComponent).findByLowest();
+        verify(ligaComponent).findByLowest(ID);
 
     }
 

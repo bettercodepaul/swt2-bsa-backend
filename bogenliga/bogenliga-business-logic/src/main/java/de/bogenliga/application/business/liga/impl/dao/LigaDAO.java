@@ -85,14 +85,8 @@ public class LigaDAO implements DataAccessObject {
                     + "FROM liga"
                     + " WHERE liga_id NOT IN (SELECT liga_uebergeordnet"
                     + "                      FROM liga"
-                    + "                      WHERE liga_uebergeordnet IS NOT NULL"
-                    + "                      ORDER BY liga_uebergeordnet ASC)"
-                    + "  AND liga_region_id IN (SELECT region_id"
-                    + "                         FROM region"
-                    + "                         WHERE  region_id NOT IN (SELECT region_uebergeordnet"
-                    + "                                                  FROM region"
-                    + "                                                  WHERE region_uebergeordnet IS NOT NULL"
-                    + "                                                  ORDER BY region_uebergeordnet ASC))";
+                    + "                      WHERE liga_uebergeordnet IS NOT NULL)"
+                    + "AND liga_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -129,10 +123,10 @@ public class LigaDAO implements DataAccessObject {
     }
 
     /**
-     * Return list containing the lowest Liga in each Region
+     * Return lowest liga with specific ID
      */
-    public List<LigaBE> findByLowest(){
-        return basicDao.selectEntityList(LIGA,FIND_BY_LOWEST);
+    public LigaBE findByLowest(final long id){
+        return basicDao.selectSingleEntity(LIGA,FIND_BY_LOWEST,id);
     }
 
     /**
