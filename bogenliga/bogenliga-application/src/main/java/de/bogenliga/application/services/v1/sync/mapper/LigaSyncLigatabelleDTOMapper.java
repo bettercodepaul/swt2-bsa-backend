@@ -38,11 +38,12 @@ public class LigaSyncLigatabelleDTOMapper implements DataTransferObjectMapper {
         final Integer satzpktDifferenz = ligatabelleDO.getSatzpktDifferenz();
         final Integer sortierung = ligatabelleDO.getsortierung();
         final Integer tabellenplatz = ligatabelleDO.gettabellenplatz();
+        final Integer matchCount = ligatabelleDO.getMatchCount();
 
 
         return new LigaSyncLigatabelleDTO(veranstaltungId, veranstaltungName,
                 wettkampfId, wettkampfTag, mannschaftId, mannschaftName,
                 matchpkt, matchpktGegen, satzpkt,
-                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
+                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz, matchCount);
     }
 }

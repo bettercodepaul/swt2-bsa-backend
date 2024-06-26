@@ -29,6 +29,9 @@ public class LigatabelleDOTest extends TestCase {
     private static int sortierung = 0;
     private static int tabellenplatz = 8;
 
+    private static final int matchCount = 0;
+
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
@@ -52,6 +55,7 @@ public class LigatabelleDOTest extends TestCase {
         expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
+        expectedLigatabelleDO.setMatchCount(matchCount);
 
 
         return expectedLigatabelleDO;
