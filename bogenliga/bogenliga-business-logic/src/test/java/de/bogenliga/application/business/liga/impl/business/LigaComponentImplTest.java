@@ -276,8 +276,37 @@ public class LigaComponentImplTest {
 
     }
 
-        @Test
-        public void findBySearch_whenAttributesAreNull() {
+    @Test
+    public void findByLowest_ReturnNull(){
+
+        final LigaBE expectedLigaBE = new LigaBE();
+        // call test method
+        final LigaDO actual = underTest.findByLowest(LIGAID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(null);
+        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+        assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(null);
+        assertThat(actual.getDisziplinId()).isEqualTo(null);
+        assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
+
+        // verify invocations
+        verify(ligaDao).findByLowest(LIGAID);
+
+
+    }
+
+    @Test
+    public void findBySearch_whenAttributesAreNull() {
             // prepare test data
             final LigaBE expectedLigaBE = getLigaBE();
             final List<LigaBE> expectedBEList = Collections.singletonList(expectedLigaBE);
