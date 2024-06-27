@@ -14,12 +14,12 @@ public class SchuetzenstatistikLetzteJahreDTOMapper {
     public static final Function<SchuetzenstatistikLetzteJahreDO, SchuetzenstatistikLetzteJahreDTO> toDTO = schuetzenstatistikLetzteJahreDO -> {
 
         final String schuetzenname = schuetzenstatistikLetzteJahreDO.getSchuetzenname();
-        final long sportjahr1 = schuetzenstatistikLetzteJahreDO.getSportjahr1();
-        final long sportjahr2 = schuetzenstatistikLetzteJahreDO.getSportjahr2();
-        final long sportjahr3 = schuetzenstatistikLetzteJahreDO.getSportjahr3();
-        final long sportjahr4 = schuetzenstatistikLetzteJahreDO.getSportjahr4();
-        final long sportjahr5 = schuetzenstatistikLetzteJahreDO.getSportjahr5();
-        final long allejahre_schnitt = schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt();
+        final float sportjahr1 = schuetzenstatistikLetzteJahreDO.getSportjahr1();
+        final float sportjahr2 = schuetzenstatistikLetzteJahreDO.getSportjahr2();
+        final float sportjahr3 = schuetzenstatistikLetzteJahreDO.getSportjahr3();
+        final float sportjahr4 = schuetzenstatistikLetzteJahreDO.getSportjahr4();
+        final float sportjahr5 = schuetzenstatistikLetzteJahreDO.getSportjahr5();
+        final float allejahre_schnitt = schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt();
 
         return new SchuetzenstatistikLetzteJahreDTO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahre_schnitt);
     };
