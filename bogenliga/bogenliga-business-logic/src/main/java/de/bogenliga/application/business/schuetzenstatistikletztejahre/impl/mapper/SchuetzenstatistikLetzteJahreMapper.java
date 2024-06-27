@@ -15,12 +15,12 @@ public class SchuetzenstatistikLetzteJahreMapper {
     public static final Function<SchuetzenstatistikLetzteJahreBE, SchuetzenstatistikLetzteJahreDO> toSchuetzenstatistikLetzteJahreDO = be -> {
 
         final String schuetzenname = be.getSchuetzenname();
-        final long sportjahr1 = be.getSportjahr1();
-        final long sportjahr2 = be.getSportjahr2();
-        final long sportjahr3 = be.getSportjahr3();
-        final long sportjahr4 = be.getSportjahr4();
-        final long sportjahr5 = be.getSportjahr5();
-        final long allejahre_schnitt = be.getAllejahre_schnitt();
+        final float sportjahr1 = be.getSportjahr1();
+        final float sportjahr2 = be.getSportjahr2();
+        final float sportjahr3 = be.getSportjahr3();
+        final float sportjahr4 = be.getSportjahr4();
+        final float sportjahr5 = be.getSportjahr5();
+        final float allejahre_schnitt = be.getAllejahre_schnitt();
 
         return new SchuetzenstatistikLetzteJahreDO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahre_schnitt);
     };

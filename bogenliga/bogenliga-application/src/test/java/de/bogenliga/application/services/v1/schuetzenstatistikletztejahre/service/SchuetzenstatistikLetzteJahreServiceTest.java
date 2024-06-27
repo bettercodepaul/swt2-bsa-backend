@@ -29,12 +29,12 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
     private static final long sportjahr = (long) 2002;
 
     private static final String schuetzenname = "Name Schütze";
-    private static final long sportjahr1 = (long) 8;
-    private static final long sportjahr2 = (long) 7;
-    private static final long sportjahr3 = (long) 6.5;
-    private static final long sportjahr4 = (long) 7.8;
-    private static final long sportjahr5 = (long) 8.2;
-    private static final long allejahre_schnitt = (long) 7.5;
+    private static final float sportjahr1 = (long) 8;
+    private static final float sportjahr2 = (long) 7;
+    private static final float sportjahr3 = (long) 6.5;
+    private static final float sportjahr4 = (long) 7.8;
+    private static final float sportjahr5 = (long) 8.2;
+    private static final float allejahre_schnitt = (long) 7.5;
 
     public static SchuetzenstatistikLetzteJahreDO getSchuetzenstatistikLetzteJahreDO() {
         final SchuetzenstatistikLetzteJahreDO expectedSchuetzenstatistikLetzteJahreDO = new SchuetzenstatistikLetzteJahreDO();

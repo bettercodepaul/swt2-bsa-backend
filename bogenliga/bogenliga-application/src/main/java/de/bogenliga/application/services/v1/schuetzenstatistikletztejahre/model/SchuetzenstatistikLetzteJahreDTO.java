@@ -13,12 +13,12 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
      * attributes of DTO
      */
     private String schuetzenname;
-    private long sportjahr1;
-    private long sportjahr2;
-    private long sportjahr3;
-    private long sportjahr4;
-    private long sportjahr5;
-    private long allejahre_schnitt;
+    private float sportjahr1;
+    private float sportjahr2;
+    private float sportjahr3;
+    private float sportjahr4;
+    private float sportjahr5;
+    private float allejahre_schnitt;
 
 
     /**
@@ -34,12 +34,12 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
      */
     public SchuetzenstatistikLetzteJahreDTO(
             String schuetzenname,
-            long sportjahr1,
-            long sportjahr2,
-            long sportjahr3,
-            long sportjahr4,
-            long sportjahr5,
-            long allejahre_schnitt
+            float sportjahr1,
+            float sportjahr2,
+            float sportjahr3,
+            float sportjahr4,
+            float sportjahr5,
+            float allejahre_schnitt
     ) {
         this.schuetzenname = schuetzenname;
         this.sportjahr1 = sportjahr1;
@@ -50,28 +50,30 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
         this.allejahre_schnitt = allejahre_schnitt;
     }
 
-    // Getters and Setters
+    // Getters
     public String getSchuetzenname() {
         return schuetzenname;
     }
 
-    public long getSportjahr3() {
+    public float getSportjahr3() {
         return sportjahr3;
     }
 
-    public long getSportjahr2() {
+    public float getSportjahr2() {
         return sportjahr2;
     }
 
-    public long getSportjahr1() {
+    public float getSportjahr1() {
         return sportjahr1;
     }
-    public long getSportjahr4() {
+
+    public float getSportjahr4() {
         return sportjahr4;
     }
-    public long getAllejahre_schnitt() { return allejahre_schnitt; }
 
-    public long getSportjahr5() {
+    public float getAllejahre_schnitt() { return allejahre_schnitt; }
+
+    public float getSportjahr5() {
         return sportjahr5;
     }
 
