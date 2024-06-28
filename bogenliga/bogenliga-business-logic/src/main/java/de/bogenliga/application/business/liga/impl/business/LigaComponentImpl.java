@@ -91,16 +91,15 @@ public class LigaComponentImpl implements LigaComponent {
     }
 
     @Override
-    public List<LigaDO> findByLowest(){
-        final ArrayList<LigaDO> lowestList = new ArrayList<>();
-        final List<LigaBE> ligaBEList = ligaDAO.findByLowest();
+    public LigaDO findByLowest(long id){
 
-        for (int i = 0; i < ligaBEList.size(); i++) {
-
-            lowestList.add(i, completeLiga(ligaBEList.get(i)));
-
+        Preconditions.checkArgument(id>=0,PRECONDITION_MSG_LIGA_ID);
+        final LigaBE lowestLeague = ligaDAO.findByLowest(id);
+        LigaDO emptyLiga = new LigaDO();
+        if(lowestLeague == null){
+            return emptyLiga;
         }
-        return lowestList;
+        return completeLiga(lowestLeague);
     }
 
     @Override
