@@ -43,8 +43,10 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -228,6 +230,15 @@ public class TriggerService implements ServiceFacade {
         }
         return Collections.emptyList();
     }
+
+    @GetMapping("/countEntriesByStatusAndDateInterval")
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public TriggerCountDTO countEntriesByStatusAndDateInterval(@RequestParam("dateInterval") String dateInterval, @RequestParam("status") String status) {
+        final TriggerCountDO triggerCountDO = triggerComponent.countEntriesByStatusAndDateInterval(dateInterval, status);
+        return TriggerDTOMapper.toCountDTO.apply(triggerCountDO);
+    }
+
+
     @DeleteMapping("/deleteEntries")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public void deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
