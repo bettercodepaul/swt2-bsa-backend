@@ -21,13 +21,14 @@ public interface TriggerComponent extends ComponentFacade{
     List<TriggerDO> findAllNews(String multiplicator,String pageLimit,String dateInterval);
     List<TriggerDO> findAllInProgress(String multiplicator,String pageLimit,String dateInterval);
 
+
     void deleteEntries(String status, String dateInterval);
 
     List<TriggerDO> findAllUnprocessed();
     TriggerCountDO findAllCount();
     TriggerCountDO findUnprocessedCount();
     TriggerCountDO findInProgressCount();
-
+    TriggerCountDO countEntriesByStatusAndDateInterval(String dateInterval, String status);
 
     TriggerDO create(TriggerDO triggerDO, Long currentUserId);
 
