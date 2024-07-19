@@ -168,6 +168,7 @@ public class TriggerDAO implements DataAccessObject {
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
+
     private static final String FIND_UNPROCESSED_COUNT =
             "SELECT COUNT(*)"
                     + " FROM altsystem_aenderung"
@@ -283,6 +284,7 @@ public class TriggerDAO implements DataAccessObject {
                 Integer.toString(actualOffset)).replace("$dateInterval$", actualTimestamp);
         return basicDAO.selectEntityList(TRIGGER, changedSQL);
     }
+
 
 
     public String changeTimestampToInterval(String timestamp) {

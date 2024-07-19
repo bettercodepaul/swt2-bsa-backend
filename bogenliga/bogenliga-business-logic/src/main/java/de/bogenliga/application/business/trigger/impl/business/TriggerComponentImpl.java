@@ -3,6 +3,7 @@ package de.bogenliga.application.business.trigger.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
@@ -64,6 +65,7 @@ public class TriggerComponentImpl implements TriggerComponent {
         final List<TriggerBE> triggerBEList = triggerDAO.findNews(multiplicator,pageLimit,dateInterval);
         return triggerBEList.stream().map(TriggerMapper.toTriggerDO).collect(Collectors.toList());
     }
+
     @Override
     public void deleteEntries(String status, String dateInterval) {
         triggerDAO.deleteEntries(status,dateInterval);
@@ -89,7 +91,11 @@ public class TriggerComponentImpl implements TriggerComponent {
         final TriggerCountBE triggerBECount = triggerCountDAO.findInProgressCount();
         return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
     }
-
+    @Override
+    public TriggerCountDO countEntriesByStatusAndDateInterval(String dateInterval, String status) {
+        final TriggerCountBE triggerBECount = triggerCountDAO.countEntriesByStatusAndDateInterval(dateInterval, status);
+        return TriggerMapper.toTriggerCountDO.apply(triggerBECount);
+    }
 
     @Override
     public TriggerDO create(TriggerDO triggerDO, Long currentUserId) {
