@@ -49,6 +49,15 @@ public class TriggerCountDAO implements DataAccessObject {
                     + "         where status = $status$"
                     + "         AND $dateInterval$";
 
+    private static final String COUNT_ENTRIES_BY_ALLSTATUS_AND_DATEINTERVAL =
+            "SELECT COUNT(*)"
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         where $dateInterval$";
+
     @Autowired
     public TriggerCountDAO(final BasicDAO basicDAO){
         this.basicDAO = basicDAO;
@@ -86,9 +95,14 @@ public class TriggerCountDAO implements DataAccessObject {
                 status = "5";
         }
         String actualTimestamp = changeTimestampToInterval(dateInterval);
-        String changedSQL = COUNT_ENTRIES_BY_STATUS_AND_DATEINTERVAL
-                .replace("$dateInterval$", actualTimestamp)
-                .replace("$status$", status);
+        if(status.equals("1") || status.equals("2")|| status.equals("3")|| status.equals("4")) {
+            String changedSQL = COUNT_ENTRIES_BY_STATUS_AND_DATEINTERVAL
+                    .replace("$dateInterval$", actualTimestamp)
+                    .replace("$status$", status);
+            return basicDAO.selectSingleEntity(TRIGGER, changedSQL);
+        }
+        String changedSQL = COUNT_ENTRIES_BY_ALLSTATUS_AND_DATEINTERVAL
+                .replace("$dateInterval$", actualTimestamp);
         return basicDAO.selectSingleEntity(TRIGGER, changedSQL);
     }
 
