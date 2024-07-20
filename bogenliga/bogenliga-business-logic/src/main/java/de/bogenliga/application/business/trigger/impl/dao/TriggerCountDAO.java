@@ -40,15 +40,14 @@ public class TriggerCountDAO implements DataAccessObject {
                     + " WHERE altsystem_aenderung.status = 2";
 
     private static final String COUNT_ENTRIES_BY_STATUS_AND_DATEINTERVAL =
-            selectCount
+            "SELECT COUNT(*)"
                     + " FROM altsystem_aenderung"
                     + "     LEFT JOIN altsystem_aenderung_operation op"
                     + "         ON altsystem_aenderung.operation = op.operation_id"
                     + "     LEFT JOIN altsystem_aenderung_status st"
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + "         where status = $status$"
-                    + "         AND $dateInterval$"
-                    + " ORDER BY last_modified_at_utc DESC NULLS LAST, created_at_utc DESC";
+                    + "         AND $dateInterval$";
 
     @Autowired
     public TriggerCountDAO(final BasicDAO basicDAO){
@@ -70,6 +69,22 @@ public class TriggerCountDAO implements DataAccessObject {
     public TriggerCountBE findInProgressCount(){return basicDAO.selectSingleEntity(TRIGGER, FIND_IN_PROGRESS_COUNT);}
 
     public TriggerCountBE countEntriesByStatusAndDateInterval(String dateInterval, String status) {
+        switch (status) {
+            case ("Neu"):
+                status  = "1";
+                break;
+            case ("Laufend"):
+                status = "2";
+                break;
+            case ("Fehlgeschlagen"):
+                status = "3";
+                break;
+            case ("Erfolgreich"):
+                status = "4";
+                break;
+            default:
+                status = "5";
+        }
         String actualTimestamp = changeTimestampToInterval(dateInterval);
         String changedSQL = COUNT_ENTRIES_BY_STATUS_AND_DATEINTERVAL
                 .replace("$dateInterval$", actualTimestamp)
