@@ -532,6 +532,111 @@ public class TriggerComponentImplTest {
 		verify(triggerCountDAO, times(1)).findInProgressCount();
 	}
 	@Test
+	public void testCountSuccessedEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Erfolgreich")).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.countEntriesByStatusAndDateInterval("1 Month","Erfolgreich");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).countEntriesByStatusAndDateInterval("1 Month","Erfolgreich");
+	}
+	@Test
+	public void testCountFailedEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen")).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen");
+	}
+	@Test
+	public void testCountInProgressEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Laufend")).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.countEntriesByStatusAndDateInterval("1 Month","Laufend");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).countEntriesByStatusAndDateInterval("1 Month","Laufend");
+	}
+	@Test
+	public void testCountNewEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Neu")).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.countEntriesByStatusAndDateInterval("1 Month","Neu");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).countEntriesByStatusAndDateInterval("1 Month","Neu");
+	}
+	@Test
+	public void testCountAllEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountBE expectedBE = getTriggerCountBE();
+
+		// configure mocks
+		when(triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Alle")).thenReturn(expectedBE);
+
+		// call test method
+		final TriggerCountDO actual = underTest.countEntriesByStatusAndDateInterval("1 Month","Alle");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull();
+
+		assertThat(actual.getCount())
+				.isEqualTo(expectedBE.getCount());
+
+		// verify invocations
+		verify(triggerCountDAO, times(1)).countEntriesByStatusAndDateInterval("1 Month","Alle");
+	}
+	@Test
 	public void testDeleteNewEntries() {
 		// Call the method
 		triggerDAO.deleteEntries("Neu", "1 MONTH");
