@@ -84,6 +84,81 @@ public class TriggerCountDAOTest{
         // assert result
         assertThat(actualCount).isNotNull();
     }
+    @Test
+    public void testCountAllEntriesByStatusAndDateInterval() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Alle");
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+    }
+    @Test
+    public void testCountSuccessedEntriesByStatusAndDateInterval() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Erfolgreich");
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+    }
+    @Test
+    public void testCountInProgressEntriesByStatusAndDateInterval() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Laufend");
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+    }
+    @Test
+    public void testCountNewEntriesByStatusAndDateInterval() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Neu");
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+    }
+    @Test
+    public void testCountFailedEntriesByStatusAndDateInterval() {
+        // prepare test data
+        final TriggerCountBE expectedCountBE = getTriggerCountBE();
+        expectedCountBE.setCount(count);
+
+        // configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
+
+        // call test method
+        final TriggerCountBE actualCount = triggerCountDAO.countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen");
+
+        // assert result
+        assertThat(actualCount).isNotNull();
+    }
 
 }
 

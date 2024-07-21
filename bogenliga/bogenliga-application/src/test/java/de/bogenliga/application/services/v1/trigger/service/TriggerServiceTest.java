@@ -234,6 +234,96 @@ public class TriggerServiceTest {
 		verify(triggerComponent, times(1)).findAllCount();
 	}
 	@Test
+	public void testCountSuccessedEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.countEntriesByStatusAndDateInterval("1 Month","Erfolgreich")).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.countEntriesByStatusAndDateInterval("1 Month","Erfolgreich");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).countEntriesByStatusAndDateInterval("1 Month","Erfolgreich");
+	}
+	@Test
+	public void testCountFailedEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen")).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).countEntriesByStatusAndDateInterval("1 Month","Fehlgeschlagen");
+	}
+	@Test
+	public void testCountNewEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.countEntriesByStatusAndDateInterval("1 Month","Neu")).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.countEntriesByStatusAndDateInterval("1 Month","Neu");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).countEntriesByStatusAndDateInterval("1 Month","Neu");
+	}
+	@Test
+	public void testCountAllEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.countEntriesByStatusAndDateInterval("1 Month","Alle")).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.countEntriesByStatusAndDateInterval("1 Month","Alle");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).countEntriesByStatusAndDateInterval("1 Month","Alle");
+	}
+	@Test
+	public void testCountInProgressEntriesByStatusAndDateInterval() {
+		// prepare test data
+		final TriggerCountDO expectedDO = getTriggerCountDO();
+
+		// configure mocks
+		when(triggerComponent.countEntriesByStatusAndDateInterval("1 Month","Laufend")).thenReturn(expectedDO);
+
+		// call test method
+		final TriggerCountDTO actual = triggerServiceTest.countEntriesByStatusAndDateInterval("1 Month","Laufend");
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).countEntriesByStatusAndDateInterval("1 Month","Laufend");
+	}
+	@Test
 	public void testFindAllErrors() {
 		// prepare test data
 		final TriggerDO expectedDO = getErrorTriggerDO();
