@@ -47,6 +47,11 @@ public class DsbMannschaftComponentImplTest {
     private static final long CURRENT_VERANSTALTUNG_ID =2L;
     private static final long SORTIERUNG =1L;
 
+    private static final String VERANSTALTUNGNAME ="TEST";
+    private static final String VEREINNAME ="SSV REUTLINGEN";
+    private static final String WETTKAMPFORT ="SSV REUTLINGEN";
+    private static final String WETTKAMPTAG ="1";
+    private static final long MANNSCHAFTNUMMER = 0;
     private static final long DB_SORTIERUNG =0L;
     
     private static final String VEREIN_NAME = "Testverein";
@@ -88,7 +93,9 @@ public class DsbMannschaftComponentImplTest {
 
         return expectedBE;
     }
-
+    public static DsbMannschaftBE getDsbMannschaftBEVERANDWETT() {
+        return new DsbMannschaftBE(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+    }
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID,
@@ -99,6 +106,10 @@ public class DsbMannschaftComponentImplTest {
                 VERANSTALTUNG_ID,
                 SORTIERUNG);
     }
+    public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
+        return new DsbMannschaftDO(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+    }
+
 
     public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
@@ -400,15 +411,15 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findVeranstaltungAndWettkampfById() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBEVERANDWETT();
         final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
         expectedBE.setVeranstaltungId(null);
 
         // configure mocks
-        when(dsbMannschaftDAO.findAllByWarteschlange()).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange();
+        final List<DsbMannschaftDO> actual = underTest.findEverythingById(VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -431,8 +442,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // verify invocations
-        verify(dsbMannschaftDAO).findAllByWarteschlange();
-        verify(vereinComponent).findById(anyLong());
+        verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
 
     @Test
@@ -922,6 +932,41 @@ public class DsbMannschaftComponentImplTest {
         // verify invocations
         verify(dsbMannschaftDAO).findAll();
         verify(vereinComponent).findById(VEREIN_ID);
+    }
+    @Test
+    public void findEverything(){
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBEVERANDWETT();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findEverythingById(VEREIN_ID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        Assertions.assertThat(actual.get(0).getMannschaftNummer())
+                .isEqualTo(expectedBE.getMannschaftNummer());
+        Assertions.assertThat(actual.get(0).getVereinName())
+                .isEqualTo(expectedBE.getVereinName());
+        Assertions.assertThat(actual.get(0).getWettkampfOrtsname())
+                .isEqualTo(expectedBE.getWettkampfOrtsname());
+        Assertions.assertThat(actual.get(0).getWettkampfTag())
+                .isEqualTo(expectedBE.getWettkampfTag());
+        Assertions.assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
 
     @Test
