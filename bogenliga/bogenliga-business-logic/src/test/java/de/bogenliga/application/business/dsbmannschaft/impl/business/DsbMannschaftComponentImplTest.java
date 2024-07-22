@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import java.lang.reflect.Executable;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -429,15 +428,15 @@ public class DsbMannschaftComponentImplTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        Assertions.assertThat(actual.get(0).getMannschaftNummer())
+        Assertions.assertThat(actual.get(0).getMannschaft_nummer())
                 .isEqualTo(expectedBE.getMannschaftNummer());
-        Assertions.assertThat(actual.get(0).getVereinName())
+        Assertions.assertThat(actual.get(0).getVerein_name())
                 .isEqualTo(expectedBE.getVereinName());
-        Assertions.assertThat(actual.get(0).getWettkampfOrtsname())
+        Assertions.assertThat(actual.get(0).getWettkampf_ortsname())
                 .isEqualTo(expectedBE.getWettkampfOrtsname());
         Assertions.assertThat(actual.get(0).getWettkampfTag())
                 .isEqualTo(expectedBE.getWettkampfTag());
-        Assertions.assertThat(actual.get(0).getVeranstaltungName())
+        Assertions.assertThat(actual.get(0).getVeranstaltung_name())
                 .isEqualTo(expectedBE.getVeranstaltungName());
 
         // verify invocations
@@ -981,15 +980,15 @@ public class DsbMannschaftComponentImplTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        Assertions.assertThat(actual.get(0).getMannschaftNummer())
+        Assertions.assertThat(actual.get(0).getMannschaft_nummer())
                 .isEqualTo(expectedBE.getMannschaftNummer());
-        Assertions.assertThat(actual.get(0).getVereinName())
+        Assertions.assertThat(actual.get(0).getVerein_name())
                 .isEqualTo(expectedBE.getVereinName());
-        Assertions.assertThat(actual.get(0).getWettkampfOrtsname())
+        Assertions.assertThat(actual.get(0).getWettkampf_ortsname())
                 .isEqualTo(expectedBE.getWettkampfOrtsname());
         Assertions.assertThat(actual.get(0).getWettkampfTag())
                 .isEqualTo(expectedBE.getWettkampfTag());
-        Assertions.assertThat(actual.get(0).getVeranstaltungName())
+        Assertions.assertThat(actual.get(0).getVeranstaltung_name())
                 .isEqualTo(expectedBE.getVeranstaltungName());
 
 
@@ -1227,8 +1226,8 @@ public class DsbMannschaftComponentImplTest {
     public void testGetAndSetVeranstaltungNameDO() {
         dsbMannschaftDO= new DsbMannschaftDO();
         String veranstaltungName = "Meisterschaft";
-        dsbMannschaftDO.setVeranstaltungName(veranstaltungName);
-        assertThat(dsbMannschaftDO.getVeranstaltungName()).isEqualTo(veranstaltungName);
+        dsbMannschaftDO.setVeranstaltung_name(veranstaltungName);
+        assertThat(dsbMannschaftDO.getVeranstaltung_name()).isEqualTo(veranstaltungName);
     }
 
     @Test
@@ -1243,23 +1242,23 @@ public class DsbMannschaftComponentImplTest {
     public void testGetAndSetWettkampfOrtsnameDO() {
         dsbMannschaftDO= new DsbMannschaftDO();
         String wettkampfOrtsname = "Berlin";
-        dsbMannschaftDO.setWettkampfOrtsname(wettkampfOrtsname);
-        assertThat(dsbMannschaftDO.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+        dsbMannschaftDO.setWettkampf_ortsname(wettkampfOrtsname);
+        assertThat(dsbMannschaftDO.getWettkampf_ortsname()).isEqualTo(wettkampfOrtsname);
     }
 
     @Test
     public void testGetAndSetVereinNameDO() {
         dsbMannschaftDO= new DsbMannschaftDO();
         String vereinName = "Sportverein Berlin";
-        dsbMannschaftDO.setVereinName(vereinName);
-        assertThat(dsbMannschaftDO.getVereinName()).isEqualTo(vereinName);
+        dsbMannschaftDO.setVerein_name(vereinName);
+        assertThat(dsbMannschaftDO.getVerein_name()).isEqualTo(vereinName);
     }
 
     @Test
     public void testGetAndSetMannschaftNummerDO() {
         dsbMannschaftDO= new DsbMannschaftDO();
         Long mannschaftNummer = 12345L;
-        dsbMannschaftDO.setMannschaftNummer(mannschaftNummer);
-        assertThat(dsbMannschaftDO.getMannschaftNummer()).isEqualTo(mannschaftNummer);
+        dsbMannschaftDO.setMannschaft_nummer(mannschaftNummer);
+        assertThat(dsbMannschaftDO.getMannschaft_nummer()).isEqualTo(mannschaftNummer);
     }
 }

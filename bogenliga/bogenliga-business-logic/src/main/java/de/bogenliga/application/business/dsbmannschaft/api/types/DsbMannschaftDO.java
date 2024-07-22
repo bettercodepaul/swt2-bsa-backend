@@ -20,11 +20,11 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     private Long benutzerId;
     private Long veranstaltungId;
     private Long sortierung;
-    private String veranstaltungName;
-    private String wettkampfTag;
-    private String wettkampfOrtsname;
-    private String vereinName;
-    private Long mannschaftNummer;
+    private String veranstaltung_name;
+    private String wettkampf_tag;
+    private String wettkampf_ortsname;
+    private String verein_name;
+    private Long mannschaft_nummer;
 
 
     /**
@@ -61,18 +61,18 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     }
     /**
      * Constructor with mandatory parameters
-     * @param veranstaltungName
+     * @param veranstaltung_name
      * @param wettkampfTag
-     * @param wettkampfOrtsname
-     * @param vereinName
-     * @param mannschaftNummer
+     * @param wettkampf_ortsname
+     * @param verein_name
+     * @param mannschaft_nummer
      */
-    public DsbMannschaftDO(final String veranstaltungName,final String wettkampfTag, final String wettkampfOrtsname, final String vereinName,final long mannschaftNummer) {
-        this.veranstaltungName = veranstaltungName;
-        this.wettkampfTag = wettkampfTag;
-        this.wettkampfOrtsname = wettkampfOrtsname;
-        this.vereinName = vereinName;
-        this.mannschaftNummer = mannschaftNummer;
+    public DsbMannschaftDO(final String veranstaltung_name, final String wettkampfTag, final String wettkampf_ortsname, final String verein_name, final long mannschaft_nummer) {
+        this.veranstaltung_name = veranstaltung_name;
+        this.wettkampf_tag = wettkampfTag;
+        this.wettkampf_ortsname = wettkampf_ortsname;
+        this.verein_name = verein_name;
+        this.mannschaft_nummer = mannschaft_nummer;
     }
 
 
@@ -182,42 +182,42 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     public Long getSortierung(){return sortierung;}
 
     public void setSortierung(final long sortierung){this.sortierung=sortierung;}
-    public String getVeranstaltungName() {
-        return veranstaltungName;
+    public String getVeranstaltung_name() {
+        return veranstaltung_name;
     }
 
-    public void setVeranstaltungName(final String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
+    public void setVeranstaltung_name(final String veranstaltung_name) {
+        this.veranstaltung_name = veranstaltung_name;
     }
 
     public String getWettkampfTag() {
-        return wettkampfTag;
+        return wettkampf_tag;
     }
 
     public void setWettkampfTag(final String wettkampfTag) {
-        this.wettkampfTag = wettkampfTag;
+        this.wettkampf_tag = wettkampfTag;
     }
 
-    public String getWettkampfOrtsname() {
-        return wettkampfOrtsname;
+    public String getWettkampf_ortsname() {
+        return wettkampf_ortsname;
     }
 
-    public void setWettkampfOrtsname(final String wettkampfOrtsname) {
-        this.wettkampfOrtsname = wettkampfOrtsname;
+    public void setWettkampf_ortsname(final String wettkampf_ortsname) {
+        this.wettkampf_ortsname = wettkampf_ortsname;
     }
 
-    public String getVereinName() {
-        return vereinName;
+    public String getVerein_name() {
+        return verein_name;
     }
 
-    public void setVereinName(final String vereinName) {
-        this.vereinName = vereinName;
+    public void setVerein_name(final String verein_name) {
+        this.verein_name = verein_name;
     }
-    public Long getMannschaftNummer() {
-        return mannschaftNummer;
+    public Long getMannschaft_nummer() {
+        return mannschaft_nummer;
     }
-    public void setMannschaftNummer(Long mannschaftNummer) {
-        this.mannschaftNummer = mannschaftNummer;
+    public void setMannschaft_nummer(Long mannschaft_nummer) {
+        this.mannschaft_nummer = mannschaft_nummer;
     }
 
 
@@ -225,7 +225,8 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     public int hashCode() {
         return Objects.hash(id, vereinId,nummer,benutzerId,veranstaltungId,sortierung,
                 createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version,id, veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName,mannschaftNummer);
+                lastModifiedByUserId, version,id, veranstaltung_name, wettkampf_tag, wettkampf_ortsname, verein_name,
+                mannschaft_nummer);
     }
 
 
@@ -242,18 +243,18 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
                 vereinId == that.vereinId &&
                 benutzerId == that.benutzerId &&
                 sortierung == that.sortierung &&
-                mannschaftNummer == that.mannschaftNummer &&
+                mannschaft_nummer == that.mannschaft_nummer &&
                 createdByUserId == that.createdByUserId &&
                 lastModifiedByUserId == that.lastModifiedByUserId &&
                 version == that.version &&
-                Objects.equals(mannschaftNummer,that.mannschaftNummer) &&
+                Objects.equals(mannschaft_nummer,that.mannschaft_nummer) &&
                 Objects.equals(nummer, that.nummer) &&
                 Objects.equals(veranstaltungId, that.veranstaltungId) &&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc) &&
-                Objects.equals(veranstaltungName, that.veranstaltungName) &&
-                Objects.equals(wettkampfTag, that.wettkampfTag) &&
-                Objects.equals(wettkampfOrtsname, that.wettkampfOrtsname) &&
-                Objects.equals(vereinName, that.vereinName);
+                Objects.equals(veranstaltung_name, that.veranstaltung_name) &&
+                Objects.equals(wettkampf_tag, that.wettkampf_tag) &&
+                Objects.equals(wettkampf_ortsname, that.wettkampf_ortsname) &&
+                Objects.equals(verein_name, that.verein_name);
     }
 }
 
