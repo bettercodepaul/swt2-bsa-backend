@@ -52,10 +52,10 @@ public class DsbMannschaftMapperTest {
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftMapper.toDsbMannschaftVerUWettDO.apply(dsbMannschaftBE);
 
         // Assert
-        assertThat(dsbMannschaftDO.getVeranstaltungName()).isEqualTo("Olympia");
+        assertThat(dsbMannschaftDO.getVeranstaltung_name()).isEqualTo("Olympia");
         assertThat(dsbMannschaftDO.getWettkampfTag()).isEqualTo("2024-08-01");
-        assertThat(dsbMannschaftDO.getWettkampfOrtsname()).isEqualTo("Berlin");
-        assertThat(dsbMannschaftDO.getVereinName()).isEqualTo("Sportverein Berlin");
-        assertThat(dsbMannschaftDO.getMannschaftNummer()).isEqualTo(12345L);
+        assertThat(dsbMannschaftDO.getWettkampf_ortsname()).isEqualTo("Berlin");
+        assertThat(dsbMannschaftDO.getVerein_name()).isEqualTo("Sportverein Berlin");
+        assertThat(dsbMannschaftDO.getMannschaft_nummer()).isEqualTo(12345L);
     }
 }
