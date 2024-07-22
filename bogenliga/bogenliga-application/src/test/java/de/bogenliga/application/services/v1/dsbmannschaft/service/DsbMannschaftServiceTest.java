@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -111,7 +112,46 @@ public class DsbMannschaftServiceTest {
                 6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L
         );
     }
+    private DsbMannschaftBE dsbMannschaft;
+    @Test
+    public void testGetAndSetVeranstaltungName() {
+        dsbMannschaft = new DsbMannschaftBE();
+        String veranstaltungName = "Meisterschaft";
+        dsbMannschaft.setVeranstaltungName(veranstaltungName);
+        assertThat(dsbMannschaft.getVeranstaltungName()).isEqualTo(veranstaltungName);
+    }
 
+    @Test
+    public void testGetAndSetWettkampfTag() {
+        dsbMannschaft = new DsbMannschaftBE();
+        String wettkampfTag = "2024-07-22";
+        dsbMannschaft.setWettkampfTag(wettkampfTag);
+        assertThat(dsbMannschaft.getWettkampfTag()).isEqualTo(wettkampfTag);
+    }
+
+    @Test
+    public void testGetAndSetWettkampfOrtsname() {
+        dsbMannschaft = new DsbMannschaftBE();
+        String wettkampfOrtsname = "Berlin";
+        dsbMannschaft.setWettkampfOrtsname(wettkampfOrtsname);
+        assertThat(dsbMannschaft.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+    }
+
+    @Test
+    public void testGetAndSetVereinName() {
+        dsbMannschaft = new DsbMannschaftBE();
+        String vereinName = "Sportverein Berlin";
+        dsbMannschaft.setVereinName(vereinName);
+        assertThat(dsbMannschaft.getVereinName()).isEqualTo(vereinName);
+    }
+
+    @Test
+    public void testGetAndSetMannschaftNummer() {
+        dsbMannschaft = new DsbMannschaftBE();
+        Long mannschaftNummer = 12345L;
+        dsbMannschaft.setMannschaftNummer(mannschaftNummer);
+        assertThat(dsbMannschaft.getMannschaftNummer()).isEqualTo(mannschaftNummer);
+    }
     public static VeranstaltungDO getMockVeranstaltung(){
         return new VeranstaltungDO(
                 null, null, null, null, null, null, null, null, null, null, null, null, null,null, null, null, 8
