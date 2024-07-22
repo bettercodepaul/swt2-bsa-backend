@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Philip Dengler
@@ -127,6 +128,17 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
+    public List<DsbMannschaftDO> findEverythingById(long id){
+        Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findVeranstaltungAndWettkampfById(id);
+        if(dsbMannschaftBeList == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format(EXCEPTION_NO_RESULTS, id));
+        }
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
+    }
+
 
     @Override
     public DsbMannschaftDO findById(final long id){
@@ -190,6 +202,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
         return mannschaften.stream().map(this::fillName).toList();
     }
+
 
     /**
      * I set the attribute 'name' of the given Mannschaft by loading the corresponding Verein.
