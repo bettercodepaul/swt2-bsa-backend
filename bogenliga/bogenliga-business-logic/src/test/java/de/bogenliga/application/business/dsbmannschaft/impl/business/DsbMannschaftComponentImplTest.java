@@ -9,6 +9,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -390,6 +391,43 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getSortierung())
                 .isEqualTo(expectedBE.getSortierung());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByWarteschlange();
+        verify(vereinComponent).findById(anyLong());
+    }
+    @Test
+    public void findVeranstaltungAndWettkampfById() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        expectedBE.setVeranstaltungId(null);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByWarteschlange()).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        Assertions.assertThat(actual.get(0).getMannschaftNummer())
+                .isEqualTo(expectedBE.getMannschaftNummer());
+        Assertions.assertThat(actual.get(0).getVereinName())
+                .isEqualTo(expectedBE.getVereinName());
+        Assertions.assertThat(actual.get(0).getWettkampfOrtsname())
+                .isEqualTo(expectedBE.getWettkampfOrtsname());
+        Assertions.assertThat(actual.get(0).getWettkampfTag())
+                .isEqualTo(expectedBE.getWettkampfTag());
+        Assertions.assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
 
 
         // verify invocations
