@@ -62,7 +62,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      */
 
     DsbMannschaftDO findById(long id);
-
+    List<DsbMannschaftDO> findEverythingById(long id);
 
     /**
      * Create a new dsbmannschaft in the database.

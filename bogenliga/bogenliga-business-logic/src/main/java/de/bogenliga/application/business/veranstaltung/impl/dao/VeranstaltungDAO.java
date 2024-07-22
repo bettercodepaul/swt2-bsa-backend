@@ -121,8 +121,6 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id AND veranstaltung_phase IN (2, 3)) "
                     + "GROUP BY veranstaltung_id "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
-
-
     private final BasicDAO basicDao;
 
     /**
@@ -195,6 +193,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+
 
     /**
      * Return Veranstaltung entry with specific liga id and sport year

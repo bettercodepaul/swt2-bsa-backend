@@ -29,6 +29,11 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
     private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
     private static final String MANNSCHAFT_BE_SORTIERUNG = "sortierung";
+    private static final String MANNSCHAFT_BE_VEREINNAME = "vereinName";
+    private static final String MANNSCHAFT_BE_WETTKAMPFORT = "wettkampfOrtsname";
+    private static final String MANNSCHAFT_BE_WETTKAMPTAG = "wettkampfTag";
+    private static final String MANNSCHAFT_BE_VERANSTALTUNGSNAME = "veranstaltungName";
+    private static final String MANNSCHAFT_BE_MANNSCHAFTSNUMMER = "mannschaftNummer";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
     private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_verein_id";
@@ -36,6 +41,12 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_USER_ID = "mannschaft_benutzer_id";
     private static final String MANNSCHAFT_TABLE_SORTIERUNG = "mannschaft_sortierung";
+    private static final String MANNSCHAFT_TABLE_VEREINNAME = "verein_name";
+    private static final String MANNSCHAFT_TABLE_WETTKAMPFORT = "wettkampf_ortsname";
+    private static final String MANNSCHAFT_TABLE_WETTKAMPTAG = "wettkampf_tag";
+    private static final String MANNSCHAFT_TABLE_VERANSTALTUNGSNAME = "veranstaltung_name";
+    private static final String MANNSCHAFT_TABLE_MANNSCHAFTSNUMMER = "mannschaft_nummer";
+
 
 
     // wrap all specific config parameters
@@ -85,6 +96,15 @@ public class DsbMannschaftDAO implements DataAccessObject {
                     + "AND CONCAT(LOWER(b.verein_name), ' ' , "
                     + "LOWER(CAST(a.mannschaft_nummer AS TEXT))) LIKE LOWER(?) "
                     + "AND mannschaft_veranstaltung_id IS NULL";
+    private static final String FIND_VERSANSTALTUNGEN_BY_VEREIN =
+            "SELECT veranstaltung_name, wettkampf_tag, wettkampf_ortsname, verein_name, mannschaft_nummer "
+                    + "FROM veranstaltung ver "
+                    + "JOIN mannschaft m ON ver.veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + "JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + "JOIN wettkampf ON ver.veranstaltung_id = wettkampf.wettkampf_veranstaltung_id "
+                    + "WHERE v.verein_id = ? "
+                    + "AND ver.veranstaltung_phase = 2 "
+                    + "GROUP BY mannschaft_nummer, veranstaltung_name, verein_name, wettkampf_ortsname, wettkampf_tag; ";
 
     private final BasicDAO basicDao;
 
@@ -108,9 +128,13 @@ public class DsbMannschaftDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_TEAMID, MANNSCHAFT_BE_TEAMID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NUMBER, MANNSCHAFT_BE_NUMBER);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_SORTIERUNG, MANNSCHAFT_BE_SORTIERUNG);
-
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_USER_ID, MANNSCHAFT_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPFORT, MANNSCHAFT_BE_WETTKAMPFORT);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPTAG, MANNSCHAFT_BE_WETTKAMPTAG);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_VEREINNAME, MANNSCHAFT_BE_VEREINNAME);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_VERANSTALTUNGSNAME, MANNSCHAFT_BE_VERANSTALTUNGSNAME);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_MANNSCHAFTSNUMMER,MANNSCHAFT_BE_MANNSCHAFTSNUMMER);
 
 
         // add technical columns
@@ -158,7 +182,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
 
     public List<DsbMannschaftBE> findAllByWettkampfId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
-
+    public List<DsbMannschaftBE> findVeranstaltungAndWettkampfById(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_VERSANSTALTUNGEN_BY_VEREIN, id);}
     /**
      * Return all dsbmannschaft entries that are currently in the waiting queue
      *

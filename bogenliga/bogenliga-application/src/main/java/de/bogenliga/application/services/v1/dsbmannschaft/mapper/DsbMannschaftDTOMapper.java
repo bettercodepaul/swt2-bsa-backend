@@ -35,6 +35,15 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
 
 
     };
+    public static final Function<DsbMannschaftDO, DsbMannschaftDTO> toVerUWettDTO = dsbMannschaftVerUWettDO -> {
+        final Long id = dsbMannschaftVerUWettDO.getId();
+        final String veranstaltungName = dsbMannschaftVerUWettDO.getVeranstaltungName();
+        final String wettkampfTag = dsbMannschaftVerUWettDO.getWettkampfTag();
+        final String wettkampfOrtsname = dsbMannschaftVerUWettDO.getWettkampfOrtsname();
+        final String vereinName = dsbMannschaftVerUWettDO.getVereinName();
+        final Long mannschaftNummer = dsbMannschaftVerUWettDO.getMannschaftNummer();
+        return new DsbMannschaftDTO(veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName,mannschaftNummer);
+    };
 
     /**
      * I map the {@link DsbMannschaftDTO} object to the {@link DsbMannschaftDO} object

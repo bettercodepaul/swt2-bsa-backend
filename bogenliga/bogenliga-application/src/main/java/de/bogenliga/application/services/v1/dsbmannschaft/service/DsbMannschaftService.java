@@ -197,7 +197,15 @@ public class DsbMannschaftService implements ServiceFacade {
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
+    @GetMapping(value = "VeranstaltungAndWettkampfByID/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllVeranstaltungAndWettkampfByID(@PathVariable("id") final long id) {
 
+        LOG.debug("Receive 'findAllVeranstaltungAndWettkampfByID' request with id '{}'", id);
+
+        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findEverythingById(id);
+        return DbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
+    }
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
      *
