@@ -1,8 +1,6 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
-import java.sql.Date;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,22 +18,15 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
-import de.bogenliga.application.services.v1.match.model.MatchDTO;
-import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
@@ -331,9 +322,9 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getMannschaftNummer());
-        assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVereinName());
-        assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltungName());
+        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getMannschaft_nummer());
+        assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVerein_name());
+        assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
 
         // verify invocations
         verify(dsbMannschaftComponent).findEverythingById(1893);
