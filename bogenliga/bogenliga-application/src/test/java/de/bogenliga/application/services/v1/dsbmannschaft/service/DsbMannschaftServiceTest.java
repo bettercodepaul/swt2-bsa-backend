@@ -50,6 +50,12 @@ public class DsbMannschaftServiceTest {
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 4444;
+    private static final long MANNSCHAFTS_NUMMER = 165;
+    private static final String WETTKAMPFORT = "Reutlingen";
+    private static final String VERANSTALTUNGNAME = "TEST";
+    private static final String VEREINNAME = "SSV Reutlingen";
+    private static final String WETTKAMPFTAG = "1";
+
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
@@ -83,6 +89,9 @@ public class DsbMannschaftServiceTest {
         return new DsbMannschaftDO(
                 ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
         );
+    }
+    public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
+        return new DsbMannschaftDO(VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME,MANNSCHAFTS_NUMMER);
     }
 
     public static DsbMannschaftDO getPlatzhalterDO() {
@@ -260,6 +269,32 @@ public class DsbMannschaftServiceTest {
 
         // verify invocations
         verify(dsbMannschaftComponent).findAllByName(name);
+    }
+    @Test
+    public void findVeranstaltungAndWettkampfById() {
+        // prepare test data
+        final String name = String.valueOf(ID);
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDOVERANDWETT();
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findEverythingById(1893)).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllVeranstaltungAndWettkampfByID(1893);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMannschaftDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getMannschaftNummer());
+        assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVereinName());
+        assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltungName());
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findEverythingById(1893);
     }
 
     @Test
