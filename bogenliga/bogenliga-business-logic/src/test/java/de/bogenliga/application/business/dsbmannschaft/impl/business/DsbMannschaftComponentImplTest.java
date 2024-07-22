@@ -19,13 +19,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.lang.reflect.Executable;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -968,7 +968,6 @@ public class DsbMannschaftComponentImplTest {
         // verify invocations
         verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
-
     @Test
     public void fillName_VereinNull(){
         // prepare test data
