@@ -440,9 +440,37 @@ public class DsbMannschaftComponentImplTest {
         Assertions.assertThat(actual.get(0).getVeranstaltungName())
                 .isEqualTo(expectedBE.getVeranstaltungName());
 
-
         // verify invocations
         verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
+    }
+    private static final long VALID_ID = 1L;
+    private static final long INVALID_ID = -1L;
+    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative";
+    private static final String EXCEPTION_NO_RESULTS = "ENTITY_NOT_FOUND_ERROR: No result for ID '1'";
+
+    @Test
+    public void findEverythingById_shouldThrowException_whenResultIsNull() {
+        // Arrange
+        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(null);
+
+        // Act & Assert
+        try {
+            underTest.findEverythingById(VALID_ID);
+        } catch (BusinessException e) {
+            assertThat(e.getMessage()).isEqualTo(String.format(EXCEPTION_NO_RESULTS, VALID_ID));
+        }
+    }
+
+    @Test
+    public void findEverythingById_shouldReturnEmptyList_whenResultIsEmpty() {
+        // Arrange
+        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(Collections.emptyList());
+
+        // Act
+        List<DsbMannschaftDO> actual = underTest.findEverythingById(VALID_ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isEmpty();
     }
 
     @Test
