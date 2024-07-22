@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
+import org.assertj.core.api.Java6Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -691,5 +692,93 @@ public class DsbMannschaftServiceTest {
 
         // Act & Assert
         assertThat(dsbMannschaftDO1).isNotEqualTo(dsbMannschaftDO2);
+    }
+    private DsbMannschaftDTO dsbMannschaftDTO;
+    @Test
+    public void testGetAndSetIdDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long id = 1L;
+        dsbMannschaftDTO.setId(id);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getId()).isEqualTo(id);
+    }
+
+    @Test
+    public void testGetAndSetVereinIdDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long vereinId = 10L;
+        dsbMannschaftDTO.setVereinId(vereinId);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getVereinId()).isEqualTo(vereinId);
+    }
+
+    @Test
+    public void testGetAndSetNummerDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long nummer = 20L;
+        dsbMannschaftDTO.setNummer(nummer);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getNummer()).isEqualTo(nummer);
+    }
+
+    @Test
+    public void testGetAndSetBenutzerIdDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long benutzerId = 30L;
+        dsbMannschaftDTO.setBenutzerId(benutzerId);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getBenutzerId()).isEqualTo(benutzerId);
+    }
+
+    @Test
+    public void testGetAndSetVeranstaltungIdDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long veranstaltungId = 40L;
+        dsbMannschaftDTO.setVeranstaltungId(veranstaltungId);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getVeranstaltungId()).isEqualTo(veranstaltungId);
+    }
+
+    @Test
+    public void testGetAndSetSortierungDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long sortierung = 50L;
+        dsbMannschaftDTO.setSortierung(sortierung);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getSortierung()).isEqualTo(sortierung);
+    }
+
+    @Test
+    public void testGetAndSetVeranstaltungNameDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        String veranstaltungName = "Meisterschaft";
+        dsbMannschaftDTO.setVeranstaltungName(veranstaltungName);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getVeranstaltungName()).isEqualTo(veranstaltungName);
+    }
+
+    @Test
+    public void testGetAndSetWettkampfTagDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        String wettkampfTag = "2024-07-22";
+        dsbMannschaftDTO.setWettkampfTag(wettkampfTag);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getWettkampfTag()).isEqualTo(wettkampfTag);
+    }
+
+    @Test
+    public void testGetAndSetWettkampfOrtsnameDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        String wettkampfOrtsname = "Berlin";
+        dsbMannschaftDTO.setWettkampfOrtsname(wettkampfOrtsname);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+    }
+
+    @Test
+    public void testGetAndSetVereinNameDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        String vereinName = "Sportverein Berlin";
+        dsbMannschaftDTO.setVereinName(vereinName);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getVereinName()).isEqualTo(vereinName);
+    }
+
+    @Test
+    public void testGetAndSetMannschaftNummerDTO() {
+        dsbMannschaftDTO= getDsbMannschaftDTO();
+        Long mannschaftNummer = 12345L;
+        dsbMannschaftDTO.setMannschaftNummer(mannschaftNummer);
+        Java6Assertions.assertThat(dsbMannschaftDTO.getMannschaftNummer()).isEqualTo(mannschaftNummer);
     }
 }
