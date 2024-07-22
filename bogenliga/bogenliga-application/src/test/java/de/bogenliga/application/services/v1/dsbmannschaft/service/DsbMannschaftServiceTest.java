@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
 import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -671,5 +672,24 @@ public class DsbMannschaftServiceTest {
         assertThat(capturedDsbMannschaftDO.getId()).isEqualTo(expectedDsbMannschaftDO.getId());
         assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(inputVeranstaltungsId);
     }
+    @Test
+    public void testEqualsAndHashCode() {
+        // Arrange
+        DsbMannschaftDO dsbMannschaftDO1 = getDsbMannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO2 = getDsbMannschaftDO();
 
+        // Act & Assert
+        assertThat(dsbMannschaftDO1.hashCode()).isEqualTo(dsbMannschaftDO2.hashCode());
+    }
+
+    @Test
+    public void testNotEquals() {
+        // Arrange
+        DsbMannschaftDO dsbMannschaftDO1 = getDsbMannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO2 = getDsbMannschaftDO();
+        dsbMannschaftDO2.setVereinId(99L);
+
+        // Act & Assert
+        assertThat(dsbMannschaftDO1).isNotEqualTo(dsbMannschaftDO2);
+    }
 }
