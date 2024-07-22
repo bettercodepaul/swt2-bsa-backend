@@ -1174,4 +1174,92 @@ public class DsbMannschaftComponentImplTest {
         dsbMannschaft.setMannschaftNummer(mannschaftNummer);
         assertThat(dsbMannschaft.getMannschaftNummer()).isEqualTo(mannschaftNummer);
     }
+    private DsbMannschaftDO dsbMannschaftDO;
+    @Test
+    public void testGetAndSetIdDO() {
+        dsbMannschaftDO= getDsbMannschaftDOVERANDWETT();
+        Long id = 1L;
+        dsbMannschaftDO.setId(id);
+        assertThat(dsbMannschaftDO.getId()).isEqualTo(id);
+    }
+
+    @Test
+    public void testGetAndSetVereinIdDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long vereinId = 10L;
+        dsbMannschaftDO.setVereinId(vereinId);
+        assertThat(dsbMannschaftDO.getVereinId()).isEqualTo(vereinId);
+    }
+
+    @Test
+    public void testGetAndSetNummerDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long nummer = 20L;
+        dsbMannschaftDO.setNummer(nummer);
+        assertThat(dsbMannschaftDO.getNummer()).isEqualTo(nummer);
+    }
+
+    @Test
+    public void testGetAndSetBenutzerIdDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long benutzerId = 30L;
+        dsbMannschaftDO.setBenutzerId(benutzerId);
+        assertThat(dsbMannschaftDO.getBenutzerId()).isEqualTo(benutzerId);
+    }
+
+    @Test
+    public void testGetAndSetVeranstaltungIdDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long veranstaltungId = 40L;
+        dsbMannschaftDO.setVeranstaltungId(veranstaltungId);
+        assertThat(dsbMannschaftDO.getVeranstaltungId()).isEqualTo(veranstaltungId);
+    }
+
+    @Test
+    public void testGetAndSetSortierungDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long sortierung = 50L;
+        dsbMannschaftDO.setSortierung(sortierung);
+        assertThat(dsbMannschaftDO.getSortierung()).isEqualTo(sortierung);
+    }
+
+    @Test
+    public void testGetAndSetVeranstaltungNameDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        String veranstaltungName = "Meisterschaft";
+        dsbMannschaftDO.setVeranstaltungName(veranstaltungName);
+        assertThat(dsbMannschaftDO.getVeranstaltungName()).isEqualTo(veranstaltungName);
+    }
+
+    @Test
+    public void testGetAndSetWettkampfTagDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        String wettkampfTag = "2024-07-22";
+        dsbMannschaftDO.setWettkampfTag(wettkampfTag);
+        assertThat(dsbMannschaftDO.getWettkampfTag()).isEqualTo(wettkampfTag);
+    }
+
+    @Test
+    public void testGetAndSetWettkampfOrtsnameDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        String wettkampfOrtsname = "Berlin";
+        dsbMannschaftDO.setWettkampfOrtsname(wettkampfOrtsname);
+        assertThat(dsbMannschaftDO.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+    }
+
+    @Test
+    public void testGetAndSetVereinNameDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        String vereinName = "Sportverein Berlin";
+        dsbMannschaftDO.setVereinName(vereinName);
+        assertThat(dsbMannschaftDO.getVereinName()).isEqualTo(vereinName);
+    }
+
+    @Test
+    public void testGetAndSetMannschaftNummerDO() {
+        dsbMannschaftDO= new DsbMannschaftDO();
+        Long mannschaftNummer = 12345L;
+        dsbMannschaftDO.setMannschaftNummer(mannschaftNummer);
+        assertThat(dsbMannschaftDO.getMannschaftNummer()).isEqualTo(mannschaftNummer);
+    }
 }
