@@ -128,7 +128,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
-    public List<DsbMannschaftDO> findEverythingById(long id){
+    public List<DsbMannschaftDO> findVeranstaltungAndWettkampfByID(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findVeranstaltungAndWettkampfById(id);
         if(dsbMannschaftBeList == null){

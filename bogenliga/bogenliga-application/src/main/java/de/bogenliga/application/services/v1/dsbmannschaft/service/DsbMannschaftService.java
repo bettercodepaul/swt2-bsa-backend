@@ -203,7 +203,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllVeranstaltungAndWettkampfByID' request with id '{}'", id);
 
-        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findEverythingById(id);
+        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
         return DbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
     }
     /**
