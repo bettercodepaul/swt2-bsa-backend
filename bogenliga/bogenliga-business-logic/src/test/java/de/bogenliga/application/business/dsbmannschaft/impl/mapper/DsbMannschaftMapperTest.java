@@ -47,7 +47,7 @@ public class DsbMannschaftMapperTest {
         dsbMannschaftBE.setWettkampfOrtsname("Berlin");
         dsbMannschaftBE.setVereinName("Sportverein Berlin");
         dsbMannschaftBE.setMannschaftNummer(12345L);
-
+        dsbMannschaftBE.setNummer(12345L);
         // Act
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftMapper.toDsbMannschaftVerUWettDO.apply(dsbMannschaftBE);
 
