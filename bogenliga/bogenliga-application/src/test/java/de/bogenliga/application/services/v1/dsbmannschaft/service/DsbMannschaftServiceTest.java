@@ -311,7 +311,7 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findEverythingById(1893)).thenReturn(dsbMannschaftDOList);
+        when(dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(1893)).thenReturn(dsbMannschaftDOList);
 
         // call test method
         final List<DsbMannschaftDTO> actual = underTest.findAllVeranstaltungAndWettkampfByID(1893);
@@ -327,7 +327,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
 
         // verify invocations
-        verify(dsbMannschaftComponent).findEverythingById(1893);
+        verify(dsbMannschaftComponent).findVeranstaltungAndWettkampfByID(1893);
     }
 
     @Test
