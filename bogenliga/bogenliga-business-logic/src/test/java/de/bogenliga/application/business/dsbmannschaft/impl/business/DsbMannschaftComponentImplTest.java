@@ -418,7 +418,7 @@ public class DsbMannschaftComponentImplTest {
         when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findEverythingById(VEREIN_ID);
+        final List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -454,7 +454,7 @@ public class DsbMannschaftComponentImplTest {
 
         // Act & Assert
         try {
-            underTest.findEverythingById(VALID_ID);
+            underTest.findVeranstaltungAndWettkampfByID(VALID_ID);
         } catch (BusinessException e) {
             assertThat(e.getMessage()).isEqualTo(String.format(EXCEPTION_NO_RESULTS, VALID_ID));
         }
@@ -466,7 +466,7 @@ public class DsbMannschaftComponentImplTest {
         when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(Collections.emptyList());
 
         // Act
-        List<DsbMannschaftDO> actual = underTest.findEverythingById(VALID_ID);
+        List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VALID_ID);
 
         // Assert
         assertThat(actual).isNotNull().isEmpty();
@@ -970,7 +970,7 @@ public class DsbMannschaftComponentImplTest {
         when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findEverythingById(VEREIN_ID);
+        final List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VEREIN_ID);
 
         // assert result
         assertThat(actual)
