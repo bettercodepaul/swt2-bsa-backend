@@ -93,7 +93,9 @@ public class DsbMannschaftComponentImplTest {
         return expectedBE;
     }
     public static DsbMannschaftBE getDsbMannschaftBEVERANDWETT() {
-        return new DsbMannschaftBE(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+        DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+        dsbMannschaftBE.setNummer(MANNSCHAFTNUMMER);
+        return dsbMannschaftBE ;
     }
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
