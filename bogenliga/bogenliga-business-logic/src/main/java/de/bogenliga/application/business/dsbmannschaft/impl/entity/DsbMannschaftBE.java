@@ -26,14 +26,14 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
      * @param wettkampfTag
      * @param wettkampfOrtsname
      * @param vereinName
-     * @param mannschaftNummer
+     * @param nummer
      */
-    public DsbMannschaftBE(final String veranstaltungName,final String wettkampfTag, final String wettkampfOrtsname, final String vereinName, final long mannschaftNummer) {
+    public DsbMannschaftBE(final String veranstaltungName,final String wettkampfTag, final String wettkampfOrtsname, final String vereinName, final long nummer) {
         this.veranstaltungName = veranstaltungName;
         this.wettkampfTag = wettkampfTag;
         this.wettkampfOrtsname = wettkampfOrtsname;
         this.vereinName = vereinName;
-        this.mannschaftNummer = mannschaftNummer;
+        this.mannschaftNummer = nummer;
     }
 
     public Long getId() {

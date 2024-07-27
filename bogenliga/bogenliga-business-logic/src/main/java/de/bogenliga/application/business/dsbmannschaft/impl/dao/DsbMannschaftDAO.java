@@ -33,7 +33,6 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_BE_WETTKAMPFORT = "wettkampfOrtsname";
     private static final String MANNSCHAFT_BE_WETTKAMPTAG = "wettkampfTag";
     private static final String MANNSCHAFT_BE_VERANSTALTUNGSNAME = "veranstaltungName";
-    private static final String MANNSCHAFT_BE_MANNSCHAFTSNUMMER = "mannschaftNummer";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
     private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_verein_id";
@@ -45,7 +44,6 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_TABLE_WETTKAMPFORT = "wettkampf_ortsname";
     private static final String MANNSCHAFT_TABLE_WETTKAMPTAG = "wettkampf_tag";
     private static final String MANNSCHAFT_TABLE_VERANSTALTUNGSNAME = "veranstaltung_name";
-    private static final String MANNSCHAFT_TABLE_MANNSCHAFTSNUMMER = "mannschaft_nummer";
 
 
 
@@ -134,8 +132,6 @@ public class DsbMannschaftDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPTAG, MANNSCHAFT_BE_WETTKAMPTAG);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_VEREINNAME, MANNSCHAFT_BE_VEREINNAME);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_VERANSTALTUNGSNAME, MANNSCHAFT_BE_VERANSTALTUNGSNAME);
-        columnsToFieldsMap.put(MANNSCHAFT_TABLE_MANNSCHAFTSNUMMER,MANNSCHAFT_BE_MANNSCHAFTSNUMMER);
-
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
