@@ -49,7 +49,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final String wettkampfTag = be.getWettkampfTag();
         final String wettkampfOrtsname = be.getWettkampfOrtsname();
         final String vereinName = be.getVereinName();
-        final Long mannschaftNummer = be.getMannschaftNummer();
+        final Long mannschaftNummer = be.getNummer();
 
         return new DsbMannschaftDO(veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName,mannschaftNummer);
     };
