@@ -25,6 +25,7 @@ public class SchuetzenstatistikMatchDAOTest {
     // test data
     private static final Long veranstaltungId = 1L;
     private static final Long vereinId = 7L;
+    private static final Long tag = 1L;
     private static final Long wettkampfId = 2L;
 
     @Rule
@@ -76,7 +77,7 @@ public class SchuetzenstatistikMatchDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId);
+        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId, tag);
 
         // assert result
         assertThat(actual)
