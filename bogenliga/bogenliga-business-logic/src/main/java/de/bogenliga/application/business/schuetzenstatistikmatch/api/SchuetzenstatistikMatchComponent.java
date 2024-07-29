@@ -21,7 +21,7 @@ public interface SchuetzenstatistikMatchComponent extends ComponentFacade {
     /**
      * returns a list of schuetzenstatistik_match rows based of Wettkampf
      */
-    List<SchuetzenstatistikMatchDO> getSchuetzenstatistikMatchWettkampf(Long wettkampfId, Long vereinId);
+    List<SchuetzenstatistikMatchDO> getSchuetzenstatistikMatchWettkampf(Long wettkampfId, Long vereinId, Long tag);
 
 
 

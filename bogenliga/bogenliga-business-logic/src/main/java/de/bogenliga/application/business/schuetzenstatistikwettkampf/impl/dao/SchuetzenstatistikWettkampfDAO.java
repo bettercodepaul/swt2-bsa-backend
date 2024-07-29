@@ -51,38 +51,26 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPFTAG3_TABLE = "wettkampftag_3";
     private static final String WETTKAMPFTAG4_TABLE = "wettkampftag_4";
     private static final String WETTKAMPFTAGESCHNITT_TABLE = "veranstaltung_schnitt";
-
     private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF =
-            "WITH wettkampfschnitte AS (" +
-                    "SELECT" +
-                    "    schuetzenstatistik_dsb_mitglied_id as dsb_mitglied_id," +
-                    "    schuetzenstatistik_wettkampf_id as wettkampf_id," +
-                    "    schuetzenstatistik_wettkampf_tag as wettkampf_tag," +
-                    "    schuetzenstatistik_veranstaltung_id as veranstaltung_id," +
-                    "    schuetzenstatistik_dsb_mitglied_name as dsb_mitglied_name, schuetzenstatistik_rueckennummer as rueckennummer," +
-                    "    schuetzenstatistik_verein_id as verein_id," +
-                    "    ROUND(AVG(CASE WHEN schuetzenstatistik_pfeilpunkte_schnitt <> 0 THEN schuetzenstatistik_pfeilpunkte_schnitt END), 2) AS wettkampf_schnitt" +
-                    " FROM schuetzenstatistik" +
-                    " GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id," +
-                    "         schuetzenstatistik_wettkampf_id, schuetzenstatistik_wettkampf_tag," +
-                    "         schuetzenstatistik_verein_id, schuetzenstatistik_dsb_mitglied_name, schuetzenstatistik_rueckennummer)" +
-                    " SELECT" +
-                    "    MAX(wettkampfschnitte.dsb_mitglied_name) as dsb_mitglied_name," +
-                    "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 1 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_1," +
-                    "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 2 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_2," +
-                    "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 3 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_3," +
-                    "    MAX(CASE WHEN  wettkampfschnitte.wettkampf_tag = 4 THEN wettkampfschnitte.wettkampf_schnitt ELSE 0 END) as wettkampftag_4," +
-                    "    ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2) as veranstaltung_schnitt, MAX(wettkampfschnitte.rueckennummer) as rueckennummer" +
-                    " FROM wettkampfschnitte" +
-                    " WHERE wettkampfschnitte.veranstaltung_id =? AND wettkampfschnitte.verein_id =?" +
-                    " GROUP BY wettkampfschnitte.dsb_mitglied_id, wettkampfschnitte.veranstaltung_id " +
-                    " HAVING ROUND(AVG(wettkampfschnitte.wettkampf_schnitt), 2)  > 0;";
+            "SELECT " +
+    "m.mannschaftsmitglied_rueckennummer AS rueckennummer, " +
+    "pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_schuetzenname AS dsb_mitglied_name, " +
+    "pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_wettkampftag_1_schnitt AS wettkampftag_1, " +
+    "pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_wettkampftag_2_schnitt AS wettkampftag_2, " +
+    "pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_wettkampftag_3_schnitt AS wettkampftag_3, " +
+    "pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_wettkampftag_4_schnitt AS wettkampftag_4, " +
+    "pfeilschnitte_schuetze_veranstaltung_veranstaltung_schnitt AS veranstaltung_schnitt " +
 
+    "FROM pfeilschnitte_schuetze_veranstaltung JOIN mannschaftsmitglied m ON pfeilschnitte_schuetze_veranstaltung_dsb_mitglied_id = m.mannschaftsmitglied_dsb_mitglied_id " +
+            "WHERE " +
+    "m.mannschaftsmitglied_mannschaft_id = pfeilschnitte_schuetze_veranstaltung_mannschaft_id " +
+    "AND pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_veranstaltung_schnitt > 0 " +
+    "AND pfeilschnitte_schuetze_veranstaltung_veranstaltung_id = ? " +
+    "AND pfeilschnitte_schuetze_veranstaltung.pfeilschnitte_schuetze_veranstaltung_verein_id = ? ;";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<SchuetzenstatistikWettkampfBE> SCHUETZENSTATISTIKWETTKAMPF = new BusinessEntityConfiguration<>(
             SchuetzenstatistikWettkampfBE.class, TABLE, getColumnsToFieldsMap(), LOG);
-
     private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF_WETTKAMPF =
             "WITH wettkampfschnitte AS (" +
                     "SELECT" +
