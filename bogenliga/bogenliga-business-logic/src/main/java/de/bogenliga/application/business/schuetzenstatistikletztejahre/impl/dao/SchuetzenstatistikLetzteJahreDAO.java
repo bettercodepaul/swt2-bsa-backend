@@ -46,18 +46,20 @@ public class SchuetzenstatistikLetzteJahreDAO implements DataAccessObject {
     private static final String GET_SCHUETZENSTATISTIKLETZTEJAHRE =
             "WITH veranstaltungschnitte AS (" +
                     "SELECT " +
-                    "   ROUND(AVG(schuetzenstatistik_pfeilpunkte_schnitt), 2) AS veranstaltung_pfeilschnitt, " +
+                    "   MAX(pfeilschnitte_schuetze_veranstaltung_veranstaltung_schnitt) AS veranstaltung_pfeilschnitt, " +
                     "   schuetzenstatistik.schuetzenstatistik_veranstaltung_id, " +
                     "   MAX(schuetzenstatistik_dsb_mitglied_name) AS schuetzenname, " +
                     "   MAX(veranstaltung.veranstaltung_sportjahr) AS veranstaltung_sportjahr, " +
                     "   MAX(highest_veranstaltung.veranstaltung_sportjahr) AS highest_sportjahr " +
                     "FROM schuetzenstatistik JOIN veranstaltung ON veranstaltung.veranstaltung_id = schuetzenstatistik_veranstaltung_id " +
                     "                        JOIN veranstaltung highest_veranstaltung on veranstaltung.veranstaltung_liga_id = highest_veranstaltung.veranstaltung_liga_id " +
+                    "                        JOIN pfeilschnitte_schuetze_veranstaltung on pfeilschnitte_schuetze_veranstaltung_veranstaltung_id = veranstaltung.veranstaltung_id " +
                     "WHERE highest_veranstaltung.veranstaltung_sportjahr = ? " +
                     "AND highest_veranstaltung.veranstaltung_id = ? " +
                     "AND schuetzenstatistik.schuetzenstatistik_verein_id = ? " +
                     "AND (highest_veranstaltung.veranstaltung_sportjahr - veranstaltung.veranstaltung_sportjahr) < 5 " +
                     "AND schuetzenstatistik_pfeilpunkte_schnitt > 0 " +
+                    "AND pfeilschnitte_schuetze_veranstaltung_dsb_mitglied_id = schuetzenstatistik_dsb_mitglied_id " +
                     "AND veranstaltung.veranstaltung_liga_id = highest_veranstaltung.veranstaltung_liga_id " +
                     "GROUP BY schuetzenstatistik_dsb_mitglied_id, schuetzenstatistik_veranstaltung_id) " +
                     "SELECT " +

@@ -31,6 +31,7 @@ public class SchuetzenstatistikMatchComponentImplTest {
     private static final float match5 = 5.1f;
     private static final float match6 = 2.13f;
     private static final float match7 = 6.91f;
+    private static final Long tag = 1L;
     private static final String dsbMitgliedName = "Mitglied_Name";
     private static final int rueckennummer = 5;
     private static final Long wettkampfId = 2L;
@@ -124,11 +125,11 @@ public class SchuetzenstatistikMatchComponentImplTest {
         final List<SchuetzenstatistikMatchBE> expectedBEList = Collections.singletonList(expectedSchuetzenstatistikMatchBE);
 
         // configure mocks
-        when(SchuetzenstatistikMatchDAO.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong())).thenReturn(expectedBEList);
+        when(SchuetzenstatistikMatchDAO.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong(), anyLong())).thenReturn(expectedBEList);
 
 
         // call test method
-        final List<SchuetzenstatistikMatchDO> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId);
+        final List<SchuetzenstatistikMatchDO> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId, tag);
 
         // assert result
         assertThat(actual)
@@ -149,7 +150,7 @@ public class SchuetzenstatistikMatchComponentImplTest {
         assertThat(actual.get(0).getMatch7()).isEqualTo(expectedSchuetzenstatistikMatchBE.getMatch7());
 
         // verify invocations
-        verify(SchuetzenstatistikMatchDAO).getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId);
+        verify(SchuetzenstatistikMatchDAO).getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId, tag);
     }
 
     //Input ID null -> Exception
@@ -157,18 +158,18 @@ public class SchuetzenstatistikMatchComponentImplTest {
     public void getSchuetzenstatistikWettkampf_IDnull() {
 
         // configure mocks
-        when(SchuetzenstatistikMatchDAO.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong())).thenReturn(null);
+        when(SchuetzenstatistikMatchDAO.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong(), anyLong())).thenReturn(null);
 
             // call test method
             assertThatExceptionOfType(BusinessException.class)
-                    .isThrownBy(() -> underTest.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong()))
+                    .isThrownBy(() -> underTest.getSchuetzenstatistikMatchWettkampf(anyLong(), anyLong(), anyLong()))
                     .withMessageContaining("ENTITY_NOT_FOUND_ERROR: No result found for Wettkampf-ID 0 and Verein-ID 0")
                     .withNoCause();
 
         // assert result
 
         // verify invocations
-        verify(SchuetzenstatistikMatchDAO).getSchuetzenstatistikMatchWettkampf(0L, 0L);
+        verify(SchuetzenstatistikMatchDAO).getSchuetzenstatistikMatchWettkampf(0L, 0L, 0L);
     }
 
 }

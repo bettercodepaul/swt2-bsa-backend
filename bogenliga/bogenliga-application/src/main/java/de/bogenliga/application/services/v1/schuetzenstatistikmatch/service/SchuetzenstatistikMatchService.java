@@ -31,6 +31,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class SchuetzenstatistikMatchService {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
+    private static final String PRECONDITION_MSG_TAG = "Tag must not be negative";
 
     private final Logger logger = LoggerFactory.getLogger(SchuetzenstatistikMatchService.class);
 
@@ -71,15 +72,18 @@ public class SchuetzenstatistikMatchService {
      * @return lost of {@link SchuetzenstatistikDTO} as JSON
      */
     @GetMapping(
-            value = "byWettkampfAndVerein/{wettkampfId}/{vereinId}",
+            value = "byWettkampfAndVereinAndTag/{wettkampfId}/{vereinId}/{tag}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<SchuetzenstatistikMatchDTO> getSchuetzenstatistikMatchWettkampf(@PathVariable("wettkampfId") final long wettkampfId, @PathVariable("vereinId") final long vereinId) {
+    public List<SchuetzenstatistikMatchDTO> getSchuetzenstatistikMatchWettkampf(@PathVariable("wettkampfId") final long wettkampfId, @PathVariable("vereinId") final long vereinId,
+                                                                                @PathVariable("tag") final long tag) {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkArgument(tag >= 0, PRECONDITION_MSG_TAG);
+
         logger.debug("Receive 'Schuetzenstatistik für Wettkampf' request with Wettkampf-ID '{}' and Verein-ID '{}'", wettkampfId, vereinId);
 
-        final List<SchuetzenstatistikMatchDO> schuetzenstatistikMatchDOList = schuetzenstatistikMatchComponent.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId);
+        final List<SchuetzenstatistikMatchDO> schuetzenstatistikMatchDOList = schuetzenstatistikMatchComponent.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId, tag);
 
         return schuetzenstatistikMatchDOList.stream().map(SchuetzenstatistikMatchDTOMapper.toDTO).toList();
     }
