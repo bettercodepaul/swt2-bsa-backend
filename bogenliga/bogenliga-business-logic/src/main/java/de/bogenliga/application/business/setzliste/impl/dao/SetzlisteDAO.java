@@ -60,7 +60,7 @@ public class SetzlisteDAO implements DataAccessObject {
             "              FROM ligatabelle as lt, wettkampf AS wk" +
             "             WHERE lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id" +
             "             and wk.wettkampf_id = ?" +
-            "             AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1" +
+            "             AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag" +
             "             AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id";
 
     private final BasicDAO basicDao;
