@@ -38,8 +38,6 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String MATCHNR7_BE = "match7";
     private static final String PFEILPUNKTESCHNITT_BE = "pfeilpunkteSchnitt";
 
-    private static String wettkampfTag = "1";
-
     // table column names
     private static final String VERANSTALTUNGID_TABLE = "schuetzenstatistik_veranstaltung_id";
     private static final String WETTKAMPFID_TABLE = "schuetzenstatistik_wettkampf_id";
@@ -91,38 +89,43 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
 
     /* der Select liefert die aktuelle Match-Schuetzenstatistik zur Wettkampf-ID
      */
-    private static String GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF = formQueryString();
+    private static final String GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF = new QueryBuilder().selectFields(
+                    DSBMITGLIEDNAME_TABLE,
+                    RUECKENNUMMER_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR1_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR2_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR3_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR4_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR5_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR6_TABLE,
+                    SQLSTRINGMAXPART + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR7_TABLE,
+                    "CASE " +
+                            "WHEN ? = 1 THEN MAX(pfeilschnitte_schuetze_veranstaltung_wettkampftag_1_schnitt) " +
+                            "WHEN ? = 2 THEN MAX(pfeilschnitte_schuetze_veranstaltung_wettkampftag_2_schnitt) " +
+                            "WHEN ? = 3 THEN MAX(pfeilschnitte_schuetze_veranstaltung_wettkampftag_3_schnitt) " +
+                            "ELSE            MAX(pfeilschnitte_schuetze_veranstaltung_wettkampftag_4_schnitt) " +
+                            "END AS " + PFEILPUNKTESCHNITT_BE
+            )
+            .from(TABLE)
+            .join("pfeilschnitte_schuetze_veranstaltung")
+            .on("pfeilschnitte_schuetze_veranstaltung_veranstaltung_id", VERANSTALTUNGID_TABLE)
+            .whereEquals(WETTKAMPFID_TABLE)
+            .andEquals(VEREINID_TABLE)
+            .andEquals("pfeilschnitte_schuetze_veranstaltung", "pfeilschnitte_schuetze_veranstaltung_veranstaltung_id", TABLE, VERANSTALTUNGID_TABLE)
+            .andEquals("pfeilschnitte_schuetze_veranstaltung", "pfeilschnitte_schuetze_veranstaltung_dsb_mitglied_id", TABLE,DSBMITGLIEDID_TABLE)
+            .groupBy(
+                    WETTKAMPFID_TABLE,
+                    DSBMITGLIEDID_TABLE,
+                    DSBMITGLIEDNAME_TABLE,
+                    RUECKENNUMMER_TABLE
+            )
+            .havingGt("ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 )")
+            .orderBy(RUECKENNUMMER_TABLE)
+            .compose().toString();
+    ;
 
-    private static String formQueryString() {
-        return  new QueryBuilder().selectFields(
-                        DSBMITGLIEDNAME_TABLE,
-                        RUECKENNUMMER_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR1_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 2 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR2_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 3 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR3_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 4 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR4_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 5 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR5_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 6 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR6_TABLE,
-                        SQLSTRINGMAXPART + MATCHNR_TABLE + " = 7 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR7_TABLE,
-                        "MAX(pfeilschnitte_schuetze_veranstaltung_wettkampftag_" + wettkampfTag + "_schnitt) AS " + PFEILPUNKTESCHNITT_BE
-                )
-                .from(TABLE)
-                .join("pfeilschnitte_schuetze_veranstaltung")
-                .on("pfeilschnitte_schuetze_veranstaltung_veranstaltung_id", VERANSTALTUNGID_TABLE)
-                .whereEquals(WETTKAMPFID_TABLE)
-                .andEquals(VEREINID_TABLE)
-                .andEquals("pfeilschnitte_schuetze_veranstaltung", "pfeilschnitte_schuetze_veranstaltung_veranstaltung_id", TABLE, VERANSTALTUNGID_TABLE)
-                .andEquals("pfeilschnitte_schuetze_veranstaltung", "pfeilschnitte_schuetze_veranstaltung_dsb_mitglied_id", TABLE,DSBMITGLIEDID_TABLE)
-                .groupBy(
-                        WETTKAMPFID_TABLE,
-                        DSBMITGLIEDID_TABLE,
-                        DSBMITGLIEDNAME_TABLE,
-                        RUECKENNUMMER_TABLE
-                )
-                .havingGt("ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 )")
-                .orderBy(RUECKENNUMMER_TABLE)
-                .compose().toString();
-    }
+
+
     private final BasicDAO basicDao;
     /**
      * Initialize the transaction manager to provide a database connection
@@ -163,9 +166,8 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
      * Lesen der aktuellen Schuetzenstatistik zum Wettkampf (ID)
      */
     public List<SchuetzenstatistikMatchBE> getSchuetzenstatistikMatchWettkampf(final long wettkampfId, final long vereinId, final long tag) {
-        SchuetzenstatistikMatchDAO.wettkampfTag = "" + tag;
-        SchuetzenstatistikMatchDAO.GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF = formQueryString();
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK_MATCH, GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF, wettkampfId, vereinId, 0);
+
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK_MATCH, GET_SCHUETZENSTATISTIK_MATCH_WETTKAMPF, tag, tag, tag, wettkampfId, vereinId, 0);
     }
 
 
