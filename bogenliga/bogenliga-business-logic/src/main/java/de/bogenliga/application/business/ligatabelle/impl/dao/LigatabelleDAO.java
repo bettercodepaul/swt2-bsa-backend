@@ -93,12 +93,12 @@ public class LigatabelleDAO implements DataAccessObject {
             "MAX(ligatabelle_sortierung) AS ligatabelle_sortierung," +
             "SUM(ligatabelle_match_count) AS ligatabelle_match_count," +
             "row_number()  over (" +
-                "order by SUM(ligatabelle_matchpkt) desc ,"+
-                "SUM(ligatabelle_matchpkt_gegen),"+
-                "SUM(ligatabelle_satzpkt_differenz) desc,"+
-                "SUM(ligatabelle_satzpkt) desc,"+
-                "SUM(ligatabelle_satzpkt_gegen),"+
-                "MAX(ligatabelle_sortierung),"+
+                "order by SUM(COALESCE(ligatabelle_matchpkt, 0)) desc ,"+
+                "SUM(COALESCE(ligatabelle_matchpkt_gegen, 0)),"+
+                "SUM(COALESCE(ligatabelle_satzpkt_differenz, 0)) desc,"+
+                "SUM(COALESCE(ligatabelle_satzpkt, 0)) desc,"+
+                "SUM(COALESCE(ligatabelle_satzpkt_gegen, 0)),"+
+                "MAX(COALESCE(ligatabelle_sortierung, 0)),"+
                 "MAX(ligatabelle_veranstaltung_id),"+
                 "MAX(ligatabelle_veranstaltung_name),"+
                 "MAX(ligatabelle_wettkampf_id),"+
@@ -142,12 +142,12 @@ public class LigatabelleDAO implements DataAccessObject {
             "MAX(ligatabelle_sortierung) AS ligatabelle_sortierung," +
             "SUM(ligatabelle_match_count) AS ligatabelle_match_count," +
             "row_number()  over (" +
-                "order by SUM(ligatabelle_matchpkt) desc ," +
-                "SUM(ligatabelle_matchpkt_gegen)," +
-                "SUM(ligatabelle_satzpkt_differenz) desc," +
-                "SUM(ligatabelle_satzpkt) desc," +
-                "SUM(ligatabelle_satzpkt_gegen)," +
-                "MAX(ligatabelle_sortierung)," +
+                "order by SUM(COALESCE(ligatabelle_matchpkt, 0)) desc ," +
+                "SUM(COALESCE(ligatabelle_matchpkt_gegen, 0))," +
+                "SUM(COALESCE(ligatabelle_satzpkt_differenz, 0)) desc," +
+                "SUM(COALESCE(ligatabelle_satzpkt, 0)) desc," +
+                "SUM(COALESCE(ligatabelle_satzpkt_gegen, 0))," +
+                "MAX(COALESCE(ligatabelle_sortierung, 0))," +
                 "MAX(ligatabelle_veranstaltung_id)," +
                 "MAX(ligatabelle_veranstaltung_name)," +
                 "MAX(ligatabelle_wettkampf_id)," +
