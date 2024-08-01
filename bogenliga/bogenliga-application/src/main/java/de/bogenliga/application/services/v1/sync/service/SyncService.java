@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 
 /**
@@ -341,7 +340,7 @@ public class SyncService implements ServiceFacade {
                     .toList());
             logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
             for (PasseDTO passeDTO : matchDTO.getPassen()) {
-                passeDTO.setMatchNr(matchDTO.getNr());
+                passeDTO.setMatchNr(matchDTO.getMatchNr());
             }
             matchDTOs.add(matchDTO);
         }
@@ -357,7 +356,7 @@ public class SyncService implements ServiceFacade {
             for (int j = i + 1; j < matchDTOs.size(); j++) {
 
                 if (twoMatchesDTO.get(0).getWettkampfId().equals(matchDTOs.get(j).getWettkampfId()) &&
-                        twoMatchesDTO.get(0).getNr().equals(matchDTOs.get(j).getNr()) &&
+                        twoMatchesDTO.get(0).getMatchNr().equals(matchDTOs.get(j).getMatchNr()) &&
                         twoMatchesDTO.get(0).getBegegnung().equals(matchDTOs.get(j).getBegegnung())) {
 
                     twoMatchesDTO.add(matchDTOs.get(j));
