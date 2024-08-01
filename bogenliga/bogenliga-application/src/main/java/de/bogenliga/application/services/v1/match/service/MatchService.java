@@ -196,6 +196,8 @@ public class MatchService implements ServiceFacade {
             for( LigamatchBE einmatch: wettkampfMatches) {
                 MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch));
                 matchDTO.setMannschaftName(einmatch.getMannschaftName());
+                matchDTO.setMannschaftNameGegner(einmatch.getMannschaftNameGegner());
+
                 matchDTOs.add(matchDTO);
             }
 
@@ -357,7 +359,7 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
         Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
-        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
+        Preconditions.checkArgument(matchDTO1.getMatchNr().equals(matchDTO2.getMatchNr()),
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
 
         this.log(matchDTO1, SERVICE_SAVE_MATCHES);

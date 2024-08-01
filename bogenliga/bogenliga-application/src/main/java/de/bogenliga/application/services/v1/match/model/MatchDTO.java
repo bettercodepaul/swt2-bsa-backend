@@ -10,7 +10,7 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 public class MatchDTO implements DataTransferObject {
     private static final long serialVersionUID = 2743639156011821590L;
 
-    private Long nr;
+    private Long matchNr;
     private Long id;
     private Long version;
     private Long wettkampfId;
@@ -30,6 +30,7 @@ public class MatchDTO implements DataTransferObject {
     private Long strafPunkteSatz3;
     private Long strafPunkteSatz4;
     private Long strafPunkteSatz5;
+    private String mannschaftNameGegner;
 
     // used to transport related passe objects to the frontend or to save them from the
     // table form (schusszettel) to the database
@@ -42,12 +43,12 @@ public class MatchDTO implements DataTransferObject {
 
     }
 
-    public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
+    public MatchDTO(Long id, Long matchNr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
                     Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen,
                     Long strafPunkteSatz1,
                     Long strafPunkteSatz2, Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {
         this.setId(id);
-        this.setNr(nr);
+        this.setMatchNr(matchNr);
         this.setVersion(version);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
@@ -61,6 +62,7 @@ public class MatchDTO implements DataTransferObject {
         this.setStrafPunkteSatz3(strafPunkteSatz3);
         this.setStrafPunkteSatz4(strafPunkteSatz4);
         this.setStrafPunkteSatz5(strafPunkteSatz5);
+        this.setMannschaftNameGegner(mannschaftNameGegner);
     }
 
     public Long getId() {
@@ -72,13 +74,13 @@ public class MatchDTO implements DataTransferObject {
     }
 
 
-    public Long getNr() {
-        return nr;
+    public Long getMatchNr() {
+        return matchNr;
     }
 
 
-    public void setNr(Long nr) {
-        this.nr = nr;
+    public void setMatchNr(Long matchNr) {
+        this.matchNr = matchNr;
     }
 
 
@@ -239,5 +241,15 @@ public class MatchDTO implements DataTransferObject {
 
     public void setWettkampfTag(Long wettkampfTag) {
         this.wettkampfTag = wettkampfTag;
+    }
+
+
+    public String getMannschaftNameGegner() {
+        return mannschaftNameGegner;
+    }
+
+
+    public void setMannschaftNameGegner(String mannschaftNameGegner) {
+        this.mannschaftNameGegner = mannschaftNameGegner;
     }
 }

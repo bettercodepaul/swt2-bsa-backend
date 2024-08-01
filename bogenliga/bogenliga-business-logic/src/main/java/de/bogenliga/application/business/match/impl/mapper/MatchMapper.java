@@ -74,5 +74,4 @@ public class MatchMapper implements ValueObjectMapper {
 
         return matchBE;
     };
-
 }

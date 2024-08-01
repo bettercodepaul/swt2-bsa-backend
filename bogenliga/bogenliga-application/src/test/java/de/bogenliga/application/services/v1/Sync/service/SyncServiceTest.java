@@ -44,7 +44,6 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
-import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -1372,8 +1371,8 @@ public class SyncServiceTest {
         expectedMatchDTOs.get(2).setId(matchIDs[2]);
         expectedMatchDTOs.get(3).setId(matchIDs[3]);
 
-        expectedMatchDTOs.get(2).setNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
-        expectedMatchDTOs.get(3).setNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
+        expectedMatchDTOs.get(2).setMatchNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
+        expectedMatchDTOs.get(3).setMatchNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
 
         // Set List<PasseDTO> in MatchDTO
         for (int i = 0; i < expectedMatchDTOs.size(); i++) {
@@ -1404,7 +1403,7 @@ public class SyncServiceTest {
                 assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
                 assertThat(actual.get(i).getId()).isEqualTo(expectedMatchDTOs.get(i).getId());
                 assertThat(actual.get(i).getPassen().get(0).getMatchId()).isEqualTo(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId());
-                assertThat(actual.get(i).getNr()).isEqualTo(expectedMatchDTOs.get(i).getNr());
+                assertThat(actual.get(i).getMatchNr()).isEqualTo(expectedMatchDTOs.get(i).getMatchNr());
             }
 
         } catch (NoPermissionException e) {

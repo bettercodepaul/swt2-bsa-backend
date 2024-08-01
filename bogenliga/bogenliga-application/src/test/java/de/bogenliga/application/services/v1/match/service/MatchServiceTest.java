@@ -105,6 +105,7 @@ public class MatchServiceTest {
 
     protected static final Long MATCH_VERSION = 1L;
     protected static final String MATCH_MANNSCHAFT_NAME = "TSV_Grafenberg";
+    protected static final String MATCH_MANNSCHAFT_NAME_GEGNER = "SV_Schwieberdingen";
     protected static final Long MATCH_NAECHSTE_MATCH_ID = 1L;
     protected static final Long MATCH_NAECHSTE_NAECHSTE_MATCH_ID = 1L;
     protected static final String MATCH_WETTKAMP_TYP_ID = "0";
@@ -303,6 +304,7 @@ public class MatchServiceTest {
         ligamatchBE.setWettkampftypId(MATCH_WETTKAMP_TYP_ID);
         ligamatchBE.setWettkampfTag(MATCH_WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MATCH_MANNSCHAFT_NAME);
+        ligamatchBE.setMannschaftNameGegner(MATCH_MANNSCHAFT_NAME_GEGNER);
         return ligamatchBE;
     }
 
