@@ -4,7 +4,9 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
+import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author Philip Dengler
@@ -40,6 +41,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
+    private final DsbMannschaftDAOext dsbMannschaftDAOext;
     private final VereinComponent vereinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
@@ -53,10 +55,12 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
+                                      final DsbMannschaftDAOext dsbMannschaftDAOext,
                                       final VereinComponent vereinComponent,
                                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
+        this.dsbMannschaftDAOext = dsbMannschaftDAOext;
         this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
@@ -118,19 +122,19 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     @Override
     public List<DsbMannschaftDO> findAllByWettkampfId(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWettkampfId(id);
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findAllByWettkampfId(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList());
     }
 
     public List<DsbMannschaftDO> findVeranstaltungAndWettkampfByID(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findVeranstaltungAndWettkampfById(id);
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
@@ -179,6 +183,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
 
+    // Löschen von Mannschaften
+    // gelöscht werden dürfen nur Mannschaften zu denen keine anderen Daten vorliegen (z.B. Ergebnisse)
+    // der Aufrufer muss prüfen, ob die Phase der Veranstaltung "geplant" ist - dann liegen keine Daten vor
+    // oder wenn der Mannschaft keiner Veranstaltung zugewiesen ist
 
     @Override
     public void delete(final DsbMannschaftDO dsbMannschaftDO, final Long currentUserId) {
@@ -187,6 +195,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+
 
         dsbMannschaftDAO.delete(dsbMannschaftBE, currentUserId);
 

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -43,7 +44,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
-    public static final Function<DsbMannschaftBE, DsbMannschaftDO> toDsbMannschaftVerUWettDO = be -> {
+    public static final Function<DsbMannschaftBEext, DsbMannschaftDO> toDsbMannschaftVerUWettDO = be -> {
 
         final String veranstaltungName = be.getVeranstaltungName();
         final String wettkampfTag = be.getWettkampfTag();

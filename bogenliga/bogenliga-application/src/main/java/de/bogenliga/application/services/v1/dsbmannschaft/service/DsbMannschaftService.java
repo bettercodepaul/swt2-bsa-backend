@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -436,12 +439,12 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param mannschaftId
      * @param principal
      */
-    @GetMapping(value = "copyMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
+    @GetMapping(value = "assignMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void insertMannschaftIntoVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
-                                              @PathVariable("MannschaftId") final Long mannschaftId,
-                                              final Principal principal) {
+    public void assignMannschaftToVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
+                                                @PathVariable("MannschaftId") final Long mannschaftId,
+                                                final Principal principal) {
 
         final Long userId = UserProvider.getCurrentUserId(principal);
 
@@ -453,12 +456,36 @@ public class DsbMannschaftService implements ServiceFacade {
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
-        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, userId);
-        dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId(), userId);
+        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
 
 
-        LOG.debug("Mannschaft '{}' in Veranstaltung mit id '{}' kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
+        LOG.debug("Mannschaft '{}'  Veranstaltung mit id '{}' zugeordnet.", dsbMannschaftDO.getName(), veranstaltungsId);
 
+    }
+
+    @GetMapping(value = "unassignMannschaftFromVeranstaltung/{MannschaftId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public void unassignMannschaftFromVeranstaltung(@PathVariable("MannschaftId") final Long mannschaftId,
+                                                final Principal principal) {
+
+        final Long userId = UserProvider.getCurrentUserId(principal);
+
+
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+
+        // pürfen ob die Veransatltung in der Phase "geplant" ist -
+        // nur dann können wir löschen, ohne dass Daten verloren gehen könnten...
+        if (dsbMannschaftDO.getVeranstaltungId() != null){ // hier ist eine Veranstaltung zugewiesen
+            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
+            if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase() == "Geplant") {
+                dsbMannschaftDO.setVeranstaltungId(null);
+                DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
+                LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", dsbMannschaftDO.getName(), veranstaltungDO.getVeranstaltungID());
+            }
+        }
     }
 
     /**
@@ -539,6 +566,10 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
+        // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
+        if (dsbMannschaftDO.getVeranstaltungId() != null )
+            if (veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase() != "Geplant")
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
