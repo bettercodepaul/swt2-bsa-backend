@@ -46,13 +46,20 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
     };
     public static final Function<DsbMannschaftBEext, DsbMannschaftDO> toDsbMannschaftVerUWettDO = be -> {
 
+        final Long id = be.getId();
+        final Long vereinId = be.getVereinId();
+        final Long nummer = be.getNummer();
+        final Long benutzerId = be.getBenutzerId();
+        final Long veranstaltungId = be.getVeranstaltungId();
+        final Long sortierung = be.getSortierung();
+        final String name = be.getVereinName()+be.getNummer().toString();
+
         final String veranstaltungName = be.getVeranstaltungName();
         final String wettkampfTag = be.getWettkampfTag();
         final String wettkampfOrtsname = be.getWettkampfOrtsname();
         final String vereinName = be.getVereinName();
-        final Long mannschaftNummer = be.getNummer();
 
-        return new DsbMannschaftDO(veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName,mannschaftNummer);
+        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung, veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName);
     };
 
 
