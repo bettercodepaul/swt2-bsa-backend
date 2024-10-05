@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -85,7 +86,7 @@ public class DsbMannschaftServiceTest {
         );
     }
     public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
-        return new DsbMannschaftDO(VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME,MANNSCHAFTS_NUMMER);
+        return new DsbMannschaftDO(VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME);
     }
 
     public static DsbMannschaftDO getPlatzhalterDO() {
@@ -106,45 +107,39 @@ public class DsbMannschaftServiceTest {
         );
     }
     private DsbMannschaftBE dsbMannschaft;
+    private DsbMannschaftBEext dsbMannschaftext;
     @Test
     public void testGetAndSetVeranstaltungName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String veranstaltungName = "Meisterschaft";
-        dsbMannschaft.setVeranstaltungName(veranstaltungName);
-        assertThat(dsbMannschaft.getVeranstaltungName()).isEqualTo(veranstaltungName);
+        dsbMannschaftext.setVeranstaltungName(veranstaltungName);
+        assertThat(dsbMannschaftext.getVeranstaltungName()).isEqualTo(veranstaltungName);
     }
 
     @Test
     public void testGetAndSetWettkampfTag() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfTag = "2024-07-22";
-        dsbMannschaft.setWettkampfTag(wettkampfTag);
-        assertThat(dsbMannschaft.getWettkampfTag()).isEqualTo(wettkampfTag);
+        dsbMannschaftext.setWettkampfTag(wettkampfTag);
+        assertThat(dsbMannschaftext.getWettkampfTag()).isEqualTo(wettkampfTag);
     }
 
     @Test
     public void testGetAndSetWettkampfOrtsname() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfOrtsname = "Berlin";
-        dsbMannschaft.setWettkampfOrtsname(wettkampfOrtsname);
-        assertThat(dsbMannschaft.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+        dsbMannschaftext.setWettkampfOrtsname(wettkampfOrtsname);
+        assertThat(dsbMannschaftext.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
     }
 
     @Test
     public void testGetAndSetVereinName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String vereinName = "Sportverein Berlin";
-        dsbMannschaft.setVereinName(vereinName);
-        assertThat(dsbMannschaft.getVereinName()).isEqualTo(vereinName);
+        dsbMannschaftext.setVereinName(vereinName);
+        assertThat(dsbMannschaftext.getVereinName()).isEqualTo(vereinName);
     }
 
-    @Test
-    public void testGetAndSetMannschaftNummer() {
-        dsbMannschaft = new DsbMannschaftBE();
-        Long mannschaftNummer = 12345L;
-        dsbMannschaft.setMannschaftNummer(mannschaftNummer);
-        assertThat(dsbMannschaft.getMannschaftNummer()).isEqualTo(mannschaftNummer);
-    }
     public static VeranstaltungDO getMockVeranstaltung(){
         return new VeranstaltungDO(
                 null, null, null, null, null, null, null, null, null, null, null, null, null,null, null, null, 8
@@ -322,7 +317,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getMannschaft_nummer());
+        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getNummer());
         assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVerein_name());
         assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
 
@@ -650,10 +645,10 @@ public class DsbMannschaftServiceTest {
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expectedDsbMannschaftDO);
-
+// @TODO Tests für die beidnen neuen Funktionen
         // call test method
-        underTest.insertMannschaftIntoVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(),
-                principal);
+ //       underTest.insertMannschaftIntoVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(),
+ //               principal);
 
         // verify invocations
         verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());

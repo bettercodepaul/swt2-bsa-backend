@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -60,6 +62,8 @@ public class DsbMannschaftComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
+    private DsbMannschaftDAOext dsbMannschaftDAOext ;
+    @Mock
     private DsbMannschaftDAO dsbMannschaftDAO ;
     @Mock
     private VereinComponent vereinComponent;
@@ -74,11 +78,7 @@ public class DsbMannschaftComponentImplTest {
 
 
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static DsbMannschaftBE getDsbMannschaftBE() {
+     public static DsbMannschaftBE getDsbMannschaftBE() {
         final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
 
         expectedBE.setId(ID);
@@ -92,8 +92,8 @@ public class DsbMannschaftComponentImplTest {
 
         return expectedBE;
     }
-    public static DsbMannschaftBE getDsbMannschaftBEVERANDWETT() {
-        DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+    public static DsbMannschaftBEext getDsbMannschaftBEext() {
+        DsbMannschaftBEext dsbMannschaftBE = new DsbMannschaftBEext(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME);
         dsbMannschaftBE.setNummer(MANNSCHAFTNUMMER);
         return dsbMannschaftBE ;
     }
@@ -108,7 +108,7 @@ public class DsbMannschaftComponentImplTest {
                 SORTIERUNG);
     }
     public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
-        return new DsbMannschaftDO(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME, MANNSCHAFTNUMMER);
+        return new DsbMannschaftDO(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME);
     }
 
 
@@ -284,12 +284,12 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findAllByWettkampfId() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        final List<DsbMannschaftBEext> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
-        when(dsbMannschaftDAO.findAllByWettkampfId(WETTKAMPF_ID)).thenReturn(expectedBEList);
-        when(dsbMannschaftDAO.findAllByWettkampfId(WETTKAMPF_ID+1)).thenReturn(null);
+        when(dsbMannschaftDAOext.findAllByWettkampfId(WETTKAMPF_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAOext.findAllByWettkampfId(WETTKAMPF_ID+1)).thenReturn(null);
 
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByWettkampfId(WETTKAMPF_ID);
@@ -327,7 +327,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // verify invocations
-        verify(dsbMannschaftDAO).findAllByWettkampfId(WETTKAMPF_ID);
+        verify(dsbMannschaftDAOext).findAllByWettkampfId(WETTKAMPF_ID);
         verify(vereinComponent).findById(anyLong());
     }
 
@@ -412,12 +412,12 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findVeranstaltungAndWettkampfById() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBEVERANDWETT();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        final List<DsbMannschaftBEext> expectedBEList = Collections.singletonList(expectedBE);
         expectedBE.setVeranstaltungId(null);
 
         // configure mocks
-        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
 
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VEREIN_ID);
@@ -430,8 +430,8 @@ public class DsbMannschaftComponentImplTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        Assertions.assertThat(actual.get(0).getMannschaft_nummer())
-                .isEqualTo(expectedBE.getMannschaftNummer());
+        Assertions.assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
         Assertions.assertThat(actual.get(0).getVerein_name())
                 .isEqualTo(expectedBE.getVereinName());
         Assertions.assertThat(actual.get(0).getWettkampf_ortsname())
@@ -442,7 +442,7 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
 
         // verify invocations
-        verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
+        verify(dsbMannschaftDAOext).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
     private static final long VALID_ID = 1L;
     private static final long INVALID_ID = -1L;
@@ -452,7 +452,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findEverythingById_shouldThrowException_whenResultIsNull() {
         // Arrange
-        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(null);
+        when(dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(null);
 
         // Act & Assert
         try {
@@ -465,7 +465,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findEverythingById_shouldReturnEmptyList_whenResultIsEmpty() {
         // Arrange
-        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(Collections.emptyList());
+        when(dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(VALID_ID)).thenReturn(Collections.emptyList());
 
         // Act
         List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VALID_ID);
@@ -965,11 +965,11 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findEverything(){
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBEVERANDWETT();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        final List<DsbMannschaftBEext> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
-        when(dsbMannschaftDAO.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(VEREIN_ID)).thenReturn(expectedBEList);
 
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findVeranstaltungAndWettkampfByID(VEREIN_ID);
@@ -982,8 +982,8 @@ public class DsbMannschaftComponentImplTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        Assertions.assertThat(actual.get(0).getMannschaft_nummer())
-                .isEqualTo(expectedBE.getMannschaftNummer());
+        Assertions.assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
         Assertions.assertThat(actual.get(0).getVerein_name())
                 .isEqualTo(expectedBE.getVereinName());
         Assertions.assertThat(actual.get(0).getWettkampf_ortsname())
@@ -995,7 +995,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // verify invocations
-        verify(dsbMannschaftDAO).findVeranstaltungAndWettkampfById(VEREIN_ID);
+        verify(dsbMannschaftDAOext).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
     @Test
     public void fillName_VereinNull(){
@@ -1088,6 +1088,7 @@ public class DsbMannschaftComponentImplTest {
         assertThat(mannschaftsmitgliedDOArgumentCaptor.getValue().getMannschaftId()).isEqualTo(newMannschaftId);
     }
     private DsbMannschaftBE dsbMannschaft;
+    private DsbMannschaftBEext dsbMannschaftext;
     @Test
     public void testGetAndSetId() {
         dsbMannschaft = new DsbMannschaftBE();
@@ -1138,42 +1139,42 @@ public class DsbMannschaftComponentImplTest {
 
     @Test
     public void testGetAndSetVeranstaltungName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String veranstaltungName = "Meisterschaft";
-        dsbMannschaft.setVeranstaltungName(veranstaltungName);
-        assertThat(dsbMannschaft.getVeranstaltungName()).isEqualTo(veranstaltungName);
+        dsbMannschaftext.setVeranstaltungName(veranstaltungName);
+        assertThat(dsbMannschaftext.getVeranstaltungName()).isEqualTo(veranstaltungName);
     }
 
     @Test
     public void testGetAndSetWettkampfTag() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfTag = "2024-07-22";
-        dsbMannschaft.setWettkampfTag(wettkampfTag);
-        assertThat(dsbMannschaft.getWettkampfTag()).isEqualTo(wettkampfTag);
+        dsbMannschaftext.setWettkampfTag(wettkampfTag);
+        assertThat(dsbMannschaftext.getWettkampfTag()).isEqualTo(wettkampfTag);
     }
 
     @Test
     public void testGetAndSetWettkampfOrtsname() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfOrtsname = "Berlin";
-        dsbMannschaft.setWettkampfOrtsname(wettkampfOrtsname);
-        assertThat(dsbMannschaft.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+        dsbMannschaftext.setWettkampfOrtsname(wettkampfOrtsname);
+        assertThat(dsbMannschaftext.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
     }
 
     @Test
     public void testGetAndSetVereinName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String vereinName = "Sportverein Berlin";
-        dsbMannschaft.setVereinName(vereinName);
-        assertThat(dsbMannschaft.getVereinName()).isEqualTo(vereinName);
+        dsbMannschaftext.setVereinName(vereinName);
+        assertThat(dsbMannschaftext.getVereinName()).isEqualTo(vereinName);
     }
 
     @Test
     public void testGetAndSetMannschaftNummer() {
         dsbMannschaft = new DsbMannschaftBE();
         Long mannschaftNummer = 12345L;
-        dsbMannschaft.setMannschaftNummer(mannschaftNummer);
-        assertThat(dsbMannschaft.getMannschaftNummer()).isEqualTo(mannschaftNummer);
+        dsbMannschaft.setNummer(mannschaftNummer);
+        assertThat(dsbMannschaft.getNummer()).isEqualTo(mannschaftNummer);
     }
     private DsbMannschaftDO dsbMannschaftDO;
     @Test
@@ -1255,12 +1256,4 @@ public class DsbMannschaftComponentImplTest {
         dsbMannschaftDO.setVerein_name(vereinName);
         assertThat(dsbMannschaftDO.getVerein_name()).isEqualTo(vereinName);
     }
-
-    @Test
-    public void testGetAndSetMannschaftNummerDO() {
-        dsbMannschaftDO= new DsbMannschaftDO();
-        Long mannschaftNummer = 12345L;
-        dsbMannschaftDO.setMannschaft_nummer(mannschaftNummer);
-        assertThat(dsbMannschaftDO.getMannschaft_nummer()).isEqualTo(mannschaftNummer);
-    }
-}
+ }
