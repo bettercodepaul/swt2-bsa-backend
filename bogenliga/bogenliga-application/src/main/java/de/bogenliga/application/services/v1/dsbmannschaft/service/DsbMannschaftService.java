@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingSecurityException;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -418,7 +419,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final Long lastVeranstaltungsId,
                                               @PathVariable("currentVeranstaltungsId") final Long currentVeranstaltungsId,
                                               final Principal principal) {
@@ -434,17 +435,17 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I insert the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
+     * I assign the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
      * @param veranstaltungsId
      * @param mannschaftId
      * @param principal
      */
     @GetMapping(value = "assignMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void assignMannschaftToVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
                                                 @PathVariable("MannschaftId") final Long mannschaftId,
-                                                final Principal principal) {
+                                                final Principal principal) throws NoPermissionException {
 
         final Long userId = UserProvider.getCurrentUserId(principal);
 
@@ -453,6 +454,10 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungsId)){
+            throw new NoPermissionException();
+        }
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
@@ -465,7 +470,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
     @GetMapping(value = "unassignMannschaftFromVeranstaltung/{MannschaftId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void unassignMannschaftFromVeranstaltung(@PathVariable("MannschaftId") final Long mannschaftId,
                                                 final Principal principal) {
 
@@ -476,14 +481,14 @@ public class DsbMannschaftService implements ServiceFacade {
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
 
-        // pürfen ob die Veransatltung in der Phase "geplant" ist -
+        // pürfen ob die Veransaltung in der Phase "geplant" ist -
         // nur dann können wir löschen, ohne dass Daten verloren gehen könnten...
         if (dsbMannschaftDO.getVeranstaltungId() != null){ // hier ist eine Veranstaltung zugewiesen
             VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
             if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase() == "Geplant") {
                 dsbMannschaftDO.setVeranstaltungId(null);
                 DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
-                LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", dsbMannschaftDO.getName(), veranstaltungDO.getVeranstaltungID());
+                LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", neueMannschaft.getName(), veranstaltungDO.getVeranstaltungID());
             }
         }
     }
