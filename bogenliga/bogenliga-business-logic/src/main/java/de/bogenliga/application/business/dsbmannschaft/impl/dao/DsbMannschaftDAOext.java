@@ -25,7 +25,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
 
     private static final String MANNSCHAFT_BE_ID = "id";
-    private static final String MANNSCHAFT_BE_TEAMID = "vereinId";
+    private static final String MANNSCHAFT_BE_VEREINID = "vereinId";
     private static final String MANNSCHAFT_BE_NUMBER = "nummer";
     private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
     private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
@@ -36,10 +36,10 @@ public class DsbMannschaftDAOext implements DataAccessObject {
     private static final String MANNSCHAFT_BE_VERANSTALTUNGSNAME = "veranstaltungName";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
-    private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_verein_id";
+    private static final String MANNSCHAFT_TABLE_VEREINID = "mannschaft_verein_id";
     private static final String MANNSCHAFT_TABLE_NUMBER = "mannschaft_nummer";
-    private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_USER_ID = "mannschaft_benutzer_id";
+    private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_SORTIERUNG = "mannschaft_sortierung";
     private static final String MANNSCHAFT_TABLE_VEREINNAME = "verein_name";
     private static final String MANNSCHAFT_TABLE_WETTKAMPFORT = "wettkampf_ortsname";
@@ -92,12 +92,12 @@ public class DsbMannschaftDAOext implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_ID, MANNSCHAFT_BE_ID);
-        columnsToFieldsMap.put(MANNSCHAFT_TABLE_TEAMID, MANNSCHAFT_BE_TEAMID);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_VEREINID, MANNSCHAFT_BE_VEREINID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NUMBER, MANNSCHAFT_BE_NUMBER);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_SORTIERUNG, MANNSCHAFT_BE_SORTIERUNG);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_USER_ID, MANNSCHAFT_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
-       columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPFORT, MANNSCHAFT_BE_WETTKAMPFORT);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPFORT, MANNSCHAFT_BE_WETTKAMPFORT);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPTAG, MANNSCHAFT_BE_WETTKAMPTAG);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_VEREINNAME, MANNSCHAFT_BE_VEREINNAME);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_VERANSTALTUNGSNAME, MANNSCHAFT_BE_VERANSTALTUNGSNAME);
