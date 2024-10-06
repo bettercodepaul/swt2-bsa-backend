@@ -97,7 +97,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
                 ", mannschaftVeranstaltungId='" + veranstaltungId + '\'' +
                 ", mannschaftBenutzerId='" + benutzerId + '\'' +
                 ", mannschaftSortierung='" + sortierung + '\'' +
-                ", mannschaftSortierung='" + sportjahr + '\'' +
+                ", mannschaftSportjahr='" + sportjahr + '\'' +
                 '}';
     }
 }
