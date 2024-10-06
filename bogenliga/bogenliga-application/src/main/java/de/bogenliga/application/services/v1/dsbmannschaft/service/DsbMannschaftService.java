@@ -469,7 +469,7 @@ public class DsbMannschaftService implements ServiceFacade {
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
 
 
-        LOG.debug("Mannschaft '{}'  Veranstaltung mit id '{}' zugeordnet.", dsbMannschaftDO.getName(), veranstaltungsId);
+        LOG.debug("Mannschaft '{}'  Veranstaltung mit id '{}' zugeordnet.", neueMannschaft.getName(), neueMannschaft.getVeranstaltungId());
 
     }
 
@@ -492,7 +492,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         if (dsbMannschaftDO.getVeranstaltungId() != null){ // hier ist eine Veranstaltung zugewiesen
             VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
-            if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase() == "Geplant") {
+            if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase().equals("Geplant")) {
                 dsbMannschaftDO.setVeranstaltungId(null);
                 dsbMannschaftDO.setSportjahr(null);
                 DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
@@ -580,8 +580,7 @@ public class DsbMannschaftService implements ServiceFacade {
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
-        if (dsbMannschaftDO.getVeranstaltungId() != null )
-            if (veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase() != "Geplant")
+        if (dsbMannschaftDO.getVeranstaltungId() != null && veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
                 throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);

@@ -27,9 +27,7 @@ public class DsbMannschaftBasicDAOTest {
     private static final long id = 2222L;
     private static final long vereinId=101010;
     private static final long nummer=111;
-    private static final long benutzerId=12;
     private static final long veranstaltungId=1;
-    private static final long wettkampfId=31;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
