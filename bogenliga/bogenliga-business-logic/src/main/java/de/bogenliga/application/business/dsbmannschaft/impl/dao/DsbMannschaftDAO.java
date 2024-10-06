@@ -29,6 +29,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
     private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
     private static final String MANNSCHAFT_BE_SORTIERUNG = "sortierung";
+    private static final String MANNSCHAFT_BE_SPORTJAHR = "sportjahr";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
     private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_verein_id";
@@ -36,6 +37,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_USER_ID = "mannschaft_benutzer_id";
     private static final String MANNSCHAFT_TABLE_SORTIERUNG = "mannschaft_sortierung";
+    private static final String MANNSCHAFT_TABLE_SPORTJAHR = "mannschaft_sportjahr";
 
 
     // wrap all specific config parameters
@@ -68,9 +70,11 @@ public class DsbMannschaftDAO implements DataAccessObject {
                     + " ORDER BY "+MANNSCHAFT_TABLE_SORTIERUNG;
 
      private static final String FIND_ALL_BY_WARTSCHLANGE =
-            "SELECT * "
-                    + " FROM mannschaft"
-                    + " WHERE mannschaft_veranstaltung_id IS NULL";
+            "SELECT m.* "
+                    + " FROM mannschaft m, veranstaltung v"
+                    + " WHERE m.mannschaft_veranstaltung_id IS NULL"
+                    + " AND m.mannschaft_sportjahr = v.veranstaltung_sportjahr"
+                    + " AND v.veranstaltung_id = ?";
     private static final String FIND_ALL_BY_NAME =
             "SELECT a.* "
                     + "FROM mannschaft a, verein b "
@@ -101,6 +105,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_TEAMID, MANNSCHAFT_BE_TEAMID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NUMBER, MANNSCHAFT_BE_NUMBER);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_SORTIERUNG, MANNSCHAFT_BE_SORTIERUNG);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_SPORTJAHR, MANNSCHAFT_BE_SPORTJAHR);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_USER_ID, MANNSCHAFT_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
 
@@ -153,8 +158,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
      * @return all dsbmannschaft entries in the waiting queue
      */
 
-    public List<DsbMannschaftBE> findAllByWarteschlange() {
-        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE);}
+    public List<DsbMannschaftBE> findAllByWarteschlange(final Long veranstaltungsID) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE, veranstaltungsID);}
 
     /**
      * Return all dsbmannschaft entries with the given name

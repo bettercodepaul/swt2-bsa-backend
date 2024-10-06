@@ -160,12 +160,14 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @GetMapping(value = "byWarteschlangeID/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byWarteschlangeID//{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMannschaftDTO> findAllbyWarteschlangeID()
+    public List<DsbMannschaftDTO> findAllbyWarteschlangeID(@PathVariable("veranstaltungsId") final Long id)
 
     {
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange();
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange(id);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
