@@ -30,10 +30,11 @@ import static org.mockito.Mockito.*;
 
 public class MannschaftSortierungServiceTest {
 
-    private static final long USER = 0;
-    private static final long ID = 1893;
+    private static final Long USER = 0L;
+    private static final Long ID = 1893L;
 
-    private static final long SORTIERUNG = 1;
+    private static final Long SORTIERUNG = 1L;
+    private static final Long SPORTJAHR = 1L;
 
     private static final long DB_VEREIN_ID = 111111;
     private static final String DB_NAME = null; //empty
@@ -61,7 +62,7 @@ public class MannschaftSortierungServiceTest {
 
     private static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG
+                ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR
         );
     }
 
