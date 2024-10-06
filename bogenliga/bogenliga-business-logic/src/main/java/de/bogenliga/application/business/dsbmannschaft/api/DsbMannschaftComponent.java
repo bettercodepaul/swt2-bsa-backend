@@ -111,7 +111,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      */
 
 
-    List<DsbMannschaftDO> findAllByWarteschlange(Long veranstaltungsID);
+    List<DsbMannschaftDO> findAllByWarteschlange();
 
     /**
      * Return all dsbmannschaft entries with the given name.

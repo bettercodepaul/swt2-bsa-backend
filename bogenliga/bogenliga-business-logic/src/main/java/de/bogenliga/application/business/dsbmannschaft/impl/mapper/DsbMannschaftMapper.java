@@ -30,6 +30,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final Long benutzerId = be.getBenutzerId();
         final Long veranstaltungId = be.getVeranstaltungId();
         final Long sortierung = be.getSortierung();
+        final Long sportjahr = be.getSportjahr();
         final String name = null; //empty
 
 
@@ -41,7 +42,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung,
+        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung, sportjahr,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
     public static final Function<DsbMannschaftBEext, DsbMannschaftDO> toDsbMannschaftVerUWettDO = be -> {
@@ -52,6 +53,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final Long benutzerId = be.getBenutzerId();
         final Long veranstaltungId = be.getVeranstaltungId();
         final Long sortierung = be.getSortierung();
+        final Long sportjahr = be.getSportjahr();
         final String name = be.getVereinName()+be.getNummer().toString();
 
         final String veranstaltungName = be.getVeranstaltungName();
@@ -59,7 +61,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final String wettkampfOrtsname = be.getWettkampfOrtsname();
         final String vereinName = be.getVereinName();
 
-        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung, veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName);
+        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung, sportjahr, veranstaltungName, wettkampfTag, wettkampfOrtsname, vereinName);
     };
 
 
@@ -80,6 +82,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         dsbMannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());
         dsbMannschaftBE.setVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
         dsbMannschaftBE.setSortierung(dsbMannschaftDO.getSortierung());
+        dsbMannschaftBE.setSportjahr(dsbMannschaftDO.getSportjahr());
 
 
         dsbMannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);

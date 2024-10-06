@@ -144,7 +144,7 @@ public class DsbMannschaftBasicDAOTest {
         expectedBE.setVeranstaltungId(null);
 
         // call test method
-        final List<DsbMannschaftBE> actual = underTest.findAllByWarteschlange(veranstaltungId);
+        final List<DsbMannschaftBE> actual = underTest.findAllByWarteschlange();
 
         // assert result
         assertThat(actual)

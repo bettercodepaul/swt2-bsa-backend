@@ -276,10 +276,10 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID)).thenReturn(dsbMannschaftDOList);
+        when(dsbMannschaftComponent.findAllByWarteschlange()).thenReturn(dsbMannschaftDOList);
 
         // call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllbyWarteschlangeID(CURRENT_VERANSTALTUNG_ID);
+        final List<DsbMannschaftDTO> actual = underTest.findAllbyWarteschlangeID();
 
         // assert result
         assertThat(actual).isNotNull().hasSize(1);
@@ -293,7 +293,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
-        verify(dsbMannschaftComponent).findAllByWarteschlange(anyLong());
+        verify(dsbMannschaftComponent).findAllByWarteschlange();
     }
 
     @Test
