@@ -20,8 +20,9 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftVereinId = dsbMannschaftDO.getVereinId();
         final Long dsbMannschaftNummer = dsbMannschaftDO.getNummer();
         final Long dsbMannschaftBenutzerId = dsbMannschaftDO.getBenutzerId();
-        final Long dsbMannschaftVeranstalungId = dsbMannschaftDO.getVeranstaltungId();
+        final Long dsbMannschaftVeranstaltungId = dsbMannschaftDO.getVeranstaltungId();
         final Long dsbMannschaftSortierung = dsbMannschaftDO.getSortierung();
+        final Long dsbMannschaftSportjahr = dsbMannschaftDO.getSportjahr();
         final String dsbMannschaftName = dsbMannschaftDO.getName();
 
         return new DsbMannschaftDTO(dsbMannschaftId,
@@ -29,8 +30,9 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
-                dsbMannschaftVeranstalungId,
-                dsbMannschaftSortierung);
+                dsbMannschaftVeranstaltungId,
+                dsbMannschaftSortierung,
+                dsbMannschaftSportjahr);
 
 
 
@@ -57,8 +59,9 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftVereinId = dto.getVereinId();
         final Long dsbMannschaftNummer = dto.getNummer();
         final Long dsbMannschaftBenutzerId = dto.getBenutzerId();
-        final Long dsbMannschaftVeranstalungId = dto.getVeranstaltungId();
-        final Long dsbMannschaftSoriterung = dto.getSortierung();
+        final Long dsbMannschaftVeranstaltungId = dto.getVeranstaltungId();
+        final Long dsbMannschaftSortierung = dto.getSortierung();
+        final Long dsbMannschaftSportjahr = dto.getSportjahr();
         final String dsbMannschaftName = dto.getName();
 
         return new DsbMannschaftDO(dsbMannschaftId,
@@ -66,8 +69,10 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
-                dsbMannschaftVeranstalungId,
-                dsbMannschaftSoriterung);
+                dsbMannschaftVeranstaltungId,
+                dsbMannschaftSortierung,
+                dsbMannschaftSportjahr
+        );
 
     };
 

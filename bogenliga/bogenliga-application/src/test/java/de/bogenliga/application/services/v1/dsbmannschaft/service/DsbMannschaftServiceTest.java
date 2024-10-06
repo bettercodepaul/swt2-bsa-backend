@@ -54,6 +54,7 @@ public class DsbMannschaftServiceTest {
 
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
+    private static final long SPORTJAHR = 2024L;
 
     private static final long PLATZHALTER_VEREIN_ID = 99;
     private static final long PLATZHALTER_ID = 6969;
@@ -83,28 +84,28 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
+                ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR
         );
     }
     public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
-        return new DsbMannschaftDO(ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG, VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME);
+        return new DsbMannschaftDO(ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR, VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME);
     }
 
     public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
-                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L, SPORTJAHR
         );
     }
 
     public static DsbMannschaftDTO getPlatzhalterDTO() {
         return new DsbMannschaftDTO(
-                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L, SPORTJAHR
         );
     }
 
     public static DsbMannschaftDO getMockMannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L
+                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L, SPORTJAHR
         );
     }
     private DsbMannschaftBE dsbMannschaft;
@@ -156,6 +157,7 @@ public class DsbMannschaftServiceTest {
         dsbMannschaftDTO.setBenutzerId(BENUTZER_ID);
         dsbMannschaftDTO.setVeranstaltungId(VERANSTALTUNG_ID);
         dsbMannschaftDTO.setSortierung(SORTIERUNG);
+        dsbMannschaftDTO.setSportjahr(SPORTJAHR);
 
         return dsbMannschaftDTO;
     }
@@ -233,6 +235,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         //verify invocations
         verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
@@ -260,6 +263,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVeranstaltungId()).isEqualTo(dsbMannschaftDO.getVeranstaltungId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         //verify invocations
         verify(dsbMannschaftComponent).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
@@ -272,10 +276,10 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findAllByWarteschlange()).thenReturn(dsbMannschaftDOList);
+        when(dsbMannschaftComponent.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID)).thenReturn(dsbMannschaftDOList);
 
         // call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllbyWarteschlangeID();
+        final List<DsbMannschaftDTO> actual = underTest.findAllbyWarteschlangeID(CURRENT_VERANSTALTUNG_ID);
 
         // assert result
         assertThat(actual).isNotNull().hasSize(1);
@@ -286,9 +290,10 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
-        verify(dsbMannschaftComponent).findAllByWarteschlange();
+        verify(dsbMannschaftComponent).findAllByWarteschlange(anyLong());
     }
 
     @Test
@@ -313,6 +318,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findAllByName(name);
@@ -339,6 +345,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getNummer());
         assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVerein_name());
         assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findVeranstaltungAndWettkampfByID(1893);
@@ -360,6 +367,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actual.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actual.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actual.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findById(ID);
@@ -394,6 +402,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
 
 
             // verify invocations
@@ -405,6 +414,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getId()).isEqualTo(input.getId());
             assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }
@@ -436,6 +446,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getId()).isEqualTo(platzhalterDTO.getId());
             assertThat(actual.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+            assertThat(actual.getSportjahr()).isEqualTo(platzhalterDTO.getSportjahr());
 
 
             // verify invocations
@@ -447,6 +458,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getId()).isEqualTo(platzhalterDTO.getId());
             assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+            assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(platzhalterDTO.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }
@@ -590,6 +602,7 @@ public class DsbMannschaftServiceTest {
             assertThat(updatedDsbMannschaft.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(updatedDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }

@@ -78,8 +78,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
     @Override
-    public List<DsbMannschaftDO> findAllByWarteschlange() {
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWarteschlange();
+    public List<DsbMannschaftDO> findAllByWarteschlange(Long veranstaltungsID) {
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWarteschlange(veranstaltungsID);
         return this.fillAllNames(dsbMannschaftBeList.stream()
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }

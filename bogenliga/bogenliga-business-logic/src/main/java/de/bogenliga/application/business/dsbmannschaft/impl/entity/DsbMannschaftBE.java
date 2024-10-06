@@ -12,6 +12,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     private Long veranstaltungId;
     private Long benutzerId;
     private Long sortierung;
+    private Long sportjahr;
 
     public DsbMannschaftBE() {/*empty constructor*/}
 
@@ -75,6 +76,15 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
         this.sortierung = sortierung;
     }
 
+    public Long getSportjahr() {
+        return sportjahr;
+    }
+
+
+    public void setSportjahr(final Long sportjahr) {
+        this.sportjahr = sportjahr;
+    }
+
 
 
 
@@ -87,6 +97,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
                 ", mannschaftVeranstaltungId='" + veranstaltungId + '\'' +
                 ", mannschaftBenutzerId='" + benutzerId + '\'' +
                 ", mannschaftSortierung='" + sortierung + '\'' +
+                ", mannschaftSortierung='" + sportjahr + '\'' +
                 '}';
     }
 }

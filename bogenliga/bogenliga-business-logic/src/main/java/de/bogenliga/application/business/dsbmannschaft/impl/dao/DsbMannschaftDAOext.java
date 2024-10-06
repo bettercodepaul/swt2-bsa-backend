@@ -30,6 +30,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
     private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
     private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
     private static final String MANNSCHAFT_BE_SORTIERUNG = "sortierung";
+    private static final String MANNSCHAFT_BE_SPORTJAHR = "sportjahr";
     private static final String MANNSCHAFT_BE_VEREINNAME = "vereinName";
     private static final String MANNSCHAFT_BE_WETTKAMPFORT = "wettkampfOrtsname";
     private static final String MANNSCHAFT_BE_WETTKAMPTAG = "wettkampfTag";
@@ -41,6 +42,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
     private static final String MANNSCHAFT_TABLE_USER_ID = "mannschaft_benutzer_id";
     private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_SORTIERUNG = "mannschaft_sortierung";
+    private static final String MANNSCHAFT_TABLE_SPORTJAHR = "mannschaft_sportjahr";
     private static final String MANNSCHAFT_TABLE_VEREINNAME = "verein_name";
     private static final String MANNSCHAFT_TABLE_WETTKAMPFORT = "wettkampf_ortsname";
     private static final String MANNSCHAFT_TABLE_WETTKAMPTAG = "wettkampf_tag";
@@ -95,6 +97,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_VEREINID, MANNSCHAFT_BE_VEREINID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NUMBER, MANNSCHAFT_BE_NUMBER);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_SORTIERUNG, MANNSCHAFT_BE_SORTIERUNG);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_SPORTJAHR, MANNSCHAFT_BE_SPORTJAHR);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_USER_ID, MANNSCHAFT_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_WETTKAMPFORT, MANNSCHAFT_BE_WETTKAMPFORT);

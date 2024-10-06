@@ -54,7 +54,8 @@ public class DsbMannschaftComponentImplTest {
     private static final String WETTKAMPTAG ="1";
     private static final long MANNSCHAFTNUMMER = 0;
     private static final long DB_SORTIERUNG =0L;
-    
+    private static final long SPORTJAHR =2024L;
+
     private static final String VEREIN_NAME = "Testverein";
     private static final String MA_NAME = VEREIN_NAME+" "+ NUMMER;
     private static final long PLATZHALTER_ID = 99L;
@@ -86,7 +87,8 @@ public class DsbMannschaftComponentImplTest {
         expectedBE.setNummer(NUMMER);
         expectedBE.setBenutzerId(BENUTZER_ID);
         expectedBE.setVeranstaltungId(VERANSTALTUNG_ID);
-        expectedBE.setSortierung(SORTIERUNG);
+         expectedBE.setSortierung(SORTIERUNG);
+         expectedBE.setSportjahr(SPORTJAHR);
 
 
 
@@ -100,6 +102,7 @@ public class DsbMannschaftComponentImplTest {
         dsbMannschaftBE.setBenutzerId(BENUTZER_ID);
         dsbMannschaftBE.setVeranstaltungId(VERANSTALTUNG_ID);
         dsbMannschaftBE.setSortierung(SORTIERUNG);
+        dsbMannschaftBE.setSportjahr(SPORTJAHR);
 
         return dsbMannschaftBE ;
     }
@@ -111,7 +114,8 @@ public class DsbMannschaftComponentImplTest {
                 NUMMER,
                 BENUTZER_ID,
                 VERANSTALTUNG_ID,
-                SORTIERUNG);
+                SORTIERUNG,
+                SPORTJAHR);
     }
     public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
         return new DsbMannschaftDO(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME);
@@ -126,7 +130,8 @@ public class DsbMannschaftComponentImplTest {
                 NUMMER,
                 BENUTZER_ID,
                 VERANSTALTUNG_ID,
-                SORTIERUNG);
+                SORTIERUNG,
+                SPORTJAHR);
     }
 
     public static DsbMannschaftDO getSortierungsDO(){
@@ -137,7 +142,8 @@ public class DsbMannschaftComponentImplTest {
                 0L,
                 0L,
                 0L,
-                SORTIERUNG
+                SORTIERUNG,
+                0L
         );
     }
 
@@ -384,10 +390,10 @@ public class DsbMannschaftComponentImplTest {
         expectedBE.setVeranstaltungId(null);
 
         // configure mocks
-        when(dsbMannschaftDAO.findAllByWarteschlange()).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID)).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange();
+        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID);
 
         // assert result
         assertThat(actual)
@@ -412,7 +418,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // verify invocations
-        verify(dsbMannschaftDAO).findAllByWarteschlange();
+        verify(dsbMannschaftDAO).findAllByWarteschlange(anyLong());
         verify(vereinComponent).findById(anyLong());
     }
     @Test
@@ -556,6 +562,7 @@ public class DsbMannschaftComponentImplTest {
                 NUMMER,
                 VERANSTALTUNG_ID,
                 SORTIERUNG,
+                SPORTJAHR,
                 dateTime,
                 USER,
                 VERSION);
