@@ -345,7 +345,6 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getNummer());
         assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVerein_name());
         assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
-        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findVeranstaltungAndWettkampfByID(1893);
@@ -672,6 +671,9 @@ public class DsbMannschaftServiceTest {
         // Prepare test data
         final DsbMannschaftDO expectedDsbMannschaftDO = getDsbMannschaftDO();
         final long inputVeranstaltungsId = 222L;
+        final VeranstaltungDO expectedVeranstaltungDO = getVeranstaltungDO();
+        expectedVeranstaltungDO.setVeranstaltungID(222L);
+        expectedVeranstaltungDO.setVeranstaltungSportJahr(2024L);
 
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
@@ -679,6 +681,7 @@ public class DsbMannschaftServiceTest {
 
         when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
         when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expectedDsbMannschaftDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltungDO);
         // call test method
         try {
             underTest.assignMannschaftToVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(), principal);
@@ -691,7 +694,8 @@ public class DsbMannschaftServiceTest {
         DsbMannschaftDO capturedDsbMannschaftDO = dsbMannschaftVOArgumentCaptor.getValue();
         assertThat(capturedDsbMannschaftDO).isNotNull();
         assertThat(capturedDsbMannschaftDO.getId()).isEqualTo(expectedDsbMannschaftDO.getId());
-        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(inputVeranstaltungsId);
+        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungID());
+        assertThat(capturedDsbMannschaftDO.getSportjahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
     }
 
     @Test
@@ -731,6 +735,7 @@ public class DsbMannschaftServiceTest {
         final VeranstaltungDO expectedVeranstaltungDO = getVeranstaltungDO();
         final DsbMannschaftDO expectedDsbMannschaftOhneVeranstaltungDO = getDsbMannschaftDO();
         expectedDsbMannschaftOhneVeranstaltungDO.setVeranstaltungId(null);
+
 
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftOhneVeranstaltungDO);
