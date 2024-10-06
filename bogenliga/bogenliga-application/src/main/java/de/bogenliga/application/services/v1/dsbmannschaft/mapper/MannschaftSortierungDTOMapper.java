@@ -25,6 +25,7 @@ public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftNummer = 0L;
         final Long dsbMannschaftBenutzerId = 0L;
         final Long dsbMannschaftVeranstalungId = 0L;
+        final Long dsbMannschaftSportjahr = 0L;
 
         return new DsbMannschaftDO(dsbMannschaftId,
                 dsbMannschaftsName,
@@ -32,7 +33,8 @@ public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
                 dsbMannschaftVeranstalungId,
-                dsbMannschaftSoriterung);
+                dsbMannschaftSoriterung,
+                dsbMannschaftSportjahr);
 
     };
 

@@ -71,10 +71,9 @@ public class DsbMannschaftDAO implements DataAccessObject {
 
      private static final String FIND_ALL_BY_WARTSCHLANGE =
             "SELECT m.* "
-                    + " FROM mannschaft m, veranstaltung v"
+                    + " FROM mannschaft m"
                     + " WHERE m.mannschaft_veranstaltung_id IS NULL"
-                    + " AND m.mannschaft_sportjahr = v.veranstaltung_sportjahr"
-                    + " AND v.veranstaltung_id = ?";
+                    + " AND m.mannschaft_sportjahr is NULL";
     private static final String FIND_ALL_BY_NAME =
             "SELECT a.* "
                     + "FROM mannschaft a, verein b "
@@ -158,8 +157,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
      * @return all dsbmannschaft entries in the waiting queue
      */
 
-    public List<DsbMannschaftBE> findAllByWarteschlange(final Long veranstaltungsID) {
-        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE, veranstaltungsID);}
+    public List<DsbMannschaftBE> findAllByWarteschlange() {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTSCHLANGE);}
 
     /**
      * Return all dsbmannschaft entries with the given name

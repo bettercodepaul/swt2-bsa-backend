@@ -160,14 +160,13 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @GetMapping(value = "byWarteschlangeID//{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byWarteschlangeID/", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMannschaftDTO> findAllbyWarteschlangeID(@PathVariable("veranstaltungsId") final Long id)
+    public List<DsbMannschaftDTO> findAllbyWarteschlangeID()
 
     {
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange(id);
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange();
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
@@ -452,6 +451,7 @@ public class DsbMannschaftService implements ServiceFacade {
         final Long userId = UserProvider.getCurrentUserId(principal);
 
 
+
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
@@ -461,7 +461,10 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
+
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
+        dsbMannschaftDO.setSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
 
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
 
@@ -483,12 +486,15 @@ public class DsbMannschaftService implements ServiceFacade {
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
 
-        // pürfen ob die Veransaltung in der Phase "geplant" ist -
+        // Prüfen, ob die Veranstaltung in der Phase "geplant" ist -
         // nur dann können wir löschen, ohne dass Daten verloren gehen könnten...
+        // das Sportjahr wird immer parallel gelöscht/gesetzt
+
         if (dsbMannschaftDO.getVeranstaltungId() != null){ // hier ist eine Veranstaltung zugewiesen
             VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
             if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase() == "Geplant") {
                 dsbMannschaftDO.setVeranstaltungId(null);
+                dsbMannschaftDO.setSportjahr(null);
                 DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
                 LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", neueMannschaft.getName(), veranstaltungDO.getVeranstaltungID());
             }

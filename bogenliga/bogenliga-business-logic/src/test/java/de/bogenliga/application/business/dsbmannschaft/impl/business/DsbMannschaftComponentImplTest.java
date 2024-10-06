@@ -390,10 +390,10 @@ public class DsbMannschaftComponentImplTest {
         expectedBE.setVeranstaltungId(null);
 
         // configure mocks
-        when(dsbMannschaftDAO.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findAllByWarteschlange()).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange(CURRENT_VERANSTALTUNG_ID);
+        final List<DsbMannschaftDO> actual = underTest.findAllByWarteschlange();
 
         // assert result
         assertThat(actual)
@@ -418,7 +418,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // verify invocations
-        verify(dsbMannschaftDAO).findAllByWarteschlange(anyLong());
+        verify(dsbMannschaftDAO).findAllByWarteschlange();
         verify(vereinComponent).findById(anyLong());
     }
     @Test
@@ -606,7 +606,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void create_withoutInput_shouldThrowException() {
         // prepare test data
-        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
+        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1L);
 
         // configure mocks
 
@@ -627,21 +627,21 @@ public class DsbMannschaftComponentImplTest {
                 .withNoCause();
         tmpMannschaft.setVereinId(VEREIN_ID);
 
-        tmpMannschaft.setNummer(-1);
+        tmpMannschaft.setNummer(-1L);
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
         tmpMannschaft.setNummer(NUMMER);
 
-        tmpMannschaft.setBenutzerId(-1);
+        tmpMannschaft.setBenutzerId(-1L);
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
         tmpMannschaft.setBenutzerId(BENUTZER_ID);
 
-        tmpMannschaft.setVereinId(-1);
+        tmpMannschaft.setVereinId(-1L);
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
                 .withMessageContaining("must not be negative")
@@ -718,7 +718,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void update_withoutInput_shouldThrowException() {
         // prepare test data
-        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
+        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1L);
 
         // configure mocks
 
