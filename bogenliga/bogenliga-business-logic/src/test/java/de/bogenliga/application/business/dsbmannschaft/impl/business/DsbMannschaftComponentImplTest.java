@@ -52,7 +52,6 @@ public class DsbMannschaftComponentImplTest {
     private static final String VEREINNAME ="SSV REUTLINGEN";
     private static final String WETTKAMPFORT ="SSV REUTLINGEN";
     private static final String WETTKAMPTAG ="1";
-    private static final long MANNSCHAFTNUMMER = 0;
     private static final long DB_SORTIERUNG =0L;
     private static final long SPORTJAHR =2024L;
 

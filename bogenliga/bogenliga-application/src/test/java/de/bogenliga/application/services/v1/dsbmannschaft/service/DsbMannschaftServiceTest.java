@@ -46,7 +46,6 @@ public class DsbMannschaftServiceTest {
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 4444;
-    private static final long MANNSCHAFTS_NUMMER = 165;
     private static final String WETTKAMPFORT = "Reutlingen";
     private static final String VERANSTALTUNGNAME = "TEST";
     private static final String VEREINNAME = "SSV Reutlingen";
@@ -108,7 +107,6 @@ public class DsbMannschaftServiceTest {
                 6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L, SPORTJAHR
         );
     }
-    private DsbMannschaftBE dsbMannschaft;
     private DsbMannschaftBEext dsbMannschaftext;
     @Test
     public void testGetAndSetVeranstaltungName() {
@@ -688,7 +686,7 @@ public class DsbMannschaftServiceTest {
 
             // verify invocations
             verify(dsbMannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
-        } catch (NoPermissionException e) {}
+        } catch (NoPermissionException e) {;}
 
         // assert result
         DsbMannschaftDO capturedDsbMannschaftDO = dsbMannschaftVOArgumentCaptor.getValue();

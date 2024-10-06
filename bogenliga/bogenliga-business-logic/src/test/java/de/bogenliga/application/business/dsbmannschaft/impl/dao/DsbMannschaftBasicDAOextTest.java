@@ -15,20 +15,11 @@ import java.util.List;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBEext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DsbMannschaftBasicDAOextTest {
 
-    private static final Long USER = 0L;
-    private static final Long VERSION = 0L;
-
-    private static final long id = 2222L;
-    private static final long vereinId=101010;
-    private static final long nummer=111;
-    private static final long benutzerId=12;
-    private static final long veranstaltungId=1;
     private static final long wettkampfId=31;
 
     @Rule
