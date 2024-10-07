@@ -1,6 +1,9 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
+import java.sql.Date;
 import java.sql.SQLException;
+
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,28 +90,6 @@ public class AltsystemSchuetzeMapperTest {
         assertThat(identifier).isEqualTo(expectedIdentifier);
     }
 
-    @Test
-    public void testGetDsbMitgliedDO() throws SQLException {
-        // prepare test data
-        // altsystem DO
-        AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
-        altsystemSchuetzeDO.setId(1L);
-        altsystemSchuetzeDO.setName("Bammert, Marco");
-
-        // configure mocks
-        AltsystemUebersetzungDO expected = new AltsystemUebersetzungDO();
-        expected.setAltsystemId(1L);
-        expected.setWert("MarcoBammert1");
-
-        String identifier = "MarcoBammert1";
-
-        // Mock-Konfiguration
-        when(altsystemUebersetzung.findByWert(any(), any())).thenReturn(expected);
-
-        altsystemSchuetzeMapper.getSchuetzeByIdentifier(identifier);
-
-        verify(altsystemUebersetzung).findByWert(any(), any());
-    }
 
 
     @Test
@@ -189,7 +170,7 @@ public class AltsystemSchuetzeMapperTest {
         expected.setVorname("Marco");
         expected.setNachname("Bammert");
         expected.setId(1L);
-        expected.setGeburtsdatum(null);
+        expected.setGeburtsdatum(new Date(111,11,11));
         expected.setNationalitaet("D");
         expected.setUserId(null);
         expected.setKampfrichter(false);
@@ -204,5 +185,42 @@ public class AltsystemSchuetzeMapperTest {
         assertEquals(expected.getNationalitaet(), mitglied.getNationalitaet());
         assertEquals(expected.getUserId(), mitglied.getUserId());
         assertEquals(expected.getKampfrichter(), mitglied.getKampfrichter());
+    }
+
+    @Test
+    public void testBuildMannschaftsMitglied() {
+
+        //actual
+        Long altsystemMannschaftId = 123L;
+        Long rueckennummer = 456L;
+
+        DsbMitgliedDO mitglied = new DsbMitgliedDO();
+        mitglied.setId(789L);
+        mitglied.setVorname("Marco");
+        mitglied.setNachname("Bammert");
+        mitglied.setVereinsId(101112L);
+
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setAltsystemId(123L);
+        altsystemUebersetzungDO.setBogenligaId(321L);
+
+        //expected
+        MannschaftsmitgliedDO expected = new MannschaftsmitgliedDO(
+                null, 321L, 789L, 1,
+                "Marco", "Bammert", 456L
+        );
+
+        when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
+
+        MannschaftsmitgliedDO result = altsystemSchuetzeMapper.buildMannschaftsMitglied(altsystemMannschaftId, rueckennummer, mitglied);
+
+
+        assertEquals(expected.getId(), result.getId());
+        assertEquals(expected.getMannschaftId(), result.getMannschaftId());
+        assertEquals(expected.getDsbMitgliedId(), result.getDsbMitgliedId());
+        assertEquals(expected.getDsbMitgliedNachname(), result.getDsbMitgliedNachname());
+        assertEquals(expected.getDsbMitgliedVorname(), result.getDsbMitgliedVorname());
+        assertEquals(expected.getRueckennummer(), result.getRueckennummer());
+
     }
 }

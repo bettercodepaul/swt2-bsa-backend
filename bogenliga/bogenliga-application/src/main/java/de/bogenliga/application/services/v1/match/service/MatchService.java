@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
@@ -94,6 +93,7 @@ public class MatchService implements ServiceFacade {
     private static final String SERVICE_FIND_BY_ID = "findById";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
     private static final String SERVICE_FIND_BY_MANNSCHAFT_ID = "findByMannschaftId";
+    private static final String SERVICE_FIND_BY_VERANSTALTUNG_ID = "findByVeranstaltungId";
     private static final String SERVICE_SAVE_MATCHES = "saveMatches";
     private static final String SERVICE_CREATE = "create";
     private static final String SERVICE_NEXT = "next";
@@ -156,7 +156,7 @@ public class MatchService implements ServiceFacade {
     public List<MatchDTO> findAll(){
         final List<MatchDO> matchDOList = matchComponent.findAll();
 
-        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
     }
 
     /**
@@ -196,6 +196,8 @@ public class MatchService implements ServiceFacade {
             for( LigamatchBE einmatch: wettkampfMatches) {
                 MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch));
                 matchDTO.setMannschaftName(einmatch.getMannschaftName());
+                matchDTO.setMannschaftNameGegner(einmatch.getMannschaftNameGegner());
+
                 matchDTOs.add(matchDTO);
             }
 
@@ -288,10 +290,23 @@ public class MatchService implements ServiceFacade {
         LOG.debug("Receive 'findAllByMannschaftId' request with ID '{}'", id);
 
         List<MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
-        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
     }
 
+    @GetMapping(value = "byVeranstaltungId/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<MatchDTO> findAllByVeranstaltungId(@PathVariable("id") final Long id) {
+        Preconditions.checkNotNull(id,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_VERANSTALTUNG_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(id >= 0,
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_VERANSTALTUNG_ID, CHECKED_PARAM_MATCH_ID));
 
+        LOG.debug("Receive 'findAllByVeranstaltungId' request with ID '{}'", id);
+
+        List<MatchDO> matchDOList = matchComponent.findByVeranstaltungId(id);
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
+    }
 
     /**
      * Save the two edited matches from the findMatchesByIds service.
@@ -344,7 +359,7 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
         Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
-        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
+        Preconditions.checkArgument(matchDTO1.getMatchNr().equals(matchDTO2.getMatchNr()),
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
 
         this.log(matchDTO1, SERVICE_SAVE_MATCHES);
@@ -503,7 +518,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -553,7 +568,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -597,7 +612,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -674,7 +689,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -810,8 +825,8 @@ public class MatchService implements ServiceFacade {
             List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
 
 
-            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
-            List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).toList();
+            List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).toList();
 
 
             for (int i = 0; i < passeDTOs.size(); i++){

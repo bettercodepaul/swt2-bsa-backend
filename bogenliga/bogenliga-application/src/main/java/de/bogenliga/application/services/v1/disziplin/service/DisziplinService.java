@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.disziplin.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class DisziplinService implements ServiceFacade {
     public List<DisziplinDTO> findAll() {
         final List<DisziplinDO> disziplinDOList = disziplinComponent.findAll();
         LOG.debug("Received Disziplin request");
-        return disziplinDOList.stream().map(DisziplinDTOMapper.toDTO).collect(Collectors.toList());
+        return disziplinDOList.stream().map(DisziplinDTOMapper.toDTO).toList();
     }
 
 

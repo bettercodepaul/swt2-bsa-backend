@@ -85,7 +85,7 @@ public class AltsystemLigaMapperTest {
         // prepare test data
         // altsystem DO
         AltsystemLigaDO altsystemLigaDO = new AltsystemLigaDO();
-        altsystemLigaDO.setId(1);
+        altsystemLigaDO.setId(1L);
         altsystemLigaDO.setIdNextLiga(2);
         altsystemLigaDO.setName("TestLiga");
         // expectedResult
@@ -110,7 +110,7 @@ public class AltsystemLigaMapperTest {
         // prepare test data
         // altsystem DO
         AltsystemLigaDO altsystemLigaDO = new AltsystemLigaDO();
-        altsystemLigaDO.setId(1);
+        altsystemLigaDO.setId(1L);
         altsystemLigaDO.setIdNextLiga(2);
         altsystemLigaDO.setName("TestLiga Compound");
         // expectedResult

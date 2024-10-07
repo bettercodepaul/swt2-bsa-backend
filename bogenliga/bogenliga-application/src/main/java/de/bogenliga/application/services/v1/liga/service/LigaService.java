@@ -2,7 +2,7 @@ package de.bogenliga.application.services.v1.liga.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +37,10 @@ public class LigaService implements ServiceFacade {
     private final LigaComponent ligaComponent;
 
 
+
+
+
+
     /**
      * Constructor with dependency injection
      *
@@ -58,16 +62,33 @@ public class LigaService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaDTO> findAll() {
         final List<LigaDO> ligaDOList = ligaComponent.findAll();
-        return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
+        return ligaDOList.stream().map(LigaDTOMapper.toDTO).toList();
     }
 
     @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
         final List<LigaDO> ligaDOList = ligaComponent.findBySearch(searchTerm);
-        return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
+        return ligaDOList.stream().map(LigaDTOMapper.toDTO).toList();
     }
 
+    /**
+     * Returns the Lowest Liga
+     *
+     * @Return the lowestLiga with specific id if id not in lowest Liga retun empty liga
+     */
+    @GetMapping(
+            value ="/lowest/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO findByLowest(@PathVariable("id") final long id){
+
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
+
+        final LigaDO lowestDo = ligaComponent.findByLowest(id);
+        return LigaDTOMapper.toDTO.apply(lowestDo);
+    }
 
     /**
      * Returns a liga entry of the given id
@@ -139,7 +160,7 @@ public class LigaService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_MY_LIGA})
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
 
         checkPreconditions(ligaDTO);
@@ -165,7 +186,7 @@ public class LigaService implements ServiceFacade {
                           final Principal principal) {
 
 
-        System.out.println("es kommt etwas an");
+
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 

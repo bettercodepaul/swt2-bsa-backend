@@ -12,15 +12,15 @@ import de.bogenliga.application.common.component.dao.BasicDAO;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public abstract class AltsystemDO {
-    long id;
+    Long id;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 
-    public long getId(){
+    public Long getId(){
         return this.id;
     }
 

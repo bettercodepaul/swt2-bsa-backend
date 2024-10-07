@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.mannschaftsmitglied.impl.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
@@ -58,8 +57,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
         final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAll();
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
     @Override
@@ -67,8 +65,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
         final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(
                 mannschaftsId);
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
     @Override
@@ -76,8 +73,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
         final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeam(
                 mannschaftsId);
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
 
@@ -86,8 +82,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
         final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(
                  mannschaftsId, wettkampfId);
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
 
@@ -96,8 +91,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
         final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(
                 mannschaftsId);
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
     @Override
@@ -149,8 +143,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
                     String.format("No result found for mitgliedId '%s", mitgliedId));
         }
 
-        return result.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
+        return result.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).toList();
     }
 
     @Override

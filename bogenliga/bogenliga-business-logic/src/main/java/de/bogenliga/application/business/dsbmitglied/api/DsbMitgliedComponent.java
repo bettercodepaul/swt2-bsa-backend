@@ -19,7 +19,6 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      */
     List<DsbMitgliedDO> findAll();
 
-
     /**
      * Retrun all dsbmitglied entries with the given teamId.
      *

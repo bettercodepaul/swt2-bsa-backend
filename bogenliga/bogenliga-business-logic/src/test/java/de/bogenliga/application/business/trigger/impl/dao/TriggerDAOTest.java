@@ -16,11 +16,16 @@ import de.bogenliga.application.business.trigger.impl.entity.RawTriggerBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.business.trigger.impl.mapper.TriggerMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getErrorTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getInProgressTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getNewTriggerBE;
+import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getSuccessTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests the TriggerDAO class
@@ -138,5 +143,193 @@ public class TriggerDAOTest {
 
 		assertThat(actual.get(0)).isNotNull();
 	}
+	@Test
+	public void testFindAllErrors() {
+		// prepare test data
+		final TriggerBE expectedBE = getErrorTriggerBE();
 
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findErrors("0","500", "1 MONTH");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllNews() {
+		// prepare test data
+		final TriggerBE expectedBE = getNewTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findNews("0","500", "1 MONTH");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllSuccess() {
+		// prepare test data
+		final TriggerBE expectedBE = getSuccessTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findSuccessed("0","500", "1 MONTH");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllInProgress() {
+		// prepare test data
+		final TriggerBE expectedBE = getInProgressTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findInProgress("0","500", "1 MONTH");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllWithPages() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findAllWithPages("0","500", "1 MONTH");
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testDeleteEntriesSuccess() {
+		// Call test method
+		triggerDAO.deleteEntries("Erfolgreich", "letzter Monat");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 4 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesNew() {
+		// Call test method
+		triggerDAO.deleteEntries("Neu", "letzter Monat");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 1 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesError() {
+		// Call test method
+		triggerDAO.deleteEntries("Fehlgeschlagen", "letzter Monat");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 3 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesInProgress() {
+		// Call test method
+		triggerDAO.deleteEntries("Laufend", "letzter Monat");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE status = 2 AND (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testDeleteEntriesAll() {
+		// Call test method
+		triggerDAO.deleteEntries("Alle", "letzter Monat");
+
+		// Verify that basicDAO.executeQuery was called with the correct SQL
+		String expectedSQL = "START TRANSACTION; DELETE FROM altsystem_aenderung WHERE (altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH'); COMMIT;";
+		verify(basicDAO).executeQuery(expectedSQL);
+	}
+	@Test
+	public void testChangeTimestampToDateInterval() {
+		String expectedValueForAll = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE + INTERVAL '1 day' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE + INTERVAL '1 day')";
+		String actualValueForAll = triggerDAO.changeTimestampToInterval("alle");
+		assertEquals(expectedValueForAll, actualValueForAll);
+
+		String expectedValueForOneMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '1 MONTH')";
+		String actualValueForOneMonth = triggerDAO.changeTimestampToInterval("letzter Monat");
+		assertEquals(expectedValueForOneMonth, actualValueForOneMonth);
+
+		String expectedValueForLastThreeMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '3 MONTH')";
+		String actualValueForLastThreeMonth = triggerDAO.changeTimestampToInterval("letzten drei Monate");
+		assertEquals(expectedValueForLastThreeMonth, actualValueForLastThreeMonth);
+
+		String expectedValueForLastSixMonth = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '6 MONTH')";
+		String actualValueForLastSixMonth = triggerDAO.changeTimestampToInterval("letzten sechs Monate");
+		assertEquals(expectedValueForLastSixMonth, actualValueForLastSixMonth);
+
+		String expectedValueForLastYear = "(altsystem_aenderung.created_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc >= CURRENT_DATE - INTERVAL '12 MONTH')";
+		String actualValueForLastYear = triggerDAO.changeTimestampToInterval("im letzten Jahr");
+		assertEquals(expectedValueForLastYear, actualValueForLastYear);
+
+		String expectedValueForOlderThanOneMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '1 MONTH')";
+		String actualValueForOlderThanOneMonth = triggerDAO.changeTimestampToInterval("älter als ein Monat");
+		assertEquals(expectedValueForOlderThanOneMonth, actualValueForOlderThanOneMonth);
+
+		String expectedValueForOlderThanThreeMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '3 MONTH')";
+		String actualValueForOlderThanThreeMonth = triggerDAO.changeTimestampToInterval("älter als drei Monate");
+		assertEquals(expectedValueForOlderThanThreeMonth, actualValueForOlderThanThreeMonth);
+
+		String expectedValueForOlderThanSixMonth = "(altsystem_aenderung.created_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH' \n" +
+				"       OR altsystem_aenderung.last_modified_at_utc <= CURRENT_DATE - INTERVAL '6 MONTH')";
+		String actualValueForOlderThanSixMonth = triggerDAO.changeTimestampToInterval("älter als sechs Monate");
+		assertEquals(expectedValueForOlderThanSixMonth, actualValueForOlderThanSixMonth);
+	}
 }
+
+

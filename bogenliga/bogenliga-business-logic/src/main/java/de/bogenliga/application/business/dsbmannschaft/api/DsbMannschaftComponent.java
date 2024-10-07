@@ -62,7 +62,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      */
 
     DsbMannschaftDO findById(long id);
-
+    List<DsbMannschaftDO> findVeranstaltungAndWettkampfByID(long id);
 
     /**
      * Create a new dsbmannschaft in the database.
@@ -71,7 +71,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long currentDsbMannschaftId);
+    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long userId);
 
 
     /**
@@ -90,7 +90,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param dsbMannschaftDO dsbmannschaft to delete
      */
 
-    void delete(DsbMannschaftDO dsbMannschaftDO, long currentDsbMitgliedId);
+    void delete(DsbMannschaftDO dsbMannschaftDO, Long currentDsbMitgliedId);
 
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
@@ -100,12 +100,32 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param userId
      * @return
      */
+
     List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 
     /**
+     * Return all dsbmannschaft entries that are currently in the waiting queue.
+     *
+     * @return all dsbmannschaft entries in the waiting queue.
+     * null, if no dsbmannschaft is found.
+     */
+
+    List<DsbMannschaftDO> findAllByWarteschlange();
+
+    /**
+     * Return all dsbmannschaft entries with the given name.
+     *
+     * @return all dsbmannschaft entries with the given name
+     * null, if no dsbmannschaft is found.
+     */
+
+    List<DsbMannschaftDO> findAllByName(String name);
+    /**
      * Copys the Mitglieder of an old Mannschaft into a new Mannschaft
+     *
      * @param oldMannschaftsID
      * @param newMannschaftsID
+     * @param userId
      */
-    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID);
+    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId);
 }

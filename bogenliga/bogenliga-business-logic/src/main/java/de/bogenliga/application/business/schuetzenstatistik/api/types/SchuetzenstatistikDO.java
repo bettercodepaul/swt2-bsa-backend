@@ -28,10 +28,11 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
     private String dsbMitgliedName;
     private int rueckenNummer;
     private float pfeilpunkteSchnitt;
-
+    private String[] schuetzeSaetze;
 
     public SchuetzenstatistikDO() {
         // no parameter-constructor
+        schuetzeSaetze = new String[5];
     }
 
     /**
@@ -51,7 +52,6 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
      * @param dsbMitgliedName;
      * @param rueckenNummer;
      * @param pfeilpunkteSchnitt;
-
      */
     public SchuetzenstatistikDO(
             Long veranstaltungId,
@@ -67,7 +67,8 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
             Long dsbMitgliedId,
             String dsbMitgliedName,
             int rueckenNummer,
-            float pfeilpunkteSchnitt
+            float pfeilpunkteSchnitt,
+            String[] schuetzeSaetze
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -83,6 +84,7 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.dsbMitgliedName = dsbMitgliedName;
         this.rueckenNummer = rueckenNummer;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
+        this.schuetzeSaetze = schuetzeSaetze;
     }
 
 
@@ -152,6 +154,25 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
+    public String getschuetzeSatz1() { return schuetzeSaetze[0]; }
+
+    public String getschuetzeSatz2() {
+        return schuetzeSaetze[1];
+    }
+
+    public String getschuetzeSatz3() {
+        return schuetzeSaetze[2];
+    }
+
+    public String getschuetzeSatz4() {
+        return schuetzeSaetze[3];
+    }
+
+    public String getschuetzeSatz5() {
+        return schuetzeSaetze[4];
+    }
+    public String[] getSchuetzeSaetze() { return schuetzeSaetze; }
+    public void setSchuetzeSaetze(String[] schuetzeSaetze) { this.schuetzeSaetze = schuetzeSaetze;}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -170,14 +191,16 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
                 rueckenNummer == that.rueckenNummer &&
-                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
+                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt &&
+                Objects.equals(schuetzeSaetze, that.schuetzeSaetze);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
                 mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, matchNr,
-                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt);
+                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt,
+                schuetzeSaetze);
     }
 
 }

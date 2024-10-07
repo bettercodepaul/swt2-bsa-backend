@@ -234,8 +234,79 @@ public class LigaComponentImplTest {
         verify(disziplinComponentImpl).findById(expectedDisziplinDO.getDisziplinId());
     }
 
-        @Test
-        public void findBySearch_whenAttributesAreNull() {
+    @Test
+    public void findByLowest(){
+        // prepare test data
+        final LigaBE expectedLigaBE = getLigaBE();
+        final RegionenDO expectedRegionBE = getRegionenDO();
+        final UserDO expectedUserDO = getUserDO();
+        final DisziplinDO expectedDisziplinDO = getDisziplinDO();
+
+        // configure mocks
+        when(ligaDao.findByLowest(anyLong())).thenReturn(expectedLigaBE);
+        when(ligaDao.findById(anyLong())).thenReturn(expectedLigaBE);
+        when(regionenComponentImpl.findById(anyLong())).thenReturn(expectedRegionBE);
+        when(userComponentImpl.findById(anyLong())).thenReturn(expectedUserDO);
+        when(disziplinComponentImpl.findById(anyLong())).thenReturn(expectedDisziplinDO);
+
+        // call test method
+        final LigaDO actual = underTest.findByLowest(LIGAID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
+        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+        assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
+        assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
+        assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
+
+
+        // verify invocation
+        verify(regionenComponentImpl).findById(expectedLigaBE.getLigaRegionId());
+        verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
+        verify(disziplinComponentImpl).findById(expectedLigaBE.getLigaDisziplinId());
+
+    }
+
+    @Test
+    public void findByLowest_ReturnNull(){
+
+        final LigaBE expectedLigaBE = new LigaBE();
+        // call test method
+        final LigaDO actual = underTest.findByLowest(LIGAID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(null);
+        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+        assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(null);
+        assertThat(actual.getDisziplinId()).isEqualTo(null);
+        assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
+
+        // verify invocations
+        verify(ligaDao).findByLowest(LIGAID);
+
+
+    }
+
+    @Test
+    public void findBySearch_whenAttributesAreNull() {
             // prepare test data
             final LigaBE expectedLigaBE = getLigaBE();
             final List<LigaBE> expectedBEList = Collections.singletonList(expectedLigaBE);

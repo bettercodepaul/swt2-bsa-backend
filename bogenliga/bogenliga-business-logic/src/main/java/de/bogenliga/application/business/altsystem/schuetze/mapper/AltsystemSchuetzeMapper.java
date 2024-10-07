@@ -1,6 +1,9 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
+import java.sql.Date;
 import java.sql.SQLException;
+
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
@@ -35,7 +38,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         String[] parsedName = parseName(altsystemSchuetzeDO);
 
         // Vereins-ID im neuen System abrufe
-        Long vereinID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId();
+        Long vereinID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,  Long.valueOf(altsystemSchuetzeDO.getMannschaft_id())).getBogenligaId();
 
         // Vor- und Nachnamen sowie Vereins-ID des Schützen setzen
         dsbMitgliedDO.setVorname(parsedName[1]);
@@ -54,10 +57,11 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
      */
     public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied) {
         // Standardwerte die nicht aus dem altSystem übernommen werden können
-        dsbMitgliedDO.setGeburtsdatum(null);
+        dsbMitgliedDO.setGeburtsdatum(new Date(111,11,11));
         dsbMitgliedDO.setNationalitaet("D");
         dsbMitgliedDO.setUserId(null); // dsb_mitglied_benutzer_id
         dsbMitgliedDO.setKampfrichter(false);
+        dsbMitgliedDO.setMitgliedsnummer(dsbMitgliedDO.getNachname()+dsbMitgliedDO.getVorname()+dsbMitgliedDO.getVereinsId().toString());
 
         return dsbMitgliedDO;
     }
@@ -104,7 +108,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
 
         // Vereins-ID im neuen System finden
         Long vereinId = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
-                altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId();
+                Long.valueOf(altsystemSchuetzeDO.getMannschaft_id())).getBogenligaId();
 
         // Identifier "firstName"+"lastName"+"vereinId" aufbauen
         String dsbMitgliedIdentifier = parsedName[1]+parsedName[0]+vereinId;
@@ -112,19 +116,19 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         return dsbMitgliedIdentifier;
     }
 
-    /**
-     * Diese Funktion sucht anhand des DSB-Mitglieder-Identifiers nach einem entsprechenden Datensatz im Altsystem.
-     *
-     * @param dsbMitgliedIdentifier Der Identifier des DSB-Mitglieds, nach dem gesucht werden soll.
-     * @return Ein Objekt vom Typ AltsystemUebersetzungDO, das den Datensatz im Altsystem repräsentiert, der dem gesuchten DSB-Mitglied entspricht.
-     * @throws SQLException Falls ein Fehler bei der Abfrage des Datensatzes aus der Datenbank auftritt.
-     */
-    public AltsystemUebersetzungDO getSchuetzeByIdentifier(String dsbMitgliedIdentifier) throws SQLException {
-        // Suchen des entsprechenden Datensatzes im Altsystem anhand des Identifiers
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
 
-        return altsystemUebersetzungDO;
+    public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
+        //Mannschaft ID aus Altsystem übersetzen
+        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
+        //DO zusammenstellen
+        return new MannschaftsmitgliedDO(
+                null,   //tech ID
+                uebersetzungMannschaftDO.getBogenligaId(),  // BSAPP Mannschaft ID
+                dsbMitgliedDO.getId(),
+                1,  // dsb Mitlgied eingesetzt
+                dsbMitgliedDO.getVorname(),
+                dsbMitgliedDO.getNachname(),
+                rueckenNummer);
     }
-
 
 }

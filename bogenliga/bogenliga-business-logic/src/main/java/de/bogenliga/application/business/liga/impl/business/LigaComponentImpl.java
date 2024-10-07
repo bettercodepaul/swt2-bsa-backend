@@ -90,6 +90,17 @@ public class LigaComponentImpl implements LigaComponent {
         return completeLiga(result);
     }
 
+    @Override
+    public LigaDO findByLowest(long id){
+
+        Preconditions.checkArgument(id>=0,PRECONDITION_MSG_LIGA_ID);
+        final LigaBE lowestLeague = ligaDAO.findByLowest(id);
+        LigaDO emptyLiga = new LigaDO();
+        if(lowestLeague == null){
+            return emptyLiga;
+        }
+        return completeLiga(lowestLeague);
+    }
 
     @Override
     public LigaDO checkExist(long id) {

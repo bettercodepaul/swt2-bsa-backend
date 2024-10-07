@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.kampfrichter.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.bogenliga.application.common.service.UserProvider;
 import org.slf4j.Logger;
@@ -60,7 +59,7 @@ public class KampfrichterService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<KampfrichterDTO> findAll() {
         final List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findAll();
-        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTO).collect(Collectors.toList());
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTO).toList();
     }
 
 
@@ -92,7 +91,7 @@ public class KampfrichterService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE);
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
 
-        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).toList();
     }
 
     //Returns a List with KampfrichterExtended who are assinged to the Wettkampftag
@@ -102,7 +101,7 @@ public class KampfrichterService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE);
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidInWettkampftag(wettkampfId);
 
-        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).toList();
     }
 
     @DeleteMapping(value = "{userID}/{wettkampfID}")

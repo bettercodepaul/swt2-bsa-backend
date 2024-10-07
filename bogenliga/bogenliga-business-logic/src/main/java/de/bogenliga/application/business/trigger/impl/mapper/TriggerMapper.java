@@ -7,6 +7,8 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
+import de.bogenliga.application.business.trigger.impl.entity.TriggerCountBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -29,13 +31,15 @@ public class TriggerMapper implements ValueObjectMapper {
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(triggerBE.getCreatedAtUtc());
         OffsetDateTime runAtUtc = DateProvider.convertTimestamp(triggerBE.getRunAtUtc());
-
-        TriggerDO vo = new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
-
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(triggerBE.getLastModifiedAtUtc());
-        vo.setCreatedAtUtc(createdAtUtc);
+
+
+        TriggerDO vo = new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc,
+                lastModifiedAtUtc);
+
+        vo.setCreatedAt(createdAtUtc);
         vo.setCreatedByUserId(triggerBE.getCreatedByUserId());
-        vo.setLastModifiedAtUtc(lastModifiedAtUtc);
+        vo.setUpdatedAtUtc(lastModifiedAtUtc);
         vo.setLastModifiedByUserId(triggerBE.getLastModifiedByUserId());
         vo.setVersion(triggerBE.getVersion());
 
@@ -43,7 +47,7 @@ public class TriggerMapper implements ValueObjectMapper {
     };
     public static final Function<TriggerDO, TriggerBE> toTriggerBE = triggerDO -> {
         Timestamp runAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getRunAtUtc());
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getCreatedAtUtc());
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getCreatedAt());
 
         TriggerBE triggerBE = new TriggerBE();
         triggerBE.setId(triggerDO.getId());
@@ -58,5 +62,19 @@ public class TriggerMapper implements ValueObjectMapper {
 
 
         return triggerBE;
+    };
+    public static final Function<TriggerCountDO, TriggerCountBE> toTriggerCountBE = triggerCountDO -> {
+        TriggerCountBE triggerCountBE = new TriggerCountBE();
+        triggerCountBE.setCount(triggerCountDO.getCount());
+        return triggerCountBE;
+
+    };
+
+    public static final Function<TriggerCountBE, TriggerCountDO> toTriggerCountDO = triggerCountBE -> {
+        final Long count = triggerCountBE.getCount();
+
+        TriggerCountDO vo = new TriggerCountDO(count);
+
+        return vo;
     };
 }

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
@@ -114,13 +116,11 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     //query do a lookup inligatabelle if Daten available and order by last modification from match and veranstaltungs-Id
     private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
-            "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id "
+            "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id, veranstaltung_sportjahr "
                     + "FROM liga, veranstaltung,ligatabelle, match "
                     + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id AND veranstaltung_phase IN (2, 3)) "
                     + "GROUP BY veranstaltung_id "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
-
-
     private final BasicDAO basicDao;
 
     /**
@@ -193,6 +193,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+
 
     /**
      * Return Veranstaltung entry with specific liga id and sport year

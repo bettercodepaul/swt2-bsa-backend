@@ -4,8 +4,10 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
+import de.bogenliga.application.services.v1.trigger.model.TriggerCountDTO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 
 /**
@@ -25,12 +27,13 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final TriggerChangeOperation operation = triggerDO.getOperation();
         final TriggerChangeStatus status = triggerDO.getStatus();
         final String nachricht = triggerDO.getNachricht();
-        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAtUtc();
+        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAt();
         final OffsetDateTime runAtUtc = triggerDO.getRunAtUtc();
+        final OffsetDateTime lastModifiedAtUtc= triggerDO.getUpdatedAtUtc();
 
 
 
-        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc, lastModifiedAtUtc);
     };
 
     /**
@@ -46,8 +49,20 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final String nachricht = triggerDTO.getNachricht();
         final OffsetDateTime createdAtUtc = triggerDTO.getCreatedAtUtc();
         final OffsetDateTime runAtUtc = triggerDTO.getRunAtUtc();
+        final OffsetDateTime lastModifiedAtUtc = triggerDTO.getlastModifiedAtUtc();
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc,runAtUtc, lastModifiedAtUtc);
+    };
+    public static final Function<TriggerCountDO, TriggerCountDTO> toCountDTO = triggerCountDO -> {
+        final Long count = triggerCountDO.getCount();
+
+        return new TriggerCountDTO(count);
+    };
+
+    public static final Function<TriggerCountDTO, TriggerCountDO> toCountDO = triggerCountDTO -> {
+        final Long count = triggerCountDTO.getCount();
+
+        return new TriggerCountDO(count);
     };
 
     private TriggerDTOMapper(){

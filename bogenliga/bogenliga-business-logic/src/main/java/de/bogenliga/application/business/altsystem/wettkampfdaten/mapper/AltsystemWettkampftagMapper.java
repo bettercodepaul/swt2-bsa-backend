@@ -3,6 +3,7 @@ package de.bogenliga.application.business.altsystem.wettkampfdaten.mapper;
 import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
@@ -48,7 +49,7 @@ public class AltsystemWettkampftagMapper {
      */
     public List<WettkampfDO> getOrCreateWettkampftage(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         List<WettkampfDO> wettkampfTage;
-        long mannschaftID = altsystemWettkampfdatenDO.getMannschaftId();
+        long mannschaftID = altsystemWettkampfdatenDO.getMannschaft();
         // Aus Übersetzungstabelle Veranstaltung für Mannschaft auslesen
         long veranstaltungID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenligaId();
 
@@ -83,6 +84,7 @@ public class AltsystemWettkampftagMapper {
             // Werte in DO setzen
             wettkampfDO.setWettkampfTag(i);
             wettkampfDO.setWettkampfDatum(wettkampfTermine[(int) i - 1]);
+            wettkampfDO.setWettkampfBeginn("9:00");
             wettkampfDO.setWettkampfVeranstaltungsId(veranstaltungId);
             wettkampfDO.setWettkampfDisziplinId(ligaDO.getDisziplinId());
             wettkampfDO.setWettkampfTypId(veranstaltungDO.getVeranstaltungWettkampftypID());

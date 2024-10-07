@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -39,7 +40,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_BE_NATIONALITY = "dsbMitgliedNationalitaet";
     private static final String DSBMITGLIED_BE_MEMBERNUMBER = "dsbMitgliedMitgliedsnummer";
     private static final String DSBMITGLIED_BE_CLUB_ID = "dsbMitgliedVereinsId";
+    private static final String DSBMITGLIED_BE_CLUB_NAME = "dsbMitgliedVereinName";
     private static final String DSBMITGLIED_BE_USER_ID = "dsbMitgliedUserId";
+    private static final String DSBMITGLIED_BE_DATE_OF_JOINING = "dsbMitgliedBeitrittsdatum";
 
     private static final String DSBMITGLIED_TABLE_ID = "dsb_mitglied_id";
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
@@ -47,20 +50,26 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_BIRTHDATE = "dsb_mitglied_geburtsdatum";
     private static final String DSBMITGLIED_TABLE_NATIONALITY = "dsb_mitglied_nationalitaet";
     private static final String DSBMITGLIED_TABLE_MEMBERNUMBER = "dsb_mitglied_mitgliedsnummer";
+    private static final String DSBMITGLIED_TABLE_DATE_OF_JOINING = "dsb_mitglied_beitrittsdatum";
     private static final String DSBMITGLIED_TABLE_CLUB_ID = "dsb_mitglied_verein_id";
+    private static final String DSBMITGLIED_TABLE_CLUB_NAME = "verein_name";
     private static final String DSBMITGLIED_TABLE_USER_ID = "dsb_mitglied_benutzer_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<DsbMitgliedBE> DSBMITGLIED = new BusinessEntityConfiguration<>(
             DsbMitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
+    private static final BusinessEntityConfiguration<DsbMitgliedWithoutVereinsnameBE> DSBMITGLIED_WITHOUT_VEREINNAME = new BusinessEntityConfiguration<>(
+            DsbMitgliedWithoutVereinsnameBE.class, TABLE, getColumnsToFieldsMapWithoutVereinsName(), LOGGER);
+
     /*
      * SQL queries
      */
     private static final String FIND_ALL =
-            "SELECT * "
+            "SELECT dsb_mitglied.*, verein.verein_name "
                     + " FROM dsb_mitglied"
-                    + " ORDER BY dsb_mitglied_id";
+                    + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
+                    + " ORDER BY dsb_mitglied.dsb_mitglied_id";
 
     private static final String FIND_BY_ID =
             "SELECT * "
@@ -73,10 +82,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
     private static final String FIND_BY_SEARCH =
-            "SELECT * "
-                    + " FROM dsb_mitglied "
+            "SELECT dsb_mitglied.*, verein.verein_name "
+                    + " FROM dsb_mitglied"
+                    + " JOIN verein ON dsb_mitglied.dsb_mitglied_verein_id = verein.verein_id"
                     + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
-                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer), ' ', LOWER(verein.verein_name)) LIKE LOWER(?) ";
 
 
     private static final String FIND_DSB_KAMPFRICHTER =
@@ -125,7 +135,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_BIRTHDATE, DSBMITGLIED_BE_BIRTHDATE);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_NATIONALITY, DSBMITGLIED_BE_NATIONALITY);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_MEMBERNUMBER, DSBMITGLIED_BE_MEMBERNUMBER);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_DATE_OF_JOINING, DSBMITGLIED_BE_DATE_OF_JOINING);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_ID, DSBMITGLIED_BE_CLUB_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_NAME, DSBMITGLIED_BE_CLUB_NAME);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_USER_ID, DSBMITGLIED_BE_USER_ID);
 
         // add technical columns
@@ -134,6 +146,24 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+    private static Map<String, String> getColumnsToFieldsMapWithoutVereinsName() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_ID, DSBMITGLIED_BE_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_BIRTHDATE, DSBMITGLIED_BE_BIRTHDATE);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_NATIONALITY, DSBMITGLIED_BE_NATIONALITY);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_MEMBERNUMBER, DSBMITGLIED_BE_MEMBERNUMBER);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_DATE_OF_JOINING, DSBMITGLIED_BE_DATE_OF_JOINING);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_CLUB_ID, DSBMITGLIED_BE_CLUB_ID);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_USER_ID, DSBMITGLIED_BE_USER_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
 
     /**
      * @param id from DsbMitglied
@@ -211,10 +241,10 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
-    public DsbMitgliedBE create(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public DsbMitgliedWithoutVereinsnameBE create(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setCreationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        return basicDao.insertEntity(DSBMITGLIED, dsbMitgliedBE);
+        return basicDao.insertEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE);
     }
 
 
@@ -226,16 +256,16 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
-    public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public DsbMitgliedWithoutVereinsnameBE update(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        DsbMitgliedWithoutVereinsnameBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
         UserDAO userDAO = new UserDAO(basicDao);
         UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
         if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && userBE != null) {
             updatedDsbMitgliedBE.setDsbMitgliedUserId(userBE.getUserId());
-            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
+            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
 
         return updatedDsbMitgliedBE;
@@ -248,9 +278,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId
      */
-    public void delete(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
+    public void delete(final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        basicDao.deleteEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        basicDao.deleteEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE, DSBMITGLIED_BE_ID);
     }
 }

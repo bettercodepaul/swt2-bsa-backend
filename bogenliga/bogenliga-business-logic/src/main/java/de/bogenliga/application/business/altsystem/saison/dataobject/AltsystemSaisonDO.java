@@ -8,7 +8,7 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemSaisonDO extends AltsystemDO {
 
-    private String name;
+    private String name = null;
 
     public String getName() {return name;}
 

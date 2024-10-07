@@ -39,7 +39,7 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
         String sportjahr = getSportjahr(altsystemSaisonDO.getName());
 
         // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0, sportjahr);
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0L, sportjahr);
     }
 
     /**
@@ -66,7 +66,7 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
 
         // Check if new sportjahr is different from already existing one
         if(!sportjahr.equalsIgnoreCase(saisonUebersetzung.getWert())) {
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0, sportjahr);
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0L, sportjahr);
         }
     }
 

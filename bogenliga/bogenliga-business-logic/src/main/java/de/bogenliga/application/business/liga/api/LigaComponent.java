@@ -15,6 +15,11 @@ public interface LigaComponent {
     List<LigaDO> findBySearch(final String searchTerm);
 
     /**
+     *
+     * @return Lowest Liga with specific id
+     */
+    LigaDO findByLowest(long id);
+    /**
      * Return a liga entry with the given id.
      *
      * @param id of the liga
@@ -53,7 +58,7 @@ public interface LigaComponent {
      * @param ligaDO new liga
      * @return persisted version of the liga
      */
-    LigaDO create(LigaDO ligaDO, long currentLigaId);
+    LigaDO create(LigaDO ligaDO, long currentDSBMitgliedId);
 
 
     /**
@@ -62,7 +67,7 @@ public interface LigaComponent {
      * @param ligaDO existing ligaDO to update
      * @return persisted version of the liga
      */
-    LigaDO update(LigaDO ligaDO, long currentLigaId);
+    LigaDO update(LigaDO ligaDO, long currentDSBMitgliedId);
 
 
     /**
@@ -70,7 +75,7 @@ public interface LigaComponent {
      *
      * @param ligaDO LigaDo to delete
      */
-    void delete(LigaDO ligaDO, long currentLigaId);
+    void delete(LigaDO ligaDO, long currentDSBMitgliedId);
 }
 
 

@@ -200,6 +200,31 @@ public class LigaServiceTest {
     }
 
     @Test
+    public void findByLowest(){
+        final LigaDO ligaDO = getLigaDO();
+
+        final List<LigaDO> ligaDOList = Collections.singletonList(ligaDO);
+
+        // configure mocks
+        when(ligaComponent.findByLowest(ID)).thenReturn(ligaDO);
+
+        // call test method
+        final LigaDTO actual = underTest.findByLowest(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(ligaDO.getId());
+        assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDoFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDoFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDoFileType());
+
+        // verify invocations
+        verify(ligaComponent).findByLowest(ID);
+
+    }
+
+    @Test
     public void checkExist() {
         // Prepare test data
         final LigaDO ligaDO = getLigaDO();

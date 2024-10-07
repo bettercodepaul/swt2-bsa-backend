@@ -32,8 +32,12 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedNationalitaet = dsbMitgliedDO.getNationalitaet();
         final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
+        final String dsbMitgliedVereinName = dsbMitgliedDO.getVereinName();
         final Long dsbMitgliedUserId = dsbMitgliedDO.getUserId();
         final Boolean dsbMitgliedKampfrichterlizenz = dsbMitgliedDO.isKampfrichter();
+
+        final Date dsbMitgliedBeitrittsdatumDate = dsbMitgliedDO.getBeitrittsdatum();
+        final String dsbMitgliedBeitrittsdatum = dsbMitgliedBeitrittsdatumDate.toString();
 
         return new DsbMitgliedDTO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -42,7 +46,11 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);
+                dsbMitgliedVereinName,
+                dsbMitgliedUserId,
+                dsbMitgliedKampfrichterlizenz,
+                dsbMitgliedBeitrittsdatum
+        );
     };
 
     /**
@@ -60,8 +68,12 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedNationalitaet = dto.getNationalitaet();
         final String dsbMitgliedMitgliedsnummer = dto.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dto.getVereinsId();
+        final String dsbMitgliedVereinName = dto.getVereinsName();
         final Long dsbMitgliedUserId = dto.getUserId();
         final Boolean dsbMitgliedKampfrichter = dto.isKampfrichter();
+
+        final String dsbMitgliedBeitrittsdatum = dto.getBeitrittsdatum();
+        Date dsbMitgliedBeitrittsdatumDate = Date.valueOf(dsbMitgliedBeitrittsdatum);
 
         return new DsbMitgliedDO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -70,8 +82,11 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
+                dsbMitgliedVereinName,
                 dsbMitgliedUserId,
-                dsbMitgliedKampfrichter);
+                dsbMitgliedKampfrichter,
+                dsbMitgliedBeitrittsdatumDate
+        );
     };
 
 

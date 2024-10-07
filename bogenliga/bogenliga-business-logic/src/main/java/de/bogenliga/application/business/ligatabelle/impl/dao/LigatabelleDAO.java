@@ -45,6 +45,7 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String SATZPKTDIFFERENZ_BE = "satzpktDifferenz";
     private static final String SORTIERUNG_BE = "sortierung";
     private static final String TABELLENPLATZ_BE = "tabellenplatz";
+    private static final String MATCH_COUNT_BE = "matchCount";
 
     private static final String VERANSTALTUNGID_TABLE = "ligatabelle_veranstaltung_id";
     private static final String VERANSTALTUNGNAME_TABLE = "ligatabelle_veranstaltung_name";
@@ -61,6 +62,7 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String SATZPKTDIFFERENZ_TABLE = "ligatabelle_satzpkt_differenz";
     private static final String SORTIERUNG_TABLE = "ligatabelle_sortierung";
     private static final String TABELLENPLATZ_TABLE = "tabellenplatz";
+    private static final String MATCH_COUNT_TABLE = "ligatabelle_match_count";
 
     /*
      * SQL queries
@@ -74,22 +76,48 @@ public class LigatabelleDAO implements DataAccessObject {
     * sollte für Liga-Satzsystem passen
      */
     private static final String GET_LIGATABELLE =
-        "SELECT lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
-           "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag, lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
-                "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name, lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
-           "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
-           "row_number()  over (" +
-             "order by lt.ligatabelle_matchpkt desc NULLS LAST, lt.ligatabelle_matchpkt_gegen NULLS LAST," +
-               "lt.ligatabelle_satzpkt_differenz desc NULLS LAST, lt.ligatabelle_satzpkt desc NULLS LAST," +
-               "lt.ligatabelle_satzpkt_gegen NULLS LAST, lt.ligatabelle_sortierung," +
-               "lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
-               "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
-               "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
-               "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name" +
-             ")as tabellenplatz from ligatabelle as lt where lt.ligatabelle_veranstaltung_id = ?" +
-        "and lt.ligatabelle_wettkampf_tag = (" +
-            "select max(ligat.ligatabelle_wettkampf_tag) " +
-            "from ligatabelle as ligat where ligat.ligatabelle_veranstaltung_id = lt.ligatabelle_veranstaltung_id)";
+        "SELECT MAX(ligatabelle_veranstaltung_id) AS ligatabelle_veranstaltung_id," +
+            "MAX(ligatabelle_veranstaltung_id) AS ligatabelle_veranstaltung_id," +
+            "MAX(ligatabelle_veranstaltung_name) AS ligatabelle_veranstaltung_name," +
+            "MAX(ligatabelle_wettkampf_id) AS ligatabelle_wettkampf_id," +
+            "MAX(ligatabelle_wettkampf_tag) AS ligatabelle_wettkampf_tag," +
+            "MAX(ligatabelle_mannschaft_id) AS ligatabelle_mannschaft_id," +
+            "MAX(ligatabelle_mannschaft_nummer) AS ligatabelle_mannschaft_nummer," +
+            "MAX(ligatabelle_verein_id) AS ligatabelle_verein_id," +
+            "MAX(ligatabelle_verein_name) AS ligatabelle_verein_name," +
+            "SUM(ligatabelle_matchpkt) AS ligatabelle_matchpkt," +
+            "SUM(ligatabelle_matchpkt_gegen) AS ligatabelle_matchpkt_gegen," +
+            "SUM(ligatabelle_satzpkt) AS ligatabelle_satzpkt," +
+            "SUM(ligatabelle_satzpkt_gegen) AS ligatabelle_satzpkt_gegen," +
+            "SUM(ligatabelle_satzpkt_differenz) AS ligatabelle_satzpkt_differenz," +
+            "MAX(ligatabelle_sortierung) AS ligatabelle_sortierung," +
+            "SUM(ligatabelle_match_count) AS ligatabelle_match_count," +
+            "row_number()  over (" +
+                "order by SUM(COALESCE(ligatabelle_matchpkt, 0)) desc ,"+
+                "SUM(COALESCE(ligatabelle_matchpkt_gegen, 0)),"+
+                "SUM(COALESCE(ligatabelle_satzpkt_differenz, 0)) desc,"+
+                "SUM(COALESCE(ligatabelle_satzpkt, 0)) desc,"+
+                "SUM(COALESCE(ligatabelle_satzpkt_gegen, 0)),"+
+                "MAX(COALESCE(ligatabelle_sortierung, 0)),"+
+                "MAX(ligatabelle_veranstaltung_id),"+
+                "MAX(ligatabelle_veranstaltung_name),"+
+                "MAX(ligatabelle_wettkampf_id),"+
+                "MAX(ligatabelle_wettkampf_tag),"+
+                "MAX(ligatabelle_mannschaft_id),"+
+                "MAX(ligatabelle_mannschaft_nummer),"+
+                "MAX(ligatabelle_verein_id),"+
+                "MAX(ligatabelle_verein_name)"+
+            ") as tabellenplatz " +
+            "from ligatabelle "+
+            "where ligatabelle_wettkampf_id = ANY ( "+
+                "select w.wettkampf_id "+
+                "from wettkampf w "+
+                "where w.wettkampf_veranstaltung_id = "+
+                    "(select v.veranstaltung_id "+
+                    "from veranstaltung v "+
+                    "where v.veranstaltung_id = ?) "+
+            ") "+
+            "group by ligatabelle_mannschaft_id ";
 
     /* der Select liefert die aktuelle Ligatabelle zur Wettkampf-ID
      * ggf. müssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
@@ -97,38 +125,53 @@ public class LigatabelleDAO implements DataAccessObject {
      * sollte für Liga-Satzsystem passen
      */
     private static final String GET_LIGATABELLE_WETTKAMPF =
-            "SELECT ligatabelle_veranstaltung_id, "+
-                    "ligatabelle_veranstaltung_name," +
-                    "ligatabelle_wettkampf_id," +
-                    "ligatabelle_wettkampf_tag," +
-                    "ligatabelle_mannschaft_id," +
-                    "ligatabelle_mannschaft_nummer," +
-                    "ligatabelle_verein_id," +
-                    "ligatabelle_verein_name," +
-                    "ligatabelle_matchpkt," +
-                    "ligatabelle_matchpkt_gegen," +
-                    "ligatabelle_satzpkt," +
-                    "ligatabelle_satzpkt_gegen," +
-                    "ligatabelle_satzpkt_differenz," +
-                    "ligatabelle_sortierung," +
-                    "row_number()  over (" +
-                        "order by ligatabelle_matchpkt desc ," +
-                        "ligatabelle_matchpkt_gegen," +
-                        "ligatabelle_satzpkt_differenz desc," +
-                        "ligatabelle_satzpkt desc," +
-                        "ligatabelle_satzpkt_gegen," +
-                        "ligatabelle_sortierung," +
-                        "ligatabelle_veranstaltung_id," +
-                        "ligatabelle_veranstaltung_name," +
-                        "ligatabelle_wettkampf_id," +
-                        "ligatabelle_wettkampf_tag," +
-                        "ligatabelle_mannschaft_id," +
-                        "ligatabelle_mannschaft_nummer," +
-                        "ligatabelle_verein_id," +
-                         VEREINNAME_TABLE +
-                        ")as tabellenplatz " +
-                    "from ligatabelle " +
-                    "where ligatabelle_wettkampf_id = ?" ;
+        "SELECT MAX(ligatabelle_veranstaltung_id) AS ligatabelle_veranstaltung_id," +
+            "MAX(ligatabelle_veranstaltung_id) AS ligatabelle_veranstaltung_id," +
+            "MAX(ligatabelle_veranstaltung_name) AS ligatabelle_veranstaltung_name," +
+            "MAX(ligatabelle_wettkampf_id) AS ligatabelle_wettkampf_id," +
+            "MAX(ligatabelle_wettkampf_tag) AS ligatabelle_wettkampf_tag," +
+            "MAX(ligatabelle_mannschaft_id) AS ligatabelle_mannschaft_id," +
+            "MAX(ligatabelle_mannschaft_nummer) AS ligatabelle_mannschaft_nummer," +
+            "MAX(ligatabelle_verein_id) AS ligatabelle_verein_id," +
+            "MAX(ligatabelle_verein_name) AS ligatabelle_verein_name," +
+            "SUM(ligatabelle_matchpkt) AS ligatabelle_matchpkt," +
+            "SUM(ligatabelle_matchpkt_gegen) AS ligatabelle_matchpkt_gegen," +
+            "SUM(ligatabelle_satzpkt) AS ligatabelle_satzpkt," +
+            "SUM(ligatabelle_satzpkt_gegen) AS ligatabelle_satzpkt_gegen," +
+            "SUM(ligatabelle_satzpkt_differenz) AS ligatabelle_satzpkt_differenz," +
+            "MAX(ligatabelle_sortierung) AS ligatabelle_sortierung," +
+            "SUM(ligatabelle_match_count) AS ligatabelle_match_count," +
+            "row_number()  over (" +
+                "order by SUM(COALESCE(ligatabelle_matchpkt, 0)) desc ," +
+                "SUM(COALESCE(ligatabelle_matchpkt_gegen, 0))," +
+                "SUM(COALESCE(ligatabelle_satzpkt_differenz, 0)) desc," +
+                "SUM(COALESCE(ligatabelle_satzpkt, 0)) desc," +
+                "SUM(COALESCE(ligatabelle_satzpkt_gegen, 0))," +
+                "MAX(COALESCE(ligatabelle_sortierung, 0))," +
+                "MAX(ligatabelle_veranstaltung_id)," +
+                "MAX(ligatabelle_veranstaltung_name)," +
+                "MAX(ligatabelle_wettkampf_id)," +
+                "MAX(ligatabelle_wettkampf_tag)," +
+                "MAX(ligatabelle_mannschaft_id)," +
+                "MAX(ligatabelle_mannschaft_nummer)," +
+                "MAX(ligatabelle_verein_id)," +
+                "MAX(ligatabelle_verein_name)" +
+            ") as tabellenplatz " +
+            "from ligatabelle " +
+            "where ligatabelle_wettkampf_id = ANY ( " +
+                "select w.wettkampf_id " +
+                "from wettkampf w " +
+                "where w.wettkampf_veranstaltung_id =" +
+                    "(select v.veranstaltung_id " +
+                    "from wettkampf wk " +
+                    "join veranstaltung v on wk.wettkampf_veranstaltung_id = v.veranstaltung_id " +
+                    "where wk.wettkampf_id = ?) " +
+                "and w.wettkampf_tag <= ( " +
+                    "select wk.wettkampf_tag " +
+                    "from wettkampf wk " +
+                    "where wk.wettkampf_id = ?) " +
+            ") " +
+            "group by ligatabelle_mannschaft_id";
 
 
     // wrap all specific config parameters
@@ -171,6 +214,7 @@ public class LigatabelleDAO implements DataAccessObject {
         columnsToFieldsMap.put(SATZPKTDIFFERENZ_TABLE, SATZPKTDIFFERENZ_BE);
         columnsToFieldsMap.put(SORTIERUNG_TABLE, SORTIERUNG_BE);
         columnsToFieldsMap.put(TABELLENPLATZ_TABLE, TABELLENPLATZ_BE);
+        columnsToFieldsMap.put(MATCH_COUNT_TABLE, MATCH_COUNT_BE);
 
         return columnsToFieldsMap;
     }
@@ -186,10 +230,6 @@ public class LigatabelleDAO implements DataAccessObject {
      * Lesen der aktuellen Liga-Tabelle zum Wettkampf (ID)
      */
     public List<LigatabelleBE> getLigatabelleWettkampf(final long id) {
-        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE_WETTKAMPF, id);
+        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE_WETTKAMPF, id, id);
     }
-
-
-
-
 }

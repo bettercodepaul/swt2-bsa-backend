@@ -46,8 +46,14 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
      */
     @Override
     public void create(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
+
         // Passen aus dem Ergebnis erstellen
         List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemErgebnisseDO);
+
+        //wenn wir nichts zurückbekommen, soll nichts angelegt werden....
+        if (passen.isEmpty() ){
+            return;
+        }
 
         StringBuilder bld = new StringBuilder();
         for(PasseDO passe : passen){
@@ -57,10 +63,19 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
             bld.append(passe.getId());
             bld.append(";");
         }
-
         // Ids der Passen in die Übersetzungstabelle schreiben
         String passeIdString = bld.toString();
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId(), 0L, passeIdString);
+        Long altsystemSchutzeId = altsystemErgebnisseDO.getSchuetze_Id();
+        Long altsystemMatchId = Long.valueOf(altsystemErgebnisseDO.getMatch());
+
+        // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
+        StringBuilder bldAltsystemId = new StringBuilder();
+        bldAltsystemId.append(altsystemSchutzeId.toString());
+        bldAltsystemId.append(altsystemMatchId.toString());
+
+        Long ergebnissIdUebersetzung = Long.valueOf(bldAltsystemId.toString());
+
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen,ergebnissIdUebersetzung , 0L, passeIdString);
 
     }
 
@@ -71,8 +86,17 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
      */
     @Override
     public void update(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
+
+        Long altsystemSchutzeId = altsystemErgebnisseDO.getSchuetze_Id();
+        Long altsystemMatchId = Long.valueOf(altsystemErgebnisseDO.getMatch());
+        // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
+        StringBuilder bldAltsystemId = new StringBuilder();
+        bldAltsystemId.append(altsystemSchutzeId.toString());
+        bldAltsystemId.append(altsystemMatchId.toString());
+        Long ergebnissId_uebersetzung = Long.valueOf(bldAltsystemId.toString());
+
         // Ids der zugehörigen Passen extrahieren
-        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId());
+        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, ergebnissId_uebersetzung);
         String passeIdString = uebersetzungDO.getWert().trim();
         String[] passeIds = passeIdString.split(";");
 
@@ -82,7 +106,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
             passen.add(passeComponent.findById(Long.parseLong(passeIds[i])));
         }
 
-        // Änderugnen in die Data Objects übernehmen
+        // Änderungen in die Data Objects übernehmen
         passen = altsystemPasseMapper.recalculatePassen(passen, altsystemErgebnisseDO);
 
         // Neues Data Object in die Tabelle schreiben

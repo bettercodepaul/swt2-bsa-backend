@@ -20,6 +20,11 @@ public class DsbMannschaftDTO implements DataTransferObject {
     private Long benutzerId;
     private Long veranstaltungId;
     private Long sortierung;
+    private String veranstaltungName;
+    private String wettkampfTag;
+    private String wettkampfOrtsname;
+    private String vereinName;
+    private Long mannschaftNummer;
 
 
     /**
@@ -40,6 +45,13 @@ public class DsbMannschaftDTO implements DataTransferObject {
         this.veranstaltungId=veranstaltungId;
         this.sortierung = sortierung;
 
+    }
+    public DsbMannschaftDTO(final String veranstaltungName,final String wettkampfTag, final String wettkampfOrtsname, final String vereinName,final long mannschaftNummer) {
+        this.veranstaltungName = veranstaltungName;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.vereinName = vereinName;
+        this.mannschaftNummer = mannschaftNummer;
     }
     public Long getId(){ return id; }
 
@@ -74,5 +86,28 @@ public class DsbMannschaftDTO implements DataTransferObject {
     public Long getSortierung(){return sortierung;}
 
     public void setSortierung(Long sortierung){this.sortierung=sortierung;}
+    public String getWettkampfOrtsname() {
+        return wettkampfOrtsname;
+    }
 
+    public void setWettkampfOrtsname(final String wettkampfOrtsname) {
+        this.wettkampfOrtsname = wettkampfOrtsname;
+    }
+    public String getVeranstaltungName(){return this.veranstaltungName;}
+    public void setVeranstaltungName(final String veranstaltungName){this.veranstaltungName = veranstaltungName;}
+    public String getWettkampfTag(){return this.wettkampfTag;}
+    public void setWettkampfTag(final String wettkampfTag){this.wettkampfTag = wettkampfTag;}
+    public String getVereinName() {
+        return vereinName;
+    }
+
+    public void setVereinName(final String vereinName) {
+        this.vereinName = vereinName;
+    }
+    public void setMannschaftNummer(Long mannschaftNummer) {
+        this.mannschaftNummer = mannschaftNummer;
+    }
+    public Long getMannschaftNummer() {
+        return mannschaftNummer;
+    }
 }

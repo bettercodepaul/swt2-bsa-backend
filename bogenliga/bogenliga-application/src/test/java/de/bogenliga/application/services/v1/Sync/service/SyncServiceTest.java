@@ -44,7 +44,6 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
-import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -210,6 +209,8 @@ public class SyncServiceTest {
     private static final int sortierung = 0;
     private static final int tabellenplatz = 8;
 
+    private static final int matchCount = 0;
+
     //MannschaftsmitgliedDO
     //private static final Long USER = 0L;
     private static final Long id = 1L;
@@ -264,6 +265,7 @@ public class SyncServiceTest {
         expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
+        expectedLigatabelleDO.setMatchCount(matchCount);
 
         return expectedLigatabelleDO;
     }
@@ -397,7 +399,6 @@ public class SyncServiceTest {
         ligamatchBE.setWettkampftypId(MATCH_WETTKAMP_TYP_ID);
         ligamatchBE.setWettkampfTag(MATCH_WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MATCH_MANNSCHAFT_NAME);
-        ligamatchBE.setRueckennummer(MATCH_RUECKENNUMMER);
         return ligamatchBE;
     }
 
@@ -569,7 +570,8 @@ public class SyncServiceTest {
                 satzpktGegen,
                 satzpktDifferenz,
                 sortierung,
-                tabellenplatz
+                tabellenplatz,
+                matchCount
         );
     }
 
@@ -809,6 +811,36 @@ public class SyncServiceTest {
         assertNotEquals(test1.getSortierung(),test2.getSortierung());
     }
 
+    @Test
+    public void equals25(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getTabellenplatz(),test2.getTabellenplatz());
+    }
+    @Test
+    public void equals26(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setTabellenplatz(99);
+        assertNotEquals(test1.getTabellenplatz(),test2.getTabellenplatz());
+    }
+
+    @Test
+    public void equals27(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchCount(),test2.getMatchCount());
+    }
+    @Test
+    public void equals28(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchCount(99);
+        assertNotEquals(test1.getMatchCount(),test2.getMatchCount());
+    }
+
 
     // Start of testing
     // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
@@ -829,11 +861,12 @@ public class SyncServiceTest {
         Integer satzpktDifferenz01 = 14;
         Integer sortierung01 = 2;
         Integer tabellenplatz01 = 17;
+        Integer matchCount01 = 1;
         // see, now this does look better!
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
                 veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
                 mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
-                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01, matchCount01
         );
 
         Long veranstaltungId = 17L;
@@ -886,6 +919,10 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
+        final Integer matchCount = 0;
+        ligaSyncLigatabelleDTO.setTabellenplatz(matchCount);
+        assertEquals(matchCount,ligaSyncLigatabelleDTO.getMatchCount());
+
 
     }
 
@@ -911,11 +948,12 @@ public class SyncServiceTest {
         Integer satzpktDifferenz01 = 99;
         Integer sortierung01 = 99;
         Integer tabellenplatz01 = 99;
+        Integer matchCount01 = 0;
         // see, now this does look better!
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
                 veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
                 mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
-                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01, matchCount01
         );
 
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO03 = getLigaSyncLigatabelleDTO();
@@ -996,6 +1034,8 @@ public class SyncServiceTest {
         assertNotEquals(test01.hashCode(), test02.hashCode());
         test01.setTabellenplatz(null);
         assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchCount(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
     }
 
 
@@ -1033,6 +1073,7 @@ public class SyncServiceTest {
         assertThat(actualLigaSyncTabelleDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualLigaSyncTabelleDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualLigaSyncTabelleDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+        assertThat(actualLigaSyncTabelleDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         //verify invocations
         verify(ligatabelleComponent).getLigatabelleVeranstaltung(wettkampfId);
@@ -1330,8 +1371,8 @@ public class SyncServiceTest {
         expectedMatchDTOs.get(2).setId(matchIDs[2]);
         expectedMatchDTOs.get(3).setId(matchIDs[3]);
 
-        expectedMatchDTOs.get(2).setNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
-        expectedMatchDTOs.get(3).setNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
+        expectedMatchDTOs.get(2).setMatchNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
+        expectedMatchDTOs.get(3).setMatchNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
 
         // Set List<PasseDTO> in MatchDTO
         for (int i = 0; i < expectedMatchDTOs.size(); i++) {
@@ -1362,7 +1403,7 @@ public class SyncServiceTest {
                 assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
                 assertThat(actual.get(i).getId()).isEqualTo(expectedMatchDTOs.get(i).getId());
                 assertThat(actual.get(i).getPassen().get(0).getMatchId()).isEqualTo(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId());
-                assertThat(actual.get(i).getNr()).isEqualTo(expectedMatchDTOs.get(i).getNr());
+                assertThat(actual.get(i).getMatchNr()).isEqualTo(expectedMatchDTOs.get(i).getMatchNr());
             }
 
         } catch (NoPermissionException e) {

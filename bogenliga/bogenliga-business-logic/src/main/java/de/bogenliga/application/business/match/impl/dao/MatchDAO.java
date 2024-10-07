@@ -30,7 +30,7 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_BE_NR = "nr";
     private static final String MATCH_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String MATCH_BE_MANNSCHAFT_ID = "mannschaftId";
-    private static final String MATCH_BE_SCHEIBENNUMMER = "scheibenNummer";
+    private static final String MATCH_BE_SCHEIBENNUMMER = "matchScheibennummer";
     private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
     private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";
@@ -105,7 +105,10 @@ public class MatchDAO implements DataAccessObject {
      *
      *
      */
-
+    private static final String FIND_BY_VERANSTALTUNG_ID =
+            "SELECT match.* " +
+                    "FROM match match JOIN wettkampf w ON match.match_wettkampf_id = w.wettkampf_id " +
+                    "WHERE w.wettkampf_veranstaltung_id = ?";
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT DISTINCT match_wettkampf_id, match_mannschaft_id"
@@ -223,6 +226,17 @@ public class MatchDAO implements DataAccessObject {
         return basicDao.selectEntityList(MATCH, FIND_BY_MANNSCHAFT_ID, mannschaftId);
     }
 
+
+    /**
+     * Return all match entries from one Veranstaltung.
+     *
+     * @param veranstaltungId
+     *
+     * @return list of all match from one Veranstaltung in the database; empty list, if no matches are found
+     */
+    public List<MatchBE> findByVeranstaltungId(Long veranstaltungId) {
+        return basicDao.selectEntityList(MATCH, FIND_BY_VERANSTALTUNG_ID, veranstaltungId);
+    }
 
     /**
      * Create a new match entry

@@ -65,6 +65,32 @@ public class LigaDAOTest {
     }
 
     @Test
+    public void findByLowest(){
+        // prepare test data
+        final LigaBE expectedBE = new LigaBE();
+        expectedBE.setLigaId(ID);
+        expectedBE.setLigaName(LIGANAME);
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // call test method
+        final LigaBE actual = underTest.findByLowest(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getLigaId())
+                .isEqualTo(expectedBE.getLigaId());
+        assertThat(actual.getLigaName())
+                .isEqualTo(expectedBE.getLigaName());
+
+        // verify invocations
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+
+    }
+
+    @Test
     public void findBySearch() {
         // prepare test data
         final LigaBE expectedBE = getLigaBE();

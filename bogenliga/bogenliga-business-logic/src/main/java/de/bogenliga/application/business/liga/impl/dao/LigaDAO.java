@@ -80,6 +80,14 @@ public class LigaDAO implements DataAccessObject {
                     "FROM liga " +
                     "WHERE LOWER(liga_name) = ?";
 
+    private static final String FIND_BY_LOWEST =
+            "SELECT *"
+                    + "FROM liga"
+                    + " WHERE liga_id NOT IN (SELECT liga_uebergeordnet"
+                    + "                      FROM liga"
+                    + "                      WHERE liga_uebergeordnet IS NOT NULL)"
+                    + "AND liga_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -114,6 +122,12 @@ public class LigaDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+    /**
+     * Return lowest liga with specific ID
+     */
+    public LigaBE findByLowest(final long id){
+        return basicDao.selectSingleEntity(LIGA,FIND_BY_LOWEST,id);
+    }
 
     /**
      * Return liga entry with specific id
