@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
  *
