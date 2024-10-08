@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.wettkampf.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +117,7 @@ public class WettkampfService implements ServiceFacade {
 
         LOG.debug("GET request for findAllByVeranstaltungId with ID '{}'", veranstaltungId);
         final List<WettkampfDO> wettkampfDOList = this.wettkampfComponent.findAllByVeranstaltungId(veranstaltungId);
-        return wettkampfDOList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+        return wettkampfDOList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
 
