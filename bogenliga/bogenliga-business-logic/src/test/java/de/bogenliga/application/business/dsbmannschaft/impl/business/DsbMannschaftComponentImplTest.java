@@ -95,9 +95,7 @@ public class DsbMannschaftComponentImplTest {
     }
     public static DsbMannschaftBEext getDsbMannschaftBEext() {
         DsbMannschaftBEext dsbMannschaftBE = new DsbMannschaftBEext(ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID,
-                SORTIERUNG, SPORTJAHR, VERANSTALTUNGNAME,
-                WETTKAMPTAG,
-                WETTKAMPFORT, VEREINNAME);
+                SORTIERUNG, SPORTJAHR, VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME);
 
         return dsbMannschaftBE ;
     }
