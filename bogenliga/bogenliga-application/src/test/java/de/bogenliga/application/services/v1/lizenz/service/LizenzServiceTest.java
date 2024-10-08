@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.services.v1.lizenz.model.LizenzDTO;
