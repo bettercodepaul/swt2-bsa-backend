@@ -2,32 +2,18 @@ package de.bogenliga.application.services.v1.role.service;
 
 import de.bogenliga.application.business.role.api.RoleComponent;
 import de.bogenliga.application.business.role.api.types.RoleDO;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.role.model.RoleDTO;
-import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,8 +21,6 @@ import static org.mockito.Mockito.*;
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class RoleServiceTest {
-
-    private static final Long ID = 123L;
 
     private static final Long ID1 = 1L;
     private static final Long ID2 = 2L;
@@ -51,24 +35,11 @@ public class RoleServiceTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
-    @Mock
-    private WebSecurityConfiguration webSecurityConfiguration;
-    @Mock
-    private AuthenticationManager authenticationManager;
-    @Mock
-    private Authentication authentication;
-    @Mock
-    private HttpServletRequest requestWithHeader;
-    @Mock
     private RoleComponent roleComponent;
 
 
     @InjectMocks
     private RoleService underTest;
-
-    @Captor
-    private ArgumentCaptor<UsernamePasswordAuthenticationToken> authenticationTokenArgumentCaptor;
 
 
 
