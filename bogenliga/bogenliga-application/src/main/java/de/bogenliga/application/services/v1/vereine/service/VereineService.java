@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.vereine.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
