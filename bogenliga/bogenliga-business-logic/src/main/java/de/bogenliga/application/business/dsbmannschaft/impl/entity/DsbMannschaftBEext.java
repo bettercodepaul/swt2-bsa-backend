@@ -20,7 +20,10 @@ public class DsbMannschaftBEext extends DsbMannschaftBE implements BusinessEntit
      * @param wettkampfOrtsname
      * @param vereinName
      */
-    public DsbMannschaftBEext(final String veranstaltungName, final String wettkampfTag, final String wettkampfOrtsname, final String vereinName) {
+    public DsbMannschaftBEext(final Long id, final Long vereinId, final Long nummer, final Long veranstaltungId,
+                              final Long benutzerId, final Long sortierung, final Long sportjahr, final String veranstaltungName,
+                              final String wettkampfTag, final String wettkampfOrtsname, final String vereinName) {
+        super(id, vereinId, nummer, veranstaltungId, benutzerId, sortierung, sportjahr);
         this.veranstaltungName = veranstaltungName;
         this.wettkampfTag = wettkampfTag;
         this.wettkampfOrtsname = wettkampfOrtsname;
