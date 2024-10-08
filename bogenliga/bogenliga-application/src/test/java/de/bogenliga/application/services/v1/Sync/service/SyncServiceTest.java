@@ -175,6 +175,7 @@ public class SyncServiceTest {
     private static final Long M_benutzerId = 12L;
     private static final Long M_veranstaltungId = 1L;
     private static final Long M_sortierung = 1L;
+    private static final Long M_sportjahr = 1L;
 
     private static final Long VEREIN_USER = 1L;
     private static final Long VERSION = 0L;
@@ -347,7 +348,8 @@ public class SyncServiceTest {
                 M_nummer,
                 M_benutzerId,
                 M_veranstaltungId,
-                M_sortierung
+                M_sortierung,
+                M_sportjahr
         );
     }
 
