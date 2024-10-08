@@ -4,7 +4,11 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingSecurityException;
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +165,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public List<DsbMannschaftDTO> findAllbyWarteschlangeID()
 
     {
+
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByWarteschlange();
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
@@ -415,7 +420,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final Long lastVeranstaltungsId,
                                               @PathVariable("currentVeranstaltungsId") final Long currentVeranstaltungsId,
                                               final Principal principal) {
@@ -431,34 +436,69 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I insert the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
+     * I assign the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
      * @param veranstaltungsId
      * @param mannschaftId
      * @param principal
      */
-    @GetMapping(value = "copyMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
+    @GetMapping(value = "assignMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void insertMannschaftIntoVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
-                                              @PathVariable("MannschaftId") final Long mannschaftId,
-                                              final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void assignMannschaftToVeranstaltung(@PathVariable("VeranstaltungsId") final Long veranstaltungsId,
+                                                @PathVariable("MannschaftId") final Long mannschaftId,
+                                                final Principal principal) throws NoPermissionException {
 
         final Long userId = UserProvider.getCurrentUserId(principal);
+
 
 
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungsId)){
+            throw new NoPermissionException();
+        }
+
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
+        dsbMannschaftDO.setSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
 
-        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, userId);
-        dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId(), userId);
+        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
 
 
-        LOG.debug("Mannschaft '{}' in Veranstaltung mit id '{}' kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
+        LOG.debug("Mannschaft '{}'  Veranstaltung mit id '{}' zugeordnet.", neueMannschaft.getName(), neueMannschaft.getVeranstaltungId());
 
+    }
+
+    @GetMapping(value = "unassignMannschaftFromVeranstaltung/{MannschaftId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void unassignMannschaftFromVeranstaltung(@PathVariable("MannschaftId") final Long mannschaftId,
+                                                final Principal principal) {
+
+        final Long userId = UserProvider.getCurrentUserId(principal);
+
+
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+
+        // Prüfen, ob die Veranstaltung in der Phase "geplant" ist -
+        // nur dann können wir löschen, ohne dass Daten verloren gehen könnten...
+        // das Sportjahr wird immer parallel gelöscht/gesetzt
+
+        if (dsbMannschaftDO.getVeranstaltungId() != null){ // hier ist eine Veranstaltung zugewiesen
+            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
+            if (veranstaltungDO != null && veranstaltungDO.getVeranstaltungPhase().equals("Geplant")) {
+                dsbMannschaftDO.setVeranstaltungId(null);
+                dsbMannschaftDO.setSportjahr(null);
+                DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
+                LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", neueMannschaft.getName(), veranstaltungDO.getVeranstaltungID());
+            }
+        }
     }
 
     /**
@@ -539,6 +579,9 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
+        // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
+        if (dsbMannschaftDO.getVeranstaltungId() != null && veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
