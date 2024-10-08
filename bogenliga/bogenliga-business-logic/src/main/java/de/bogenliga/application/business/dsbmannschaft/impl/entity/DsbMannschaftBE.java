@@ -16,6 +16,15 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
 
     public DsbMannschaftBE() {/*empty constructor*/}
 
+    public DsbMannschaftBE(Long id, Long vereinId, Long nummer, Long veranstaltungId, Long benutzerId, Long sortierung, Long sportjahr) {
+        this.id = id;
+        this.vereinId = vereinId;
+        this.nummer = nummer;
+        this.veranstaltungId = veranstaltungId;
+        this.benutzerId = benutzerId;
+        this.sortierung = sortierung;
+        this.sportjahr = sportjahr;
+    }
 
     public Long getId() {
         return id;

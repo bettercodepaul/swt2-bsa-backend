@@ -94,14 +94,10 @@ public class DsbMannschaftComponentImplTest {
         return expectedBE;
     }
     public static DsbMannschaftBEext getDsbMannschaftBEext() {
-        DsbMannschaftBEext dsbMannschaftBE = new DsbMannschaftBEext(VERANSTALTUNGNAME, WETTKAMPTAG, WETTKAMPFORT, VEREINNAME);
-        dsbMannschaftBE.setId(ID);
-        dsbMannschaftBE.setVereinId(VEREIN_ID);
-        dsbMannschaftBE.setNummer(NUMMER);
-        dsbMannschaftBE.setBenutzerId(BENUTZER_ID);
-        dsbMannschaftBE.setVeranstaltungId(VERANSTALTUNG_ID);
-        dsbMannschaftBE.setSortierung(SORTIERUNG);
-        dsbMannschaftBE.setSportjahr(SPORTJAHR);
+        DsbMannschaftBEext dsbMannschaftBE = new DsbMannschaftBEext(ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID,
+                SORTIERUNG, SPORTJAHR, VERANSTALTUNGNAME,
+                WETTKAMPTAG,
+                WETTKAMPFORT, VEREINNAME);
 
         return dsbMannschaftBE ;
     }
