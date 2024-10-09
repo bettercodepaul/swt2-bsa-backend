@@ -427,7 +427,7 @@ public class AltsystemVeranstaltungMapperTest {
 
     public static List<DsbMannschaftDO> get4MockedDsbMannschaften(){
         List<DsbMannschaftDO> dsbMannschaften = new LinkedList<>();
-        for (int i = 1; i <= 4; i++) {
+        for (Long i = 1L; i <= 4L; i++) {
             DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO((long)i, i);
             dsbMannschaften.add(dsbMannschaftDO);
         }
@@ -436,7 +436,7 @@ public class AltsystemVeranstaltungMapperTest {
 
     public static List<DsbMannschaftDO> get6MockedDsbMannschaften(){
         List<DsbMannschaftDO> dsbMannschaften = new LinkedList<>();
-        for (int i = 1; i <= 6; i++) {
+        for (Long i = 1L; i <= 6L; i++) {
             DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO((long)i, i);
             dsbMannschaften.add(dsbMannschaftDO);
         }

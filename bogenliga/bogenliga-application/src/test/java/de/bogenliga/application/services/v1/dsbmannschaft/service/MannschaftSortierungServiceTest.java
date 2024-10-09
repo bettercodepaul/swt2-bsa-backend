@@ -1,12 +1,8 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.services.v1.dsbmannschaft.mapper.MannschaftSortierungDTOMapper;
-import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,10 +26,11 @@ import static org.mockito.Mockito.*;
 
 public class MannschaftSortierungServiceTest {
 
-    private static final long USER = 0;
-    private static final long ID = 1893;
+    private static final Long USER = 0L;
+    private static final Long ID = 1893L;
 
-    private static final long SORTIERUNG = 1;
+    private static final Long SORTIERUNG = 1L;
+    private static final Long SPORTJAHR = 1L;
 
     private static final long DB_VEREIN_ID = 111111;
     private static final String DB_NAME = null; //empty
@@ -61,7 +58,7 @@ public class MannschaftSortierungServiceTest {
 
     private static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG
+                ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR
         );
     }
 
@@ -115,8 +112,6 @@ public class MannschaftSortierungServiceTest {
         // prepare test data
         final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
         inputDTO.setSortierung(-1L);
-        final DsbMannschaftDO expected = getDsbMannschaftDO();
-
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(inputDTO, principal))
                 .withMessageContaining("must not be null or less than 0");
