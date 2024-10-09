@@ -61,7 +61,7 @@ public class AltsystemMannschaftTest {
 
         DsbMannschaftDO result = new DsbMannschaftDO();
         result.setId(1L);
-        result.setNummer(3);
+        result.setNummer(3L);
         result.setVeranstaltungId(1L);
         result.setVereinId(1L);
 

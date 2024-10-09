@@ -160,6 +160,8 @@ public class MatchServiceTest {
     private static final Long M_veranstaltungId = 1L;
     private static final Long M_sortierung = 1L;
 
+    private static final Long M_sportjahr = 2024L;
+
     private static final Long VEREIN_USER = 1L;
     private static final Long VERSION = 0L;
     private static final String VEREIN_NAME = "Test Verein";
@@ -193,7 +195,7 @@ public class MatchServiceTest {
 
     protected DsbMannschaftDO getPlatzhalter() {
         return new DsbMannschaftDO(
-                MATCH_MANNSCHAFT_ID, "Platzhalter", PLATZHALTER_ID, 696969L, M_benutzerId, 4444L, 8L
+                MATCH_MANNSCHAFT_ID, "Platzhalter", PLATZHALTER_ID, 696969L, M_benutzerId, 4444L, 8L, 2024L
         );
     }
 
@@ -254,7 +256,8 @@ public class MatchServiceTest {
                 M_nummer,
                 M_benutzerId,
                 M_veranstaltungId,
-                M_sortierung
+                M_sortierung,
+                M_sportjahr
         );
     }
 

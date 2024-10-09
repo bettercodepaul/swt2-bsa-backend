@@ -81,7 +81,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO update(DsbMannschaftDO dsbMannschaftdDO, long currentDsbMannschaftId);
+    DsbMannschaftDO update(DsbMannschaftDO dsbMannschaftdDO, long userId);
 
 
     /**
@@ -90,7 +90,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param dsbMannschaftDO dsbmannschaft to delete
      */
 
-    void delete(DsbMannschaftDO dsbMannschaftDO, Long currentDsbMitgliedId);
+    void delete(DsbMannschaftDO dsbMannschaftDO, Long userId);
 
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
@@ -105,10 +105,11 @@ public interface DsbMannschaftComponent extends ComponentFacade {
 
     /**
      * Return all dsbmannschaft entries that are currently in the waiting queue.
-     *
+     * queue is defined by dsbmannschaft without veransatltungs_ID and a matching Sportjahr
      * @return all dsbmannschaft entries in the waiting queue.
      * null, if no dsbmannschaft is found.
      */
+
 
     List<DsbMannschaftDO> findAllByWarteschlange();
 
