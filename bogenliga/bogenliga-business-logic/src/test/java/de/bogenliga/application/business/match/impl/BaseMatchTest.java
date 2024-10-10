@@ -57,7 +57,7 @@ public abstract class BaseMatchTest {
 
     protected DsbMannschaftDO getPlatzhalter() {
         return new DsbMannschaftDO(
-                MATCH_MANNSCHAFT_ID, "Platzhalter", MATCH_PLATZHALTER_ID, 696969L, 01274L, 4444L, 8L
+                MATCH_MANNSCHAFT_ID, "Platzhalter", MATCH_PLATZHALTER_ID, 696969L, 01274L, 4444L, 8L, 2024L
         );
     }
 
