@@ -49,7 +49,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         //Letztes Zeichen im Namen
         char lastChar = altsystemMannschaftDO.getName().charAt(nameLong);
         String lastCharAsString = String.valueOf(lastChar);
-        int mannNr;
+        long mannNr;
         String num = "1234567890";
 
 

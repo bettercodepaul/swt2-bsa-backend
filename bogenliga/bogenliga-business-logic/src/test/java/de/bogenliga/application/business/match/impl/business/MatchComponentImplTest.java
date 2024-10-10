@@ -88,7 +88,9 @@ public class MatchComponentImplTest extends BaseMatchTest {
                 99L,
                 0L,
                 444L,
-                8L);
+                8L,
+                2024L);
+
     }
 
     public static VereinDO getVereinDO() {
@@ -615,7 +617,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
             List<DsbMannschaftDO> mannschaften = new ArrayList<>();
 
             for (int i = 0; i < numberOfTeams; i++) {
-                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L);
+                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L, 1L);
                 mannschaften.add(mannschaft);
             }
 
@@ -638,7 +640,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
             List<DsbMannschaftDO> mannschaften = new ArrayList<>();
 
             for (int i = 0; i < numberOfTeams; i++) {
-                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L);
+                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L, 1L);
                 mannschaften.add(mannschaft);
             }
 
@@ -661,7 +663,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
             List<DsbMannschaftDO> mannschaften = new ArrayList<>();
 
             for (int i = 0; i < numberOfTeams; i++) {
-                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L);
+                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L, 1L);
                 mannschaften.add(mannschaft);
             }
 
@@ -684,7 +686,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
             List<DsbMannschaftDO> mannschaften = new ArrayList<>();
 
             for (int i = 0; i < numberOfTeams; i++) {
-                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L);
+                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L, 1L);
                 mannschaften.add(mannschaft);
             }
 
