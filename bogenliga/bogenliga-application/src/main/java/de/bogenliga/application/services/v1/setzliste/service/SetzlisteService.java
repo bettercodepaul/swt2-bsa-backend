@@ -60,7 +60,7 @@ public class SetzlisteService implements ServiceFacade {
     @CrossOrigin(maxAge = 0)
     @GetMapping(path = "/generate")
     @RequiresOnePermissions(perm = {UserPermission.CAN_READ_WETTKAMPF, UserPermission.CAN_READ_MY_VERANSTALTUNG})
-    public @ResponseBody
+    public
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid, final Principal principal) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");
 
