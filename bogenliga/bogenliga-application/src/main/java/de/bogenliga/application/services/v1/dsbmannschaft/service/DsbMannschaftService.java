@@ -45,13 +45,11 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaft Veranstaltung ID must not be null";
 
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
@@ -333,23 +331,21 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
         MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
-        try {
-            List<MannschaftsMitgliedDTO> list = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
-                        (long) i,
-                        savedDsbMannschaftDO.getId(),
-                        (long) i+1,
-                        1,
-                        (long) i+1);
-                list.add(mannschaftsMitgliedDTO);
-            }
+        List<MannschaftsMitgliedDTO> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
+                    (long) i,
+                    savedDsbMannschaftDO.getId(),
+                    (long) i + 1,
+                    1,
+                    (long) i + 1);
+            list.add(mannschaftsMitgliedDTO);
+        }
 
-            for (int j = 0; j < list.size(); j++) {
-                MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
-                Preconditions.checkArgument(createdSchuetze != null, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
-            }
-        }catch (NullPointerException ignored) {}
+        for (int j = 0; j < list.size(); j++) {
+            MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
+            Preconditions.checkArgument(createdSchuetze != null, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+        }
     }
 
 
@@ -381,28 +377,27 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
             for (int i = 0; i < allExistingPlatzhalterList.size(); i++) {
-                // If the Platzhalter from the list isn´t in this Veranstaltung, skip it
-                // Only searching if an Platzhalter already exists in this Veranstaltung
-                if (!(allExistingPlatzhalterList.get(i).getVeranstaltungId().equals(
-                        dsbMannschaftDTO.getVeranstaltungId()))) {
-                    continue;
-                }
                 Long platzhalterVeranstaltungsId = allExistingPlatzhalterList.get(i).getVeranstaltungId();
                 Long platzhalterId = allExistingPlatzhalterList.get(i).getId();
 
-                // Check if in this Veranstaltung is already and Platzhalter
-                // And if the new team isn´t an Platzhalter
-                Preconditions.checkArgument(!dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
-                        PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
+                // Check if the Platzhalter belongs to this Veranstaltung
+                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())) {
 
-                // If the new team isn´t and Platzhalter
-                // And the Veranstaltung already has an Platzhalter
-                // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
-                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
-                        && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
-                        && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
-                    delete(platzhalterId, principal);
-                    break;
+                    // Validate if the new team is not a Platzhalter
+                    Preconditions.checkArgument(
+                            !dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
+                            PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING
+                    );
+
+                    // If Veranstaltung already has a Platzhalter, and it's full,
+                    // and the new team is not the Platzhalter
+                    if (veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
+                            && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
+
+                        // Delete Platzhalter and exit loop
+                        delete(platzhalterId, principal);
+                        break;
+                    }
                 }
             }
         }
