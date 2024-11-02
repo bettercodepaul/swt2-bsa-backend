@@ -72,8 +72,8 @@ public class MannschaftsmitgliedServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                mannschaftsId, "die Mannschaft", id, 23,
-                id, id, 2L
+                mannschaftsId, "die Mannschaft", id, 23L,
+                id, id, 2L, 1L
         );
     }
 

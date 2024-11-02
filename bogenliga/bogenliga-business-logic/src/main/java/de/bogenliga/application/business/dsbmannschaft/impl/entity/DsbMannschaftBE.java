@@ -12,28 +12,18 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     private Long veranstaltungId;
     private Long benutzerId;
     private Long sortierung;
-    private String veranstaltungName;
-    private String wettkampfTag;
-    private String wettkampfOrtsname;
-    private String vereinName;
-    private Long mannschaftNummer;
-
+    private Long sportjahr;
 
     public DsbMannschaftBE() {/*empty constructor*/}
-    /**
-     * Constructor with mandatory parameters
-     * @param veranstaltungName
-     * @param wettkampfTag
-     * @param wettkampfOrtsname
-     * @param vereinName
-     * @param nummer
-     */
-    public DsbMannschaftBE(final String veranstaltungName,final String wettkampfTag, final String wettkampfOrtsname, final String vereinName, final long nummer) {
-        this.veranstaltungName = veranstaltungName;
-        this.wettkampfTag = wettkampfTag;
-        this.wettkampfOrtsname = wettkampfOrtsname;
-        this.vereinName = vereinName;
-        this.mannschaftNummer = nummer;
+
+    public DsbMannschaftBE(Long id, Long vereinId, Long nummer, Long veranstaltungId, Long benutzerId, Long sortierung, Long sportjahr) {
+        this.id = id;
+        this.vereinId = vereinId;
+        this.nummer = nummer;
+        this.veranstaltungId = veranstaltungId;
+        this.benutzerId = benutzerId;
+        this.sortierung = sortierung;
+        this.sportjahr = sportjahr;
     }
 
     public Long getId() {
@@ -95,44 +85,16 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
         this.sortierung = sortierung;
     }
 
-    public String getVeranstaltungName() {
-        return veranstaltungName;
+    public Long getSportjahr() {
+        return sportjahr;
     }
 
-    public void setVeranstaltungName(final String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
+
+    public void setSportjahr(final Long sportjahr) {
+        this.sportjahr = sportjahr;
     }
 
-    public String getWettkampfTag() {
-        return wettkampfTag;
-    }
 
-    public void setWettkampfTag(final String wettkampfTag) {
-        this.wettkampfTag = wettkampfTag;
-    }
-
-    public String getWettkampfOrtsname() {
-        return wettkampfOrtsname;
-    }
-
-    public void setWettkampfOrtsname(final String wettkampfOrtsname) {
-        this.wettkampfOrtsname = wettkampfOrtsname;
-    }
-
-    public String getVereinName() {
-        return vereinName;
-    }
-
-    public void setVereinName(final String vereinName) {
-        this.vereinName = vereinName;
-    }
-
-    public Long getMannschaftNummer() {
-        return mannschaftNummer;
-    }
-    public void setMannschaftNummer(Long mannschaftNummer) {
-        this.mannschaftNummer = mannschaftNummer;
-    }
 
 
     @Override
@@ -144,6 +106,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
                 ", mannschaftVeranstaltungId='" + veranstaltungId + '\'' +
                 ", mannschaftBenutzerId='" + benutzerId + '\'' +
                 ", mannschaftSortierung='" + sortierung + '\'' +
+                ", mannschaftSportjahr='" + sportjahr + '\'' +
                 '}';
     }
 }
