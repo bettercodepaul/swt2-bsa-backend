@@ -23,8 +23,7 @@ public abstract class BaseTabletSessionTest {
     protected static final Long ACCEES_TOKEN = 6L;
 
 
-    protected static final Long CURRENT_USER_ID = 12L;
-    private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
+    private final HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
 
     protected TabletSessionBE getTabletSessionBE() {
