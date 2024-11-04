@@ -23,8 +23,6 @@ public class TabletSessionDTO {
         this.accessToken = accessToken;
     }
 
-    public TabletSessionDTO(){
-    }
 
     public Long getWettkampfId() {
         return wettkampfId;
@@ -41,18 +39,8 @@ public class TabletSessionDTO {
     }
 
 
-    public void setScheibennummer(Long scheibennummer) {
-        this.scheibennummer = scheibennummer;
-    }
-
-
     public Long getSatznummer() {
         return satznummer;
-    }
-
-
-    public void setSatznummer(Long satznummer) {
-        this.satznummer = satznummer;
     }
 
 
