@@ -3,6 +3,7 @@ package de.bogenliga.application.business.dsbmannschaft.impl.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBE;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,21 +42,31 @@ public class DsbMannschaftMapperTest {
     @Test
     public void toDsbMannschaftVerUWettDO() {
         // Arrange
-        DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE();
-        dsbMannschaftBE.setVeranstaltungName("Olympia");
-        dsbMannschaftBE.setWettkampfTag("2024-08-01");
-        dsbMannschaftBE.setWettkampfOrtsname("Berlin");
-        dsbMannschaftBE.setVereinName("Sportverein Berlin");
-        dsbMannschaftBE.setMannschaftNummer(12345L);
-        dsbMannschaftBE.setNummer(12345L);
+        DsbMannschaftBEext dsbMannschaftBEext = new DsbMannschaftBEext();
+        dsbMannschaftBEext.setId(ID);
+        dsbMannschaftBEext.setVereinId(VEREINID);
+        dsbMannschaftBEext.setNummer(NUMMER);
+        dsbMannschaftBEext.setBenutzerId(BENUTZERID);
+        dsbMannschaftBEext.setVeranstaltungId(VERANSTALTUNGID);
+        dsbMannschaftBEext.setVeranstaltungName("Olympia");
+
+        dsbMannschaftBEext.setVeranstaltungName("Olympia");
+        dsbMannschaftBEext.setWettkampfTag("2024-08-01");
+        dsbMannschaftBEext.setWettkampfOrtsname("Berlin");
+        dsbMannschaftBEext.setVereinName("Sportverein Berlin");
         // Act
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftMapper.toDsbMannschaftVerUWettDO.apply(dsbMannschaftBE);
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftMapper.toDsbMannschaftVerUWettDO.apply(dsbMannschaftBEext);
 
         // Assert
+        assertThat(dsbMannschaftDO.getId()).isEqualTo(ID);
+        assertThat(dsbMannschaftDO.getVereinId()).isEqualTo(VEREINID);
+        assertThat(dsbMannschaftDO.getNummer()).isEqualTo(NUMMER);
+        assertThat(dsbMannschaftDO.getBenutzerId()).isEqualTo(BENUTZERID);
+        assertThat(dsbMannschaftDO.getName()).isEqualTo("Sportverein Berlin"+NUMMER);
         assertThat(dsbMannschaftDO.getVeranstaltung_name()).isEqualTo("Olympia");
         assertThat(dsbMannschaftDO.getWettkampfTag()).isEqualTo("2024-08-01");
         assertThat(dsbMannschaftDO.getWettkampf_ortsname()).isEqualTo("Berlin");
         assertThat(dsbMannschaftDO.getVerein_name()).isEqualTo("Sportverein Berlin");
-        assertThat(dsbMannschaftDO.getMannschaft_nummer()).isEqualTo(12345L);
+        assertThat(dsbMannschaftDO.getNummer()).isEqualTo(NUMMER);
     }
 }

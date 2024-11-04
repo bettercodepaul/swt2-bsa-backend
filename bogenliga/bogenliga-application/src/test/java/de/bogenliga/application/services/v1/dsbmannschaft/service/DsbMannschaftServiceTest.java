@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -44,7 +46,6 @@ public class DsbMannschaftServiceTest {
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 4444;
-    private static final long MANNSCHAFTS_NUMMER = 165;
     private static final String WETTKAMPFORT = "Reutlingen";
     private static final String VERANSTALTUNGNAME = "TEST";
     private static final String VEREINNAME = "SSV Reutlingen";
@@ -52,6 +53,7 @@ public class DsbMannschaftServiceTest {
 
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
+    private static final long SPORTJAHR = 2024L;
 
     private static final long PLATZHALTER_VEREIN_ID = 99;
     private static final long PLATZHALTER_ID = 6969;
@@ -81,70 +83,63 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
+                ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR
         );
     }
     public static DsbMannschaftDO getDsbMannschaftDOVERANDWETT() {
-        return new DsbMannschaftDO(VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME,MANNSCHAFTS_NUMMER);
+        return new DsbMannschaftDO(ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG, SPORTJAHR, VERANSTALTUNGNAME,WETTKAMPFTAG,WETTKAMPFORT,VEREINNAME);
     }
 
     public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
-                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L, SPORTJAHR
         );
     }
 
     public static DsbMannschaftDTO getPlatzhalterDTO() {
         return new DsbMannschaftDTO(
-                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L, SPORTJAHR
         );
     }
 
     public static DsbMannschaftDO getMockMannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L
+                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L, SPORTJAHR
         );
     }
-    private DsbMannschaftBE dsbMannschaft;
+    private DsbMannschaftBEext dsbMannschaftext;
     @Test
     public void testGetAndSetVeranstaltungName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String veranstaltungName = "Meisterschaft";
-        dsbMannschaft.setVeranstaltungName(veranstaltungName);
-        assertThat(dsbMannschaft.getVeranstaltungName()).isEqualTo(veranstaltungName);
+        dsbMannschaftext.setVeranstaltungName(veranstaltungName);
+        assertThat(dsbMannschaftext.getVeranstaltungName()).isEqualTo(veranstaltungName);
     }
 
     @Test
     public void testGetAndSetWettkampfTag() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfTag = "2024-07-22";
-        dsbMannschaft.setWettkampfTag(wettkampfTag);
-        assertThat(dsbMannschaft.getWettkampfTag()).isEqualTo(wettkampfTag);
+        dsbMannschaftext.setWettkampfTag(wettkampfTag);
+        assertThat(dsbMannschaftext.getWettkampfTag()).isEqualTo(wettkampfTag);
     }
 
     @Test
     public void testGetAndSetWettkampfOrtsname() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String wettkampfOrtsname = "Berlin";
-        dsbMannschaft.setWettkampfOrtsname(wettkampfOrtsname);
-        assertThat(dsbMannschaft.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
+        dsbMannschaftext.setWettkampfOrtsname(wettkampfOrtsname);
+        assertThat(dsbMannschaftext.getWettkampfOrtsname()).isEqualTo(wettkampfOrtsname);
     }
 
     @Test
     public void testGetAndSetVereinName() {
-        dsbMannschaft = new DsbMannschaftBE();
+        dsbMannschaftext = new DsbMannschaftBEext();
         String vereinName = "Sportverein Berlin";
-        dsbMannschaft.setVereinName(vereinName);
-        assertThat(dsbMannschaft.getVereinName()).isEqualTo(vereinName);
+        dsbMannschaftext.setVereinName(vereinName);
+        assertThat(dsbMannschaftext.getVereinName()).isEqualTo(vereinName);
     }
 
-    @Test
-    public void testGetAndSetMannschaftNummer() {
-        dsbMannschaft = new DsbMannschaftBE();
-        Long mannschaftNummer = 12345L;
-        dsbMannschaft.setMannschaftNummer(mannschaftNummer);
-        assertThat(dsbMannschaft.getMannschaftNummer()).isEqualTo(mannschaftNummer);
-    }
     public static VeranstaltungDO getMockVeranstaltung(){
         return new VeranstaltungDO(
                 null, null, null, null, null, null, null, null, null, null, null, null, null,null, null, null, 8
@@ -160,8 +155,27 @@ public class DsbMannschaftServiceTest {
         dsbMannschaftDTO.setBenutzerId(BENUTZER_ID);
         dsbMannschaftDTO.setVeranstaltungId(VERANSTALTUNG_ID);
         dsbMannschaftDTO.setSortierung(SORTIERUNG);
+        dsbMannschaftDTO.setSportjahr(SPORTJAHR);
 
         return dsbMannschaftDTO;
+    }
+
+
+    private static VeranstaltungDO getVeranstaltungDO() {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungID(222L);
+        veranstaltungDO.setVeranstaltungLigaleiterID(2L);
+        veranstaltungDO.setVeranstaltungName("TestVeranstaltungName");
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        veranstaltungDO.setVeranstaltungLigaID(333L);
+        veranstaltungDO.setVeranstaltungLigaleiterEmail("gero.test@bogenliga.de");
+        veranstaltungDO.setVeranstaltungLigaName("TestLigaName");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(new Date(20180211L));
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungSportJahr(2024L);
+        veranstaltungDO.setVeranstaltungWettkampftypID(1L);
+        veranstaltungDO.setVeranstaltungWettkampftypName("TestWettkampfytpName");
+        return veranstaltungDO;
     }
 
 
@@ -219,6 +233,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         //verify invocations
         verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
@@ -246,6 +261,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVeranstaltungId()).isEqualTo(dsbMannschaftDO.getVeranstaltungId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         //verify invocations
         verify(dsbMannschaftComponent).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
@@ -272,6 +288,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findAllByWarteschlange();
@@ -299,6 +316,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findAllByName(name);
@@ -322,7 +340,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getMannschaft_nummer());
+        assertThat(actualDTO.getMannschaftNummer()).isEqualTo(dsbMannschaftDO.getNummer());
         assertThat(actualDTO.getVereinName()).isEqualTo(dsbMannschaftDO.getVerein_name());
         assertThat(actualDTO.getVeranstaltungName()).isEqualTo(dsbMannschaftDO.getVeranstaltung_name());
 
@@ -346,6 +364,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actual.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
         assertThat(actual.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
+        assertThat(actual.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         // verify invocations
         verify(dsbMannschaftComponent).findById(ID);
@@ -380,6 +399,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
 
 
             // verify invocations
@@ -391,6 +411,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getId()).isEqualTo(input.getId());
             assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }
@@ -422,6 +443,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getId()).isEqualTo(platzhalterDTO.getId());
             assertThat(actual.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+            assertThat(actual.getSportjahr()).isEqualTo(platzhalterDTO.getSportjahr());
 
 
             // verify invocations
@@ -433,6 +455,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getId()).isEqualTo(platzhalterDTO.getId());
             assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+            assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(platzhalterDTO.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }
@@ -576,6 +599,7 @@ public class DsbMannschaftServiceTest {
             assertThat(updatedDsbMannschaft.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+            assertThat(updatedDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
         } catch (NoPermissionException e) { }
     }
@@ -640,30 +664,94 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
-    public void testInsertMannschaftIntoVeranstaltung() {
+    public void assignMannschaftToVeranstaltung() {
 
         // Prepare test data
         final DsbMannschaftDO expectedDsbMannschaftDO = getDsbMannschaftDO();
-        final long inputVeranstaltungsId = 2222;
+        final long inputVeranstaltungsId = 222L;
+        final VeranstaltungDO expectedVeranstaltungDO = getVeranstaltungDO();
+        expectedVeranstaltungDO.setVeranstaltungID(222L);
+        expectedVeranstaltungDO.setVeranstaltungSportJahr(2024L);
 
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
-        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
-        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expectedDsbMannschaftDO);
+        expectedDsbMannschaftDO.setVeranstaltungId(null);
 
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
+        when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expectedDsbMannschaftDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltungDO);
         // call test method
-        underTest.insertMannschaftIntoVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(),
-                principal);
+        try {
+            underTest.assignMannschaftToVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(), principal);
 
-        // verify invocations
-        verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            // verify invocations
+            verify(dsbMannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+        } catch (NoPermissionException e) {;}
 
         // assert result
         DsbMannschaftDO capturedDsbMannschaftDO = dsbMannschaftVOArgumentCaptor.getValue();
         assertThat(capturedDsbMannschaftDO).isNotNull();
         assertThat(capturedDsbMannschaftDO.getId()).isEqualTo(expectedDsbMannschaftDO.getId());
-        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(inputVeranstaltungsId);
+        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungID());
+        assertThat(capturedDsbMannschaftDO.getSportjahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
     }
+
+    @Test
+    public void unassignMannschaftFromVeranstaltung() {
+
+        // Prepare test data
+        final DsbMannschaftDO expectedDsbMannschaftDO = getDsbMannschaftDO();
+        final VeranstaltungDO expectedVeranstaltungDO = getVeranstaltungDO();
+        final DsbMannschaftDO expectedDsbMannschaftOhneVeranstaltungDO = getDsbMannschaftDO();
+        expectedDsbMannschaftOhneVeranstaltungDO.setVeranstaltungId(null);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
+        expectedDsbMannschaftDO.setVeranstaltungId(expectedVeranstaltungDO.getVeranstaltungID());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltungDO);
+
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
+        when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expectedDsbMannschaftOhneVeranstaltungDO);
+        // call test method
+        underTest.unassignMannschaftFromVeranstaltung( expectedDsbMannschaftDO.getId(), principal);
+
+            // verify invocations
+        verify(dsbMannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        // assert result
+        DsbMannschaftDO capturedDsbMannschaftDO = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(capturedDsbMannschaftDO).isNotNull();
+        assertThat(capturedDsbMannschaftDO.getId()).isEqualTo(expectedDsbMannschaftDO.getId());
+        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(null);
+    }
+
+    @Test
+    public void unassignMannschaftFromVeranstaltungNull() {
+
+        // Prepare test data
+        final DsbMannschaftDO expectedDsbMannschaftDO = getDsbMannschaftDO();
+        final VeranstaltungDO expectedVeranstaltungDO = getVeranstaltungDO();
+        final DsbMannschaftDO expectedDsbMannschaftOhneVeranstaltungDO = getDsbMannschaftDO();
+        expectedDsbMannschaftOhneVeranstaltungDO.setVeranstaltungId(null);
+
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftOhneVeranstaltungDO);
+        expectedDsbMannschaftDO.setVeranstaltungId(expectedVeranstaltungDO.getVeranstaltungID());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltungDO);
+
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
+        when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expectedDsbMannschaftOhneVeranstaltungDO);
+        // call test method
+        underTest.unassignMannschaftFromVeranstaltung( expectedDsbMannschaftDO.getId(), principal);
+
+        // verify invocations
+        verify(dsbMannschaftComponent, times(0)).update(any(), anyLong());
+
+    }
+
+
+
     @Test
     public void testEqualsAndHashCode() {
         // Arrange
