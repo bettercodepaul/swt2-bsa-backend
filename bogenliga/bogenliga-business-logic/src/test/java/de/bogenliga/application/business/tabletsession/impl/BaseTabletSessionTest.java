@@ -8,7 +8,6 @@ import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO
 import de.bogenliga.application.business.tabletsession.impl.entity.TabletSessionBE;
 
 /**
- * TODO [AL] class documentation
  *
  * @author Dominik Halle & Kay Scheerer, HSRT MKI SS19 - SWT2
  */
@@ -30,7 +29,7 @@ public abstract class BaseTabletSessionTest {
 
     protected TabletSessionBE getTabletSessionBE() {
         TabletSessionBE tabBE = new TabletSessionBE();
-        tabBE.setMatchScheibennummer(SCHEIBENNUMMER);
+        tabBE.setScheibennummer(SCHEIBENNUMMER);
         tabBE.setWettkampfId(WETTKAMPF_ID);
         tabBE.setMatchId(MATCH_ID);
         tabBE.setSatznummer(SATZNUMMER);
@@ -47,7 +46,7 @@ public abstract class BaseTabletSessionTest {
 
     public BaseTabletSessionTest() {
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
-        valuesToMethodMap.put("getMatchScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
         valuesToMethodMap.put("getSatznummer", SATZNUMMER);
         valuesToMethodMap.put("getMatchId", MATCH_ID);
         valuesToMethodMap.put("getIsActive", IS_ACTIVE);
