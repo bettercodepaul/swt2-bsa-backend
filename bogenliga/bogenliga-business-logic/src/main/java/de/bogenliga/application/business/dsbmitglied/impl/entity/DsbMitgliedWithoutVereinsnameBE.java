@@ -35,6 +35,23 @@ public class DsbMitgliedWithoutVereinsnameBE extends CommonBusinessEntity implem
         // empty constructor
     }
 
+
+    public DsbMitgliedWithoutVereinsnameBE(Long dsbMitgliedId, String dsbMitgliedVorname, String dsbMitgliedNachname,
+                                           Date dsbMitgliedGeburtsdatum, String dsbMitgliedNationalitaet,
+                                           String dsbMitgliedMitgliedsnummer, Long dsbMitgliedVereinsId,
+                                           Long dsbMitgliedUserId, Date dsbMitgliedBeitrittsdatum) {
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.dsbMitgliedVorname = dsbMitgliedVorname;
+        this.dsbMitgliedNachname = dsbMitgliedNachname;
+        this.dsbMitgliedGeburtsdatum = dsbMitgliedGeburtsdatum;
+        this.dsbMitgliedNationalitaet = dsbMitgliedNationalitaet;
+        this.dsbMitgliedMitgliedsnummer = dsbMitgliedMitgliedsnummer;
+        this.dsbMitgliedVereinsId = dsbMitgliedVereinsId;
+        this.dsbMitgliedUserId = dsbMitgliedUserId;
+        this.dsbMitgliedBeitrittsdatum = dsbMitgliedBeitrittsdatum;
+    }
+
+
     public static Long getSerialVersionUID() {
         return serialVersionUID;
     }
