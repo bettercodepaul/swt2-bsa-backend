@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.impl.dao;
 
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
@@ -9,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 
@@ -177,6 +180,36 @@ public class UserBasicDAOTest {
         // verify invocations
         verify(basicDao).insertEntity(any(), eq(input));
     }
+    @Test
+    public void castToDsbMitgliedWithoutVereinsName() {
+        // prepare test data
+        final DsbMitgliedBE dsbMitgliedBE = new DsbMitgliedBE();
+        dsbMitgliedBE.setDsbMitgliedId(DSBID);
+        dsbMitgliedBE.setDsbMitgliedVorname("Max");
+        dsbMitgliedBE.setDsbMitgliedNachname("Mustermann");
+        dsbMitgliedBE.setDsbMitgliedGeburtsdatum(Date.valueOf("1990-01-01"));
+        dsbMitgliedBE.setDsbMitgliedNationalitaet("DE");
+        dsbMitgliedBE.setDsbMitgliedMitgliedsnummer("123456");
+        dsbMitgliedBE.setDsbMitgliedVereinsId(42L);
+        dsbMitgliedBE.setDsbMitgliedUserId(ID);
+        dsbMitgliedBE.setDsbMitgliedBeitrittsdatum(Date.valueOf("2015-06-15"));
+
+        // call method
+        DsbMitgliedWithoutVereinsnameBE result = underTest.castToDsbMitgliedWithoutVereinsName(dsbMitgliedBE);
+
+        // assert the result
+        assertThat(result).isNotNull();
+        assertThat(result.getDsbMitgliedId()).isEqualTo(dsbMitgliedBE.getDsbMitgliedId());
+        assertThat(result.getDsbMitgliedVorname()).isEqualTo(dsbMitgliedBE.getDsbMitgliedVorname());
+        assertThat(result.getDsbMitgliedNachname()).isEqualTo(dsbMitgliedBE.getDsbMitgliedNachname());
+        assertThat(result.getDsbMitgliedGeburtsdatum()).isEqualTo(dsbMitgliedBE.getDsbMitgliedGeburtsdatum());
+        assertThat(result.getDsbMitgliedNationalitaet()).isEqualTo(dsbMitgliedBE.getDsbMitgliedNationalitaet());
+        assertThat(result.getDsbMitgliedMitgliedsnummer()).isEqualTo(dsbMitgliedBE.getDsbMitgliedMitgliedsnummer());
+        assertThat(result.getDsbMitgliedVereinsId()).isEqualTo(dsbMitgliedBE.getDsbMitgliedVereinsId());
+        assertThat(result.getDsbMitgliedUserId()).isEqualTo(dsbMitgliedBE.getDsbMitgliedUserId());
+        assertThat(result.getDsbMitgliedBeitrittsdatum()).isEqualTo(dsbMitgliedBE.getDsbMitgliedBeitrittsdatum());
+    }
+
 
 
     @Test

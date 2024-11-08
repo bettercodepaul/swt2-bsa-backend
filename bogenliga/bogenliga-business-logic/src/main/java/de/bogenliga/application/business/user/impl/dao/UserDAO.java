@@ -175,7 +175,7 @@ public class UserDAO implements DataAccessObject {
     }
 
 
-    private DsbMitgliedWithoutVereinsnameBE castToDsbMitgliedWithoutVereinsName(DsbMitgliedBE dsbMitgliedBE) {
+    DsbMitgliedWithoutVereinsnameBE castToDsbMitgliedWithoutVereinsName(DsbMitgliedBE dsbMitgliedBE) {
          return new DsbMitgliedWithoutVereinsnameBE(dsbMitgliedBE.getDsbMitgliedId(), dsbMitgliedBE.getDsbMitgliedVorname(),
                  dsbMitgliedBE.getDsbMitgliedNachname(),
                  dsbMitgliedBE.getDsbMitgliedGeburtsdatum(), dsbMitgliedBE.getDsbMitgliedNationalitaet(),
