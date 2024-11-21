@@ -148,11 +148,12 @@ public class JwtTokenProvider {
         return createToken(userWithPermissionsDO, permissions);
     }
 
-
+// der einzelne Anwender soll am Wettkampftag nicht abgemeldet werden
+// daher wird der refreshCounter auf 10 gesetzt
     private String createToken(final UserWithPermissionsDO userWithPermissionsDO,
                                final Set<UserPermission> permissions) {
         return createToken(userWithPermissionsDO.getEmail(), userWithPermissionsDO.getId(),
-                userWithPermissionsDO.getVersion(), permissions, 0);
+                userWithPermissionsDO.getVersion(), permissions, 10);
     }
 
 
