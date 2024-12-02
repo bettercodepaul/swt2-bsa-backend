@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * I'm testing the LigaExtendedDAO class
- *
  * Author: Justin Klein, justin.klein@student.reutlingen-university.de
  */
 public class LigaExtendedDAOTest {
