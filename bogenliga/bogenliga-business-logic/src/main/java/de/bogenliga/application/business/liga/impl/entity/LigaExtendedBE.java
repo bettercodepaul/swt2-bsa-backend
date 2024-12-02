@@ -20,21 +20,6 @@ public class LigaExtendedBE extends LigaBE implements BusinessEntity {
 
     /**
      * Constructor with mandatory parameters
-     *
-     * @param ligaId
-     * @param ligaName
-     * @param ligaDisziplinId
-     * @param ligaRegionId
-     * @param ligaUebergeordnetId
-     * @param ligaVerantwortlichId
-     * @param ligaDetail
-     * @param ligaFileBase64
-     * @param ligaFileName
-     * @param ligaFileType
-     * @param disziplinName
-     * @param regionName
-     * @param uebergeordneteLigaName
-     * @param verantwortlicherName
      */
     public LigaExtendedBE(final Long ligaId, final String ligaName, final Long ligaDisziplinId, final Long ligaRegionId,
                           final Long ligaUebergeordnetId, final Long ligaVerantwortlichId, final String ligaDetail,
