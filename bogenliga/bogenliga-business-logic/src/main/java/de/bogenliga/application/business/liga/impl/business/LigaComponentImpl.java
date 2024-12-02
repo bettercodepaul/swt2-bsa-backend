@@ -1,19 +1,18 @@
 package de.bogenliga.application.business.liga.impl.business;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
-import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
+import de.bogenliga.application.business.liga.impl.dao.LigaExtendedDAO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
 import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -34,46 +33,33 @@ public class LigaComponentImpl implements LigaComponent {
     private static final String PRECONDITION_MSG_CURRENT_LIGA_ID = "Current liga id must not be Null";
 
     private final LigaDAO ligaDAO;
-    private final RegionenComponent regionenComp;
-    private final UserComponent userComp;
-    private final DisziplinComponent disziplinComp;
+    private final LigaExtendedDAO ligaExtendedDAO;
 
 
     @Autowired
-    public LigaComponentImpl(final LigaDAO ligaDAO, @Lazy final RegionenComponent regionenComp, @Lazy final UserComponent userComp, @Lazy final DisziplinComponent disziplinComp) {
+    public LigaComponentImpl(final LigaDAO ligaDAO, @Lazy final RegionenComponent regionenComp, @Lazy final UserComponent userComp, @Lazy final DisziplinComponent disziplinComp,
+                             LigaExtendedDAO ligaExtendedDAO) {
         this.ligaDAO = ligaDAO;
-        this.regionenComp = regionenComp;
-        this.userComp = userComp;
-        this.disziplinComp = disziplinComp;
+        this.ligaExtendedDAO = ligaExtendedDAO;
     }
-
 
     @Override
     public List<LigaDO> findAll() {
-        final ArrayList<LigaDO> returnList = new ArrayList<>();
-        final List<LigaBE> ligaBEList = ligaDAO.findAll();
+        final List<LigaExtendedBE> ligaExtendedBEList = ligaExtendedDAO.findEverything();
 
-        for (int i = 0; i < ligaBEList.size(); i++) {
-
-            returnList.add(i, completeLiga(ligaBEList.get(i)));
-
-        }
-        return returnList;
+        return ligaExtendedBEList.stream()
+                .map(LigaMapper::mapToLigaDO)
+                .toList();
     }
 
     @Override
-    public List<LigaDO> findBySearch(final String searchTerm) {
-        final ArrayList<LigaDO> returnList = new ArrayList<>();
-        final List<LigaBE> ligaBEList = ligaDAO.findBySearch(searchTerm);
+    public List<LigaDO> findBySearch(final String searchTerm){
+        final List<LigaExtendedBE> ligaExtendedBEList = ligaExtendedDAO.findBySearch(searchTerm);
 
-        for (int i = 0; i < ligaBEList.size(); i++) {
-
-            returnList.add(i, completeLiga(ligaBEList.get(i)));
-
-        }
-        return returnList;
+        return ligaExtendedBEList.stream()
+                .map(LigaMapper::mapToLigaDO)
+                .toList();
     }
-
 
     @Override
     public LigaDO findById(long id) {
@@ -182,26 +168,12 @@ public class LigaComponentImpl implements LigaComponent {
 
 
     private LigaDO completeLiga(LigaBE ligaBE) {
-        LigaBE tempLigaBE = new LigaBE();
-        RegionenDO tempRegionenDO = new RegionenDO(0L);
-        UserDO tempUserDO = new UserDO();
-        DisziplinDO tempDisziplinDO = new DisziplinDO();
+        LigaExtendedBE additionalData = ligaExtendedDAO.findAdditionalDataByLigaId(ligaBE.getLigaId());
 
-
-        if (ligaBE.getLigaUebergeordnetId() != null) {
-            tempLigaBE = ligaDAO.findById(ligaBE.getLigaUebergeordnetId());
-        }
-        if (ligaBE.getLigaRegionId() != null) {
-            tempRegionenDO = regionenComp.findById(ligaBE.getLigaRegionId());
-        }
-        if(ligaBE.getLigaVerantwortlichId() != null) {
-            tempUserDO = userComp.findById(ligaBE.getLigaVerantwortlichId());
-        }
-        if (ligaBE.getLigaDisziplinId() != null) {
-            tempDisziplinDO = disziplinComp.findById(ligaBE.getLigaDisziplinId());
+        if (additionalData == null) {
+            additionalData = new LigaExtendedBE();
         }
 
-        return LigaMapper.toLigaDO(ligaBE, tempLigaBE, tempRegionenDO, tempUserDO, tempDisziplinDO);
-
+        return LigaMapper.toLigaDO(ligaBE, additionalData);
     }
 }
