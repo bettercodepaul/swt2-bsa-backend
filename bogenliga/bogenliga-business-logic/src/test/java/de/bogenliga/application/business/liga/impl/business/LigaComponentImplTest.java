@@ -14,9 +14,9 @@ import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.disziplin.impl.business.DisziplinComponentImpl;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
-import de.bogenliga.application.business.liga.impl.dao.LigaExtendedDAO;
+import de.bogenliga.application.business.liga.impl.dao.LigaDAOext;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.business.RegionenComponentImpl;
 import de.bogenliga.application.business.user.api.types.UserDO;
@@ -68,7 +68,7 @@ public class LigaComponentImplTest {
     @Mock
     private DisziplinComponentImpl disziplinComponentImpl;
     @Mock
-    private LigaExtendedDAO ligaExtendedDAO;
+    private LigaDAOext ligaExtendedDAO;
 
 
 
@@ -137,7 +137,7 @@ public class LigaComponentImplTest {
     @Test
     public void findBySearch_whenEverythingIsSet() {
         // prepare test data
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setLigaId(1337L);
         expectedLigaExtendedBE.setLigaName("Test Liga");
         expectedLigaExtendedBE.setLigaRegionId(42L);
@@ -152,7 +152,7 @@ public class LigaComponentImplTest {
         expectedLigaExtendedBE.setUebergeordneteLigaName("Uebergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("Verantwortlich Mail");
 
-        final List<LigaExtendedBE> expectedBEList = Collections.singletonList(expectedLigaExtendedBE);
+        final List<LigaBEext> expectedBEList = Collections.singletonList(expectedLigaExtendedBE);
 
         // configure mocks
         when(ligaExtendedDAO.findBySearch(expectedLigaExtendedBE.getLigaName())).thenReturn(expectedBEList);
@@ -187,7 +187,7 @@ public class LigaComponentImplTest {
     @Test
     public void findAll_whenEverythingIsSet() {
         // prepare test data
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setLigaId(1337L);
         expectedLigaExtendedBE.setLigaName("Test Liga");
         expectedLigaExtendedBE.setLigaRegionId(42L);
@@ -202,7 +202,7 @@ public class LigaComponentImplTest {
         expectedLigaExtendedBE.setUebergeordneteLigaName("Uebergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("Verantwortlich Mail");
 
-        final List<LigaExtendedBE> expectedBEList = Collections.singletonList(expectedLigaExtendedBE);
+        final List<LigaBEext> expectedBEList = Collections.singletonList(expectedLigaExtendedBE);
 
         // configure mocks
         when(ligaExtendedDAO.findEverything()).thenReturn(expectedBEList);
@@ -310,7 +310,7 @@ public class LigaComponentImplTest {
     public void findBySearch_whenAttributesAreNull() {
 
         // prepare test data
-        final LigaExtendedBE expectedLigaBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaBE = new LigaBEext();
         expectedLigaBE.setLigaId(1L);
         expectedLigaBE.setLigaName("Test Liga");
         expectedLigaBE.setLigaUebergeordnetId(null);
@@ -325,7 +325,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setUebergeordneteLigaName(null);
         expectedLigaBE.setVerantwortlicherName(null);
 
-        final List<LigaExtendedBE> expectedBEList = Collections.singletonList(expectedLigaBE);
+        final List<LigaBEext> expectedBEList = Collections.singletonList(expectedLigaBE);
 
         // configure mocks
         when(ligaExtendedDAO.findBySearch(expectedLigaBE.getLigaName())).thenReturn(expectedBEList);
@@ -360,7 +360,7 @@ public class LigaComponentImplTest {
     @Test
     public void findAll_whenAttributesAreNull() {
         // prepare test data
-        final LigaExtendedBE expectedLigaBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaBE = new LigaBEext();
         expectedLigaBE.setLigaId(1L);
         expectedLigaBE.setLigaName("Test Liga");
         expectedLigaBE.setLigaUebergeordnetId(null);
@@ -375,7 +375,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setUebergeordneteLigaName(null);
         expectedLigaBE.setVerantwortlicherName(null);
 
-        final List<LigaExtendedBE> expectedBEList = Collections.singletonList(expectedLigaBE);
+        final List<LigaBEext> expectedBEList = Collections.singletonList(expectedLigaBE);
 
 
         // configure mocks
@@ -425,7 +425,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setLigaFileName("fileName.pdf");
         expectedLigaBE.setLigaFileType("application/pdf");
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test Region");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Übergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("user@test.com");
@@ -487,7 +487,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setLigaVerantwortlichId(null);
         expectedLigaBE.setLigaDetail(null);
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName(null);
         expectedLigaExtendedBE.setUebergeordneteLigaName(null);
         expectedLigaExtendedBE.setVerantwortlicherName(null);
@@ -530,7 +530,7 @@ public class LigaComponentImplTest {
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test Region");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Übergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("test@mail.de");
@@ -593,7 +593,7 @@ public class LigaComponentImplTest {
         final RegionenDO expectedRegionBE = getRegionenDO();
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Test Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("test@mail.de");
@@ -658,7 +658,7 @@ public class LigaComponentImplTest {
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Test Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("test@mail.de");
@@ -757,7 +757,7 @@ public class LigaComponentImplTest {
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test Region");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Übergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("user@test.com");
@@ -814,7 +814,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setLigaVerantwortlichId(null);
         expectedLigaBE.setLigaDetail(null);
 
-        final LigaExtendedBE expectedLigaExtendedBE = new LigaExtendedBE();
+        final LigaBEext expectedLigaExtendedBE = new LigaBEext();
         expectedLigaExtendedBE.setRegionName("Test Region");
         expectedLigaExtendedBE.setUebergeordneteLigaName("Übergeordnete Liga");
         expectedLigaExtendedBE.setVerantwortlicherName("user@test.com");
