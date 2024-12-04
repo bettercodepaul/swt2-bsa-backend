@@ -2,7 +2,7 @@ package de.bogenliga.application.business.liga.impl.mapper;
 
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -44,12 +44,12 @@ public class LigaMapper implements ValueObjectMapper {
     };
 
     /**
-     * Maps a {@link LigaExtendedBE} to a {@link LigaDO}.
+     * Maps a {@link LigaBEext} to a {@link LigaDO}.
      *
      * @param be the business entity
      * @return the domain object
      */
-    public static LigaDO mapToLigaDO(LigaExtendedBE be) {
+    public static LigaDO mapToLigaDO(LigaBEext be) {
         final Long ligaId = be.getLigaId();
         final String ligaName = be.getLigaName();
         final Long ligaRegionId = be.getLigaRegionId();
@@ -82,7 +82,7 @@ public class LigaMapper implements ValueObjectMapper {
 
     }
 
-    public static LigaDO toLigaDO(LigaBE ligaBE, LigaExtendedBE additionalData) {
+    public static LigaDO toLigaDO(LigaBE ligaBE, LigaBEext additionalData) {
         if (ligaBE == null) {
             return null;
         }

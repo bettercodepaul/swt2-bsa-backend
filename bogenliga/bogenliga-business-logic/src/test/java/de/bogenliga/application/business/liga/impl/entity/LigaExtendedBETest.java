@@ -19,7 +19,7 @@ public class LigaExtendedBETest {
     @Test
     public void assertToString() {
         // Arrange
-        final LigaExtendedBE underTest = getLigaExtendedBE();
+        final LigaBEext underTest = getLigaExtendedBE();
         underTest.setLigaId(ID);
         underTest.setLigaName(LIGANAME);
         underTest.setDisziplinName(DISZIPLINNAME);
@@ -44,7 +44,7 @@ public class LigaExtendedBETest {
     @Test
     public void assertToString_withoutName() {
         // Arrange
-        final LigaExtendedBE underTest = getLigaExtendedBE();
+        final LigaBEext underTest = getLigaExtendedBE();
         underTest.setLigaId(ID);
         underTest.setLigaName(null);  // LigaName is set to null
         underTest.setDisziplinName(null);  // DisziplinName is set to null
@@ -69,7 +69,7 @@ public class LigaExtendedBETest {
     @Test
     public void assertGetterSetter() {
         // Arrange
-        final LigaExtendedBE underTest = new LigaExtendedBE();
+        final LigaBEext underTest = new LigaBEext();
         underTest.setDisziplinName(DISZIPLINNAME);
         underTest.setRegionName(REGIONNAME);
         underTest.setUebergeordneteLigaName(UEBERGEORDNETELIGANAME);
@@ -82,14 +82,14 @@ public class LigaExtendedBETest {
         assertThat(underTest.getVerantwortlicherName()).isEqualTo(VERANTWORTLICHERNAME);
     }
 
-    private LigaExtendedBE getLigaExtendedBE() {
-        return new LigaExtendedBE();
+    private LigaBEext getLigaExtendedBE() {
+        return new LigaBEext();
     }
 
     @Test
     public void assertInheritedFields() {
         // Arrange
-        final LigaExtendedBE underTest = new LigaExtendedBE();
+        final LigaBEext underTest = new LigaBEext();
         underTest.setLigaId(ID);
         underTest.setLigaName(LIGANAME);
 
@@ -117,7 +117,7 @@ public class LigaExtendedBETest {
         final String verantwortlicherName = "Verantwortlicher Y";
 
         // Act
-        LigaExtendedBE underTest = new LigaExtendedBE(
+        LigaBEext underTest = new LigaBEext(
                 ligaId, ligaName, ligaDisziplinId, ligaRegionId,
                 ligaUebergeordnetId, ligaVerantwortlichId, ligaDetail,
                 ligaFileBase64, ligaFileName, ligaFileType,
@@ -136,7 +136,7 @@ public class LigaExtendedBETest {
     @Test
     public void assertToString_withNullFields() {
         // Arrange
-        final LigaExtendedBE underTest = new LigaExtendedBE();
+        final LigaBEext underTest = new LigaBEext();
         underTest.setLigaId(ID);
         underTest.setLigaName(null);
         underTest.setDisziplinName(null);
@@ -162,7 +162,7 @@ public class LigaExtendedBETest {
     @Test
     public void assertGetterSetter_withEmptyStrings() {
         // Arrange
-        final LigaExtendedBE underTest = new LigaExtendedBE();
+        final LigaBEext underTest = new LigaBEext();
         underTest.setDisziplinName("");
         underTest.setRegionName("");
         underTest.setUebergeordneteLigaName("");

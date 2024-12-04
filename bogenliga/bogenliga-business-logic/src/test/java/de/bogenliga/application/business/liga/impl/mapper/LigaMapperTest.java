@@ -3,7 +3,7 @@ package de.bogenliga.application.business.liga.impl.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -63,7 +63,7 @@ public class LigaMapperTest {
 
     @Test
     public void mapToLigaDO() {
-        final LigaExtendedBE extendedBE = new LigaExtendedBE();
+        final LigaBEext extendedBE = new LigaBEext();
         extendedBE.setLigaId(LIGAID);
         extendedBE.setLigaName(LIGANAME);
         extendedBE.setLigaRegionId(LIGAREGIONID);
@@ -111,7 +111,7 @@ public class LigaMapperTest {
         ligaBE.setLigaFileName(LIGAFILENAME);
         ligaBE.setLigaFileType(LIGAFILETYPE);
 
-        final LigaExtendedBE extendedBE = new LigaExtendedBE();
+        final LigaBEext extendedBE = new LigaBEext();
         extendedBE.setDisziplinName(DISZIPLINNAME);
         extendedBE.setRegionName(REGIONNAME);
         extendedBE.setUebergeordneteLigaName(UEBERGEORDNETENAME);

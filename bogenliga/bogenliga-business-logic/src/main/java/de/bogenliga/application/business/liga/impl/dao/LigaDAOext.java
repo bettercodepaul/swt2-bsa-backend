@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.liga.impl.dao;
 
-import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -17,10 +17,10 @@ import java.util.Map;
  * DataAccessObject extension for advanced Liga operations.
  */
 @Repository
-public class LigaExtendedDAO implements DataAccessObject {
+public class LigaDAOext implements DataAccessObject {
 
     // Define logger context
-    private static final Logger LOGGER = LoggerFactory.getLogger(LigaExtendedDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LigaDAOext.class);
 
     // Table name in the database
     private static final String TABLE = "liga";
@@ -49,8 +49,8 @@ public class LigaExtendedDAO implements DataAccessObject {
     private static final String LIGA_TABLE_FILE_TYPE = "liga_file_type";
 
     // Business Entity Configuration
-    private static final BusinessEntityConfiguration<LigaExtendedBE> LIGA_EXTENDED = new BusinessEntityConfiguration<>(
-        LigaExtendedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<LigaBEext> LIGA_EXTENDED = new BusinessEntityConfiguration<>(
+            LigaBEext.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     /*
     * SQL queries for extended Liga operations
@@ -124,7 +124,7 @@ public class LigaExtendedDAO implements DataAccessObject {
      * @param basicDao to handle the commonly used database operations
      * */
     @Autowired
-    public LigaExtendedDAO(final BasicDAO basicDao) {
+    public LigaDAOext(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
 
@@ -154,11 +154,11 @@ public class LigaExtendedDAO implements DataAccessObject {
     /**
      * Fetch extended Liga information with details.
      */
-    public List<LigaExtendedBE> findEverything() {
+    public List<LigaBEext> findEverything() {
         return basicDao.selectEntityList(LIGA_EXTENDED, FIND_EVERYTHING);
     }
 
-    public List<LigaExtendedBE> findBySearch(final String searchTerm){
+    public List<LigaBEext> findBySearch(final String searchTerm){
         return basicDao.selectEntityList(LIGA_EXTENDED, FIND_BY_SEARCH, new StringBuilder()
                                                                             .append("%")
                                                                             .append(searchTerm.toLowerCase())
@@ -166,7 +166,7 @@ public class LigaExtendedDAO implements DataAccessObject {
                                                                             .toString());
     }
 
-    public LigaExtendedBE findAdditionalDataByLigaId(final long ligaID) {
+    public LigaBEext findAdditionalDataByLigaId(final long ligaID) {
         return basicDao.selectSingleEntity(LIGA_EXTENDED, FIND_ADDITIONAL_DATA_BY_LIGAID, ligaID);
     }
 }

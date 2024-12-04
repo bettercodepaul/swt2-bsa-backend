@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.liga.impl.dao;
 
-import de.bogenliga.application.business.liga.impl.entity.LigaExtendedBE;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,18 +38,18 @@ public class LigaExtendedDAOTest {
     private BasicDAO basicDao;
 
     @InjectMocks
-    private LigaExtendedDAO underTest;
+    private LigaDAOext underTest;
 
     @Test
     public void findEverything() {
         // prepare test data
-        final LigaExtendedBE expectedBE = createLigaExtendedBE();
+        final LigaBEext expectedBE = createLigaExtendedBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findEverything();
+        final List<LigaBEext> actual = underTest.findEverything();
 
         // assert result
         assertThat(actual)
@@ -73,7 +73,7 @@ public class LigaExtendedDAOTest {
         when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.emptyList());
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findEverything();
+        final List<LigaBEext> actual = underTest.findEverything();
 
         // assert result
         assertThat(actual)
@@ -101,13 +101,13 @@ public class LigaExtendedDAOTest {
     @Test
     public void findBySearch() {
         // prepare test data
-        final LigaExtendedBE expectedBE = createLigaExtendedBE();
+        final LigaBEext expectedBE = createLigaExtendedBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findBySearch(SUCHBEGRIFF);
+        final List<LigaBEext> actual = underTest.findBySearch(SUCHBEGRIFF);
 
         // assert result
         assertThat(actual)
@@ -128,7 +128,7 @@ public class LigaExtendedDAOTest {
     @Test
     public void findBySearch_unexpectedData() {
         // prepare test data
-        final LigaExtendedBE unexpectedBE = new LigaExtendedBE();
+        final LigaBEext unexpectedBE = new LigaBEext();
         unexpectedBE.setLigaId(9999L); // nicht erwartete ID
         unexpectedBE.setLigaName("Unerwartete Liga");
 
@@ -136,7 +136,7 @@ public class LigaExtendedDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(unexpectedBE));
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findBySearch("Unexpected");
+        final List<LigaBEext> actual = underTest.findBySearch("Unexpected");
 
         // assert result
         assertThat(actual)
@@ -158,7 +158,7 @@ public class LigaExtendedDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.emptyList());
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findBySearch(maliciousSearch);
+        final List<LigaBEext> actual = underTest.findBySearch(maliciousSearch);
 
         // assert result
         assertThat(actual)
@@ -174,13 +174,13 @@ public class LigaExtendedDAOTest {
     public void findBySearch_specialCharacters() {
         // prepare test data
         final String specialSearchTerm = "%_\"";
-        final LigaExtendedBE expectedBE = createLigaExtendedBE();
+        final LigaBEext expectedBE = createLigaExtendedBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<LigaExtendedBE> actual = underTest.findBySearch(specialSearchTerm);
+        final List<LigaBEext> actual = underTest.findBySearch(specialSearchTerm);
 
         // assert result
         assertThat(actual)
@@ -195,13 +195,13 @@ public class LigaExtendedDAOTest {
     @Test
     public void findAdditionalDataByLigaId() {
         // prepare test data
-        final LigaExtendedBE expectedBE = createLigaExtendedBE();
+        final LigaBEext expectedBE = createLigaExtendedBE();
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), eq(LIGA_ID))).thenReturn(expectedBE);
 
         // call test method
-        final LigaExtendedBE actual = underTest.findAdditionalDataByLigaId(LIGA_ID);
+        final LigaBEext actual = underTest.findAdditionalDataByLigaId(LIGA_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -222,7 +222,7 @@ public class LigaExtendedDAOTest {
         when(basicDao.selectSingleEntity(any(), any(), eq(LIGA_ID))).thenReturn(null);
 
         // call test method
-        final LigaExtendedBE actual = underTest.findAdditionalDataByLigaId(LIGA_ID);
+        final LigaBEext actual = underTest.findAdditionalDataByLigaId(LIGA_ID);
 
         // assert result
         assertThat(actual).isNull();
@@ -235,8 +235,8 @@ public class LigaExtendedDAOTest {
     /*
      * Utility method to create a LigaExtendedBE for tests
      */
-    private LigaExtendedBE createLigaExtendedBE() {
-        final LigaExtendedBE be = new LigaExtendedBE();
+    private LigaBEext createLigaExtendedBE() {
+        final LigaBEext be = new LigaBEext();
         be.setLigaId(LIGA_ID);
         be.setLigaName(LIGA_NAME);
         be.setRegionName(REGION_NAME);

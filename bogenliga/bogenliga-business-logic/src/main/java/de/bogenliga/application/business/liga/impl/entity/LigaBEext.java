@@ -5,7 +5,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 /**
  * Extends LigaBE with additional fields for the extended business logic.
  */
-public class LigaExtendedBE extends LigaBE implements BusinessEntity {
+public class LigaBEext extends LigaBE implements BusinessEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -14,14 +14,14 @@ public class LigaExtendedBE extends LigaBE implements BusinessEntity {
     private String uebergeordneteLigaName;
     private String verantwortlicherName;
 
-    public LigaExtendedBE() {
+    public LigaBEext() {
         // empty constructor
     }
 
     /**
      * Constructor with mandatory parameters
      */
-    public LigaExtendedBE(final Long ligaId, final String ligaName, final Long ligaDisziplinId, final Long ligaRegionId,
+    public LigaBEext(final Long ligaId, final String ligaName, final Long ligaDisziplinId, final Long ligaRegionId,
                           final Long ligaUebergeordnetId, final Long ligaVerantwortlichId, final String ligaDetail,
                           final String ligaFileBase64, final String ligaFileName, final String ligaFileType,
                           final String disziplinName, final String regionName, final String uebergeordneteLigaName,
@@ -77,7 +77,7 @@ public class LigaExtendedBE extends LigaBE implements BusinessEntity {
 
     @Override
     public String toString() {
-        return "LigaExtendedBE{" +
+        return "LigaBEext{" +
                 "ligaId=" + super.getLigaId() +
                 ", ligaName='" + super.getLigaName() + '\'' +
                 ", disziplinName='" + disziplinName + '\'' +
