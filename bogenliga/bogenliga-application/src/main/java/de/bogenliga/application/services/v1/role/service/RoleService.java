@@ -6,7 +6,6 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.services.v1.role.mapper.RoleDTOMapper;
 import de.bogenliga.application.services.v1.role.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +38,13 @@ public class RoleService implements ServiceFacade {
 
     private final RoleComponent roleComponent;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     private final WebSecurityConfiguration webSecurityConfiguration;
 
 
 
     @Autowired
-    public RoleService(final JwtTokenProvider jwtTokenProvider,
-                       final WebSecurityConfiguration webSecurityConfiguration,
+    public RoleService(final WebSecurityConfiguration webSecurityConfiguration,
                        final RoleComponent roleComponent) {
-        this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.roleComponent = roleComponent;
     }
