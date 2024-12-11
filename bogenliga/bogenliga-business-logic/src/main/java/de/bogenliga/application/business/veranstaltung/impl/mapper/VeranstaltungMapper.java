@@ -7,6 +7,7 @@ import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBEext;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -38,7 +39,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         veranstaltungBE.setVeranstaltungLigaId(veranstaltungDO.getVeranstaltungLigaID());
         veranstaltungBE.setVeranstaltungSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
 
-        /** the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
+        /* the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
          *  The phase will convert from String to Integer, because the phase is stored in the database as Integer,
          *  but in the dialogs of the frontend it should show the phase as text.
          **/
@@ -92,4 +93,29 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         return veranstaltungDO;
 
     }
+
+    public static VeranstaltungDO toVeranstaltungDOext(VeranstaltungBEext be) {
+
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
+
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO(
+                be.getVeranstaltungId(),
+                be.getVeranstaltungWettkampftypId(),
+                be.getVeranstaltungName(),
+                be.getVeranstaltungSportjahr(),
+                be.getVeranstaltungMeldedeadline(),
+                be.getVeranstaltungLigaleiterId(),
+                be.getVeranstaltungLigaId(),
+                be.getLigaLeiterEmail(),
+                be.getWettkampftypName(),
+                be.getLigaName(),
+                String.valueOf(be.getVeranstaltungPhase()),
+                be.getVeranstaltungGroesse()
+        );
+        veranstaltungDO.setCreatedAtUtc(createdAtUtc);
+        veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
+        return veranstaltungDO;
+    }
+
 }
