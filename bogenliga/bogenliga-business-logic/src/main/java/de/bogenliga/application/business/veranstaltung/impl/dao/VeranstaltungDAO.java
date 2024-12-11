@@ -314,7 +314,6 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     public VeranstaltungBE update(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(veranstaltungBE, currentDsbMitgliedId);
-
         return basicDao.updateEntity(VERANSTALTUNG, veranstaltungBE, VERANSTALTUNG_BE_ID);
     }
 

@@ -30,6 +30,10 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
+    public VeranstaltungBE(Long veranstaltungId, Long veranstaltungLigaId, Long veranstaltungWettkampftypId, String veranstaltungName, Long veranstaltungSportjahr, Date veranstaltungMeldedeadline, Long veranstaltungLigaleiterId, Integer veranstaltungPhase, Integer veranstaltungGroesse) {
+        super();
+    }
+
 
     @Override
     public String toString() {
