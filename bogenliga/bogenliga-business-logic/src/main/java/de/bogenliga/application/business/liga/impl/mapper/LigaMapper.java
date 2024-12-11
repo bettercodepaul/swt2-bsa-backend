@@ -1,15 +1,12 @@
 package de.bogenliga.application.business.liga.impl.mapper;
 
-import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.liga.impl.entity.LigaBEext;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 /**
@@ -17,43 +14,6 @@ import java.util.function.Function;
  *
  */
 public class LigaMapper implements ValueObjectMapper {
-    /**
-     * Converts a {@link LigaBE} to a {@link LigaDO}
-     *
-     */
-    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenDO, UserDO userDO, DisziplinDO disziplinDO){
-
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
-
-        String disziplinName = "";
-
-
-        if (disziplinDO.getDisziplinId() != 0) {
-            disziplinName = " " + disziplinDO.getDisziplinName();
-        }
-
-        LigaDO ligaDO = new LigaDO(
-                ligaBE.getLigaId(),
-                ligaBE.getLigaName() + disziplinName,
-                regionenDO.getId(),
-                regionenDO.getRegionName(),
-                ligaBE.getLigaUebergeordnetId(),
-                uebergeordnetLiga.getLigaName(),
-                userDO.getId(),
-                userDO.getEmail(),
-                disziplinDO.getDisziplinId(),
-                ligaBE.getLigaDetail(),
-                ligaBE.getLigaFileBase64(),
-                ligaBE.getLigaFileName(),
-                ligaBE.getLigaFileType()
-
-
-        );
-        ligaDO.setCreatedAtUtc(createdAtUtc);
-        ligaDO.setLastModifiedAtUtc(lastModifiedAtUtc);
-        return ligaDO;
-    }
 
     /**
      * Converts a {@link LigaDO} to a {@link LigaBE}
@@ -82,6 +42,86 @@ public class LigaMapper implements ValueObjectMapper {
 
         return ligaBE;
     };
+
+    /**
+     * Maps a {@link LigaBEext} to a {@link LigaDO}.
+     *
+     * @param be the business entity
+     * @return the domain object
+     */
+    public static LigaDO mapToLigaDO(LigaBEext be) {
+        final Long ligaId = be.getLigaId();
+        final String ligaName = be.getLigaName();
+        final Long ligaRegionId = be.getLigaRegionId();
+        final String regionName = be.getRegionName();
+        final Long ligaUebergeordnetId = be.getLigaUebergeordnetId();
+        final String uebergeordneteLigaName = be.getUebergeordneteLigaName();
+        final Long ligaVerantwortlichId = be.getLigaVerantwortlichId();
+        final String verantwortlicherName = be.getVerantwortlicherName();
+        final Long disziplinId = be.getLigaDisziplinId();
+        final String ligaDetail = be.getLigaDetail();
+        final String ligaFileBase64 = be.getLigaFileBase64();
+        final String ligaFileName = be.getLigaFileName();
+        final String ligaFileType = be.getLigaFileType();
+
+        return new LigaDO(
+                ligaId,
+                ligaName,
+                ligaRegionId,
+                regionName,
+                ligaUebergeordnetId,
+                uebergeordneteLigaName,
+                ligaVerantwortlichId,
+                verantwortlicherName,
+                disziplinId,
+                ligaDetail,
+                ligaFileBase64,
+                ligaFileName,
+                ligaFileType
+        );
+
+    }
+
+    public static LigaDO toLigaDO(LigaBE ligaBE, LigaBEext additionalData) {
+        if (ligaBE == null) {
+            return null;
+        }
+
+        // Basisdaten aus LigaBE
+        Long ligaId = ligaBE.getLigaId();
+        String ligaName = ligaBE.getLigaName();
+        Long ligaRegionId = ligaBE.getLigaRegionId();
+        Long ligaUebergeordnetId = ligaBE.getLigaUebergeordnetId();
+        Long ligaVerantwortlichId = ligaBE.getLigaVerantwortlichId();
+        Long disziplinId = ligaBE.getLigaDisziplinId();
+        String ligaDetail = ligaBE.getLigaDetail();
+        String ligaFileBase64 = ligaBE.getLigaFileBase64();
+        String ligaFileName = ligaBE.getLigaFileName();
+        String ligaFileType = ligaBE.getLigaFileType();
+
+        // Zusätzliche Daten aus LigaExtendedBE
+        String regionName = additionalData != null ? additionalData.getRegionName() : null;
+        String uebergeordneteLigaName = additionalData != null ? additionalData.getUebergeordneteLigaName() : null;
+        String verantwortlicherName = additionalData != null ? additionalData.getVerantwortlicherName() : null;
+
+        // Zusammenführen und Rückgabe des LigaDO
+        return new LigaDO(
+                ligaId,
+                ligaName,
+                ligaRegionId,
+                regionName,
+                ligaUebergeordnetId,
+                uebergeordneteLigaName,
+                ligaVerantwortlichId,
+                verantwortlicherName,
+                disziplinId,
+                ligaDetail,
+                ligaFileBase64,
+                ligaFileName,
+                ligaFileType
+        );
+    }
+
 
     /**
      * Private Constructor

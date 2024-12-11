@@ -1,12 +1,8 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.services.v1.dsbmannschaft.mapper.MannschaftSortierungDTOMapper;
-import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
 import org.junit.Before;
 import org.junit.Rule;
@@ -116,8 +112,6 @@ public class MannschaftSortierungServiceTest {
         // prepare test data
         final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
         inputDTO.setSortierung(-1L);
-        final DsbMannschaftDO expected = getDsbMannschaftDO();
-
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(inputDTO, principal))
                 .withMessageContaining("must not be null or less than 0");
