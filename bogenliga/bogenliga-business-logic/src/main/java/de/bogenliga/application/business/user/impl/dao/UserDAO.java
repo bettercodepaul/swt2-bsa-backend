@@ -167,10 +167,21 @@ public class UserDAO implements DataAccessObject {
         DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsbMitgliedId());
         if(dsbMitgliedBE != null) {
             dsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-            dsbMitgliedDAO.update((DsbMitgliedWithoutVereinsnameBE) dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
+            dsbMitgliedDAO.update(castToDsbMitgliedWithoutVereinsName(dsbMitgliedBE) , dsbMitgliedBE.getDsbMitgliedId());
+
         }
 
         return persistedUser;
+    }
+
+
+    DsbMitgliedWithoutVereinsnameBE castToDsbMitgliedWithoutVereinsName(DsbMitgliedBE dsbMitgliedBE) {
+         return new DsbMitgliedWithoutVereinsnameBE(dsbMitgliedBE.getDsbMitgliedId(), dsbMitgliedBE.getDsbMitgliedVorname(),
+                 dsbMitgliedBE.getDsbMitgliedNachname(),
+                 dsbMitgliedBE.getDsbMitgliedGeburtsdatum(), dsbMitgliedBE.getDsbMitgliedNationalitaet(),
+                 dsbMitgliedBE.getDsbMitgliedMitgliedsnummer(), dsbMitgliedBE.getDsbMitgliedVereinsId(),
+                 dsbMitgliedBE.getDsbMitgliedUserId(), dsbMitgliedBE.getDsbMitgliedBeitrittsdatum());
+
     }
 
 

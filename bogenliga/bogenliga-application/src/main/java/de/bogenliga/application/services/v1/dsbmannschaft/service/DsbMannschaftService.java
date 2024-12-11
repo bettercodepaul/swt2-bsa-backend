@@ -51,7 +51,6 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
@@ -347,7 +346,6 @@ public class DsbMannschaftService implements ServiceFacade {
 
             for (int j = 0; j < list.size(); j++) {
                 MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
-                Preconditions.checkArgument(createdSchuetze != null, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
             }
         }catch (NullPointerException ignored) {}
     }
@@ -363,52 +361,55 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param principal authenticated user
      */
 
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public void checkForPlatzhalter(@RequestBody final List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount,
                                     final List<DsbMannschaftDO> allExistingPlatzhalterList,
                                     final DsbMannschaftDTO dsbMannschaftDTO,
                                     final int veranstaltungsgroesse,
                                     final Principal principal) throws NoPermissionException {
 
-        if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
+        // Check if the user has the required permission
+        if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
                 this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
 
+            // Check basic preconditions
             checkPreconditions(dsbMannschaftDTO);
             Preconditions.checkArgument(veranstaltungsgroesse >= 0, PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV);
 
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-
+            // Loop through all the existing Platzhalter teams
             for (int i = 0; i < allExistingPlatzhalterList.size(); i++) {
-                // If the Platzhalter from the list isn´t in this Veranstaltung, skip it
-                // Only searching if an Platzhalter already exists in this Veranstaltung
-                if (!(allExistingPlatzhalterList.get(i).getVeranstaltungId().equals(
-                        dsbMannschaftDTO.getVeranstaltungId()))) {
-                    continue;
-                }
                 Long platzhalterVeranstaltungsId = allExistingPlatzhalterList.get(i).getVeranstaltungId();
                 Long platzhalterId = allExistingPlatzhalterList.get(i).getId();
 
-                // Check if in this Veranstaltung is already and Platzhalter
-                // And if the new team isn´t an Platzhalter
-                Preconditions.checkArgument(!dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
-                        PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
+                //  Replaced `continue` with an `if` condition to only process the relevant iteration
+                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())) {
 
-                // If the new team isn´t and Platzhalter
-                // And the Veranstaltung already has an Platzhalter
-                // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
-                if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
-                        && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
-                        && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
-                    delete(platzhalterId, principal);
-                    break;
+                    // Check if the new team is a Platzhalter
+                    Preconditions.checkArgument(!dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID),
+                            PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
+
+                    // If the new team is not a Platzhalter,
+                    // The Veranstaltung already has a Platzhalter, and the capacity is reached -> delete the Platzhalter
+                    if (platzhalterVeranstaltungsId.equals(dsbMannschaftDTO.getVeranstaltungId())
+                            && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
+                            && !dsbMannschaftDTO.getVereinId().equals(platzhalterId)) {
+
+                        // Delete the Platzhalter team
+                        delete(platzhalterId, principal);
+                        break; // Keep the `break` to exit the loop after deleting the Platzhalter
+                    }
                 }
+                // If the condition does not match, the loop just continues to the next iteration without processing
             }
+        } else {
+            // Throw an exception if the user does not have permission
+            throw new NoPermissionException();
         }
-        else throw new NoPermissionException();
-
     }
+
 
 
 

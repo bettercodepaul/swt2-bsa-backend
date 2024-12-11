@@ -106,7 +106,7 @@ public class TabletSessionDAO {
     }
 
 
-    public TabletSessionBE findByIdScheinebnummer(Long wettkampfid, Long scheibenNr) {
+    public TabletSessionBE findByIdScheibennummer(Long wettkampfid, Long scheibenNr) {
         return basicDao.selectSingleEntity(TABLET_SESSION, FIND_BY_PK, wettkampfid, scheibenNr);
     }
 

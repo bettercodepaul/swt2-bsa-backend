@@ -44,7 +44,6 @@ public class WettkampfServiceTest {
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
     private static final Date wettkampf_Datum = new Date(20190521L);
-    private static final String wettkampf_Datum_S = "2019-05-21";
     private static final String wettkampf_Strasse = "Reutlingerstr. 6";
     private static final String wettkampf_Plz = "72764";
     private static final String wettkampf_Ortsname = "Reutlingen";
