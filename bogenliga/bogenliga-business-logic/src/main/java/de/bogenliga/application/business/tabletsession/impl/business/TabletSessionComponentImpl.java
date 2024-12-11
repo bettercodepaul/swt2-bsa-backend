@@ -2,7 +2,6 @@ package de.bogenliga.application.business.tabletsession.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -46,7 +45,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     @Override
     public List<TabletSessionDO> findAll() {
         final List<TabletSessionBE> tabBEList = tabletDAO.findAll();
-        return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
+        return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).toList();
     }
 
 
@@ -55,19 +54,19 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkPreconditions(wettkampfid, PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final List<TabletSessionBE> tabBEList = tabletDAO.findByWettkampfId(wettkampfid);
-        return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
+        return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).toList();
     }
 
 
     @Override
     public List<MatchDO> getRelatedMatches(TabletSessionDO tabletSessionDO, MatchComponent matchComponent) {
-        checkPreconditions(tabletSessionDO.getMatchScheibennummer(), "scheibenNr");
+        checkPreconditions(tabletSessionDO.getScheibennummer(), "scheibenNr");
         MatchDO matchDO = null;
         if (tabletSessionDO.getMatchId() != null) {
             matchDO = matchComponent.findById(tabletSessionDO.getMatchId());
         }
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(tabletSessionDO.getWettkampfId());
-        Long scheibenNr = tabletSessionDO.getMatchScheibennummer();
+        Long scheibenNr = tabletSessionDO.getScheibennummer();
         // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
         // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
         // ist das gegebene Match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
@@ -79,7 +78,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
                         scheibenNr.equals(mDO.getMatchScheibennummer())
                                 || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -109,12 +108,12 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         List<MatchDO> matchDOs = matches.stream()
                 .filter(mDO -> mDO.getMatchScheibennummer().equals(scheibe))
                 .filter(mDO -> mDO.getNr().equals(1L))
-                .collect(Collectors.toList());
+                .toList();
 
         tab.setMatchId(matchDOs.get(0).getId());
         tab.setSatznummer(1L);
         tab.setWettkampfId(wettkampfId);
-        tab.setMatchScheibennummer(scheibe);
+        tab.setScheibennummer(scheibe);
         tab.setActive(false);
         return tab;
     }
@@ -125,7 +124,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkPreconditions(scheibenNr, PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(wettkampfid, PRECONDITION_FIELD_WETTKAMPF_ID);
 
-        final TabletSessionBE tabBE = tabletDAO.findByIdScheinebnummer(wettkampfid, scheibenNr);
+        final TabletSessionBE tabBE = tabletDAO.findByIdScheibennummer(wettkampfid, scheibenNr);
         return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
 
@@ -165,7 +164,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
 
     private void checkBE(final TabletSessionDO sessionDO) {
-        checkPreconditions(sessionDO.getMatchScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
+        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
         checkPreconditions(sessionDO.getSatznummer(), "satznummer");
         checkPreconditions(sessionDO.getMatchId(), "matchId");
