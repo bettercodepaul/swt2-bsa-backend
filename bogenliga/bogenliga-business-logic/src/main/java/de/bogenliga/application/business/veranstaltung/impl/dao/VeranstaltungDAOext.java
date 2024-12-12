@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBEext;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -196,6 +197,51 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     +"benutzer b ON l.liga_verantwortlich = b.benutzer_id "
                     + " WHERE veranstaltung_ligaleiter_id = ?";
 
+    private static final String FIND_BY_LIGAID =
+            "SELECT v.*,"
+                    +" l.liga_name AS ligaName,"
+                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" b.benutzer_email AS ligaLeiterEmail "
+                    +"FROM "
+                    +"veranstaltung v "
+                    +"LEFT JOIN "
+                    +"liga l ON v.veranstaltung_liga_id = l.liga_id "
+                    +"LEFT JOIN "
+                    +"wettkampftyp w ON v.veranstaltung_wettkampftyp_id = w.wettkampftyp_id "
+                    +"LEFT JOIN "
+                    +"benutzer b ON l.liga_verantwortlich = b.benutzer_id "
+                    + "WHERE veranstaltung_liga_id = ?";
+
+    private static final String FIND_BY_ID =
+            "SELECT v.*,"
+                    +" l.liga_name AS ligaName,"
+                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" b.benutzer_email AS ligaLeiterEmail "
+                    +"FROM "
+                    +"veranstaltung v "
+                    +"LEFT JOIN "
+                    +"liga l ON v.veranstaltung_liga_id = l.liga_id "
+                    +"LEFT JOIN "
+                    +"wettkampftyp w ON v.veranstaltung_wettkampftyp_id = w.wettkampftyp_id "
+                    +"LEFT JOIN "
+                    +"benutzer b ON l.liga_verantwortlich = b.benutzer_id "
+                    + " WHERE veranstaltung_id = ?";
+
+    private static final String FIND_BY_LIGAID_AND_SPORTJAHR =
+            "SELECT v.*,"
+                    +" l.liga_name AS ligaName,"
+                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" b.benutzer_email AS ligaLeiterEmail "
+                    +"FROM "
+                    +"veranstaltung v "
+                    +"LEFT JOIN "
+                    +"liga l ON v.veranstaltung_liga_id = l.liga_id "
+                    +"LEFT JOIN "
+                    +"wettkampftyp w ON v.veranstaltung_wettkampftyp_id = w.wettkampftyp_id "
+                    +"LEFT JOIN "
+                    +"benutzer b ON l.liga_verantwortlich = b.benutzer_id "
+                    + " WHERE veranstaltung_liga_id = ? AND veranstaltung_sportjahr = ?";
+
     private final BasicDAO basicDao;
 
     /**
@@ -292,4 +338,15 @@ public class VeranstaltungDAOext implements DataAccessObject {
         return basicDao.selectEntityList(VERANSTALTUNG_EXTENDED, FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
+    public List<VeranstaltungBEext> findByLigaID(long ligaID) {
+        return basicDao.selectEntityList(VERANSTALTUNG_EXTENDED, FIND_BY_LIGAID, ligaID);
+    }
+
+    public VeranstaltungBEext findById(final long id) {
+        return basicDao.selectSingleEntity(VERANSTALTUNG_EXTENDED, FIND_BY_ID, id);
+    }
+
+    public VeranstaltungBEext findByLigaIdAndSportjahr(final long ligaId, final long sportjahr) {
+        return basicDao.selectSingleEntity(VERANSTALTUNG_EXTENDED, FIND_BY_LIGAID_AND_SPORTJAHR, ligaId, sportjahr);
+    }
 }
