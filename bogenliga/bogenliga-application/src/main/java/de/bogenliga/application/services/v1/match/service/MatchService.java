@@ -102,12 +102,11 @@ public class MatchService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String CHECKED_PARAM_MATCH_DTO_LIST = "matchDTOs";
     private static final String CHECKED_PARAM_PRINCIPAL = "principal";
-
+    private static final String CHECKED_MANNSCHAFTSMITGLIED = "mannschaftsmitgliedDOS";
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs-ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_ID = "Users-ID must not be negative";
 
     private static final int PLATZHALTER_ID = 99;
-
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
@@ -392,7 +391,7 @@ public class MatchService implements ServiceFacade {
         }
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
-                String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
+                String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_MANNSCHAFTSMITGLIED, 3));
 
 
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
@@ -415,7 +414,7 @@ public class MatchService implements ServiceFacade {
         }
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
-                String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
+                String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_MANNSCHAFTSMITGLIED, 3));
 
 
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
@@ -484,7 +483,7 @@ public class MatchService implements ServiceFacade {
     public static Long getMemberIdFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
 
         Preconditions.checkNotNull(mannschaftsmitgliedDOS,
-                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS"));
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_MANNSCHAFTSMITGLIED));
         Preconditions.checkNotNull(passeDTO,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
         Preconditions.checkNotNull(passeDTO.getRueckennummer(),
