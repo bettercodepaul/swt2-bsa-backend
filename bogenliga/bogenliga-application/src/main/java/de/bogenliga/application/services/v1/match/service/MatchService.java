@@ -216,7 +216,7 @@ public class MatchService implements ServiceFacade {
             }
 
             return matchDTOs;
-            
+
         }
 
 
@@ -399,7 +399,30 @@ public class MatchService implements ServiceFacade {
             createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
         }
     }
+    @PostMapping(value = "spotter",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public MatchDTO saveMatchesSpotter(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException{
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
 
+        LOG.debug("Anzahl Schützen: {}", mannschaftsmitgliedDOS.size());
+        for (MannschaftsmitgliedDO mmdo : mannschaftsmitgliedDOS) {
+            LOG.debug("Schütze: {} mit dsbMitgliedId {}", mmdo.getId(), mmdo.getDsbMitgliedId());
+        }
+
+        Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
+                String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
+
+
+        for (PasseDTO passeDTO : matchDTO.getPassen()) {
+            createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
+        }
+        return matchDTO;
+    }
 
     /**
      * Checks whether the given passe object already exists.
@@ -901,4 +924,4 @@ public class MatchService implements ServiceFacade {
                 matchDTO.getMatchpunkte()
         );
     }
- }
+}
