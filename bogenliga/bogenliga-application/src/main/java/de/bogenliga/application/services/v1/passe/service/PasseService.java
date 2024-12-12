@@ -98,7 +98,7 @@ public class PasseService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public PasseDTO create(@RequestBody final PasseDTO passeDTO, final Principal principal) {
-        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
+        MatchService.checkPreconditions(passeDTO, MatchService.getPasseConditionErrors());
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(passeDTO.getMannschaftId());
@@ -116,7 +116,7 @@ public class PasseService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public PasseDTO update(@RequestBody final PasseDTO passeDTO, final Principal principal) {
-        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
+        MatchService.checkPreconditions(passeDTO, MatchService.getPasseConditionErrors());
 
         final long userId = UserProvider.getCurrentUserId(principal);
         PasseDO passeDO = passeComponent.update(PasseDTOMapper.toDO.apply(passeDTO), userId);

@@ -385,7 +385,7 @@ public class MatchServiceTest {
         // expect a NPE as the null-state should be checked in MatchComponentImpl
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID));
-     }
+    }
 
 
     @Test
@@ -427,6 +427,21 @@ public class MatchServiceTest {
         } catch (NoPermissionException e) {
         }
     }
+    @Test
+    public void saveMatchesSpotter() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        try {
+            final MatchDTO actual = underTest.saveMatchesSpotter(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
+    }
 
     @Test
     public void saveMatchesNoPermission() {
@@ -462,7 +477,7 @@ public class MatchServiceTest {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.saveMatches(matches, principal));
 
-     }
+    }
 
 
     @Test
@@ -496,13 +511,13 @@ public class MatchServiceTest {
         when(passeComponent.findById(PASSE_ID_2)).thenReturn(passe2DO);
 
         try {
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
-        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+            MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
-        // make sure update was called twice per passed DTO
-        verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
+            // make sure update was called twice per passed DTO
+            verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
 
         } catch (NoPermissionException e) {
         }
@@ -617,7 +632,7 @@ public class MatchServiceTest {
     public void create_Null() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.create(null, principal));
-     }
+    }
 
 
     @Test
@@ -629,9 +644,9 @@ public class MatchServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         try {
-        final MatchDTO actual = underTest.update(matchDTO, principal);
-        assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+            final MatchDTO actual = underTest.update(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
         } catch (NoPermissionException e) {
         }
     }
@@ -655,7 +670,7 @@ public class MatchServiceTest {
     public void update_Null() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.update(null, principal));
-     }
+    }
 
 
     @Test
