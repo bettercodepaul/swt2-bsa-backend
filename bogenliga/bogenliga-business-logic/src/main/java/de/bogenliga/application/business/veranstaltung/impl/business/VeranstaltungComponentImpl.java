@@ -2,6 +2,7 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
@@ -43,12 +44,17 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_GROESSE = "veranstaltunggroesse must be not null";
 
-    private final VeranstaltungDAO veranstaltungDAO;
-    private final WettkampfComponent wettkampfComponent;
-    private final LigaComponent ligaComponent;
-    private final WettkampfTypComponent wettkampfTypComponent;
-    private final UserComponent userComponent;
     private final VeranstaltungDAOext veranstaltungDAOext;
+    private final VeranstaltungDAO veranstaltungDAO;
+    @Autowired
+    WettkampfComponent wettkampfComponent;
+    @Autowired
+    LigaComponent ligaComponent;
+    @Autowired
+    WettkampfTypComponent wettkampfTypComponent;
+    @Autowired
+    UserComponent userComponent;
+
 
     /**
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
@@ -56,17 +62,9 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     public VeranstaltungComponentImpl(
            VeranstaltungDAO veranstaltungDAO,
-           WettkampfComponent wettkampfComponent,
-           LigaComponent ligaComponent,
-           WettkampfTypComponent wettkampfTypComponent,
-           UserComponent userComponent,
            VeranstaltungDAOext veranstaltungDAOext) {
 
         this.veranstaltungDAO = veranstaltungDAO;
-        this.wettkampfComponent = wettkampfComponent;
-        this.ligaComponent = ligaComponent;
-        this.wettkampfTypComponent = wettkampfTypComponent;
-        this.userComponent = userComponent;
         this.veranstaltungDAOext = veranstaltungDAOext;
     }
 
