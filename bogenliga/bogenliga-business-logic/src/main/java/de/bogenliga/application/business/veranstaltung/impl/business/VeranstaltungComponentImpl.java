@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
@@ -44,28 +46,50 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_GROESSE = "veranstaltunggroesse must be not null";
 
-    private final VeranstaltungDAOext veranstaltungDAOext;
-    private final VeranstaltungDAO veranstaltungDAO;
-    @Autowired
-    WettkampfComponent wettkampfComponent;
-    @Autowired
-    LigaComponent ligaComponent;
-    @Autowired
-    WettkampfTypComponent wettkampfTypComponent;
-    @Autowired
-    UserComponent userComponent;
-
+    private  VeranstaltungDAOext veranstaltungDAOext;
+    private  VeranstaltungDAO veranstaltungDAO;
+    private  WettkampfComponent wettkampfComponent;
+    private  LigaComponent ligaComponent;
+    private  WettkampfTypComponent wettkampfTypComponent;
+    private  UserComponent userComponent;
 
     /**
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
      */
 
-    public VeranstaltungComponentImpl(
-           VeranstaltungDAO veranstaltungDAO,
-           VeranstaltungDAOext veranstaltungDAOext) {
+    @Autowired
+    public VeranstaltungComponentImpl() {
 
-        this.veranstaltungDAO = veranstaltungDAO;
+    }
+
+    @Autowired
+    public void setVeranstaltungDAOext(final VeranstaltungDAOext veranstaltungDAOext){
         this.veranstaltungDAOext = veranstaltungDAOext;
+    }
+
+    @Autowired
+    public void setVeranstaltungDAO(final VeranstaltungDAO VeranstaltungDAO){
+        this.veranstaltungDAO = VeranstaltungDAO;
+    }
+
+    @Autowired
+    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
+        this.wettkampfComponent = wettkampfComponent;
+    }
+
+    @Autowired
+    public void setLigaComponent(final LigaComponent ligaComponent){
+        this.ligaComponent = ligaComponent;
+    }
+
+    @Autowired
+    public void setWettkampfTypComponent(final WettkampfTypComponent wettkampfTypComponent){
+        this.wettkampfTypComponent = wettkampfTypComponent;
+    }
+
+    @Autowired
+    public void setUserComponent(final UserComponent userComponent){
+        this.userComponent = userComponent;
     }
 
     /**
@@ -96,30 +120,29 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     public VeranstaltungDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
-        final VeranstaltungBE result = veranstaltungDAO.findById(id);
+        final VeranstaltungBEext result = veranstaltungDAOext.findById(id);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
 
-        return completeNames(result);
+        return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
-
 
     @Override
     public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
         Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
         Preconditions.checkArgument(sportjahr >= 1980, PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
 
-        final VeranstaltungBE result = veranstaltungDAO.findByLigaIdAndSportjahr(ligaId, sportjahr);
+        final VeranstaltungBEext result = veranstaltungDAOext.findByLigaIdAndSportjahr(ligaId, sportjahr);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", ligaId));
         }
 
-        return completeNames(result);
+        return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
 
 
@@ -222,14 +245,12 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findByLigaID(ligaID);
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findByLigaID(ligaID);
 
-        }
-        return returnList;
+        return veranstaltungBEextList.stream()
+                .map(VeranstaltungMapper::toVeranstaltungDOext)
+                .toList();
     }
 
 

@@ -83,7 +83,7 @@ public class LigaMapper implements ValueObjectMapper {
     }
 
     public static LigaDO toLigaDO(LigaBE ligaBE, LigaBEext additionalData) {
-        if (ligaBE == null) {
+         if (ligaBE == null) {
             return null;
         }
 
