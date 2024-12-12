@@ -81,13 +81,17 @@ public class MatchService implements ServiceFacade {
         matchConditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
-    public static final Map<String, String> passeConditionErrors = new HashMap<>();
+    protected static final Map<String, String> passeConditionErrors = new HashMap<>();
 
     static {
         passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
         passeConditionErrors.put("getMannschaftId", PasseComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
         matchConditionErrors.put("getWettkampfId", PasseComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
         passeConditionErrors.put("getMatchNr", PasseComponentImpl.PRECONDITION_MSG_MATCH_NR);
+    }
+    public static Map<String, String> getPasseConditionErrors()
+    {
+        return passeConditionErrors;
     }
 
     private static final String SERVICE_FIND_BY_ID = "findById";
