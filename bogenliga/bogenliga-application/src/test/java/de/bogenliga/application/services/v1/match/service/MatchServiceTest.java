@@ -427,6 +427,21 @@ public class MatchServiceTest {
         } catch (NoPermissionException e) {
         }
     }
+    @Test
+    public void saveMatchesSpotter() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        try {
+            final MatchDTO actual = underTest.saveMatchesSpotter(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
+    }
 
     @Test
     public void saveMatchesNoPermission() {
