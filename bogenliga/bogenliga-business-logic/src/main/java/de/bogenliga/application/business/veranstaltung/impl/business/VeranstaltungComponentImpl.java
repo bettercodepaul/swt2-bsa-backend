@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
@@ -12,7 +14,9 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAOext;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBEext;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -42,12 +46,12 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_GROESSE = "veranstaltunggroesse must be not null";
 
+    private  VeranstaltungDAOext veranstaltungDAOext;
     private  VeranstaltungDAO veranstaltungDAO;
     private  WettkampfComponent wettkampfComponent;
     private  LigaComponent ligaComponent;
     private  WettkampfTypComponent wettkampfTypComponent;
     private  UserComponent userComponent;
-
 
     /**
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
@@ -59,13 +63,18 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     }
 
     @Autowired
-    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
-        this.wettkampfComponent = wettkampfComponent;
+    public void setVeranstaltungDAOext(final VeranstaltungDAOext veranstaltungDAOext){
+        this.veranstaltungDAOext = veranstaltungDAOext;
     }
 
     @Autowired
-    public void setVeranstaltungDAO(final VeranstaltungDAO veranstaltungDAO){
-        this.veranstaltungDAO = veranstaltungDAO;
+    public void setVeranstaltungDAO(final VeranstaltungDAO VeranstaltungDAO){
+        this.veranstaltungDAO = VeranstaltungDAO;
+    }
+
+    @Autowired
+    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
+        this.wettkampfComponent = wettkampfComponent;
     }
 
     @Autowired
@@ -83,7 +92,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         this.userComponent = userComponent;
     }
 
-
     /**
      * findAll-Method gives all Veranstaltungen from the dataBase
      *
@@ -91,76 +99,62 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      */
     @Override
     public List<VeranstaltungDO> findAll(VeranstaltungPhase.Phase[] phaseList) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll(phaseList);
 
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findEverything(phaseList);
 
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
-
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-
-        return returnList;
+        return veranstaltungBEextList.stream()
+                .map(VeranstaltungMapper::toVeranstaltungDOext)
+                .toList();
     }
 
     public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahrDestinct(sportjahr);
 
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findBySportjahrDestinct(sportjahr);
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-
-        return returnList;
+        return veranstaltungBEextList.stream()
+               .map(VeranstaltungMapper::toVeranstaltungDOext)
+               .toList();
     }
 
     @Override
     public VeranstaltungDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
-        final VeranstaltungBE result = veranstaltungDAO.findById(id);
+        final VeranstaltungBEext result = veranstaltungDAOext.findById(id);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
 
-        return completeNames(result);
+        return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
-
 
     @Override
     public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
         Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
         Preconditions.checkArgument(sportjahr >= 1980, PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
 
-        final VeranstaltungBE result = veranstaltungDAO.findByLigaIdAndSportjahr(ligaId, sportjahr);
+        final VeranstaltungBEext result = veranstaltungDAOext.findByLigaIdAndSportjahr(ligaId, sportjahr);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", ligaId));
         }
 
-        return completeNames(result);
+        return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
 
 
     @Override
     public List<VeranstaltungDO> findByLigaleiterId(long ligaleiterId) {
 
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findByLigaleiterId(ligaleiterId);
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findByLigaleiterId(ligaleiterId);
 
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-
-        return returnList;
+        return veranstaltungBEextList.stream()
+                .map(VeranstaltungMapper::toVeranstaltungDOext)
+                .toList();
     }
 
 
@@ -191,7 +185,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         //TODO die Bestiummung der User-ID im Service funktioniert nicht korrekt - daher kann diese nicht
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
-        // fehler: ind er DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
+        // fehler: in der DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
 
         return completeNames(persistedVeranstaltungBE);
     }
@@ -251,27 +245,22 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findByLigaID(ligaID);
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findByLigaID(ligaID);
 
-        }
-        return returnList;
+        return veranstaltungBEextList.stream()
+                .map(VeranstaltungMapper::toVeranstaltungDOext)
+                .toList();
     }
 
 
     @Override
     public List<VeranstaltungDO> findBySportjahr(long sportjahr, VeranstaltungPhase.Phase[] phaseList) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr, phaseList);
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+        final List<VeranstaltungBEext> veranstaltungBEextList = veranstaltungDAOext.findBySportjahr(sportjahr, phaseList);
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-        return returnList;
+        return veranstaltungBEextList.stream()
+                .map(VeranstaltungMapper::toVeranstaltungDOext)
+                .toList();
     }
 
 
@@ -360,7 +349,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
         }
 
-        /** the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
+        /* the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
          *  The phase will convert from Integer to String, because the phase is stored in the database as Integer,
          *  but in the dialogs of the frontend it should show the phase as text.
          */
@@ -375,4 +364,3 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
 
 }
-

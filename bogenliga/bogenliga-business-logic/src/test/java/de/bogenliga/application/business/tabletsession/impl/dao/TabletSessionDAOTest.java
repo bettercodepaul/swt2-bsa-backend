@@ -68,7 +68,7 @@ public class TabletSessionDAOTest extends BaseTabletSessionTest {
     public void findByPk() {
         try {
             basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByIdScheinebnummer(WETTKAMPF_ID, SCHEIBENNUMMER));
+                    underTest.findByIdScheibennummer(WETTKAMPF_ID, SCHEIBENNUMMER));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
