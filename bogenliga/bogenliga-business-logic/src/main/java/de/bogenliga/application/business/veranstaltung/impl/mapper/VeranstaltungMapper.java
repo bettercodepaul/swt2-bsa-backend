@@ -108,7 +108,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 be.getVeranstaltungLigaleiterId(),
                 be.getVeranstaltungLigaId(),
                 be.getLigaLeiterEmail(),
-                be.getWettkampftypName(),
+                be.getwettkampftypname(),
                 be.getLigaName(),
                 String.valueOf(be.getVeranstaltungPhase()),
                 be.getVeranstaltungGroesse()

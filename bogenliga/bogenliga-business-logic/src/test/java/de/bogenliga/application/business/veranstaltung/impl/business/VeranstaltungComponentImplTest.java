@@ -198,7 +198,7 @@ public class VeranstaltungComponentImplTest {
        expectedVeranstaltungBEext.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
        expectedVeranstaltungBEext.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
        expectedVeranstaltungBEext.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-       expectedVeranstaltungBEext.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+       expectedVeranstaltungBEext.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
        expectedVeranstaltungBEext.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
        expectedVeranstaltungBEext.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -233,7 +233,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                .isEqualTo(expectedVeranstaltungBEext.getLigaLeiterEmail());
        assertThat(actual.get(0).getVeranstaltungLigaName())
-               .isEqualTo(expectedVeranstaltungBEext.getWettkampftypName());
+               .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
                .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
 
@@ -263,7 +263,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                .isEqualTo(expectedVeranstaltungBEext.getLigaLeiterEmail());
        assertThat(actual.get(0).getVeranstaltungLigaName())
-               .isEqualTo(expectedVeranstaltungBEext.getWettkampftypName());
+               .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
                .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
 
@@ -294,7 +294,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                .isEqualTo(expectedVeranstaltungBEext.getLigaLeiterEmail());
        assertThat(actual.get(0).getVeranstaltungLigaName())
-               .isEqualTo(expectedVeranstaltungBEext.getWettkampftypName());
+               .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
                .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
 
@@ -494,7 +494,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedBEext.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedBEext.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedBEext.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedBEext.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedBEext.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedBEext.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedBEext.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
         // configure mocks
@@ -551,7 +551,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedDO.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedDO.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedDO.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedDO.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedDO.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedDO.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -579,7 +579,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual.get(0).getVeranstaltungLigaName())
@@ -600,7 +600,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedDO.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedDO.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedDO.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedDO.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedDO.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedDO.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -631,7 +631,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual.get(0).getVeranstaltungLigaName())
@@ -660,7 +660,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual_1.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual_1.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual_1.get(0).getVeranstaltungLigaName())
@@ -690,7 +690,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual_2.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual_2.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual_2.get(0).getVeranstaltungLigaName())
@@ -719,7 +719,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual_3.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual_3.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual_3.get(0).getVeranstaltungLigaName())
@@ -740,7 +740,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedDO.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedDO.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedDO.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedDO.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedDO.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedDO.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -767,7 +767,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual.get(0).getVeranstaltungLigaName())
@@ -789,7 +789,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedDO.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedDO.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedDO.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedDO.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedDO.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedDO.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -814,7 +814,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual.getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual.getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
@@ -839,7 +839,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         expectedDO.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
         expectedDO.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedDO.setLigaLeiterEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
-        expectedDO.setWettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        expectedDO.setwettkampftypName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
         expectedDO.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
         expectedDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
@@ -867,7 +867,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungName());
 
         assertThat(actual.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(expectedDO.getWettkampftypName());
+                .isEqualTo(expectedDO.getwettkampftypname());
         assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
                 .isEqualTo(expectedDO.getLigaLeiterEmail());
         assertThat(actual.get(0).getVeranstaltungLigaName())
