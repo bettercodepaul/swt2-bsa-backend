@@ -62,8 +62,8 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_EVERYTHING =
             "SELECT DISTINCT" +
                     "    v.*, " +
-                    "    l.liga_name AS liga_name, " +
-                    "    w.wettkampftyp_name AS wettkampftyp_name, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
                     "    b.benutzer_email AS ligaleiter_email " +
                     " FROM " +
                     "    veranstaltung v " +
@@ -79,8 +79,8 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_ALL_PHASE =
             "SELECT " +
                     "    v.*, " +
-                    "    l.liga_name AS liga_name, " +
-                    "    w.wettkampftyp_name AS wettkampftyp_name, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
                     "    b.benutzer_email AS ligaleiter_email " +
                     " FROM " +
                     "    veranstaltung v " +
@@ -98,7 +98,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_SPORTJAHR =
             "SELECT v.*,"
                         +" l.liga_name AS ligaName,"
-                        +" l.liga_verantwortlich AS ligaLeiterId,"
+                        +" w.wettkampftyp_name AS wettkampftypName, "
                         +" b.benutzer_email AS ligaLeiterEmail "
                     +" FROM "
                         +"veranstaltung v "
@@ -114,9 +114,9 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_SPORTJAHR_EINE_PHASE =
             "SELECT " +
                     "    v.*, " +
-                    "    l.liga_name AS liga_name, " +
-                    "    w.wettkampftyp_name AS wettkampftyp_name, " +
-                    "b.benutzer_email AS ligaLeiterEmail " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaLeiterEmail " +
                     " FROM " +
                     "    veranstaltung v " +
                     "LEFT JOIN " +
@@ -131,13 +131,13 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_SPORTJAHR_ZWEI_PHASEN =
             "SELECT " +
                     "    v.*, " +
-                    "    l.liga_name AS liga_name, " +
-                    "    w.wettkampftyp_name AS wettkampftyp_name, " +
-                    "b.benutzer_email AS ligaLeiterEmail " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaLeiterEmail " +
                     " FROM " +
                     "    veranstaltung v " +
-                    "LEFT JOIN " +
-                    "    liga l ON v.veranstaltung_liga_id = l.liga_id " +
+                    "LEFT JOIN "+
+                    "   liga l ON v.veranstaltung_liga_id = l.liga_id "+
                     "LEFT JOIN " +
                     "    wettkampftyp w ON v.veranstaltung_wettkampftyp_id = w.wettkampftyp_id " +
                     "LEFT JOIN " +
@@ -185,7 +185,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_LIGALEITER_ID =
             "SELECT v.*,"
                     +" l.liga_name AS ligaName,"
-                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" w.wettkampftyp_name AS wettkampftypName,"
                     +" b.benutzer_email AS ligaLeiterEmail "
                     +" FROM "
                     +"veranstaltung v "
@@ -200,7 +200,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_LIGAID =
             "SELECT v.*,"
                     +" l.liga_name AS ligaName,"
-                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" w.wettkampftyp_name AS wettkampftypName,"
                     +" b.benutzer_email AS ligaLeiterEmail "
                     +"FROM "
                     +"veranstaltung v "
@@ -215,7 +215,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_ID =
             "SELECT v.*,"
                     +" l.liga_name AS ligaName,"
-                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" w.wettkampftyp_name AS wettkampftypName,"
                     +" b.benutzer_email AS ligaLeiterEmail "
                     +"FROM "
                     +"veranstaltung v "
@@ -230,7 +230,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String FIND_BY_LIGAID_AND_SPORTJAHR =
             "SELECT v.*,"
                     +" l.liga_name AS ligaName,"
-                    +" l.liga_verantwortlich AS ligaLeiterId,"
+                    +" w.wettkampftyp_name AS wettkampftypName,"
                     +" b.benutzer_email AS ligaLeiterEmail "
                     +"FROM "
                     +"veranstaltung v "
