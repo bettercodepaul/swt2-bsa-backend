@@ -196,8 +196,6 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByName(@PathVariable("name") final String name) {
 
-        LOG.debug("Receive 'findAllByName' request with Name '{}'", name);
-
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
