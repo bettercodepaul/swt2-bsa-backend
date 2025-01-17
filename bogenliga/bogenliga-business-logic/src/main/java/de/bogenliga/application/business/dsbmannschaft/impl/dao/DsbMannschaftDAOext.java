@@ -59,12 +59,21 @@ public class DsbMannschaftDAOext implements DataAccessObject {
      */
 
     private static final String FIND_ALL_BY_WETTKAMPF_ID =
-            "select DISTINCT m.* FROM mannschaft m, wettkampf w, veranstaltung v\n" +
-                    "WHERE w.wettkampf_veranstaltung_id = v.veranstaltung_id\n" +
-                    "AND m.mannschaft_veranstaltung_id = v.veranstaltung_id\n" +
-                    "AND w.wettkampf_id = ?\n" +
-                    "group by m.mannschaft_id";
-
+            " SELECT DISTINCT "
+                    + " m.*, "
+                    + " MAX(v.verein_name) AS vereinName "
+                    + " FROM "
+                    + " mannschaft m "
+                    + " JOIN "
+                    + " wettkampf w ON w.wettkampf_veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + " JOIN "
+                    + " veranstaltung ve ON ve.veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + " LEFT JOIN "
+                    + " verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE "
+                    + " w.wettkampf_id = ? "
+                    + " GROUP BY "
+                    + " m.mannschaft_id ";
     private static final String FIND_VERSANSTALTUNGEN_BY_VEREIN =
             "SELECT veranstaltung_name, wettkampf_tag, wettkampf_ortsname, verein_name, mannschaft_nummer "
                     + "FROM veranstaltung ver "
@@ -74,6 +83,78 @@ public class DsbMannschaftDAOext implements DataAccessObject {
                     + "WHERE v.verein_id = ? "
                     + "AND ver.veranstaltung_phase = 2 "
                     + "GROUP BY mannschaft_nummer, veranstaltung_name, verein_name, wettkampf_ortsname, wettkampf_tag; ";
+
+    private static final String FIND_ALL_BY_WETTKAMPF_ID_WITH_NAME =
+            " SELECT "
+                    + " m.*, "
+                    + " v.verein_name as vereinName "
+                    + " FROM mannschaft m "
+                    + " LEFT JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE m.mannschaft_veranstaltung_id = ? "
+                    + " ORDER BY m.mannschaft_sortierung; ";
+
+    private static final String FIND_BY_ID_WITH_NAME =
+            " SELECT "
+                    + "m.*, "
+                    + " v.verein_name AS vereinName "
+                    + " FROM "
+                    + " mannschaft m "
+                    + " LEFT JOIN "
+                    + " verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE "
+                    + " m.mannschaft_id = ? ";
+
+    private static final String FIND_ALL_BY_VEREINS_ID_WITH_NAME =
+            " SELECT "
+                    + " m.* "
+                    + " v.verein_name AS vereinName "
+                    + " FROM "
+                    + " mannschaft m "
+                    + " LEFT JOIN "
+                    + " verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE mannschaft_verein_id = ? "
+                    + " ORDER BY mannschaft_nummer ";
+
+    private static final String FIND_ALL_BY_NAME_WITH_NAME =
+            " SELECT "
+                    + " a.*, "
+                    + " b.verein_name AS vereinName "
+                    + " FROM mannschaft a, verein b "
+                    + " WHERE a.mannschaft_verein_id = b.verein_id "
+                    + " AND CONCAT(LOWER(b.verein_name), ' ' , "
+                    + " LOWER(CAST(a.mannschaft_nummer AS TEXT))) "
+                    + " LIKE LOWER(?) "
+                    + " AND mannschaft_veranstaltung_id IS NULL ";
+
+    private static final String FIND_ALL_BY_WARTESCHLANGE_WITH_NAME =
+            " SELECT "
+                    + " m.*, "
+                    + " v.verein_name AS vereinName "
+                    + " FROM mannschaft m "
+                    + " JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE "
+                    + " m.mannschaft_veranstaltung_id IS NULL "
+                    + " AND m.mannschaft_sportjahr IS NULL ";
+
+    private static final String FIND_ALL_WITH_NAME =
+            " SELECT "
+                    + " m.*, "
+                    + " v.verein_name AS vereinName "
+                    + " FROM "
+                    + " mannschaft m "
+                    + " JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " ORDER BY "
+                    + " mannschaft_id ";
+
+    private static final String FIND_ALL_BY_VERANSTALTUNGS_ID_WITH_NAME =
+            " SELECT "
+                    + " m.*, "
+                    + " v.verein_name AS vereinName "
+                    + " FROM mannschaft m "
+                    + " JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + " WHERE "
+                    + " mannschaft_veranstaltung_id = ? "
+                    + " ORDER BY mannschaft_sortierung ";
 
     private final BasicDAO basicDao;
 
@@ -117,6 +198,20 @@ public class DsbMannschaftDAOext implements DataAccessObject {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
     public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfById(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_VERSANSTALTUNGEN_BY_VEREIN, id);}
+    public List<DsbMannschaftBEext> findAllByWettkampfIdWithName(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID_WITH_NAME, id);}
+    public DsbMannschaftBEext findByIdwithName(final long id) {
+        return basicDao.selectSingleEntity(MANNSCHAFT, FIND_BY_ID_WITH_NAME, id);}
+    public List<DsbMannschaftBEext> findAllByVereinsIdwithName(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_VEREINS_ID_WITH_NAME, id);}
+    public List<DsbMannschaftBEext> findAllByNameWithName(final String name) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_NAME_WITH_NAME, new StringBuilder().append("%").append(name).append("%").toString());}
+    public List<DsbMannschaftBEext> findAllByWarteschlangewithName() {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WARTESCHLANGE_WITH_NAME);}
+    public List<DsbMannschaftBEext> findAllwithName() {
+        return  basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_WITH_NAME);}
+    public List<DsbMannschaftBEext> findAllByVeranstaltungsIdwithName(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_VERANSTALTUNGS_ID_WITH_NAME, id);}
     /**
      * Return all dsbmannschaft entries that are currently in the waiting queue
      *
