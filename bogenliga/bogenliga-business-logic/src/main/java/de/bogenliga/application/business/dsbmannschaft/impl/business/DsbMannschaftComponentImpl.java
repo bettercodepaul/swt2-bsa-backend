@@ -8,6 +8,7 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -72,51 +73,52 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     @Override
     public List<DsbMannschaftDO> findAll() {
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAll();
-        return this.fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findAllwithName();
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
     @Override
     public List<DsbMannschaftDO> findAllByWarteschlange() {
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWarteschlange();
-        return this.fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findAllByWarteschlangewithName();
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
 
     @Override
     public List<DsbMannschaftDO> findAllByName(String name) {
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByName(name);
-        return this.fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findAllByNameWithName(name);
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
 
     @Override
     public List<DsbMannschaftDO> findAllByVereinsId(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVereinsId(id);
+        final List<DsbMannschaftBEext> dsbMannschaftBeList = dsbMannschaftDAOext.findAllByVereinsIdwithName(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
 
-        return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
+
 
     @Override
     public List<DsbMannschaftDO> findAllByVeranstaltungsId(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_VERANSTALTUNGS_ID);
-        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVeranstaltungsId(id);
-        if(dsbMannschaftBeList == null){
+        final List<DsbMannschaftBEext> dsbMannschaftBEextList = dsbMannschaftDAOext.findAllByVeranstaltungsIdwithName(id);
+        if(dsbMannschaftBEextList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
 
-        return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
+        return dsbMannschaftBEextList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
     @Override
@@ -128,8 +130,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
 
-        return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList());
+        return dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
     public List<DsbMannschaftDO> findVeranstaltungAndWettkampfByID(long id){
@@ -148,15 +150,14 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public DsbMannschaftDO findById(final long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
 
-        final DsbMannschaftBE result = dsbMannschaftDAO.findById(id);
+        final DsbMannschaftBEext result = dsbMannschaftDAOext.findByIdwithName(id);
 
         if(result == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
-        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(result));
+        return DsbMannschaftMapper.toDsbMannschaftVerUWettDO.apply(result);
     }
-
 
 
     @Override
@@ -208,7 +209,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * @param mannschaften Several MannschaftDOs with missing name.
      * @return the same Mannschaften as given but with their names filled.
      */
-    private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
+    protected List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
         return mannschaften.stream().map(this::fillName).toList();
     }
 

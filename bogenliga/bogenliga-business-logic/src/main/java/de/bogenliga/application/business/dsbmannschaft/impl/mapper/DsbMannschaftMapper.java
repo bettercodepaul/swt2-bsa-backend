@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -45,6 +46,8 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung, sportjahr,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
+
+
     public static final Function<DsbMannschaftBEext, DsbMannschaftDO> toDsbMannschaftVerUWettDO = be -> {
 
         final Long id = be.getId();
@@ -54,7 +57,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final Long veranstaltungId = be.getVeranstaltungId();
         final Long sortierung = be.getSortierung();
         final Long sportjahr = be.getSportjahr();
-        final String name = be.getVereinName()+be.getNummer().toString();
+        final String name = be.getVereinName() +" " + be.getNummer().toString();
 
         final String veranstaltungName = be.getVeranstaltungName();
         final String wettkampfTag = be.getWettkampfTag();
