@@ -20,7 +20,10 @@ import static org.mockito.Mockito.when;
 
 public class DsbMannschaftBasicDAOextTest {
 
-    private static final long wettkampfId=31;
+    private static final long WETTKAMPFID=31;
+
+    private static final long ID = 31;
+    private static final String NAME = "TestName";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -30,37 +33,7 @@ public class DsbMannschaftBasicDAOextTest {
     private DsbMannschaftDAOext underTest;
 
 
-    @Test
-    public void findAllByWettkampfId() {
-        // prepare test data
-        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
 
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
-
-        // call test method
-        final List<DsbMannschaftBEext> actual = underTest.findAllByWettkampfId(wettkampfId);
-
-        // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-
-        assertThat(actual.get(0)).isNotNull();
-
-        assertThat(actual.get(0).getId())
-                .isEqualTo(expectedBE.getId());
-        assertThat(actual.get(0).getVereinId())
-                .isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.get(0).getNummer())
-                .isEqualTo(expectedBE.getNummer());
-        assertThat(actual.get(0).getVeranstaltungId())
-                .isEqualTo(expectedBE.getVeranstaltungId());
-
-        // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
-    }
     @Test
     public void findVeranstaltungAndWettkampfById() {
         // prepare test data
@@ -71,7 +44,7 @@ public class DsbMannschaftBasicDAOextTest {
         expectedBE.setVeranstaltungId(null);
 
         // call test method
-        final List<DsbMannschaftBEext> actual = underTest.findVeranstaltungAndWettkampfById(wettkampfId);
+        final List<DsbMannschaftBEext> actual = underTest.findVeranstaltungAndWettkampfById(WETTKAMPFID);
 
         // assert result
         assertThat(actual)
@@ -96,6 +69,133 @@ public class DsbMannschaftBasicDAOextTest {
         verify(basicDao).selectEntityList(any(), any(), any());
 
 
+    }
+
+    @Test
+    public void findAllByWettkampfId() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByWettkampfId(ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+    @Test
+    public void findAllByWettkampfIdWithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByWettkampfIdWithName(ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+    @Test
+    public void findByIdwithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // Act
+        final DsbMannschaftBEext actual = underTest.findByIdwithName(ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isEqualTo(expectedBE);
+
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+    }
+
+    @Test
+    public void findAllByVereinsIdwithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByVereinsIdwithName(ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+    @Test
+    public void findAllByNameWithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByNameWithName(NAME);
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+    @Test
+    public void findAllByWarteschlangewithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByWarteschlangewithName();
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any());
+    }
+
+    @Test
+    public void findAllwithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllwithName();
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any());
+    }
+
+    @Test
+    public void findAllByVeranstaltungsIdwithName() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllByVeranstaltungsIdwithName(ID);
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any(), any());
     }
 
 }
