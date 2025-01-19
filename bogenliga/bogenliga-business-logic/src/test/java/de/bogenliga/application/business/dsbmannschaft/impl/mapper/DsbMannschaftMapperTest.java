@@ -62,7 +62,7 @@ public class DsbMannschaftMapperTest {
         assertThat(dsbMannschaftDO.getVereinId()).isEqualTo(VEREINID);
         assertThat(dsbMannschaftDO.getNummer()).isEqualTo(NUMMER);
         assertThat(dsbMannschaftDO.getBenutzerId()).isEqualTo(BENUTZERID);
-        assertThat(dsbMannschaftDO.getName()).isEqualTo("Sportverein Berlin"+NUMMER);
+        assertThat(dsbMannschaftDO.getName()).isEqualTo("Sportverein Berlin"+ " " + NUMMER);
         assertThat(dsbMannschaftDO.getVeranstaltung_name()).isEqualTo("Olympia");
         assertThat(dsbMannschaftDO.getWettkampfTag()).isEqualTo("2024-08-01");
         assertThat(dsbMannschaftDO.getWettkampf_ortsname()).isEqualTo("Berlin");
