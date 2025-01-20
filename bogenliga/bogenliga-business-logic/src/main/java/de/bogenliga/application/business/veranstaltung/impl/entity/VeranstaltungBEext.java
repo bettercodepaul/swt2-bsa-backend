@@ -11,27 +11,27 @@ public class VeranstaltungBEext extends VeranstaltungBE implements BusinessEntit
     private static final long serialVersionUID = -7987623598712368L;
     private String ligaName;
     private String ligaLeiterEmail;
-    private String wettkampftypName;
+    private String wettkampftypname;
 
     public VeranstaltungBEext(){
 
     }
 
-    public VeranstaltungBEext(Long veranstaltungId, Long veranstaltungLigaId, Long veranstaltungWettkampftypId, String veranstaltungName, Long veranstaltungSportjahr, Date veranstaltungMeldedeadline, Long veranstaltungLigaleiterId, Integer veranstaltungPhase, Integer veranstaltungGroesse, String ligaLeiterEmail, String ligaName, String wettkampftypName) {
+    public VeranstaltungBEext(Long veranstaltungId, Long veranstaltungLigaId, Long veranstaltungWettkampftypId, String veranstaltungName, Long veranstaltungSportjahr, Date veranstaltungMeldedeadline, Long veranstaltungLigaleiterId, Integer veranstaltungPhase, Integer veranstaltungGroesse, String ligaLeiterEmail, String ligaName, String wettkampftypname) {
         super(veranstaltungId, veranstaltungLigaId, veranstaltungWettkampftypId, veranstaltungName, veranstaltungSportjahr, veranstaltungMeldedeadline,  veranstaltungLigaleiterId, veranstaltungPhase, veranstaltungGroesse);
 
-        this.wettkampftypName = wettkampftypName;
+        this.wettkampftypname = wettkampftypname;
         this.ligaLeiterEmail = ligaLeiterEmail;
         this.ligaName = ligaName;
     }
 
-    public String getWettkampftypName() {
-        return wettkampftypName;
+    public String getwettkampftypname() {
+        return wettkampftypname;
     }
 
 
-    public void setWettkampftypName(final String wettkampftypName) {
-        this.wettkampftypName = wettkampftypName;
+    public void setwettkampftypName(final String wettkampftypname) {
+        this.wettkampftypname = wettkampftypname;
     }
 
 
@@ -60,7 +60,7 @@ public class VeranstaltungBEext extends VeranstaltungBE implements BusinessEntit
         return "VeranstaltungBEext{" +
                 "ligaName=" + ligaName +
                 ", ligaLeiterEmail='" + ligaLeiterEmail +
-                ", wettkampftypName='" + wettkampftypName +
+                ", wettkampftypName='" + wettkampftypname +
                 '}';
     }
 
