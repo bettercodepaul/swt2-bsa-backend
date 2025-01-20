@@ -73,7 +73,7 @@ public class VeranstaltungDAOextTest {
         assertThat(actualBE.getVeranstaltungPhase()).isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actualBE.getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actualBE.getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actualBE.getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actualBE.getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
 
         // verify invocations
@@ -107,7 +107,7 @@ public class VeranstaltungDAOextTest {
         assertThat(actualBE.getVeranstaltungPhase()).isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actualBE.getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actualBE.getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actualBE.getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actualBE.getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
 
         // verify invocations
@@ -141,7 +141,7 @@ public class VeranstaltungDAOextTest {
         assertThat(actualBE.getVeranstaltungPhase()).isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actualBE.getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actualBE.getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actualBE.getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actualBE.getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
 
         // verify invocations
@@ -180,7 +180,7 @@ public class VeranstaltungDAOextTest {
                 .isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actual.get(0).getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actual.get(0).getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actual.get(0).getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actual.get(0).getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
 
         // verify invocations
@@ -220,7 +220,7 @@ public class VeranstaltungDAOextTest {
                 .isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actual.get(0).getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actual.get(0).getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actual.get(0).getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actual.get(0).getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -259,7 +259,7 @@ public class VeranstaltungDAOextTest {
                 .isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actual.get(0).getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actual.get(0).getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actual.get(0).getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actual.get(0).getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -299,7 +299,7 @@ public class VeranstaltungDAOextTest {
                 .isEqualTo(expectedBEext.getVeranstaltungPhase());
 
         assertThat(actual.get(0).getLigaName()).isEqualTo(expectedBEext.getLigaName());
-        assertThat(actual.get(0).getWettkampftypName()).isEqualTo(expectedBEext.getWettkampftypName());
+        assertThat(actual.get(0).getwettkampftypname()).isEqualTo(expectedBEext.getwettkampftypname());
         assertThat(actual.get(0).getLigaLeiterEmail()).isEqualTo(expectedBEext.getLigaLeiterEmail());
 
         // verify invocations
