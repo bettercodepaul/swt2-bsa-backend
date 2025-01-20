@@ -422,7 +422,8 @@ public class MatchService implements ServiceFacade {
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
             createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
         }
-        return matchDTO;
+        MatchDTO match = getMatchFromId(matchDTO.getId(),true);
+        return match;
     }
 
     /**
