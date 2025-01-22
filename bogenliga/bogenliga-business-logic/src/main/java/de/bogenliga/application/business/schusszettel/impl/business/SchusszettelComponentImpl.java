@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -44,6 +46,12 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import java.io.ByteArrayInputStream;
+import com.itextpdf.kernel.pdf.PdfReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * * Implementation of {@link SchusszettelComponent}
@@ -53,6 +61,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * @author Jonas Müller, jonas_dominik.mueller@student.reutlingen-university.de
  * @author Maximilian Gysau, maximilian_alexander.gysau@reutlingen-university.de
  */
+@EnableAsync
 @Component
 public class SchusszettelComponentImpl implements SchusszettelComponent {
 
@@ -76,6 +85,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -651,30 +661,59 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             int numberOfMatches = numberOfMatches(veranstaltungGroesse);
+            List<CompletableFuture<ByteArrayOutputStream>> futures = new ArrayList<>();
 
-            //iterate through matches
-            for (long i = 1; i<=numberOfMatches; i++){
-                //iterate through begegnungen
-                for(long k = 1; k<=veranstaltungGroesse/2; k++){
-                    MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
-                    if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
-                        generateSchusszettelPage(doc, matchesBegegnung);
-                        if (i == numberOfMatches && k == veranstaltungGroesse/2){
-                            continue;
-                        }
-                        doc.add(new AreaBreak());
+            // Iterate through matches
+            for (long i = 1; i <= numberOfMatches; i++) {
+                // Iterate through begegnungen
+                for (long k = 1; k <= veranstaltungGroesse / 2; k++) {
+                    MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList, i, k);
+                    if (matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
+                        CompletableFuture<ByteArrayOutputStream> future = generateSchusszettelPageAsync(matchesBegegnung, i, k, numberOfMatches, veranstaltungGroesse);
+                        futures.add(future);
                     }
                 }
             }
+
+            // Wait for all tasks to complete and collect results
+            CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+            allOf.join();
+
+            for (CompletableFuture<ByteArrayOutputStream> future : futures) {
+                ByteArrayOutputStream pageStream = future.get();
+                PdfDocument pageDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(pageStream.toByteArray())));
+                pageDoc.copyPagesTo(1, pageDoc.getNumberOfPages(), pdfDocument);
+                pageDoc.close();
+            }
+
             doc.close();
             ret = result;
 
-        } catch (final IOException e) {
+        } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
         }
         return ret;
+    }
 
+    @Async
+    public CompletableFuture<ByteArrayOutputStream> generateSchusszettelPageAsync(MatchDO[] matchesBegegnung, long i, long k, int numberOfMatches, int veranstaltungGroesse) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (final ByteArrayOutputStream pageStream = new ByteArrayOutputStream();
+                 final PdfWriter pageWriter = new PdfWriter(pageStream);
+                 final PdfDocument pagePdfDocument = new PdfDocument(pageWriter);
+                 final Document pageDoc = new Document(pagePdfDocument, PageSize.A4)) {
+
+                generateSchusszettelPage(pageDoc, matchesBegegnung);
+
+                pageDoc.close();
+                return pageStream;
+
+            } catch (IOException e) {
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Seite konnte nicht erstellt werden: " + e);
+            }
+        }, executorService);
     }
 
     /**
@@ -1066,15 +1105,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
             ;
 
-                // Add all to document
-                doc
-                        .add(tableHead)
-                        .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
-                                .add(tableFirstRow)
-                                .add(tableSecondRow)
-                                .add(tableThirdRow)
-                        )
-                ;
+            // Add all to document
+            doc
+                    .add(tableHead)
+                    .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
+                            .add(tableFirstRow)
+                            .add(tableSecondRow)
+                            .add(tableThirdRow)
+                    )
+            ;
 
         }
     }
