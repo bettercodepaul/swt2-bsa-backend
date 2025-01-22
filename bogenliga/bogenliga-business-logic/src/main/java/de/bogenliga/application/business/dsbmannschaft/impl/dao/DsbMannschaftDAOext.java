@@ -106,7 +106,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
     private static final String FIND_ALL_BY_VEREINS_ID_WITH_NAME =
             " SELECT "
-                    + " m.* "
+                    + " m.*, "
                     + " v.verein_name AS vereinName "
                     + " FROM "
                     + " mannschaft m "
