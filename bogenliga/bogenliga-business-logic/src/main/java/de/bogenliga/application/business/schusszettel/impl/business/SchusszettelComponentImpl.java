@@ -85,6 +85,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final SchusszettelComponentAsync schusszettelComponentAsync;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -93,7 +94,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
                                      final WettkampfComponent wettkampfComponent,
-                                     final VeranstaltungComponent veranstaltungComponent) {
+                                     final VeranstaltungComponent veranstaltungComponent,
+                                     final SchusszettelComponentAsync schusszettelComponentAsync) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
@@ -101,6 +103,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.schusszettelComponentAsync = schusszettelComponentAsync;
     }
 
     @Override
@@ -146,7 +149,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             generateFilledSchusszettelPage(doc, new MatchDO[] {match1, match2}, new List[]{passen1, passen2});
-            doc.close();
             ret = result;
 
         } catch (final IOException e) {
@@ -668,7 +670,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 for (long k = 1; k <= veranstaltungGroesse / 2; k++) {
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList, i, k);
                     if (matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
-                        CompletableFuture<ByteArrayOutputStream> future = generateSchusszettelPageAsync(matchesBegegnung, i, k, numberOfMatches, veranstaltungGroesse);
+                        CompletableFuture<ByteArrayOutputStream> future = schusszettelComponentAsync.generateSchusszettelPageAsync(matchesBegegnung, i, k, numberOfMatches, veranstaltungGroesse);
                         futures.add(future);
                     }
                 }
@@ -685,10 +687,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 pageDoc.close();
             }
 
-            doc.close();
             ret = result;
 
-        } catch (final IOException | InterruptedException | ExecutionException e) {
+        } catch (final IOException | ExecutionException e) {
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    "PDF Dokument konnte nicht erstellt werden: " + e);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
         }
@@ -705,7 +710,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
                 generateSchusszettelPage(pageDoc, matchesBegegnung);
 
-                pageDoc.close();
                 return pageStream;
 
             } catch (IOException e) {
@@ -754,7 +758,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
+    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
@@ -937,6 +941,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     // Add thirty cells for text input
+                    .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
