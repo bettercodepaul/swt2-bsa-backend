@@ -19,7 +19,6 @@ import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.LineSeparator;
@@ -755,7 +754,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
+    void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
