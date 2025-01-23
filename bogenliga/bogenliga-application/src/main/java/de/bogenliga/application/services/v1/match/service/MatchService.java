@@ -403,7 +403,7 @@ public class MatchService implements ServiceFacade {
     @PostMapping(value = "spotter",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_OPERATE_SPOTTING})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,UserPermission.CAN_OPERATE_SPOTTING})
     public MatchDTO saveMatchesSpotter(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException{
         final Long userId = UserProvider.getCurrentUserId(principal);
         Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
