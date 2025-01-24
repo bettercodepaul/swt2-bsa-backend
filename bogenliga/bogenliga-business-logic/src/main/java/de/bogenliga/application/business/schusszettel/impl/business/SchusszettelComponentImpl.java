@@ -51,6 +51,7 @@ import java.io.ByteArrayInputStream;
 import com.itextpdf.kernel.pdf.PdfReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * * Implementation of {@link SchusszettelComponent}
@@ -85,7 +86,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    private final SchusszettelComponentAsync schusszettelComponentAsync;
+    private SchusszettelComponentAsync schusszettelComponentAsync;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -94,8 +95,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
                                      final WettkampfComponent wettkampfComponent,
-                                     final VeranstaltungComponent veranstaltungComponent,
-                                     final SchusszettelComponentAsync schusszettelComponentAsync) {
+                                     final VeranstaltungComponent veranstaltungComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
@@ -103,6 +103,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+    }
+
+    @Autowired
+    public void setSchusszettelComponentAsync(@Lazy SchusszettelComponentAsync schusszettelComponentAsync) {
         this.schusszettelComponentAsync = schusszettelComponentAsync;
     }
 
@@ -412,8 +416,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 for (int j = 0; j < 5; j++) {
                     // Add passe data to table, if there's no more data available, fill in zeroes
                     if (entry.getValue().size() > j)  {
-                        Integer pfeil1 = entry.getValue().get(j).getPfeil1();
-                        Integer pfeil2 = entry.getValue().get(j).getPfeil2();
+                        PasseDO passe = entry.getValue().get(j);
+                        Integer pfeil1 = passe.getPfeil1();
+                        Integer pfeil2 = passe.getPfeil2();
                         String pfeil1String = pfeil1 == null ? "" : pfeil1.toString();
                         String pfeil2String = pfeil2 == null ? "" : pfeil2.toString();
                         tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil1String).setFontSize(8.0F)));
@@ -758,7 +763,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
+    public void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
@@ -941,6 +946,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     // Add thirty cells for text input
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
