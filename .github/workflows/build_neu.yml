@@ -1,0 +1,90 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: swt2
+          POSTGRES_DB: swt2
+          POSTGRES_PASSWORD: swt2
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U swt2 -d swt2"
+          --health-timeout=60s
+          --health-interval=15s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+           fetch-depth: 0   
+      
+      - name: Build dependencies
+        working-directory: ./bogenliga
+        run: mvn clean install  # Сборка зависимостей
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+           distribution: 'zulu'
+           java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+          
+      - name: Build backend project
+        working-directory: ./bogenliga
+        run: |
+          java -version
+          export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED"
+          mvn clean install -T 1C
+
+      - name: Run backend tests
+        working-directory: ./bogenliga
+        run: |
+          mvn test  
+          
+      - name: Start backend
+        working-directory: ./bogenliga/bogenliga-application
+        run: |
+          mvn spring-boot:run &
+
+      - name: Clone frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: aminaacid/bogenliga_bbf  
+          token: ${{ secrets.GITHUB_TOKEN }}   
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  
+          
+      - name: Install frontend dependencies
+        working-directory: ./bogenliga
+        run: |
+          npm install
+
+      - name: Build frontend
+        working-directory: ./bogenliga
+        run: |
+          npm run build  
+
+      - name: Start frontend
+        working-directory: ./bogenliga
+        run: |
+          npm start &  
+      - name: Build completion
+        if: success()
+        run: echo "Build and tests completed successfully!"
