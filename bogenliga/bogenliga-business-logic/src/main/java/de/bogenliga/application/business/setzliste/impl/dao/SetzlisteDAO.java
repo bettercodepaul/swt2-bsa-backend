@@ -48,20 +48,39 @@ public class SetzlisteDAO implements DataAccessObject {
      */
 
     private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT " +
-            "            row_number()  over (" +
-            "                    order by lt.ligatabelle_matchpkt desc, lt.ligatabelle_matchpkt_gegen," +
-            "                    lt.ligatabelle_satzpkt_differenz desc, lt.ligatabelle_satzpkt desc," +
-            "                    lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_sortierung,\n" +
-            "                    lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
-            "                    lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
-            "                    lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
-            "                    lt.ligatabelle_verein_id, lt.ligatabelle_verein_name\n" +
-            "                    )as ligatabelle_tabellenplatz, lt.ligatabelle_mannschaft_id, wk.wettkampf_id" +
-            "              FROM ligatabelle as lt, wettkampf AS wk" +
-            "             WHERE lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id" +
-            "             and wk.wettkampf_id = ?" +
-            "             AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1" +
-            "             AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id";
+            "row_number()  over ( " +
+            "order by SUM(COALESCE(ligatabelle_matchpkt, 0)) desc, " +
+            "SUM(COALESCE(ligatabelle_matchpkt_gegen, 0)), " +
+            "SUM(COALESCE(ligatabelle_satzpkt_differenz, 0)) desc, " +
+            "SUM(COALESCE(ligatabelle_satzpkt, 0)) desc, " +
+            "SUM(COALESCE(ligatabelle_satzpkt_gegen, 0)), " +
+            "MAX(COALESCE(ligatabelle_sortierung, 0)), " +
+            "MAX(ligatabelle_veranstaltung_id), " +
+            "MAX(ligatabelle_veranstaltung_name), " +
+            "MAX(ligatabelle_wettkampf_id), " +
+            "MAX(ligatabelle_wettkampf_tag), " +
+            "MAX(ligatabelle_mannschaft_id), " +
+            "MAX(ligatabelle_mannschaft_nummer), " +
+            "MAX(ligatabelle_verein_id), " +
+            "MAX(ligatabelle_verein_name) " +
+            "    ) as ligatabelle_tabellenplatz, " +
+            "MAX(ligatabelle_mannschaft_id) AS ligatabelle_mannschaft_id, " +
+            "MAX(ligatabelle_wettkampf_id) AS wettkampf_id " +
+            "from ligatabelle " +
+            "where ligatabelle_wettkampf_id = ANY ( " +
+            "        select w.wettkampf_id " +
+            "        from wettkampf w " +
+            "        where w.wettkampf_veranstaltung_id = " +
+            "                (select v.veranstaltung_id " +
+            "        from wettkampf wk " +
+            "        join veranstaltung v on wk.wettkampf_veranstaltung_id = v.veranstaltung_id " +
+            "        where wk.wettkampf_id = ?) " +
+            "and w.wettkampf_tag <= ( " +
+            "select wk.wettkampf_tag " +
+            "from wettkampf wk " +
+            "where wk.wettkampf_id = ?) " +
+            "        ) " +
+            "group by ligatabelle_mannschaft_id ";
 
     private final BasicDAO basicDao;
 
@@ -95,6 +114,6 @@ public class SetzlisteDAO implements DataAccessObject {
      * Return all setzliste entries
      */
     public List<SetzlisteBE> getTableByWettkampfID(long wettkampfid) {
-        return basicDao.selectEntityList(SETZLISTE, GET_TABLE_BY_WETTKAMPF_ID, wettkampfid);
+        return basicDao.selectEntityList(SETZLISTE, GET_TABLE_BY_WETTKAMPF_ID, wettkampfid, wettkampfid);
     }
 }
