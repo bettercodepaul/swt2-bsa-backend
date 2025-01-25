@@ -61,7 +61,7 @@ import org.springframework.context.annotation.Lazy;
  * @author Jonas Müller, jonas_dominik.mueller@student.reutlingen-university.de
  * @author Maximilian Gysau, maximilian_alexander.gysau@reutlingen-university.de
  */
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @Component
 public class SchusszettelComponentImpl implements SchusszettelComponent {
 
@@ -663,8 +663,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
-             final PdfDocument pdfDocument = new PdfDocument(writer);
-             final Document doc = new Document(pdfDocument, PageSize.A4)) {
+             final PdfDocument pdfDocument = new PdfDocument(writer)) {
 
             int numberOfMatches = numberOfMatches(veranstaltungGroesse);
             List<CompletableFuture<ByteArrayOutputStream>> futures = new ArrayList<>();
@@ -681,15 +680,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 }
             }
 
+            // Check if futures list is empty
+            if (futures.isEmpty()) {
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "No pages to generate for the document.");
+            }
+
             // Wait for all tasks to complete and collect results
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
             allOf.join();
 
             for (CompletableFuture<ByteArrayOutputStream> future : futures) {
                 ByteArrayOutputStream pageStream = future.get();
-                PdfDocument pageDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(pageStream.toByteArray())));
-                pageDoc.copyPagesTo(1, pageDoc.getNumberOfPages(), pdfDocument);
-                pageDoc.close();
+                if (pageStream != null) {
+                    PdfDocument pageDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(pageStream.toByteArray())));
+                    pageDoc.copyPagesTo(1, pageDoc.getNumberOfPages(), pdfDocument);
+                    pageDoc.close();
+                }
             }
 
             ret = result;
@@ -698,9 +704,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
         } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt(); // Re-interrupt the thread
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                    "PDF Dokument konnte nicht erstellt werden: " + e);
+                    "Thread was interrupted: " + e);
         }
         return ret;
     }
@@ -946,9 +952,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     // Add thirty cells for text input
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
