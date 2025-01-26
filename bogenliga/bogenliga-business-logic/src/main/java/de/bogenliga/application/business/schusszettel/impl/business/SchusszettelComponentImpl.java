@@ -675,11 +675,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 }
             }
 
-            // Check if futures list is empty
-            if (futures.isEmpty()) {
-                throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "No pages to generate for the document.");
-            }
-
             // Wait for all tasks to complete and collect results
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
             allOf.join();
