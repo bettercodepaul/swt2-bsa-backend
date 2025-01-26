@@ -19,7 +19,6 @@ import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.LineSeparator;
@@ -61,7 +60,7 @@ import java.util.concurrent.Executors;
  * @author Jonas Müller, jonas_dominik.mueller@student.reutlingen-university.de
  * @author Maximilian Gysau, maximilian_alexander.gysau@reutlingen-university.de
  */
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @Component
 public class SchusszettelComponentImpl implements SchusszettelComponent {
 
@@ -86,6 +85,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    SchusszettelComponentAsync schusszettelComponentAsync;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -102,6 +102,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.schusszettelComponentAsync = new SchusszettelComponentAsync();
     }
 
     @Override
@@ -657,8 +658,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
-             final PdfDocument pdfDocument = new PdfDocument(writer);
-             final Document doc = new Document(pdfDocument, PageSize.A4)) {
+             final PdfDocument pdfDocument = new PdfDocument(writer)) {
 
             int numberOfMatches = numberOfMatches(veranstaltungGroesse);
             List<CompletableFuture<ByteArrayOutputStream>> futures = new ArrayList<>();
@@ -669,10 +669,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 for (long k = 1; k <= veranstaltungGroesse / 2; k++) {
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList, i, k);
                     if (matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
-                        CompletableFuture<ByteArrayOutputStream> future = generateSchusszettelPageAsync(matchesBegegnung, i, k, numberOfMatches, veranstaltungGroesse);
+                        CompletableFuture<ByteArrayOutputStream> future = schusszettelComponentAsync.generateSchusszettelPageAsync(matchesBegegnung, i, k, numberOfMatches, veranstaltungGroesse);
                         futures.add(future);
                     }
                 }
+            }
+
+            // Check if futures list is empty
+            if (futures.isEmpty()) {
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "No pages to generate for the document.");
             }
 
             // Wait for all tasks to complete and collect results
@@ -681,39 +686,24 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
             for (CompletableFuture<ByteArrayOutputStream> future : futures) {
                 ByteArrayOutputStream pageStream = future.get();
-                PdfDocument pageDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(pageStream.toByteArray())));
-                pageDoc.copyPagesTo(1, pageDoc.getNumberOfPages(), pdfDocument);
-                pageDoc.close();
+                if (pageStream != null) {
+                    PdfDocument pageDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(pageStream.toByteArray())));
+                    pageDoc.copyPagesTo(1, pageDoc.getNumberOfPages(), pdfDocument);
+                    pageDoc.close();
+                }
             }
 
-            doc.close();
             ret = result;
 
-        } catch (final IOException | InterruptedException | ExecutionException e) {
+        } catch (final IOException | ExecutionException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt(); // Re-interrupt the thread
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    "Thread was interrupted: " + e);
         }
         return ret;
-    }
-
-    @Async
-    public CompletableFuture<ByteArrayOutputStream> generateSchusszettelPageAsync(MatchDO[] matchesBegegnung, long i, long k, int numberOfMatches, int veranstaltungGroesse) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (final ByteArrayOutputStream pageStream = new ByteArrayOutputStream();
-                 final PdfWriter pageWriter = new PdfWriter(pageStream);
-                 final PdfDocument pagePdfDocument = new PdfDocument(pageWriter);
-                 final Document pageDoc = new Document(pagePdfDocument, PageSize.A4)) {
-
-                generateSchusszettelPage(pageDoc, matchesBegegnung);
-
-                pageDoc.close();
-                return pageStream;
-
-            } catch (IOException e) {
-                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                        "PDF Seite konnte nicht erstellt werden: " + e);
-            }
-        }, executorService);
     }
 
     /**
@@ -755,7 +745,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
+    public void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
@@ -1142,5 +1132,27 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             return  fontSize;
         }
         return 175f  / text.length();
+    }
+
+    class SchusszettelComponentAsync {
+
+        @Async
+        public CompletableFuture<ByteArrayOutputStream> generateSchusszettelPageAsync(MatchDO[] matchesBegegnung, long i, long k, int numberOfMatches, int veranstaltungGroesse) {
+            return CompletableFuture.supplyAsync(() -> {
+                try (final ByteArrayOutputStream pageStream = new ByteArrayOutputStream();
+                     final PdfWriter pageWriter = new PdfWriter(pageStream);
+                     final PdfDocument pagePdfDocument = new PdfDocument(pageWriter);
+                     final Document pageDoc = new Document(pagePdfDocument, PageSize.A4)) {
+
+                    generateSchusszettelPage(pageDoc, matchesBegegnung);
+
+                    return pageStream;
+
+                } catch (IOException e) {
+                    throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                            "PDF Seite konnte nicht erstellt werden: " + e);
+                }
+            }, executorService);
+        }
     }
 }

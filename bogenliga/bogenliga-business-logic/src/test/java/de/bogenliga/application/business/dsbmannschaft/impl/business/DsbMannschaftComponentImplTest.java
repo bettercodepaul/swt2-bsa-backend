@@ -57,7 +57,7 @@ public class DsbMannschaftComponentImplTest {
 
     private static final String VEREIN_NAME = "Testverein";
     private static final String MA_NAME = VEREIN_NAME+" "+ NUMMER;
-    private static final long PLATZHALTER_ID = 99L;
+    private static final long PLATZHALTER_ID = 0L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
