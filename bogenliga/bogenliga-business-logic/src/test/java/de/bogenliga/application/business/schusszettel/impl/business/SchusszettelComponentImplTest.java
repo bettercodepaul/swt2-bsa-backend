@@ -32,6 +32,7 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CompletableFuture;
@@ -428,5 +429,28 @@ public class SchusszettelComponentImplTest {
         thrown.expectMessage("Matches für den Wettkampf noch nicht erzeugt");
 
         underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+    }
+    @Test
+    public void generateDoc_ShouldNotThrowTechnicalException_WhenFuturesListIsNotEmpty() throws ExecutionException, InterruptedException {
+        List<MatchDO> matchDOList = getMatchesForWettkampf();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+
+        // Mock the async method to return a non-null future
+        when(schusszettelComponentAsync.generateSchusszettelPageAsync(any(), anyLong(), anyLong(), anyInt(), anyInt()))
+                .thenReturn(CompletableFuture.completedFuture(new ByteArrayOutputStream()));
+
+        byte[] result = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        // Assert that the result is not empty and no exception is thrown
+        Assertions.assertThat(result).isNotEmpty();
     }
 }
