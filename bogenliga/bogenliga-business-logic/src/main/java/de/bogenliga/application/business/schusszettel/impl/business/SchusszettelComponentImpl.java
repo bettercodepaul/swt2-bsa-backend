@@ -119,7 +119,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         if (!matchDOList.isEmpty()) {
             bResult = generateDoc(matchDOList, veranstaltungDO.getVeranstaltungGroesse()).toByteArray();
         }else{
-            throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
+            throw new BusinessException(ErrorCode.UNEXPECTED_ERROR,
+                    "Matches für den Wettkampf noch nicht erzeugt");
         }
         return bResult;
     }
@@ -675,6 +676,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 }
             }
 
+            // Check if futures list is empty
+            if (futures.isEmpty()) {throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    "No pages to generate for the document.");}
+
             // Wait for all tasks to complete and collect results
             CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
             allOf.join();
@@ -690,12 +695,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
             ret = result;
 
-        } catch (final IOException | ExecutionException e) {
-            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+        } catch (final IOException | ExecutionException e) {throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt(); // Re-interrupt the thread
-            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+            // Re-interrupt the thread
+        } catch (final InterruptedException e) {Thread.currentThread().interrupt();throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "Thread was interrupted: " + e);
         }
         return ret;
@@ -1131,20 +1134,23 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
     class SchusszettelComponentAsync {
 
+        // Asynchronous method to generate a PDF page for Schusszettel
         @Async
         public CompletableFuture<ByteArrayOutputStream> generateSchusszettelPageAsync(MatchDO[] matchesBegegnung, long i, long k, int numberOfMatches, int veranstaltungGroesse) {
             return CompletableFuture.supplyAsync(() -> {
+                // Try-with-resources to ensure resources are closed after use
                 try (final ByteArrayOutputStream pageStream = new ByteArrayOutputStream();
                      final PdfWriter pageWriter = new PdfWriter(pageStream);
                      final PdfDocument pagePdfDocument = new PdfDocument(pageWriter);
                      final Document pageDoc = new Document(pagePdfDocument, PageSize.A4)) {
-
+    
+                    // Generate the Schusszettel page
                     generateSchusszettelPage(pageDoc, matchesBegegnung);
-
+    
+                    // Return the generated PDF as a ByteArrayOutputStream
                     return pageStream;
-
-                } catch (IOException e) {
-                    throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    // Throw a TechnicalException if an IOException occurs
+                } catch (IOException e) {throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                             "PDF Seite konnte nicht erstellt werden: " + e);
                 }
             }, executorService);
