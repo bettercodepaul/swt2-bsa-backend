@@ -80,6 +80,9 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     Pfeilanzahlen hat --> Änderung an DB-View notwendig.-
     Hier wird der Group by jetzt ohne WettkampfID und WettkampfTag gemacht -> werden zu 0 gesetzt
      */
+    /* Alte Implementierung
+
+
     private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
             VERANSTALTUNGID_TABLE,
             VERANSTALTUNGNAME_TABLE,
@@ -109,6 +112,61 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             .havingGt("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
+
+     */
+
+    private static final String GET_SCHUETZENSTATISTIK =
+            "SELECT " +
+                    "veranstaltung.veranstaltung_id AS veranstaltungId, " +
+                    "veranstaltung.veranstaltung_name AS veranstaltungName, " +
+                    "verein.verein_id AS vereinId, " +
+                    "verein.verein_name AS vereinName, " +
+                    "mannschaft.mannschaft_id AS mannschaftId, " +
+                    "mannschaft.mannschaft_nummer AS mannschaftNummer, " +
+                    "dsb_mitglied.dsb_mitglied_id AS dsbMitgliedId, " +
+                    "CONCAT(dsb_mitglied.dsb_mitglied_vorname, ' ', dsb_mitglied.dsb_mitglied_nachname) AS dsbMitgliedName, " +
+                    "mannschaftsmitglied.mannschaftsmitglied_rueckennummer AS rueckenNummer, " +
+                    "wettkampf.wettkampf_id AS wettkampfId, " +
+                    "wettkampf.wettkampf_tag AS wettkampfTag, " +
+                    "AVG(DISTINCT pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwert_schnitt) AS pfeilpunkteSchnitt " +
+                    "FROM " +
+                    "match " +
+                    "JOIN wettkampf " +
+                    "ON match.match_wettkampf_id = wettkampf.wettkampf_id " +
+                    "JOIN veranstaltung " +
+                    "ON wettkampf.wettkampf_veranstaltung_id = veranstaltung.veranstaltung_id " +
+                    "JOIN mannschaft " +
+                    "ON match.match_mannschaft_id = mannschaft.mannschaft_id " +
+                    "JOIN verein " +
+                    "ON mannschaft.mannschaft_verein_id = verein.verein_id " +
+                    "JOIN mannschaftsmitglied " +
+                    "ON mannschaftsmitglied.mannschaftsmitglied_mannschaft_id = mannschaft.mannschaft_id " +
+                    "JOIN dsb_mitglied " +
+                    "ON mannschaftsmitglied.mannschaftsmitglied_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id " +
+                    "JOIN pfeilwerte_schuetze_match " +
+                    "ON pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_match_id = match.match_id " +
+                    "AND pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id " +
+                    "WHERE " +
+                    "veranstaltung.veranstaltung_id = ? " +
+                    "AND verein.verein_id = ? " +
+                    "AND dsb_mitglied.dsb_mitglied_id IS NOT NULL " +
+                    "AND pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwert_schnitt IS NOT NULL " +
+                    "GROUP BY " +
+                    "veranstaltung.veranstaltung_id, " +
+                    "veranstaltung.veranstaltung_name, " +
+                    "verein.verein_id, " +
+                    "verein.verein_name, " +
+                    "mannschaft.mannschaft_id, " +
+                    "mannschaft.mannschaft_nummer, " +
+                    "dsb_mitglied.dsb_mitglied_id, " +
+                    "CONCAT(dsb_mitglied.dsb_mitglied_vorname, ' ', dsb_mitglied.dsb_mitglied_nachname), " +
+                    "mannschaftsmitglied.mannschaftsmitglied_rueckennummer, " +
+                    "wettkampf.wettkampf_id, " +
+                    "wettkampf.wettkampf_tag " +
+                    "HAVING " +
+                    "AVG(DISTINCT pfeilwerte_schuetze_match.pfeilwerte_schuetze_match_pfeilwert_schnitt) > ? " +
+                    "ORDER BY " +
+                    "pfeilpunkteSchnitt DESC;";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<SchuetzenstatistikBE> SCHUETZENSTATISTIK = new BusinessEntityConfiguration<>(
