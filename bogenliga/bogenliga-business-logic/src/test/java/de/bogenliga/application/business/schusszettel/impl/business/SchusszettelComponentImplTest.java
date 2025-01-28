@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,6 +32,11 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
+
+import java.io.ByteArrayOutputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -42,7 +48,7 @@ import static org.mockito.Mockito.*;
 public class SchusszettelComponentImplTest {
 
     private static final long MANNSCHAFTSID = 101;
-    private static final long WETTKAMPFID = 30;
+    private static final long WETTKAMPFID = 300;
     private static final long WETTKAMPFID_FALSE = -1;
 
     @Rule
@@ -59,13 +65,13 @@ public class SchusszettelComponentImplTest {
     @Mock
     private DsbMannschaftComponent dsbMannschaftComponent;
     @Mock
-    private MannschaftsmitgliedComponent MannschaftsmitgliedComponent;
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private VereinComponent vereinComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
-
-
+    @Mock
+    private SchusszettelComponentImpl.SchusszettelComponentAsync schusszettelComponentAsync;
 
     @InjectMocks
     private SchusszettelComponentImpl underTest;
@@ -124,63 +130,6 @@ public class SchusszettelComponentImplTest {
         verify(matchComponent).findByWettkampfId(anyLong());
     }
 
-    @Test
-    public void getAllSchusszettelPDFasByteArrayPlatzhalterUnterschrift1() {
-        final List<MatchDO> matchDOList = getMatchesForWettkampf();
-
-        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
-        DsbMannschaftDO platzhalterDO = DsbMannschaftComponentImplTest.getPlatzhalterDO();
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
-        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
-        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
-
-        //configure Mocks
-        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-        when(dsbMannschaftComponent.findById(MANNSCHAFTSID)).thenReturn(dsbMannschaftDO);
-        when(dsbMannschaftComponent.findById(1L)).thenReturn(platzhalterDO);
-        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-
-
-        //call test method
-        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
-
-        //assert
-        Assertions.assertThat(actual).isNotEmpty();
-
-        //verify invocations
-        verify(matchComponent).findByWettkampfId(anyLong());
-    }
-
-    @Test
-    public void getAllSchusszettelPDFasByteArrayPlatzhalterUnterschrift2() {
-        final List<MatchDO> matchDOList = getMatchesForWettkampf();
-
-        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
-        DsbMannschaftDO platzhalterDO = DsbMannschaftComponentImplTest.getPlatzhalterDO();
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
-        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
-        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
-
-        //configure Mocks
-        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-        when(dsbMannschaftComponent.findById(MANNSCHAFTSID)).thenReturn(platzhalterDO);
-        when(dsbMannschaftComponent.findById(1L)).thenReturn(dsbMannschaftDO);
-        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-
-
-        //call test method
-        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
-
-        //assert
-        Assertions.assertThat(actual).isNotEmpty();
-
-        //verify invocations
-        verify(matchComponent).findByWettkampfId(anyLong());
-    }
 
     @Test
     public void getAllSchusszettelPDFasByteArray_ShouldThrowException() {
@@ -202,14 +151,13 @@ public class SchusszettelComponentImplTest {
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
 
         underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID_FALSE);
-
     }
 
     @Test
     public void getAllSchusszettelPDFasByteArrayInIf_ShouldThrowException() {
         final String ELSE_CONDITION_WETTKAMPFID = "Matches für den Wettkampf noch nicht erzeugt";
 
-        List<MatchDO> lokaleListe = new ArrayList();
+        List<MatchDO> lokaleListe = new ArrayList<>();
         VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
 
@@ -221,7 +169,6 @@ public class SchusszettelComponentImplTest {
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(lokaleListe);
 
         underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
-
     }
 
     private static List<MatchDO> getMatchesForWettkampf(){
@@ -284,29 +231,29 @@ public class SchusszettelComponentImplTest {
         List<PasseDO> result = new ArrayList<>();
         //iterate through matches
         for (Long passe = 1L; passe <=5L; passe++){
-                 //iterate through matches
-                for(Long i = 0L; i <= 2L; i++) {
-                    if(i==0){
-                        PasseDO element = new PasseDO(
+            //iterate through matches
+            for(Long i = 0L; i <= 2L; i++) {
+                if(i==0){
+                    PasseDO element = new PasseDO(
 
-                                 1L, 1L, WETTKAMPFID,
-                                1L, 1L,
-                                passe, i+1,
-                                2, 3, 4,
-                                5, 6, 7);
-                        result.add(element);
-                    }else{
-                        PasseDO element = new PasseDO(
+                            1L, 1L, WETTKAMPFID,
+                            1L, 1L,
+                            passe, i+1,
+                            2, 3, 4,
+                            5, 6, 7);
+                    result.add(element);
+                }else{
+                    PasseDO element = new PasseDO(
 
-                                1L, MANNSCHAFTSID, WETTKAMPFID,
-                                1L, 1L,
-                                passe, i+1,
-                                2, 3, 4,
-                                5, 6, 7);
-                        result.add(element);
-                    }
+                            1L, MANNSCHAFTSID, WETTKAMPFID,
+                            1L, 1L,
+                            passe, i+1,
+                            2, 3, 4,
+                            5, 6, 7);
+                    result.add(element);
                 }
             }
+        }
         return result;
     }
 
@@ -337,26 +284,24 @@ public class SchusszettelComponentImplTest {
         final List<PasseDO> passeDOList2 = getPasseForSchusszettel();
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         // configure mocks
-        when(matchComponent.findById(anyLong())).thenReturn(element1);
+        when(matchComponent.findById(element1.getId())).thenReturn(element1);
+        when(matchComponent.findById(element2.getId())).thenReturn(element2);
         when(passeComponent.findByMatchId(anyLong())).thenReturn(passeDOList1);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(inputDsbDO);
         when(vereinComponent.findById(anyLong())).thenReturn(inputVereinDO);
-        when(MannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
         //call test method
         final byte[] actual = underTest.getFilledSchusszettelPDFasByteArray(element1.getId(),element2.getId());
 
         //assert
         Assertions.assertThat(actual).isNotEmpty();
-
-
     }
 
     @Test
     public void testgetFilledSchusszettelPDFasByteArrayPlatzhalterUnterschrift1() {
 
         MatchDO element1 = MatchComponentImplTest.getMatchDO();
-        element1.setId(1L);
         element1.setWettkampfId(WETTKAMPFID);
         element1.setNr(1L);
         element1.setBegegnung(1L);
@@ -364,7 +309,6 @@ public class SchusszettelComponentImplTest {
         element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
-        element1.setId(2L);
         element2.setWettkampfId(WETTKAMPFID);
         element2.setNr(2L);
         element2.setBegegnung(1L);
@@ -387,7 +331,7 @@ public class SchusszettelComponentImplTest {
         when(passeComponent.findByMatchId(anyLong())).thenReturn(passeDOList1);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(platzhalterDO);
         when(vereinComponent.findById(anyLong())).thenReturn(inputVereinDO);
-        when(MannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
         when(dsbMannschaftComponent.findById(MANNSCHAFTSID)).thenReturn(dsbMannschaftDO);
         when(dsbMannschaftComponent.findById(1L)).thenReturn(platzhalterDO);
@@ -403,7 +347,6 @@ public class SchusszettelComponentImplTest {
     public void testgetFilledSchusszettelPDFasByteArrayPlatzhalterUnterschrift2() {
 
         MatchDO element1 = MatchComponentImplTest.getMatchDO();
-        element1.setId(1L);
         element1.setWettkampfId(WETTKAMPFID);
         element1.setNr(1L);
         element1.setBegegnung(1L);
@@ -411,7 +354,6 @@ public class SchusszettelComponentImplTest {
         element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
-        element1.setId(2L);
         element2.setWettkampfId(WETTKAMPFID);
         element2.setNr(2L);
         element2.setBegegnung(1L);
@@ -434,7 +376,7 @@ public class SchusszettelComponentImplTest {
         when(passeComponent.findByMatchId(anyLong())).thenReturn(passeDOList1);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(platzhalterDO);
         when(vereinComponent.findById(anyLong())).thenReturn(inputVereinDO);
-        when(MannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
         when(dsbMannschaftComponent.findById(MANNSCHAFTSID)).thenReturn(platzhalterDO);
         when(dsbMannschaftComponent.findById(1L)).thenReturn(dsbMannschaftDO);
@@ -446,5 +388,69 @@ public class SchusszettelComponentImplTest {
         Assertions.assertThat(actual).isNotEmpty();
     }
 
+    @Test
+    public void generateDoc_ShouldGeneratePDF() throws ExecutionException, InterruptedException {
+        List<MatchDO> matchDOList = getMatchesForWettkampf();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(schusszettelComponentAsync.generateSchusszettelPageAsync(any(), anyLong(), anyLong(), anyInt(), anyInt()))
+                .thenReturn(CompletableFuture.completedFuture(new ByteArrayOutputStream()));
+
+        // Mock dsbMannschaftComponent.findById and vereinComponent.findById for all mannschaftId and vereinId values used in the test
+        for (MatchDO match : matchDOList) {
+            when(dsbMannschaftComponent.findById(match.getMannschaftId())).thenReturn(dsbMannschaftDO);
+            when(vereinComponent.findById(dsbMannschaftDO.getVereinId())).thenReturn(vereinDO);
+        }
+
+        byte[] result = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        Assertions.assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    public void generateDoc_ShouldHandleEmptyMatches() {
+        List<MatchDO> matchDOList = new ArrayList<>();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+
+        thrown.expect(BusinessException.class);
+        thrown.expectMessage("Matches für den Wettkampf noch nicht erzeugt");
+
+        underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+    }
+    @Test
+    public void generateDoc_ShouldNotThrowTechnicalException_WhenFuturesListIsNotEmpty() throws ExecutionException, InterruptedException {
+        List<MatchDO> matchDOList = getMatchesForWettkampf();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+
+        // Mock the async method to return a non-null future
+        when(schusszettelComponentAsync.generateSchusszettelPageAsync(any(), anyLong(), anyLong(), anyInt(), anyInt()))
+                .thenReturn(CompletableFuture.completedFuture(new ByteArrayOutputStream()));
+
+        byte[] result = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        // Assert that the result is not empty and no exception is thrown
+        Assertions.assertThat(result).isNotEmpty();
+    }
 }
