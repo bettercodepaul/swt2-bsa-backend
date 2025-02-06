@@ -276,6 +276,8 @@ public class VeranstaltungDAOext implements DataAccessObject {
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_PHASE, VERANSTALTUNG_BE_VERANSTALTUNG_PHASE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_GROESSE, VERANSTALTUNG_BE_VERANSTALTUNG_GROESSE);
+        columnsToFieldsMap.put("liga_name", "ligaName");
+
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
