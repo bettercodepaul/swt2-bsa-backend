@@ -430,16 +430,29 @@ public class MatchServiceTest {
     @Test
     public void saveMatchesSpotter() {
         MatchDO matchDO1 = getMatchDO();
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+        LigamatchBE ligamatchBE = getLigamatchBE();
+
+        when(matchComponent.getLigamatchById(anyLong())).thenReturn(ligamatchBE);
+        when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
+        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
         when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        getLigamatchBE();
         try {
             final MatchDTO actual = underTest.saveMatchesSpotter(matchDTO, principal);
             assertThat(actual).isNotNull();
             MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
-        } catch (NoPermissionException e) {
+        } catch (NoPermissionException ignored) {
         }
     }
 
