@@ -31,8 +31,6 @@ SELECT match.match_id                                                           
                                                                                WHEN passe.passe_ringzahl_pfeil1 IS NOT NULL
                                                                                    THEN 1
                                                                                ELSE 1
-                                                                               //* by definition at least a value for the first arrow is given
-                                                                               //* and by setting min = 1 we prohibit division by zero ;-)
                                                                                END) + sum(
                                                                            CASE
                                                                                WHEN passe.passe_ringzahl_pfeil2 IS NOT NULL
