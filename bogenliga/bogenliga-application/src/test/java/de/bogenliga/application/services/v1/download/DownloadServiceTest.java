@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.download;
 
-import com.google.protobuf.StringValue;
 import de.bogenliga.application.services.v1.setzliste.service.SetzlisteService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
