@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WettkampfTypBETest {
 
-    private static final long user_Id=13;
+    private static final long USER_ID=13;// refactored to UPPERCASE, its unused tho, so left for inheritance
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
 
