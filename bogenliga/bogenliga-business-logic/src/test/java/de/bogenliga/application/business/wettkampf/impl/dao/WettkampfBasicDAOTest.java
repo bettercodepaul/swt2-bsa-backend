@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 public class WettkampfBasicDAOTest {
 
-    private static final long User_Id=13;
+    private static final long USER_ID=13;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
 
@@ -112,7 +112,7 @@ public class WettkampfBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final WettkampfBE actual = underTest.create(input, User_Id);
+        final WettkampfBE actual = underTest.create(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -138,7 +138,7 @@ public class WettkampfBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final WettkampfBE actual = underTest.update(input, User_Id);
+        final WettkampfBE actual = underTest.update(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -163,7 +163,7 @@ public class WettkampfBasicDAOTest {
         // configure mocks
 
         // call test method
-        underTest.delete(input, User_Id);
+        underTest.delete(input, USER_ID);
 
         // assert result
 
