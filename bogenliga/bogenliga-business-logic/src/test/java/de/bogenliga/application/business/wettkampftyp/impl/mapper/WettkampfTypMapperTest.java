@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WettkampfTypMapperTest {
 
 
-    private static final long user_Id=13;
+    private static final long USER_ID=13;//changed to upperCASE, but unused, left for inheritance
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private final long version = 1234;
 
