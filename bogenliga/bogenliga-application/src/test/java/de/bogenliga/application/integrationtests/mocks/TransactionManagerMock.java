@@ -18,7 +18,7 @@ public class TransactionManagerMock implements TransactionManager {
     private static final Logger LOG = LoggerFactory.getLogger(TransactionManagerMock.class);
 
     /**
-     * diese Methode ist leer weil es ein Mock ist
+     * diese Methode ist leer, weil es ein Mock ist
      */
     public TransactionManagerMock() {
     }
