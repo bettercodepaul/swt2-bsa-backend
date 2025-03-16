@@ -10,27 +10,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WettkampfTypBETest {
 
-    private static final long USER_ID=13;// refactored to UPPERCASE, its unused tho, so left for inheritance
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private static final long version = 1234;
-
-    private static final long wettkampftyp_Id = 1;
-    private static final String wettkampftyp_Name = "Liga Satzsystem";
-
-
+    private static final long WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPFTYP_NAME = "Liga Satzsystem";
 
     @Test
     public void assertToString() {
         final WettkampfTypBE underTest = getWettkampfTypBE();
-        underTest.setwettkampftypID(wettkampftyp_Id);
-        underTest.setwettkampftypname(wettkampftyp_Name);
+        underTest.setwettkampftypID(WETTKAMPFTYP_ID);
+        underTest.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         final String actual = underTest.toString();
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Long.toString(wettkampftyp_Id))
-                .contains(wettkampftyp_Name);
+                .contains(Long.toString(WETTKAMPFTYP_ID))
+                .contains(WETTKAMPFTYP_NAME);
     }
 
 }

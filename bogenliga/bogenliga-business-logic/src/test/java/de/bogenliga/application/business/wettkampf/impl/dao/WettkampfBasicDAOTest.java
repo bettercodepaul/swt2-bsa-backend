@@ -23,21 +23,10 @@ import static org.mockito.Mockito.*;
 public class WettkampfBasicDAOTest {
 
     private static final long USER_ID=13;
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private static final long version = 1234;
 
-    private static final long wettkampf_Id = 322;
-    private static final long wettkampf_Veranstaltung_Id = 0;
-    private static final String wettkampf_Datum = "2019-05-21";
-    private static final String wettkampf_Strasse = "Teststrasse 4";
-    private static final String wettkampf_Plz = "72768";
-    private static final String wettkampf_Ortsname = "Testort";
-    private static final String wettkampf_Ortsinfo = "hinter dem busch";
-    private static final String wettkampf_Beginn ="8:00";
-    private static final long wettkampf_Tag = 8;
-    private static final long wettkampf_Disziplin_Id = 0;
-    private static final long wettkampf_Wettkampftyp_Id = 1;
-    private static final String wettkampf_offlineToken = "offlineToken";
+    private static final long WETTKAMPF_ID = 322;
+    private static final long WETTKAMPF_WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPF_OFFLINETOKEN = "offlineToken";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -79,14 +68,14 @@ public class WettkampfBasicDAOTest {
     public void findById() {
         // prepare test data
         final WettkampfBE expectedBE = new WettkampfBE();
-        expectedBE.setId(wettkampf_Id);
-        expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
+        expectedBE.setId(WETTKAMPF_ID);
+        expectedBE.setWettkampfTypId(WETTKAMPF_WETTKAMPFTYP_ID);
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampfBE actual = underTest.findById(wettkampf_Id);
+        final WettkampfBE actual = underTest.findById(WETTKAMPF_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -105,8 +94,8 @@ public class WettkampfBasicDAOTest {
     public void create() {
         // prepare test data
         final WettkampfBE input = new WettkampfBE();
-        input.setId(wettkampf_Id);
-        input.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
+        input.setId(WETTKAMPF_ID);
+        input.setWettkampfTypId(WETTKAMPF_WETTKAMPFTYP_ID);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
@@ -131,8 +120,8 @@ public class WettkampfBasicDAOTest {
     public void update() {
         // prepare test data
         final WettkampfBE input = new WettkampfBE();
-        input.setId(wettkampf_Id);
-        input.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
+        input.setId(WETTKAMPF_ID);
+        input.setWettkampfTypId(WETTKAMPF_WETTKAMPFTYP_ID);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
@@ -157,8 +146,8 @@ public class WettkampfBasicDAOTest {
     public void delete() {
         // prepare test data
         final WettkampfBE input = new WettkampfBE();
-        input.setId(wettkampf_Id);
-        input.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
+        input.setId(WETTKAMPF_ID);
+        input.setWettkampfTypId(WETTKAMPF_WETTKAMPFTYP_ID);
 
         // configure mocks
 
@@ -177,17 +166,17 @@ public class WettkampfBasicDAOTest {
         final WettkampfBE expectedBE = getWettkampfBE();
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
-        WettkampfBE actual = underTest.checkOfflineToken(wettkampf_Id, wettkampf_offlineToken);
+        WettkampfBE actual = underTest.checkOfflineToken(WETTKAMPF_ID, WETTKAMPF_OFFLINETOKEN);
 
         assertThat(actual).isNotNull();
-        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
-        assertThat(actual.getId()).isEqualTo(wettkampf_Id);
+        assertThat(actual.getOfflineToken()).isEqualTo(WETTKAMPF_OFFLINETOKEN);
+        assertThat(actual.getId()).isEqualTo(WETTKAMPF_ID);
 
         final WettkampfBE invalidToken = getWettkampfBE();
         invalidToken.setOfflineToken(null);
         when(basicDao.selectSingleEntity(any(), any(), any(), any())).thenReturn(null);
 
-        WettkampfBE given = underTest.checkOfflineToken(wettkampf_Id, wettkampf_offlineToken);
+        WettkampfBE given = underTest.checkOfflineToken(WETTKAMPF_ID, WETTKAMPF_OFFLINETOKEN);
         assertThat(given).isNull();
 
         verify(basicDao, times(2)).selectSingleEntity(any(), any(), any());

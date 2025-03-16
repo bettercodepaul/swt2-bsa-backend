@@ -14,26 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WettkampfMapperTest {
 
-
-    private static final long USER_ID=13; // refactored to upperCase, but its not even used, left in case of inheritance
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private final long version = 1234;
-
-    private static final long wettkampf_Id = 322;
-    private static final long wettkampf_Veranstaltung_Id = 0;
-    private static final String wettkampf_Datum = "2019-05-21";
-    private static final String wettkampf_Strasse ="Reutlingerstr. 7";
-    private static final String wettkampf_Plz ="72810";
-    private static final String wettkampf_Ortsname =" Gomaringen";
-    private static final String wettkampf_Ortsinfo ="Sporthalle";
-    private static final String wettkampf_Beginn ="8:00";
-    private static final long wettkampf_Tag = 8;
-    private static final long wettkampf_Disziplin_Id = 0;
-    private static final long wettkampf_Wettkampftyp_Id = 1;
-    private static final String wettkampf_offlineToken = "offlineToken";
-
-
-
+    private static final long WETTKAMPF_ID = 322;
+    private static final long WETTKAMPF_WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPF_OFFLINETOKEN = "offlineToken";
 
     @Test
     public void toWettkampfBE (){
@@ -42,9 +25,9 @@ public class WettkampfMapperTest {
 
         final WettkampfBE actual = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
 
-        assertThat(actual.getId()).isEqualTo(wettkampf_Id);
-        assertThat(actual.getWettkampfTypId()).isEqualTo(wettkampf_Wettkampftyp_Id);
-        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
+        assertThat(actual.getId()).isEqualTo(WETTKAMPF_ID);
+        assertThat(actual.getWettkampfTypId()).isEqualTo(WETTKAMPF_WETTKAMPFTYP_ID);
+        assertThat(actual.getOfflineToken()).isEqualTo(WETTKAMPF_OFFLINETOKEN);
     }
 
     @Test
@@ -53,8 +36,8 @@ public class WettkampfMapperTest {
         final WettkampfBE wettkampfBE = getWettkampfBE();
         final WettkampfDO actual = WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
 
-        assertThat(actual.getId()).isEqualTo(wettkampf_Id);
-        assertThat(actual.getWettkampfTypId()).isEqualTo(wettkampf_Wettkampftyp_Id);
-        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
+        assertThat(actual.getId()).isEqualTo(WETTKAMPF_ID);
+        assertThat(actual.getWettkampfTypId()).isEqualTo(WETTKAMPF_WETTKAMPFTYP_ID);
+        assertThat(actual.getOfflineToken()).isEqualTo(WETTKAMPF_OFFLINETOKEN);
     }
 }
