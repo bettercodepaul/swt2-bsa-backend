@@ -53,7 +53,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
             saveAnzahlSaetze(altsystemWettkampfdatenDO, matchDO);
 
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(), matchDO.getId(), null);
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.WETTKAMPFERGEBNIS_MATCH, altsystemWettkampfdatenDO.getId(), matchDO.getId(), null);
 
     }
 
@@ -65,7 +65,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
     @Override
     public void update(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         // Zugehörige Matches aus Übersetzungstabelle holen
-            AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId());
+            AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.WETTKAMPFERGEBNIS_MATCH, altsystemWettkampfdatenDO.getId());
             MatchDO matchDO = new MatchDO();
             // Erstgenannte Mannschafts-ID ist im Feld "BogenligaId" gespeichert, zweitgenannte Mannschafts-ID im Feld Wert
             matchDO = matchComponent.findById(wettkampfdatenUebersetzung.getBogenligaId());
@@ -92,7 +92,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
         } else if (altsystemWettkampfdatenDO.getSatz5() == 0){
             anzahlSaetze = 4;
         }
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO.getId(), 0L, String.valueOf(anzahlSaetze));
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MATCH_SAETZE, matchDO.getId(), 0L, String.valueOf(anzahlSaetze));
     }
 
 }

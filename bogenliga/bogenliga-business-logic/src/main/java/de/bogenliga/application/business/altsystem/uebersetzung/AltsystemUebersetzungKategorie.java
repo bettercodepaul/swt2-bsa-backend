@@ -7,17 +7,17 @@ package de.bogenliga.application.business.altsystem.uebersetzung;
  */
 public enum AltsystemUebersetzungKategorie {
 
-    Liga_Liga("Liga_Liga"),
-    Saison_Sportjahr("Saison_Sportjahr"),
-    Mannschaft_Verein("Mannschaft_Verein"),
-    Mannschaft_Mannschaft("Mannschaft_Mannschaft"),
+    LIGA_LIGA("Liga_Liga"),
+    SAISON_SPORTJAHR("Saison_Sportjahr"),
+    MANNSCHAFT_VEREIN("Mannschaft_Verein"),
+    MANNSCHAFT_MANNSCHAFT("Mannschaft_Mannschaft"),
 
-    Schuetze_DSBMitglied("Schütze_DSBMitglied"),
-    Schuetze_Mannschaft("Schütze_Mannschaft"),
-    Mannschaft_Veranstaltung("Mannschaft_Veranstaltung"),
-    Wettkampfergebnis_Match("Wettkampfergebnis_Match"),
-    Match_Saetze("Match_Saetze"),
-    Ergebnis_Passen("Ergebnis_Passen");
+    SCHUETZE_DSB_MITGLIED("Schütze_DSBMitglied"),
+    SCHUETZE_MANNSCHAFT("Schütze_Mannschaft"),
+    MANNSCHAFT_VERANSTALTUNG("Mannschaft_Veranstaltung"),
+    WETTKAMPFERGEBNIS_MATCH("Wettkampfergebnis_Match"),
+    MATCH_SAETZE("Match_Saetze"),
+    ERGEBNIS_PASSEN("Ergebnis_Passen");
 
 
     String label;

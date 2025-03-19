@@ -39,7 +39,7 @@ public class AltsystemUebersetzungsDAOTest {
     }
     @Test
     public void testUpdateOrInsertUebersetzungInsertCase(){
-        AltsystemUebersetzungKategorie kategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
+        AltsystemUebersetzungKategorie kategorie = AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG;
         AltsystemUebersetzungDO altsystemUebersetzungDOMock = mock(AltsystemUebersetzungDO.class);
 
         when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(null);
@@ -55,7 +55,7 @@ public class AltsystemUebersetzungsDAOTest {
 
     @Test
     public void testUdateOrInsertUebersetzungUpdateCase() {
-        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
+        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG;
         BusinessEntityConfiguration<AltsystemUebersetzungDO> UebersetzungMock = mock(BusinessEntityConfiguration.class);
         AltsystemUebersetzungDO altsystemUebersetzungDO = mock(AltsystemUebersetzungDO.class);
         altsystemUebersetzungDO.setAltsystemId(ALTSYSTEM_ID);
@@ -73,7 +73,7 @@ public class AltsystemUebersetzungsDAOTest {
     }
     @Test
     public void testFindByAltsystemID() {
-        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
+        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG;
         AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
         altsystemUebersetzungDO.setAltsystemId(ALTSYSTEM_ID);
         altsystemUebersetzungDO.setBogenligaId(BOGENLIGA_ID);
@@ -92,7 +92,7 @@ public class AltsystemUebersetzungsDAOTest {
 
     @Test
     public void testFindByWert() {
-        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
+        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG;
         AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
         altsystemUebersetzungDO.setAltsystemId(ALTSYSTEM_ID);
         altsystemUebersetzungDO.setBogenligaId(BOGENLIGA_ID);

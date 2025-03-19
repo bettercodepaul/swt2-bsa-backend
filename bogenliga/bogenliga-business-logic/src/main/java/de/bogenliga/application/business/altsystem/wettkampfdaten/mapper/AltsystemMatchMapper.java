@@ -41,7 +41,7 @@ public class AltsystemMatchMapper {
      */
     public MatchDO toDO(MatchDO matchDO, AltsystemWettkampfdatenDO altsystemDataObject) {
         // Create a DataObject for the match
-        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getMannschaft());
+        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, altsystemDataObject.getMannschaft());
         matchDO.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
         matchDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
         matchDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());

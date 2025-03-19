@@ -94,7 +94,7 @@ public class AltsystemWettkampftagMapperTest {
         List<WettkampfDO> wettkaempfe = getMockWettkampftage();
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG), anyLong()))
                 .thenReturn(mannschaftUebersetzung);
 
         // Mock behavior of wettkampfComponent.findByLigaIDAndSportjahr
@@ -124,7 +124,7 @@ public class AltsystemWettkampftagMapperTest {
         List<WettkampfDO> wettkaempfe = getMockWettkampftage();
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG), anyLong()))
                 .thenReturn(mannschaftUebersetzung);
 
         // Mock behavior of wettkampfComponent.findByLigaIDAndSportjahr

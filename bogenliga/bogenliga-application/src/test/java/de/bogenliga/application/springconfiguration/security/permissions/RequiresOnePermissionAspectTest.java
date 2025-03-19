@@ -72,29 +72,30 @@ public class RequiresOnePermissionAspectTest {
     private static final Long W_id = 5L;
     private static final String W_name = "Liga_kummulativ";
 
-    private static final Long W_vid = 243L;
-    private static final Long W_typId = 0L;
-    private static final Long W_tag = 5L;
-    private static final Date W_datum = new Date(20190521L);
-    private static final String W_strasse = "Reutlingerstr. 6";
-    private static final String W_plz = "72764";
-    private static final String W_ortsname = "Reutlingen";
-    private static final String W_ortsinfo= "Hinter dem Haus";
-    private static final String W_begin = "gestern";
-    private static final Long W_disId = 12345L;
+    private static final Long W_VID = 243L;
+    private static final Long W_TYP_ID = 0L;
+    private static final Long W_TAG = 5L;
+    private static final Date W_DATUM = new Date(20190521L);
+    private static final String W_STRASSE = "Reutlingerstr. 6";
+    private static final String W_PLZ = "72764";
+    private static final String W_ORTSNAME = "Reutlingen";
+    private static final String W_ORTSINFO = "Hinter dem Haus";
+    private static final String W_BEGIN = "gestern";
+    private static final Long W_DIS_ID = 12345L;
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null);
+        return new WettkampfDO(id, W_VID, W_DATUM, W_STRASSE, W_PLZ, W_ORTSNAME, W_ORTSINFO, W_BEGIN, W_TAG, W_DIS_ID,
+                W_TYP_ID, null,null,null, null);
     }
 
-    private static final Long V_id =246L;
+    private static final Long V_ID =246L;
 
-    private static final String U_email = "user@email";
+    private static final String U_EMAIL = "user@email";
 
     protected UserDO getUserDO(Long id, Long dsb_id) {
         UserDO userDO = new UserDO();
         userDO.setId(id);
-        userDO.setEmail(U_email);
+        userDO.setEmail(U_EMAIL);
         userDO.setDsbMitgliedId(dsb_id);
         return userDO;
     }
@@ -153,12 +154,12 @@ public class RequiresOnePermissionAspectTest {
         Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
-        veranstaltungDO.setVeranstaltungID(W_vid);
+        veranstaltungDO.setVeranstaltungID(W_VID);
         ArrayList<VeranstaltungDO> veranstaltungenDOS = new ArrayList<>();
         veranstaltungenDOS.add(veranstaltungDO);
         when(veranstaltungComponent.findByLigaleiterId(anyLong())).thenReturn(veranstaltungenDOS);
 
-        assertTrue(underTest.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,W_vid));
+        assertTrue(underTest.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, W_VID));
         assertFalse(underTest.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,1L));
     }
 
@@ -198,10 +199,10 @@ public class RequiresOnePermissionAspectTest {
 
         UserDO userDO = getUserDO(55L, 1055L);
         when(userComponent.findById(anyLong())).thenReturn(userDO);
-        DsbMitgliedDO dsbmigliedDO = getDsbMitgliedDO(1055L, V_id);
+        DsbMitgliedDO dsbmigliedDO = getDsbMitgliedDO(1055L, V_ID);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbmigliedDO);
 
-        assertTrue(underTest.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN,V_id));
+        assertTrue(underTest.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, V_ID));
         assertFalse(underTest.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN,1L));
     }
 

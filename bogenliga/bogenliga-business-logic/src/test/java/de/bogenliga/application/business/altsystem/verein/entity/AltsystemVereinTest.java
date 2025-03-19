@@ -65,7 +65,7 @@ public class AltsystemVereinTest {
         verify(altsystemVereinMapper).toDO(new VereinDO(), altsystemMannschaftDO);
         verify(altsystemVereinMapper).addDefaultFields(result);
         verify(vereinComponent).create(result, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId(), result.getId(), "");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemMannschaftDO.getId(), result.getId(), "");
 
     }
 
@@ -87,7 +87,7 @@ public class AltsystemVereinTest {
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
         verify(altsystemVereinMapper).getVereinDO("TestVerein", "WT4424");
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId(), result.getId(), "");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemMannschaftDO.getId(), result.getId(), "");
 
     }
 
@@ -103,14 +103,14 @@ public class AltsystemVereinTest {
         VereinDO result = new VereinDO();
         result.setId(1L);
 
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId())).thenReturn(altsystemUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemMannschaftDO.getId())).thenReturn(altsystemUebersetzungDO);
         when(vereinComponent.findById(altsystemUebersetzungDO.getBogenligaId())).thenReturn(result);
         when(altsystemVereinMapper.toDO(result, altsystemMannschaftDO)).thenReturn(result);
         when(vereinComponent.update(result, CURRENTUSERID)).thenReturn(result);
 
         altsystemVerein.update(altsystemMannschaftDO, CURRENTUSERID);
 
-        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId());
+        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemMannschaftDO.getId());
         verify(vereinComponent).findById(altsystemUebersetzungDO.getBogenligaId());
         verify(altsystemVereinMapper).toDO(result, altsystemMannschaftDO);
         verify(vereinComponent).update(result,CURRENTUSERID);
