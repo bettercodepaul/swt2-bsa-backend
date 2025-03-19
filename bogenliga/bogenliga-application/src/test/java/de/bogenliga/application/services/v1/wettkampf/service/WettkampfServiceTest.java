@@ -39,23 +39,23 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
  */
 
 public class WettkampfServiceTest {
-    private static final long user_Id = 13;
+    private static final long USER_ID = 13;
 
-    private static final long wettkampf_Id = 322;
-    private static final long wettkampf_Veranstaltung_Id = 0;
-    private static final Date wettkampf_Datum = new Date(20190521L);
-    private static final String wettkampf_Strasse = "Reutlingerstr. 6";
-    private static final String wettkampf_Plz = "72764";
-    private static final String wettkampf_Ortsname = "Reutlingen";
-    private static final String wettkampf_Ortsinfo = "Im Keller";
-    private static final String wettkampf_Beginn = "8:00";
-    private static final long wettkampf_Tag = 8;
-    private static final long wettkampf_Disziplin_Id = 0;
-    private static final long wettkampf_Wettkampftyp_Id = 1;
-    private static final long mannschafts_id = 1;
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private static final long version = 1234;
-    private static final long wettkampfAusrichter = 8;
+    private static final long WETTKAMPF_ID = 322;
+    private static final long WETTKAMPF_VERANSTALTUNG_ID = 0;
+    private static final Date WETTKAMPF_DATUM = new Date(20190521L);
+    private static final String WETTKAMPF_STRASSE = "Reutlingerstr. 6";
+    private static final String WETTKAMPF_PLZ = "72764";
+    private static final String WETTKAMPF_ORTSNAME = "Reutlingen";
+    private static final String WETTKAMPF_ORTSINFO = "Im Keller";
+    private static final String WETTKAMPF_BEGINN = "8:00";
+    private static final long WETTKAMPF_TAG = 8;
+    private static final long WETTKAMPF_DISZIPLIN_ID = 0;
+    private static final long WETTKAMPF_WETTKAMPFTYP_ID = 1;
+    private static final long MANNSCHAFTS_ID = 1;
+    private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.now();
+    private static final long VERSION = 1234;
+    private static final long WETTKAMPF_AUSRICHTER = 8;
 
 
     @Rule
@@ -84,18 +84,18 @@ public class WettkampfServiceTest {
      */
     public static WettkampfBE getWettkampfBE() {
         final WettkampfBE expectedBE = new WettkampfBE();
-        expectedBE.setDatum(wettkampf_Datum);
-        expectedBE.setId(wettkampf_Id);
-        expectedBE.setVeranstaltungsId(wettkampf_Veranstaltung_Id);
-        expectedBE.setWettkampfBeginn(wettkampf_Beginn);
-        expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
-        expectedBE.setWettkampfStrasse(wettkampf_Strasse);
-        expectedBE.setWettkampfPlz(wettkampf_Plz);
-        expectedBE.setWettkampfOrtsname(wettkampf_Ortsname);
-        expectedBE.setWettkampfOrtsinfo(wettkampf_Ortsinfo);
-        expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
-        expectedBE.setWettkampfTag(wettkampf_Tag);
-        expectedBE.setWettkampfAusrichter(wettkampfAusrichter);
+        expectedBE.setDatum(WETTKAMPF_DATUM);
+        expectedBE.setId(WETTKAMPF_ID);
+        expectedBE.setVeranstaltungsId(WETTKAMPF_VERANSTALTUNG_ID);
+        expectedBE.setWettkampfBeginn(WETTKAMPF_BEGINN);
+        expectedBE.setWettkampfDisziplinId(WETTKAMPF_DISZIPLIN_ID);
+        expectedBE.setWettkampfStrasse(WETTKAMPF_STRASSE);
+        expectedBE.setWettkampfPlz(WETTKAMPF_PLZ);
+        expectedBE.setWettkampfOrtsname(WETTKAMPF_ORTSNAME);
+        expectedBE.setWettkampfOrtsinfo(WETTKAMPF_ORTSINFO);
+        expectedBE.setWettkampfTypId(WETTKAMPF_WETTKAMPFTYP_ID);
+        expectedBE.setWettkampfTag(WETTKAMPF_TAG);
+        expectedBE.setWettkampfAusrichter(WETTKAMPF_AUSRICHTER);
 
         return expectedBE;
     }
@@ -103,40 +103,40 @@ public class WettkampfServiceTest {
 
     public static WettkampfDO getWettkampfDO() {
         return new WettkampfDO(
-                wettkampf_Id,
-                wettkampf_Veranstaltung_Id,
-                wettkampf_Datum,
-                wettkampf_Strasse,
-                wettkampf_Plz,
-                wettkampf_Ortsname,
-                wettkampf_Ortsinfo,
-                wettkampf_Beginn,
-                wettkampf_Tag,
-                wettkampf_Disziplin_Id,
-                wettkampf_Wettkampftyp_Id,
-                created_At_Utc,
-                user_Id,
-                version,
-                wettkampfAusrichter
+                WETTKAMPF_ID,
+                WETTKAMPF_VERANSTALTUNG_ID,
+                WETTKAMPF_DATUM,
+                WETTKAMPF_STRASSE,
+                WETTKAMPF_PLZ,
+                WETTKAMPF_ORTSNAME,
+                WETTKAMPF_ORTSINFO,
+                WETTKAMPF_BEGINN,
+                WETTKAMPF_TAG,
+                WETTKAMPF_DISZIPLIN_ID,
+                WETTKAMPF_WETTKAMPFTYP_ID,
+                CREATED_AT_UTC,
+                USER_ID,
+                VERSION,
+                WETTKAMPF_AUSRICHTER
         );
     }
 
 
     private static WettkampfDTO getWettkampfDTO() {
         return new WettkampfDTO(
-                wettkampf_Id,
-                wettkampf_Veranstaltung_Id,
-                wettkampf_Datum,
-                wettkampf_Strasse,
-                wettkampf_Plz,
-                wettkampf_Ortsname,
-                wettkampf_Ortsinfo,
-                wettkampf_Beginn,
-                wettkampf_Tag,
-                wettkampf_Disziplin_Id,
-                wettkampf_Wettkampftyp_Id,
-                version,
-                wettkampfAusrichter
+                WETTKAMPF_ID,
+                WETTKAMPF_VERANSTALTUNG_ID,
+                WETTKAMPF_DATUM,
+                WETTKAMPF_STRASSE,
+                WETTKAMPF_PLZ,
+                WETTKAMPF_ORTSNAME,
+                WETTKAMPF_ORTSINFO,
+                WETTKAMPF_BEGINN,
+                WETTKAMPF_TAG,
+                WETTKAMPF_DISZIPLIN_ID,
+                WETTKAMPF_WETTKAMPFTYP_ID,
+                VERSION,
+                WETTKAMPF_AUSRICHTER
 
         );
 
@@ -145,7 +145,7 @@ public class WettkampfServiceTest {
 
     @Before
     public void initMocks() {
-        when(principal.getName()).thenReturn(String.valueOf(user_Id));
+        when(principal.getName()).thenReturn(String.valueOf(USER_ID));
     }
 
 
@@ -187,14 +187,14 @@ public class WettkampfServiceTest {
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
 
         // call test method
-        final WettkampfDTO actual = underTest.findById(wettkampf_Id);
+        final WettkampfDTO actual = underTest.findById(WETTKAMPF_ID);
 
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(wettkampfDO.getId());
 
         // verify invocations
-        verify(wettkampfComponent).findById(wettkampf_Id);
+        verify(wettkampfComponent).findById(WETTKAMPF_ID);
     }
 
 
@@ -208,7 +208,7 @@ public class WettkampfServiceTest {
         when(wettkampfComponent.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkampfDOList);
 
         // call test method
-        final List<WettkampfDTO> actual = underTest.findAllWettkaempfeByMannschaftsId(mannschafts_id);
+        final List<WettkampfDTO> actual = underTest.findAllWettkaempfeByMannschaftsId(MANNSCHAFTS_ID);
 
         // assert result
         assertThat(actual)
@@ -221,7 +221,7 @@ public class WettkampfServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(wettkampfDO.getId());
 
         // verify invocations
-        verify(wettkampfComponent).findAllWettkaempfeByMannschaftsId(mannschafts_id);
+        verify(wettkampfComponent).findAllWettkaempfeByMannschaftsId(MANNSCHAFTS_ID);
     }
 
 
@@ -235,7 +235,7 @@ public class WettkampfServiceTest {
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampfDOList);
 
         //call test method
-        final List<WettkampfDTO> actual = underTest.findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+        final List<WettkampfDTO> actual = underTest.findAllByVeranstaltungId(WETTKAMPF_VERANSTALTUNG_ID);
 
         //assert result
         assertThat(actual)
@@ -248,7 +248,7 @@ public class WettkampfServiceTest {
         assertThat(actualDTO.getwettkampfVeranstaltungsId()).isEqualTo(wettkampfDO.getWettkampfVeranstaltungsId());
 
         // verify invocations
-        verify(wettkampfComponent).findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+        verify(wettkampfComponent).findAllByVeranstaltungId(WETTKAMPF_VERANSTALTUNG_ID);
     }
 
 
@@ -336,7 +336,7 @@ public class WettkampfServiceTest {
         // configure mocks
 
         // call test method
-        underTest.delete(wettkampf_Id, principal);
+        underTest.delete(WETTKAMPF_ID, principal);
 
         // assert result
 

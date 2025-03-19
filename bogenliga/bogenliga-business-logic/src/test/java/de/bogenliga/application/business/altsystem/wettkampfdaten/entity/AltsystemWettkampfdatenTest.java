@@ -80,8 +80,8 @@ public class AltsystemWettkampfdatenTest {
         verify(altsystemMatchMapper).toDO(any(), any());
         verify(altsystemMatchMapper).addDefaultFields(result, wettkaempfe);
         verify(matchComponent).create(result, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, result.getId(), 0L, String.valueOf(4));
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(),result.getId(), null);
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MATCH_SAETZE, result.getId(), 0L, String.valueOf(4));
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.WETTKAMPFERGEBNIS_MATCH, altsystemWettkampfdatenDO.getId(),result.getId(), null);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class AltsystemWettkampfdatenTest {
         uebersetzung.setBogenligaId(match1.getId());
 
         // Mocks konfigurieren
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId())).thenReturn(uebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.WETTKAMPFERGEBNIS_MATCH, altsystemWettkampfdatenDO.getId())).thenReturn(uebersetzung);
         when(matchComponent.findById(uebersetzung.getBogenligaId())).thenReturn(match1);
         when(altsystemMatchMapper.toDO(any(), any())).thenReturn(match1);
         when(matchComponent.update(match1, CURRENTUSERID)).thenReturn(match1);
@@ -114,6 +114,6 @@ public class AltsystemWettkampfdatenTest {
         // Test, dass alle Methoden aufgerufen wurden
         verify(altsystemMatchMapper).toDO(any(), any());
         verify(matchComponent).update(match1, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, match1.getId(), 0L, String.valueOf(5));
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MATCH_SAETZE, match1.getId(), 0L, String.valueOf(5));
     }
 }

@@ -96,10 +96,10 @@ public class AltsystemVeranstaltungMapperTest {
         expectedVeranstaltungDO.setVeranstaltungGroesse(4);
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.LIGA_LIGA), anyLong()))
                 .thenReturn(ligaUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SAISON_SPORTJAHR), anyLong()))
                 .thenReturn(sportjahrUebersetzung);
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
@@ -154,10 +154,10 @@ public class AltsystemVeranstaltungMapperTest {
         expectedVeranstaltungDO.setVeranstaltungSportJahr(SPORTJAHR);
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.LIGA_LIGA), anyLong()))
                 .thenReturn(ligaUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SAISON_SPORTJAHR), anyLong()))
                 .thenReturn(sportjahrUebersetzung);
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr() throws Exception
@@ -324,10 +324,10 @@ public class AltsystemVeranstaltungMapperTest {
         expectedVeranstaltungDO.setVeranstaltungGroesse(6);
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.LIGA_LIGA), anyLong()))
                 .thenReturn(ligaUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SAISON_SPORTJAHR), anyLong()))
                 .thenReturn(sportjahrUebersetzung);
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
@@ -385,10 +385,10 @@ public class AltsystemVeranstaltungMapperTest {
         expectedVeranstaltungDO.setVeranstaltungGroesse(8);
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.LIGA_LIGA), anyLong()))
                 .thenReturn(ligaUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SAISON_SPORTJAHR), anyLong()))
                 .thenReturn(sportjahrUebersetzung);
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
