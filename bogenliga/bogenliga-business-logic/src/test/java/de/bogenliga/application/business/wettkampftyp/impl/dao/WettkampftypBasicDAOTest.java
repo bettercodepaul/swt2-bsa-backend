@@ -20,12 +20,10 @@ import static org.mockito.Mockito.*;
 
 public class WettkampftypBasicDAOTest {
 
-    private static final long user_Id=13;
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private static final long version = 1234;
+    private static final long USER_ID=13;
 
-    private static final long wettkampftyp_Id = 1;
-    private static final String wettkampftyp_Name = "Liga Satzsystem";
+    private static final long WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPFTYP_NAME = "Liga Satzsystem";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -37,10 +35,10 @@ public class WettkampftypBasicDAOTest {
     @Test
     public void findAll() {
         // prepare test data
-        final WettkampfTypBE expectedBE = getWettkampfTypBE();
+        final WettkampfTypBE EXPECTEDBE = getWettkampfTypBE();
 
         // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(EXPECTEDBE));
 
         // call test method
         final List<WettkampfTypBE> actual = underTest.findAll();
@@ -54,7 +52,7 @@ public class WettkampftypBasicDAOTest {
         assertThat(actual.get(0)).isNotNull();
 
         assertThat(actual.get(0).getwettkampftypID())
-                .isEqualTo(expectedBE.getwettkampftypID());
+                .isEqualTo(EXPECTEDBE.getwettkampftypID());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -67,14 +65,14 @@ public class WettkampftypBasicDAOTest {
     public void findById() {
         // prepare test data
         final WettkampfTypBE expectedBE = new WettkampfTypBE();
-        expectedBE.setwettkampftypID(wettkampftyp_Id);
-        expectedBE.setwettkampftypname(wettkampftyp_Name);
+        expectedBE.setwettkampftypID(WETTKAMPFTYP_ID);
+        expectedBE.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampfTypBE actual = underTest.findById(wettkampftyp_Id);
+        final WettkampfTypBE actual = underTest.findById(WETTKAMPFTYP_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -93,14 +91,14 @@ public class WettkampftypBasicDAOTest {
     public void create() {
         // prepare test data
         final WettkampfTypBE input = new WettkampfTypBE();
-        input.setwettkampftypID(wettkampftyp_Id);
-        input.setwettkampftypname(wettkampftyp_Name);
+        input.setwettkampftypID(WETTKAMPFTYP_ID);
+        input.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final WettkampfTypBE actual = underTest.create(input, user_Id);
+        final WettkampfTypBE actual = underTest.create(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -119,14 +117,14 @@ public class WettkampftypBasicDAOTest {
     public void update() {
         // prepare test data
         final WettkampfTypBE input = new WettkampfTypBE();
-        input.setwettkampftypID(wettkampftyp_Id);
-        input.setwettkampftypname(wettkampftyp_Name);
+        input.setwettkampftypID(WETTKAMPFTYP_ID);
+        input.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final WettkampfTypBE actual = underTest.update(input, user_Id);
+        final WettkampfTypBE actual = underTest.update(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -145,13 +143,13 @@ public class WettkampftypBasicDAOTest {
     public void delete() {
         // prepare test data
         final WettkampfTypBE input = new WettkampfTypBE();
-        input.setwettkampftypID(wettkampftyp_Id);
-        input.setwettkampftypname(wettkampftyp_Name);
+        input.setwettkampftypID(WETTKAMPFTYP_ID);
+        input.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         // configure mocks
 
         // call test method
-        underTest.delete(input, user_Id);
+        underTest.delete(input, USER_ID);
 
         // assert result
 
