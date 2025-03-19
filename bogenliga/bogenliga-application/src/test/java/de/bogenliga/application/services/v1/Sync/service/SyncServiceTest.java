@@ -122,11 +122,11 @@ public class SyncServiceTest {
     protected static final String MATCH_WETTKAMP_TYP_ID = "0";
     protected static final Long MATCH_WETTKAMPF_TAG = 1L;
     protected static final Integer MATCH_RUECKENNUMMER = 2;
-    protected static final Integer STRAFPUNKTe_SATZ_1 = 1;
-    protected static final Integer STRAFPUNKTe_SATZ_2 = 2;
-    protected static final Integer STRAFPUNKTe_SATZ_3 = 3;
-    protected static final Integer STRAFPUNKTe_SATZ_4 = 4;
-    protected static final Integer STRAFPUNKTe_SATZ_5 = 5;
+    protected static final Integer STRAFPUNKTE_SATZ_1 = 1;
+    protected static final Integer STRAFPUNKTE_SATZ_2 = 2;
+    protected static final Integer STRAFPUNKTE_SATZ_3 = 3;
+    protected static final Integer STRAFPUNKTE_SATZ_4 = 4;
+    protected static final Integer STRAFPUNKTE_SATZ_5 = 5;
 
 
     protected static final String MATCH_NAME_GEGNER = "TSV Grafenberg Gegner";
@@ -500,11 +500,11 @@ public class SyncServiceTest {
                 MATCH_ID_GEGNER,
                 MATCH_NAECHSTE_MATCH_ID,
                 MATCH_NAECHSTE_NAECHSTE_MATCH_ID,
-                STRAFPUNKTe_SATZ_1,
-                STRAFPUNKTe_SATZ_2,
-                STRAFPUNKTe_SATZ_3,
-                STRAFPUNKTe_SATZ_4,
-                STRAFPUNKTe_SATZ_5
+                STRAFPUNKTE_SATZ_1,
+                STRAFPUNKTE_SATZ_2,
+                STRAFPUNKTE_SATZ_3,
+                STRAFPUNKTE_SATZ_4,
+                STRAFPUNKTE_SATZ_5
         );
     }
 
