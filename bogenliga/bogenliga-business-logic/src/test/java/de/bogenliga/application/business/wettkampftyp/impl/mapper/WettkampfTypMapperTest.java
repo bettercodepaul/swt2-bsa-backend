@@ -13,16 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WettkampfTypMapperTest {
 
-
-    private static final long user_Id=13;
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private final long version = 1234;
-
-    private static final long wettkampftyp_Id = 1;
-    private static final String wettkampftyp_Name = "Liga Satzsystem";
-
-
-
+    private static final long WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPFTYP_NAME = "Liga Satzsystem";
 
     @Test
     public void toWettkampfTypBE (){
@@ -31,8 +23,8 @@ public class WettkampfTypMapperTest {
 
         final WettkampfTypBE actual = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
 
-        assertThat(actual.getwettkampftypID()).isEqualTo(wettkampftyp_Id);
-        assertThat(actual.getwettkampftypname()).isEqualTo(wettkampftyp_Name);
+        assertThat(actual.getwettkampftypID()).isEqualTo(WETTKAMPFTYP_ID);
+        assertThat(actual.getwettkampftypname()).isEqualTo(WETTKAMPFTYP_NAME);
     }
 
     @Test
@@ -41,7 +33,7 @@ public class WettkampfTypMapperTest {
         final WettkampfTypBE wettkampftypBE = getWettkampfTypBE();
         final WettkampfTypDO actual = WettkampfTypMapper.toWettkampfTypDO.apply(wettkampftypBE);
 
-        assertThat(actual.getId()).isEqualTo(wettkampftyp_Id);
-        assertThat(actual.getName()).isEqualTo(wettkampftyp_Name);
+        assertThat(actual.getId()).isEqualTo(WETTKAMPFTYP_ID);
+        assertThat(actual.getName()).isEqualTo(WETTKAMPFTYP_NAME);
     }
 }
