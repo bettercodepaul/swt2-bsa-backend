@@ -26,62 +26,62 @@ public class LigatabelleServiceTest {
     private static final long USER = 4L;
     private static final Long VERSION = 0L;
 
-    private static final Long veranstaltungId = 1L;
-    private static final String veranstaltungName = "Name_der_Veranstaltung";
-    private static final Long wettkampfId = 2L;
-    private static final int wettkampfTag = 3;
-    private static final Long mannschaftId = 4L;
-    private static final int mannschaftNummer = 9;
-    private static final Long vereinId = 7L;
-    private static final String vereinName = "Name_Verein";
-    private static final int matchpkt = 6;
-    private static final int matchpktGegen = 2;
-    private static final int satzpkt = 18;
-    private static final int satzpktGegen = 3;
-    private static final int satzpktDifferenz = 15;
-    private static final int sortierung = 0;
-    private static final int tabellenplatz = 8;
-    private static final int matchCount = 0;
+    private static final Long VERANSTALTUNG_ID = 1L;
+    private static final String VERANSTALTUNG_NAME = "Name_der_Veranstaltung";
+    private static final Long WETTKAMPF_ID = 2L;
+    private static final int WETTKAMPF_TAG = 3;
+    private static final Long MANNSCHAFT_ID = 4L;
+    private static final int MANNSCHAFT_NUMMER = 9;
+    private static final Long VEREIN_ID = 7L;
+    private static final String VEREIN_NAME = "Name_Verein";
+    private static final int MATCHPKT = 6;
+    private static final int MATCHPKT_GEGEN = 2;
+    private static final int SATZPKT = 18;
+    private static final int SATZPKT_GEGEN = 3;
+    private static final int SATZPKT_DIFFERENZ = 15;
+    private static final int SORTIERUNG = 0;
+    private static final int TABELLENPLATZ = 8;
+    private static final int MATCH_COUNT = 0;
 
     public static LigatabelleDO getLigatabelleDO() {
         final LigatabelleDO expectedLigatabelleDO = new LigatabelleDO();
-        expectedLigatabelleDO.setveranstaltungId(veranstaltungId);
-        expectedLigatabelleDO.setveranstaltungName(veranstaltungName);
-        expectedLigatabelleDO.setwettkampfId(wettkampfId);
-        expectedLigatabelleDO.setwettkampfTag(wettkampfTag);
-        expectedLigatabelleDO.setmannschaftId(mannschaftId);
-        expectedLigatabelleDO.setmannschaftNummer(mannschaftNummer);
-        expectedLigatabelleDO.setvereinId(vereinId);
-        expectedLigatabelleDO.setvereinName(vereinName);
-        expectedLigatabelleDO.setmatchpkt(matchpkt);
-        expectedLigatabelleDO.setMatchpktGegen(matchpktGegen);
-        expectedLigatabelleDO.setsatzpkt(satzpkt);
-        expectedLigatabelleDO.setSatzpktGegen(satzpktGegen);
-        expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
-        expectedLigatabelleDO.setsortierung(sortierung);
-        expectedLigatabelleDO.settabellenplatz(tabellenplatz);
-        expectedLigatabelleDO.setMatchCount(matchCount);
+        expectedLigatabelleDO.setveranstaltungId(VERANSTALTUNG_ID);
+        expectedLigatabelleDO.setveranstaltungName(VERANSTALTUNG_NAME);
+        expectedLigatabelleDO.setwettkampfId(WETTKAMPF_ID);
+        expectedLigatabelleDO.setwettkampfTag(WETTKAMPF_TAG);
+        expectedLigatabelleDO.setmannschaftId(MANNSCHAFT_ID);
+        expectedLigatabelleDO.setmannschaftNummer(MANNSCHAFT_NUMMER);
+        expectedLigatabelleDO.setvereinId(VEREIN_ID);
+        expectedLigatabelleDO.setvereinName(VEREIN_NAME);
+        expectedLigatabelleDO.setmatchpkt(MATCHPKT);
+        expectedLigatabelleDO.setMatchpktGegen(MATCHPKT_GEGEN);
+        expectedLigatabelleDO.setsatzpkt(SATZPKT);
+        expectedLigatabelleDO.setSatzpktGegen(SATZPKT_GEGEN);
+        expectedLigatabelleDO.setSatzpktDifferenz(SATZPKT_DIFFERENZ);
+        expectedLigatabelleDO.setsortierung(SORTIERUNG);
+        expectedLigatabelleDO.settabellenplatz(TABELLENPLATZ);
+        expectedLigatabelleDO.setMatchCount(MATCH_COUNT);
 
         return expectedLigatabelleDO;
     }
     public static LigatabelleDTO getLigatabelleDTO() {
         return new LigatabelleDTO(
-        veranstaltungId,
-        veranstaltungName,
-        wettkampfId,
-        wettkampfTag,
-        mannschaftId,
-        mannschaftNummer,
-        vereinId,
-        vereinName,
-        matchpkt,
-                matchpktGegen,
-        satzpkt,
-        satzpktGegen,
-        satzpktDifferenz,
-        sortierung,
-        tabellenplatz,
-                matchCount
+                VERANSTALTUNG_ID,
+                VERANSTALTUNG_NAME,
+                WETTKAMPF_ID,
+                WETTKAMPF_TAG,
+                MANNSCHAFT_ID,
+                MANNSCHAFT_NUMMER,
+                VEREIN_ID,
+                VEREIN_NAME,
+                MATCHPKT,
+                MATCHPKT_GEGEN,
+                SATZPKT,
+                SATZPKT_GEGEN,
+                SATZPKT_DIFFERENZ,
+                SORTIERUNG,
+                TABELLENPLATZ,
+                MATCH_COUNT
         );
     }
 
@@ -114,7 +114,7 @@ public class LigatabelleServiceTest {
         when(ligatabelleComponent.getLigatabelleVeranstaltung(anyLong())).thenReturn(ligatabelleDOList);
 
         // call test method
-        final List<LigatabelleDTO> actual = underTest.getLigatabelleVeranstaltung(veranstaltungId);
+        final List<LigatabelleDTO> actual = underTest.getLigatabelleVeranstaltung(VERANSTALTUNG_ID);
 
         // assert result
         assertThat(actual)
@@ -142,7 +142,7 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         // verify invocations
-        verify(ligatabelleComponent).getLigatabelleVeranstaltung(veranstaltungId);
+        verify(ligatabelleComponent).getLigatabelleVeranstaltung(VERANSTALTUNG_ID);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class LigatabelleServiceTest {
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(ligatabelleDOList);
 
         // call test method
-        final List<LigatabelleDTO> actual = underTest.getLigatabelleWettkampf(wettkampfId);
+        final List<LigatabelleDTO> actual = underTest.getLigatabelleWettkampf(WETTKAMPF_ID);
 
         // assert result
         assertThat(actual)
@@ -184,7 +184,7 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getMatchCount()).isEqualTo(ligatabelleDO.getMatchCount());
 
         // verify invocations
-        verify(ligatabelleComponent).getLigatabelleWettkampf(wettkampfId);
+        verify(ligatabelleComponent).getLigatabelleWettkampf(WETTKAMPF_ID);
 
     }
 }
