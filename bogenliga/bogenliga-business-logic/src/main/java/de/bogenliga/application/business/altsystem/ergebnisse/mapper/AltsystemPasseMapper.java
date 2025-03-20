@@ -95,7 +95,7 @@ public class AltsystemPasseMapper {
         Long matchNr;
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
-        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
+        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,
                 altsystemDataObject.getSchuetze_Id());
 
         // Exception, falls es für den Schützen kein zugehöriges DSB Mitglied gibt
@@ -103,7 +103,7 @@ public class AltsystemPasseMapper {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "No translation found for entity Schuetze to a corresponding DSBMitglied");
         }
 
-        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_Mannschaft,
+        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_MANNSCHAFT,
                 altsystemDataObject.getSchuetze_Id());
 
         // Exception, falls zu dem Schützen keine zugehörige Mannschaft gespeichert wurde
@@ -154,7 +154,7 @@ public class AltsystemPasseMapper {
         //wir haben das Match gefunden und legen dazu die Pfeilwerte an
         else {
             // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle
-            AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Match_Saetze, match.getId());
+            AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MATCH_SAETZE, match.getId());
             int anzahlSaetze = Integer.parseInt(satzUebersetzung.getWert());
 
             int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebniss(), anzahlSaetze);

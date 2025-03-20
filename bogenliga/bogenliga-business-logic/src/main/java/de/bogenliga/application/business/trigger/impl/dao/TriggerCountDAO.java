@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -24,18 +23,18 @@ public class TriggerCountDAO implements DataAccessObject {
     private static final String TRIGGER_COUNT = "COUNT";
     private static final BusinessEntityConfiguration<TriggerCountBE> TRIGGER = new BusinessEntityConfiguration<>(
             TriggerCountBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
-    private static final String selectCount = "SELECT COUNT(*) AS COUNT";
+    private static final String SELECT_COUNT = "SELECT COUNT(*) AS COUNT";
     private static final String FIND_ALL_COUNT =
-            selectCount
+            SELECT_COUNT
                     + " FROM altsystem_aenderung";
     private static final String FIND_UNPROCESSED_COUNT =
-            selectCount
+            SELECT_COUNT
                     + " FROM altsystem_aenderung"
                     + " WHERE altsystem_aenderung.status = 4"
                     + " OR altsystem_aenderung.status = 3";
 
     private static final String FIND_IN_PROGRESS_COUNT =
-            selectCount
+            SELECT_COUNT
                     + " FROM altsystem_aenderung"
                     + " WHERE altsystem_aenderung.status = 2";
 

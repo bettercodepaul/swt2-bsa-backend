@@ -38,7 +38,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         String[] parsedName = parseName(altsystemSchuetzeDO);
 
         // Vereins-ID im neuen System abrufe
-        Long vereinID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,  Long.valueOf(altsystemSchuetzeDO.getMannschaft_id())).getBogenligaId();
+        Long vereinID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN,  Long.valueOf(altsystemSchuetzeDO.getMannschaft_id())).getBogenligaId();
 
         // Vor- und Nachnamen sowie Vereins-ID des Schützen setzen
         dsbMitgliedDO.setVorname(parsedName[1]);
@@ -107,7 +107,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         String[] parsedName = parseName(altsystemSchuetzeDO);
 
         // Vereins-ID im neuen System finden
-        Long vereinId = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+        Long vereinId = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN,
                 Long.valueOf(altsystemSchuetzeDO.getMannschaft_id())).getBogenligaId();
 
         // Identifier "firstName"+"lastName"+"vereinId" aufbauen
@@ -119,7 +119,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
 
     public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
         //Mannschaft ID aus Altsystem übersetzen
-        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
+        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, altsystemMannschaftID);
         //DO zusammenstellen
         return new MannschaftsmitgliedDO(
                 null,   //tech ID

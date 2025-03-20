@@ -73,11 +73,11 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
             //Create in Verein Tabelle
             vereinDO = vereinComponent.create(vereinDO, currentUserId);
             //Create in Uebersetzungstabele
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId(), vereinDO.getId(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemDataObject.getId(), vereinDO.getId(), "");
 
         }else {
             //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId(), vorhanden.getId(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemDataObject.getId(), vorhanden.getId(), "");
         }
 
     }
@@ -96,7 +96,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
         //Verein in der Uebersetzungstabele suchen
         AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
+                AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemDataObject.getId());
 
 
         if(vereinUebersetzung == null){

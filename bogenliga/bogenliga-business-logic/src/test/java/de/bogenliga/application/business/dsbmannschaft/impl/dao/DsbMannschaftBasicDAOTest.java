@@ -24,10 +24,10 @@ public class DsbMannschaftBasicDAOTest {
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
-    private static final long id = 2222L;
-    private static final long vereinId=101010;
-    private static final long nummer=111;
-    private static final long veranstaltungId=1;
+    private static final long ID = 2222L;
+    private static final long VEREIN_ID =101010;
+    private static final long NUMMER =111;
+    private static final long VERANSTALTUNG_ID =1;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -75,7 +75,7 @@ public class DsbMannschaftBasicDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<DsbMannschaftBE> actual = underTest.findAllByVereinsId(vereinId);
+        final List<DsbMannschaftBE> actual = underTest.findAllByVereinsId(VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -107,7 +107,7 @@ public class DsbMannschaftBasicDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<DsbMannschaftBE> actual = underTest.findAllByVeranstaltungsId(veranstaltungId);
+        final List<DsbMannschaftBE> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
 
         // assert result
         assertThat(actual)
@@ -205,14 +205,14 @@ public class DsbMannschaftBasicDAOTest {
     public void findById() {
         // prepare test data
         final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
-        expectedBE.setId(id);
-        expectedBE.setNummer(nummer);
+        expectedBE.setId(ID);
+        expectedBE.setNummer(NUMMER);
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftBE actual = underTest.findById(id);
+        final DsbMannschaftBE actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -231,8 +231,8 @@ public class DsbMannschaftBasicDAOTest {
     public void create() {
         // prepare test data
         final DsbMannschaftBE input = new DsbMannschaftBE();
-        input.setId(id);
-        input.setNummer(nummer);
+        input.setId(ID);
+        input.setNummer(NUMMER);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
@@ -257,8 +257,8 @@ public class DsbMannschaftBasicDAOTest {
     public void update() {
         // prepare test data
         final DsbMannschaftBE input = new DsbMannschaftBE();
-        input.setId(id);
-        input.setNummer(nummer);
+        input.setId(ID);
+        input.setNummer(NUMMER);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
@@ -283,8 +283,8 @@ public class DsbMannschaftBasicDAOTest {
     public void delete() {
         // prepare test data
         final DsbMannschaftBE input = new DsbMannschaftBE();
-        input.setId(id);
-        input.setNummer(nummer);
+        input.setId(ID);
+        input.setNummer(NUMMER);
 
         // configure mocks
 

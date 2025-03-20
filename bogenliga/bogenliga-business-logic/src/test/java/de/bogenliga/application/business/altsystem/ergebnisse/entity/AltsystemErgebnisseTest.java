@@ -60,7 +60,7 @@ public class AltsystemErgebnisseTest {
 
         verify(altsystemPasseMapper).toDO(new ArrayList<>(), altsystemErgebnisseDO);
         verify(passeComponent).create(testPasse, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId(), 0L, "1;");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.ERGEBNIS_PASSEN, altsystemErgebnisseDO.getId(), 0L, "1;");
     }
 
     @Test
@@ -82,14 +82,14 @@ public class AltsystemErgebnisseTest {
         passen.add(testPasse);
 
         // configure Mocks
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId())).thenReturn(altsystemUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.ERGEBNIS_PASSEN, altsystemErgebnisseDO.getId())).thenReturn(altsystemUebersetzungDO);
         when(passeComponent.findById(1L)).thenReturn(testPasse);
         when(altsystemPasseMapper.recalculatePassen(any(), any())).thenReturn(passen);
         when(passeComponent.update(testPasse, CURRENTUSERID)).thenReturn(testPasse);
 
         altsystemErgebnisse.update(altsystemErgebnisseDO, CURRENTUSERID);
 
-        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId());
+        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.ERGEBNIS_PASSEN, altsystemErgebnisseDO.getId());
         verify(passeComponent).findById(1L);
         verify(altsystemPasseMapper).recalculatePassen(any(), any());
         verify(passeComponent).update(testPasse, CURRENTUSERID);
