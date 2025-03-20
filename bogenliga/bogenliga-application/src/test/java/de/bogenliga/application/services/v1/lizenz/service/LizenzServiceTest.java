@@ -19,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.services.v1.lizenz.model.LizenzDTO;
-import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.services.v1.vereine.service.VereineService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,12 +34,12 @@ public class LizenzServiceTest {
 
 
 
-    private static final long lizenzId = 1;
-    private static final String lizenznummer = "WT012251234";
-    private static final long lizenzRegionId = 2;
-    private static final long lizenzDsbMitgliedId = 3;
-    private static final String lizenztyp = "Liga";
-    private static final long lizenzDisziplinId = 0;
+    private static final long LIZENZ_ID = 1;
+    private static final String LIZENZNUMMER = "WT012251234";
+    private static final long LIZENZ_REGION_ID = 2;
+    private static final long LIZENZ_DSB_MITGLIED_ID = 3;
+    private static final String LIZENZTYP = "Liga";
+    private static final long LIZENZ_DISZIPLIN_ID = 0;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
@@ -66,33 +63,33 @@ public class LizenzServiceTest {
      */
     public static LizenzBE getLizenzBE() {
         final LizenzBE expectedBE = new LizenzBE();
-        expectedBE.setLizenzId(lizenzId);
-        expectedBE.setLizenznummer(lizenznummer);
-        expectedBE.setLizenzRegionId(lizenzRegionId);
-        expectedBE.setLizenzDisziplinId(lizenzDisziplinId);
-        expectedBE.setLizenztyp(lizenztyp);
-        expectedBE.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        expectedBE.setLizenzId(LIZENZ_ID);
+        expectedBE.setLizenznummer(LIZENZNUMMER);
+        expectedBE.setLizenzRegionId(LIZENZ_REGION_ID);
+        expectedBE.setLizenzDisziplinId(LIZENZ_DISZIPLIN_ID);
+        expectedBE.setLizenztyp(LIZENZTYP);
+        expectedBE.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
 
         return expectedBE;
     }
 
     public static LizenzDO getLizenzDO() {
-        return new LizenzDO(lizenzId,
-                lizenznummer,
-                lizenzRegionId,
-                lizenzDsbMitgliedId,
-                lizenztyp,
-                lizenzDisziplinId);
+        return new LizenzDO(LIZENZ_ID,
+                LIZENZNUMMER,
+                LIZENZ_REGION_ID,
+                LIZENZ_DSB_MITGLIED_ID,
+                LIZENZTYP,
+                LIZENZ_DISZIPLIN_ID);
     }
 
     public static LizenzDTO getLizenzDTO() {
         final LizenzDTO lizenzDTO = new LizenzDTO();
-        lizenzDTO.setLizenzId(lizenzId);
-        lizenzDTO.setLizenznummer(lizenznummer);
-        lizenzDTO.setLizenzRegionId(lizenzRegionId);
-        lizenzDTO.setLizenzDisziplinId(lizenzDisziplinId);
-        lizenzDTO.setLizenztyp(lizenztyp);
-        lizenzDTO.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        lizenzDTO.setLizenzId(LIZENZ_ID);
+        lizenzDTO.setLizenznummer(LIZENZNUMMER);
+        lizenzDTO.setLizenzRegionId(LIZENZ_REGION_ID);
+        lizenzDTO.setLizenzDisziplinId(LIZENZ_DISZIPLIN_ID);
+        lizenzDTO.setLizenztyp(LIZENZTYP);
+        lizenzDTO.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
         return lizenzDTO;
     }
 
@@ -143,12 +140,12 @@ public class LizenzServiceTest {
         expectedDO.setLizenzId((long)0);
         expectedDO.setLizenznummer("WT1234567");
         expectedDO.setLizenzRegionId((long)1);
-        expectedDO.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        expectedDO.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
         final List<LizenzDO> expectedDOList = Collections.singletonList(expectedDO);
         // configure mocks
         when(lizenzComponent.findByDsbMitgliedId(anyLong())).thenReturn(expectedDOList);
         // call test method
-        final List<LizenzDTO> actual = underTest.findByDsbMitgliedId(lizenzDisziplinId);
+        final List<LizenzDTO> actual = underTest.findByDsbMitgliedId(LIZENZ_DISZIPLIN_ID);
 
         // assert result
         Assertions.assertThat(actual)
@@ -182,16 +179,16 @@ public class LizenzServiceTest {
     public void create() {
         // prepare test data
         final LizenzDTO input = new LizenzDTO();
-        input.setLizenzId(lizenzId);
+        input.setLizenzId(LIZENZ_ID);
         input.setLizenztyp("Liga");
         input.setLizenznummer("WT012354");
         input.setLizenzRegionId(1L);
-        input.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        input.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
         input.setLizenzDisziplinId(1L);
 
         final LizenzDO lizenzDO = new LizenzDO();
-        lizenzDO.setLizenzId(lizenzId);
-        lizenzDO.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        lizenzDO.setLizenzId(LIZENZ_ID);
+        lizenzDO.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
 
         // configure mocks
         when(lizenzComponent.create(any(LizenzDO.class), anyLong())).thenReturn(lizenzDO);
@@ -216,16 +213,16 @@ public class LizenzServiceTest {
     public void update() {
         // prepare test data
         final LizenzDTO input = new LizenzDTO();
-        input.setLizenzId(lizenzId);
+        input.setLizenzId(LIZENZ_ID);
         input.setLizenztyp("Liga");
         input.setLizenznummer("WT012354");
         input.setLizenzRegionId(1L);
-        input.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        input.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
         input.setLizenzDisziplinId(1L);
 
         final LizenzDO lizenzDO = new LizenzDO();
-        lizenzDO.setLizenzId(lizenzId);
-        lizenzDO.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
+        lizenzDO.setLizenzId(LIZENZ_ID);
+        lizenzDO.setLizenzDsbMitgliedId(LIZENZ_DSB_MITGLIED_ID);
 
         // configure mocks
         when(lizenzComponent.update(any(LizenzDO.class), anyLong())).thenReturn(lizenzDO);

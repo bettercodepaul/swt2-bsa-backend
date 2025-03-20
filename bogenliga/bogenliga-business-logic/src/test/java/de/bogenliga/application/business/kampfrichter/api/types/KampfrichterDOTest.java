@@ -39,12 +39,12 @@ public class KampfrichterDOTest extends TestCase {
     public static final OffsetDateTime LASTMODIFIEDATUTC = DateProvider.currentDateTimeUtc();
 
     // Test Data for setters
-    public static final Long nUSERID = 2L;
-    public static final Long nWETTKAMPFID = 3L;
-    public static final boolean nLEITEND = false;
-    public static final String nKAMPFRICHTERVORNAME = "Moritz";
-    public static final String nKAMPFRICHTERNACHNAME = "Musterfrau";
-    public static final String nEMAIL = "moritz.musterfrau@test.de";
+    public static final Long N_USERID = 2L;
+    public static final Long N_WETTKAMPFID = 3L;
+    public static final boolean N_LEITEND = false;
+    public static final String N_KAMPFRICHTERVORNAME = "Moritz";
+    public static final String N_KAMPFRICHTERNACHNAME = "Musterfrau";
+    public static final String N_EMAIL = "moritz.musterfrau@test.de";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -84,9 +84,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetUserId() {
-        underTest.setUserId(nUSERID);
+        underTest.setUserId(N_USERID);
         Long actual = underTest.getUserId();
-        Long expected = nUSERID;
+        Long expected = N_USERID;
 
         assertEquals(expected, actual);
     }
@@ -102,9 +102,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetWettkampfId() {
-        underTest.setWettkampfId(nWETTKAMPFID);
+        underTest.setWettkampfId(N_WETTKAMPFID);
         Long actual = underTest.getWettkampfId();
-        Long expected = nWETTKAMPFID;
+        Long expected = N_WETTKAMPFID;
 
         assertEquals(expected, actual);
     }
@@ -120,9 +120,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetLeitend() {
-        underTest.setLeitend(nLEITEND);
+        underTest.setLeitend(N_LEITEND);
         boolean actual = underTest.isLeitend();
-        boolean expected = nLEITEND;
+        boolean expected = N_LEITEND;
 
         assertEquals(expected, actual);
     }
@@ -138,9 +138,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetKampfrichterVorname() {
-        underTest.setVorname(nKAMPFRICHTERVORNAME);
+        underTest.setVorname(N_KAMPFRICHTERVORNAME);
         String actual = underTest.getVorname();
-        String expected = nKAMPFRICHTERVORNAME;
+        String expected = N_KAMPFRICHTERVORNAME;
 
         assertEquals(expected, actual);
     }
@@ -156,9 +156,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetKampfrichterNachname() {
-        underTest.setNachname(nKAMPFRICHTERNACHNAME);
+        underTest.setNachname(N_KAMPFRICHTERNACHNAME);
         String actual = underTest.getNachname();
-        String expected = nKAMPFRICHTERNACHNAME;
+        String expected = N_KAMPFRICHTERNACHNAME;
 
         assertEquals(expected, actual);
     }
@@ -174,9 +174,9 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetEmail() {
-        underTest.setKampfrichterEmail(nEMAIL);
+        underTest.setKampfrichterEmail(N_EMAIL);
         String actual = underTest.getKampfrichterEmail();
-        String expected = nEMAIL;
+        String expected = N_EMAIL;
 
         assertEquals(expected, actual);
     }

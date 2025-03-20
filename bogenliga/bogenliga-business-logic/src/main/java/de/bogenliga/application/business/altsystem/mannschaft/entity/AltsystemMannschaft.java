@@ -69,7 +69,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
         //Altsystem ID und Neusystem ID in die Uebersetzungstabelle schreiben.
         altsystemUebersetzung.updateOrInsertUebersetzung(
-                AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
+                AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT,
                 altsystemDataObject.getId(),
                 dsbMannschaftDO.getId(),
                 "");
@@ -89,7 +89,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         altsystemVerein.update(altsystemDataObject, currentUserId);
         //In der uebersetzungstabele anhand der AltsystemID die NeusystemID herausfinden.
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getId());
+                AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, altsystemDataObject.getId());
 
         //Wenn die Mannschaft noch nicht in der Uebersetzungstabelle vorhanden ist Exception
         if(mannschaftUebersetzung == null){

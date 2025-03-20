@@ -29,13 +29,13 @@ import static org.mockito.Mockito.*;
  */
 
 public class WettkampfTypServiceTest {
-    private static final long user_Id=13;
+    private static final long USER_ID =13;
 
-    private static final long wettkampftyp_Id = 1;
-    private static final String wettkampftyp_Name = "Liga Satzsystem";
+    private static final long WETTKAMPFTYP_ID = 1;
+    private static final String WETTKAMPFTYP_NAME = "Liga Satzsystem";
 
-    private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
-    private static final long version = 1234;
+    private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.now();
+    private static final long VERSION = 1234;
 
 
     @Rule
@@ -61,31 +61,31 @@ public class WettkampfTypServiceTest {
      */
     public static WettkampfTypBE getWettkampfTypBE() {
         final WettkampfTypBE expectedBE = new WettkampfTypBE();
-        expectedBE.setwettkampftypID(wettkampftyp_Id);
-        expectedBE.setwettkampftypname(wettkampftyp_Name);
+        expectedBE.setwettkampftypID(WETTKAMPFTYP_ID);
+        expectedBE.setwettkampftypname(WETTKAMPFTYP_NAME);
 
         return expectedBE;
     }
 
     public static WettkampfTypDO getWettkampfTypDO() {
         return new WettkampfTypDO(
-                wettkampftyp_Id,
-                wettkampftyp_Name,
+                WETTKAMPFTYP_ID,
+                WETTKAMPFTYP_NAME,
 
-                created_At_Utc,
-                user_Id,
-                version
+                CREATED_AT_UTC,
+                USER_ID,
+                VERSION
                 );
     }
 
     private static WettkampfTypDTO getWettkampftypDTO() {
        return new WettkampfTypDTO(
-                wettkampftyp_Id,
-               wettkampftyp_Name,
+               WETTKAMPFTYP_ID,
+               WETTKAMPFTYP_NAME,
 
-                user_Id,
-                created_At_Utc,
-                version
+               USER_ID,
+               CREATED_AT_UTC,
+               VERSION
 
         );
 
@@ -94,7 +94,7 @@ public class WettkampfTypServiceTest {
 
     @Before
     public void initMocks() {
-        when(principal.getName()).thenReturn(String.valueOf(user_Id));
+        when(principal.getName()).thenReturn(String.valueOf(USER_ID));
     }
 
     @Test
@@ -134,14 +134,14 @@ public class WettkampfTypServiceTest {
         when(wettkampftypComponent.findById(anyLong())).thenReturn(wettkampftypDO);
 
         // call test method
-        final WettkampfTypDTO actual = underTest.findById(wettkampftyp_Id);
+        final WettkampfTypDTO actual = underTest.findById(WETTKAMPFTYP_ID);
 
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(wettkampftypDO.getId());
 
         // verify invocations
-        verify(wettkampftypComponent).findById(wettkampftyp_Id);
+        verify(wettkampftypComponent).findById(WETTKAMPFTYP_ID);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class WettkampfTypServiceTest {
         // configure mocks
 
         // call test method
-        underTest.delete(wettkampftyp_Id, principal);
+        underTest.delete(WETTKAMPFTYP_ID, principal);
 
         // assert result
 

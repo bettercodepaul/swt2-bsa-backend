@@ -67,14 +67,14 @@ public class AltsystemMannschaftTest {
 
         when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
 
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN,
                 CURRENTUSERID)).thenReturn(altsystemUebersetzungDO);
         when(altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemMannschaftDO, CURRENTUSERID)).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.create(result, CURRENTUSERID)).thenReturn(result);
 
         altsystemMannschaftMapper.addDefaultFields(result, CURRENTUSERID, altsystemMannschaftDO, veranstaltungDO);
 
-        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN,
                 CURRENTUSERID);
     }
 

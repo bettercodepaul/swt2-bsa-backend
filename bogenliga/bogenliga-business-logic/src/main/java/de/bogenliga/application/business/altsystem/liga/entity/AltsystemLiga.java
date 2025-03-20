@@ -63,11 +63,11 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
             //neue Liga anlegen
             ligaDO = ligaComponent.create(ligaDO, currentUserId);
             // Add to translation table
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId(), ligaDO.getId(), "");
 
         }else {
             //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), vorhanden.getId(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId(), vorhanden.getId(), "");
         }
 
         // Add data to table
@@ -83,7 +83,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
         // Get primary key from translation table
         AltsystemUebersetzungDO ligaUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId());
+                AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId());
 
         // Check if the translation data has been found
         if(ligaUebersetzung == null){
