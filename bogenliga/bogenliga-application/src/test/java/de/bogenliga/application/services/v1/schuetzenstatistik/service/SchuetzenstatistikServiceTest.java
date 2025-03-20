@@ -25,26 +25,26 @@ public class SchuetzenstatistikServiceTest {
         private static final long USER = 4L;
         private static final Long VERSION = 0L;
 
-        private static final Long veranstaltungId = 1L;
-        private static final String veranstaltungName = "Name_der_Veranstaltung";
-        private static final Long wettkampfId = 2L;
-        private static final int wettkampfTag = 3;
-        private static final Long mannschaftId = 4L;
-        private static final int mannschaftNummer = 9;
-        private static final Long vereinId = 7L;
-        private static final String vereinName = "Name_Verein";
-        private static final Long matchId = 6L;
-        private static final int matchNr = 2;
-        private static final Long dsbMitgliedId = 2L;
-        private static final String dsbMitgliedName = "Mitglied_Name";
-        private static final int rueckenNummer = 5;
-        private static final int pfeilpunkteSchnitt = 3;
-        private static final String[] schuetzeSaetze = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
-        private static final String schuetzeSatz1 = "{5,8}";
-        private static final String schuetzeSatz2 = "{9,3}";
-        private static final String schuetzeSatz3 = "{4,8}";
-        private static final String schuetzeSatz4 = "{5,2}";
-        private static final String schuetzeSatz5 = "{3,7}";
+        private static final Long VeranstaltungId = 1L;
+        private static final String VeranstaltungName = "Name_der_Veranstaltung";
+        private static final Long WettkampfId = 2L;
+        private static final int WettkampfTag = 3;
+        private static final Long MannschaftId = 4L;
+        private static final int MannschaftNummer = 9;
+        private static final Long VereinId = 7L;
+        private static final String VereinName = "Name_Verein";
+        private static final Long MatchId = 6L;
+        private static final int MatchNr = 2;
+        private static final Long DsbMitgliedId = 2L;
+        private static final String DsbMitgliedName = "Mitglied_Name";
+        private static final int RueckenNummer = 5;
+        private static final int PfeilpunkteSchnitt = 3;
+        private static final String[] SchuetzeSaetze = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
+        private static final String SchuetzeSatz1 = "{5,8}";
+        private static final String SchuetzeSatz2 = "{9,3}";
+        private static final String SchuetzeSatz3 = "{4,8}";
+        private static final String SchuetzeSatz4 = "{5,2}";
+        private static final String SchuetzeSatz5 = "{3,7}";
 
 
 
@@ -95,16 +95,16 @@ public class SchuetzenstatistikServiceTest {
 
 
         @Rule
-        public MockitoRule mockitoRule = MockitoJUnit.rule();
+        public MockitoRule MockitoRule = MockitoJUnit.rule();
 
         @Mock
-        private SchuetzenstatistikComponent schuetzenstatistikComponent;
+        private SchuetzenstatistikComponent SchuetzenstatistikComponent;
 
         @Mock
-        private Principal principal;
+        private Principal Principal;
 
         @InjectMocks
-        private SchuetzenstatistikService underTest;
+        private SchuetzenstatistikService UnderTest;
 
         @Before
         public void initMocks() {
@@ -114,9 +114,9 @@ public class SchuetzenstatistikServiceTest {
         @Test
         public void getSchuetzenstatistikVeranstaltung_ok() {
             // prepare test data
-            final SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO();
+            final SchuetzenstatistikDO SchuetzenstatistikDO = new SchuetzenstatistikDO();
 
-            final List<SchuetzenstatistikDO> schuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
+            final List<SchuetzenstatistikDO> SchuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
 
             // configure mocks
             when(schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
@@ -159,9 +159,9 @@ public class SchuetzenstatistikServiceTest {
         @Test
         public void getSchuetzenstatistikWettkampf() {
             // prepare test data
-            final SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO();
+            final SchuetzenstatistikDO SchuetzenstatistikDO = new SchuetzenstatistikDO();
 
-            final List<SchuetzenstatistikDO> schuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
+            final List<SchuetzenstatistikDO> SchuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
 
             // configure mocks
             when(schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
