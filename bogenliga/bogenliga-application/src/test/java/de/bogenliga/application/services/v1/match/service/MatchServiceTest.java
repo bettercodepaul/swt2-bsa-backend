@@ -8,8 +8,6 @@ import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -128,39 +126,39 @@ public class MatchServiceTest {
     private static final Long MM_ID_1 = 1L;
     private static final Long MM_ID_2 = 2L;
     private static final Long MM_ID_3 = 3L;
-    private static final Long MM_mannschaftsId = 1L;
-    private static final Long MM_dsbMitgliedId = 100L;
-    private static final Integer MM_dsbMitgliedEingesetzt = 1;
-    private static final String MM_dsbMitgliedVorname = "Foo";
-    private static final String MM_dsbMitgliedNachname = "Bar";
-    private static final Long MM_rueckennummer_1 = 5L;
-    private static final Long MM_rueckennummer_2 = 6L;
-    private static final Long MM_rueckennummer_3 = 7L;
+    private static final Long MM_MANNSCHAFTS_ID = 1L;
+    private static final Long MM_DSB_MITGLIED_ID = 100L;
+    private static final Integer MM_DSB_MITGLIED_EINGESETZT = 1;
+    private static final String MM_DSB_MITGLIED_VORNAME = "Foo";
+    private static final String MM_DSB_MITGLIED_NACHNAME = "Bar";
+    private static final Long MM_RUECKENNUMMER_1 = 5L;
+    private static final Long MM_RUECKENNUMMER_2 = 6L;
+    private static final Long MM_RUECKENNUMMER_3 = 7L;
 
 
-    private static final Long W_id = 5L;
-    private static final String W_name = "Liga_kummulativ";
+    private static final Long W_ID = 5L;
+    private static final String W_NAME = "Liga_kummulativ";
 
-    private static final Long W_vid = 243L;
-    private static final Long W_typId = 0L;
-    private static final Long W_tag = 5L;
-    private static final Date W_datum = new Date(20190521L);
-    private static final String W_strasse = "Reutlingerstr. 6";
-    private static final String W_plz = "72764";
-    private static final String W_ortsname = "Reutlingen";
-    private static final String W_ortsinfo= "Hinter dem Haus";
-    private static final String W_begin = "gestern";
-    private static final Long W_disId = 12345L;
+    private static final Long W_VID = 243L;
+    private static final Long W_TYP_ID = 0L;
+    private static final Long W_TAG = 5L;
+    private static final Date W_DATUM = new Date(20190521L);
+    private static final String W_STRASSE = "Reutlingerstr. 6";
+    private static final String W_PLZ = "72764";
+    private static final String W_ORTSNAME = "Reutlingen";
+    private static final String W_ORTSINFO = "Hinter dem Haus";
+    private static final String W_BEGIN = "gestern";
+    private static final Long W_DIS_ID = 12345L;
 
-    private static final Long M_id = 2222L;
-    private static final String M_name = null; //empty
-    private static final Long M_vereinId = 101010L;
-    private static final Long M_nummer = 111L;
-    private static final Long M_benutzerId = 12L;
-    private static final Long M_veranstaltungId = 1L;
-    private static final Long M_sortierung = 1L;
+    private static final Long M_ID = 2222L;
+    private static final String M_NAME = null; //empty
+    private static final Long M_VEREIN_ID = 101010L;
+    private static final Long M_NUMMER = 111L;
+    private static final Long M_BENUTZER_ID = 12L;
+    private static final Long M_VERANSTALTUNG_ID = 1L;
+    private static final Long M_SORTIERUNG = 1L;
 
-    private static final Long M_sportjahr = 2024L;
+    private static final Long M_SPORTJAHR = 2024L;
 
     private static final Long VEREIN_USER = 1L;
     private static final Long VERSION = 0L;
@@ -195,7 +193,7 @@ public class MatchServiceTest {
 
     protected DsbMannschaftDO getPlatzhalter() {
         return new DsbMannschaftDO(
-                MATCH_MANNSCHAFT_ID, "Platzhalter", PLATZHALTER_ID, 696969L, M_benutzerId, 4444L, 8L, 2024L
+                MATCH_MANNSCHAFT_ID, "Platzhalter", PLATZHALTER_ID, 696969L, M_BENUTZER_ID, 4444L, 8L, 2024L
         );
     }
 
@@ -219,11 +217,11 @@ public class MatchServiceTest {
     protected MannschaftsmitgliedDO getMMDO(Long id, Long rueckennummer) {
         return new MannschaftsmitgliedDO(
                 id,
-                MM_mannschaftsId,
-                MM_dsbMitgliedId,
-                MM_dsbMitgliedEingesetzt,
-                MM_dsbMitgliedVorname,
-                MM_dsbMitgliedNachname,
+                MM_MANNSCHAFTS_ID,
+                MM_DSB_MITGLIED_ID,
+                MM_DSB_MITGLIED_EINGESETZT,
+                MM_DSB_MITGLIED_VORNAME,
+                MM_DSB_MITGLIED_NACHNAME,
                 rueckennummer
         );
     }
@@ -251,24 +249,25 @@ public class MatchServiceTest {
     protected DsbMannschaftDO getMannschaftDO(Long id) {
         return new DsbMannschaftDO(
                 id,
-                M_name,
-                M_vereinId,
-                M_nummer,
-                M_benutzerId,
-                M_veranstaltungId,
-                M_sortierung,
-                M_sportjahr
+                M_NAME,
+                M_VEREIN_ID,
+                M_NUMMER,
+                M_BENUTZER_ID,
+                M_VERANSTALTUNG_ID,
+                M_SORTIERUNG,
+                M_SPORTJAHR
         );
     }
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null);
+        return new WettkampfDO(id, W_VID, W_DATUM, W_STRASSE, W_PLZ, W_ORTSNAME, W_ORTSINFO, W_BEGIN, W_TAG, W_DIS_ID,
+                W_TYP_ID, null,null,null, null);
     }
 
 
     protected WettkampfTypDO getWettkampfTypDO(Long id) {
-        return new WettkampfTypDO(id, W_name);
+        return new WettkampfTypDO(id, W_NAME);
     }
 
 
@@ -335,15 +334,15 @@ public class MatchServiceTest {
     @Test
     public void findById() {
         MatchDO matchDO1 = getMatchDO();
-        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
-        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
-        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_TYP_ID);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_ID);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
         when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
-        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
+        when(wettkampfTypComponent.findById(W_TYP_ID)).thenReturn(wettkampftypDO);
         final MatchDTO actual = underTest.findById(MATCH_ID);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
@@ -362,9 +361,9 @@ public class MatchServiceTest {
     @Test
     public void findMatchesByIds() {
         MatchDO matchDO1 = getMatchDO();
-        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
-        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
-        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_TYP_ID);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_ID);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         LigamatchBE ligamatchBE = getLigamatchBE();
         when(matchComponent.getLigamatchById(anyLong())).thenReturn(ligamatchBE);
@@ -372,7 +371,7 @@ public class MatchServiceTest {
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
         when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
-        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
+        when(wettkampfTypComponent.findById(W_TYP_ID)).thenReturn(wettkampftypDO);
         final List<MatchDTO> actual = underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -417,7 +416,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         try {
@@ -431,9 +430,9 @@ public class MatchServiceTest {
     public void saveMatchesSpotter() {
         MatchDO matchDO1 = getMatchDO();
 
-        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
-        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
-        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_TYP_ID);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_ID);
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         LigamatchBE ligamatchBE = getLigamatchBE();
@@ -443,8 +442,8 @@ public class MatchServiceTest {
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
         when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
-        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfTypComponent.findById(W_TYP_ID)).thenReturn(wettkampftypDO);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         getLigamatchBE();
@@ -464,7 +463,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
@@ -483,7 +482,7 @@ public class MatchServiceTest {
         matches.add(null);
         matches.add(matchDTO);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
@@ -498,8 +497,8 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, toIntExact(MM_rueckennummer_1));
-        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, toIntExact(MM_rueckennummer_2));
+        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, toIntExact(MM_RUECKENNUMMER_1));
+        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, toIntExact(MM_RUECKENNUMMER_2));
         PasseDO passe1DO = PasseDTOMapper.toDO.apply(passe1);
         PasseDO passe2DO = PasseDTOMapper.toDO.apply(passe2);
 
@@ -516,7 +515,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
@@ -556,7 +555,7 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
@@ -573,8 +572,8 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(null, toIntExact(MM_rueckennummer_1));
-        PasseDTO passe2 = getPasseDTO(null, toIntExact(MM_rueckennummer_2));
+        PasseDTO passe1 = getPasseDTO(null, toIntExact(MM_RUECKENNUMMER_1));
+        PasseDTO passe2 = getPasseDTO(null, toIntExact(MM_RUECKENNUMMER_2));
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -588,7 +587,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L, 5L));
@@ -613,7 +612,7 @@ public class MatchServiceTest {
         DsbMannschaftDO platzhalter = getPlatzhalter();
 
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         when(mannschaftComponent.findById(anyLong())).thenReturn(platzhalter);
@@ -631,11 +630,11 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(matchDTO, principal));
     }
@@ -653,7 +652,7 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         try {
@@ -669,11 +668,11 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_ID));
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(matchDTO, principal));
     }
@@ -695,7 +694,7 @@ public class MatchServiceTest {
         matchesDO.add(matchDO1);
         matchesDO.add(matchDO1);
 
-        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
 
         matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
@@ -721,6 +720,6 @@ public class MatchServiceTest {
         //zum testen brauchen wir eine Pass DTO mit Rückennummer eines existierenden
         // Mannschaftsmitglieds (6 - ist das zweite Elemente der Liste)
         PasseDTO passeDTOok = getPasseDTO(1L, 6);
-        assertEquals(MM_dsbMitgliedId, underTest.getMemberIdFor(passeDTOok, getMannschaftsMitglieder()));
+        assertEquals(MM_DSB_MITGLIED_ID, underTest.getMemberIdFor(passeDTOok, getMannschaftsMitglieder()));
     }
 }

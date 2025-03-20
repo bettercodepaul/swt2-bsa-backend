@@ -62,12 +62,12 @@ public class PasseServiceTest {
     private static final Long MM_ID_1 = 1L;
     private static final Long MM_ID_2 = 2L;
     private static final Long MM_ID_3 = 3L;
-    private static final Long MM_mannschaftsId = 1L;
-    private static final Long MM_dsbMitgliedId = 100L;
-    private static final Integer MM_dsbMitgliedEingesetzt = 1;
-    private static final String MM_dsbMitgliedVorname = "Foo";
-    private static final String MM_dsbMitgliedNachname = "Bar";
-    private static final Integer MM_rueckennummer_1 = 5;
+    private static final Long MM_MANNSCHAFTS_ID = 1L;
+    private static final Long MM_DSB_MITGLIED_ID = 100L;
+    private static final Integer MM_DSB_MITGLIED_EINGESETZT = 1;
+    private static final String MM_DSB_MITGLIED_VORNAME = "Foo";
+    private static final String MM_DSB_MITGLIED_NACHNAME = "Bar";
+    private static final Integer MM_RUECKENNUMMER_1 = 5;
 
 
 
@@ -92,11 +92,11 @@ public class PasseServiceTest {
     protected MannschaftsmitgliedDO getMMDO(Long id, Long rueckennummer) {
         return new MannschaftsmitgliedDO(
                 id,
-                MM_mannschaftsId,
-                MM_dsbMitgliedId,
-                MM_dsbMitgliedEingesetzt,
-                MM_dsbMitgliedVorname,
-                MM_dsbMitgliedNachname,
+                MM_MANNSCHAFTS_ID,
+                MM_DSB_MITGLIED_ID,
+                MM_DSB_MITGLIED_EINGESETZT,
+                MM_DSB_MITGLIED_VORNAME,
+                MM_DSB_MITGLIED_NACHNAME,
                 rueckennummer
         );
     }
@@ -250,7 +250,7 @@ public class PasseServiceTest {
     public void testCreate() {
         final PasseDO passeDo = getPasseDO();
         final PasseDTO passeDto = PasseDTOMapper.toDTO.apply(passeDo);
-        passeDto.setRueckennummer(MM_rueckennummer_1);
+        passeDto.setRueckennummer(MM_RUECKENNUMMER_1);
 
 
         final List<MannschaftsmitgliedDO> manschaftsmitgliederDOList = getMannschaftsMitglieder();
