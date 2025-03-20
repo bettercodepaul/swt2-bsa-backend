@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class LigaSyncMatchDTOMapperTest {
     protected static final Long MATCH_ID = 1L;
-    private static final long version = 1234;
+    private static final long VERSION = 1234;
     private static final Long MATCH_WETTKAMPF_ID = 2L;
     protected static final Long MATCH_NR = 1L;
     protected static final Long MATCH_BEGEGNUNG = 1L;
@@ -73,7 +73,7 @@ public class LigaSyncMatchDTOMapperTest {
     private static LigaSyncMatchDTO getLigaSyncMatchDTO() {
         return new LigaSyncMatchDTO (
                 MATCH_ID,
-                version,
+                VERSION,
                 MATCH_WETTKAMPF_ID,
                 MATCH_NR.intValue(),
                 MATCH_SCHEIBENNUMMER.intValue(),
@@ -97,7 +97,7 @@ public class LigaSyncMatchDTOMapperTest {
     private static LigaSyncMatchDTO getLigaSyncMatchDTOWithNull() {
         return new LigaSyncMatchDTO (
                 MATCH_ID,
-                version,
+                VERSION,
                 MATCH_WETTKAMPF_ID,
                 MATCH_NR.intValue(),
                 MATCH_SCHEIBENNUMMER.intValue(),

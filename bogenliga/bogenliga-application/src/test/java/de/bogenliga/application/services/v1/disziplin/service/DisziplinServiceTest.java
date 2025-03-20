@@ -21,8 +21,8 @@ import static org.mockito.Mockito.*;
  */
 public class DisziplinServiceTest {
 
-    private static final long disziplinId = 1;
-    private static final String disziplinName = "Recurve";
+    private static final long DISZIPLIN_ID = 1;
+    private static final String DISZIPLIN_NAME = "Recurve";
 
     private static final long USER = 0;
 
@@ -48,8 +48,8 @@ public class DisziplinServiceTest {
     public void findAll() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinId(disziplinId);
-        disziplinDO.setDisziplinName(disziplinName);
+        disziplinDO.setDisziplinId(DISZIPLIN_ID);
+        disziplinDO.setDisziplinName(DISZIPLIN_NAME);
 
         final List<DisziplinDO> disziplinDOList = Collections.singletonList(disziplinDO);
 
@@ -79,14 +79,14 @@ public class DisziplinServiceTest {
     public void findByKey() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinId(disziplinId);
-        disziplinDO.setDisziplinName(disziplinName);
+        disziplinDO.setDisziplinId(DISZIPLIN_ID);
+        disziplinDO.setDisziplinName(DISZIPLIN_NAME);
 
         // configure mocks
         when(disziplinComponent.findById(anyLong())).thenReturn(disziplinDO);
 
         // call test method
-        final DisziplinDTO actual = underTest.findById(disziplinId);
+        final DisziplinDTO actual = underTest.findById(DISZIPLIN_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -95,7 +95,7 @@ public class DisziplinServiceTest {
 
 
         // verify invocations
-        verify(disziplinComponent).findById(disziplinId);
+        verify(disziplinComponent).findById(DISZIPLIN_ID);
     }
 
 
