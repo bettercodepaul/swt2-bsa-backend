@@ -50,16 +50,10 @@ jobs:
           export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED"
           mvn clean install -T 1C
 
-      - name: Run backend tests
-        working-directory: ./bogenliga
-        run: |
-          mvn test  
-          
       - name: Start backend
         working-directory: ./bogenliga/bogenliga-application
         run: |
-          mvn spring-boot:run &
-
+          mvn spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
       - name: Clone frontend repository
         uses: actions/checkout@v2
         with:
