@@ -79,7 +79,6 @@ jobs:
         working-directory: ./bogenliga
         run: |
           npm start &  
-          wait-on: "http://localhost:9000"
       - name: Build completion
         if: success()
         run: echo "Build and tests completed successfully!"
