@@ -4,9 +4,9 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Dependencies
+        run: npm install
       - name: Checkout
         uses: actions/checkout@v4
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
       - name: Cypress Pipeline
         uses: cypress-io/github-action@v6
