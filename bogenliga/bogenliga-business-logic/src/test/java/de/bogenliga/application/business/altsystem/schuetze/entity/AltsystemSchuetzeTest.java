@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.altsystem.schuetze.entity;
 
 import java.sql.SQLException;
-import java.time.OffsetDateTime;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -90,14 +89,14 @@ public class AltsystemSchuetzeTest {
         mannschaftUebersetzungDO.setBogenligaId(2L);
 
         when(altsystemSchuetzeMapper.getIdentifier(any())).thenReturn("MarcoBammert1");
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,2L)).thenReturn(schuetzeUebersetzungDO);
-        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,"MarcoBammert1")).thenReturn(schuetzeUebersetzungDO);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(mannschaftUebersetzungDO);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(mannschaftUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,2L)).thenReturn(schuetzeUebersetzungDO);
+        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,"MarcoBammert1")).thenReturn(schuetzeUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, 22L)).thenReturn(mannschaftUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, 22L)).thenReturn(mannschaftUebersetzungDO);
 
         altsystemSchuetze.create(altsystemSchuetzeDO, CURRENTUSERID);
 
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId(), result.getId(), "MarcoBammert1");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED, altsystemSchuetzeDO.getId(), result.getId(), "MarcoBammert1");
     }
 
     //Test create ohne Eintrag in Übersetzungstabelle
@@ -129,15 +128,15 @@ public class AltsystemSchuetzeTest {
         altsystemUebersetzungDO.setBogenligaId(2L);
 
         when(altsystemSchuetzeMapper.getIdentifier(any())).thenReturn("MarcoBammert1");
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,2L)).thenReturn(null);
-        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,"MarcoBammert1")).thenReturn(null);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,2L)).thenReturn(null);
+        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,"MarcoBammert1")).thenReturn(null);
         when(altsystemSchuetzeMapper.toDO(any(), any())).thenReturn(result);
         when(altsystemSchuetzeMapper.addDefaultFields(result, CURRENTUSERID)).thenReturn(result);
         when(dsbMitgliedComponent.create(result, CURRENTUSERID)).thenReturn(result);
         when(altsystemSchuetzeMapper.buildMannschaftsMitglied(anyLong(), anyLong(), any())).thenReturn(mannschaftresult);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(mannschaftresult);
 
-         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(altsystemMannschaftUebersetzungDO);
+         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, 22L)).thenReturn(altsystemMannschaftUebersetzungDO);
 
         // Mocks konfigurieren
         // Testaufruf
@@ -148,7 +147,7 @@ public class AltsystemSchuetzeTest {
         verify(altsystemSchuetzeMapper).addDefaultFields(result, CURRENTUSERID);
         verify(dsbMitgliedComponent).create(result, CURRENTUSERID);
         verify(mannschaftsmitgliedComponent).create(mannschaftresult, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId(), result.getId(), "MarcoBammert1");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED, altsystemSchuetzeDO.getId(), result.getId(), "MarcoBammert1");
     }
 
 
@@ -191,7 +190,7 @@ public class AltsystemSchuetzeTest {
         when(dsbMitgliedComponent.create(result, CURRENTUSERID)).thenReturn(result);
         when(dsbMitgliedComponent.findById(altsystemSchuetzeDO.getId())).thenReturn(result);
         when(dsbMitgliedComponent.update(result, CURRENTUSERID)).thenReturn(result);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(mannschaftUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, 22L)).thenReturn(mannschaftUebersetzungDO);
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(mannschaftresult);
         when(mannschaftsmitgliedComponent.update(any(), anyLong())).thenReturn(mannschaftresult);
 
@@ -201,7 +200,7 @@ public class AltsystemSchuetzeTest {
 
 
         // Teste dass alle Methoden aufgerufen wurden
-        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
+        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,
                 CURRENTUSERID);
         verify(dsbMitgliedComponent).findById(CURRENTUSERID);
         verify(altsystemSchuetzeMapper).parseName(altsystemSchuetzeDO);

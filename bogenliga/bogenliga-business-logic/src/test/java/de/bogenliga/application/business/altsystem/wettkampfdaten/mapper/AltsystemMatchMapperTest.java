@@ -100,7 +100,7 @@ public class AltsystemMatchMapperTest {
 
 
         // configure mocks
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getMannschaft())).thenReturn(mannschaftUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, altsystemWettkampfdatenDO.getMannschaft())).thenReturn(mannschaftUebersetzung);
 
         // call test method
         MatchDO actual = new MatchDO();

@@ -33,20 +33,20 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 public class MannschaftsmitgliedServiceTest {
 
     private static final Long USER = 0L;
-    private static final Long id = 1L;
-    private static final Long mannschaftsId = 1L;
-    private static final Long dsbMitgliedId = 100L;
-    private static final Integer dsbMitgliedEingesetzt = 1;
-    private static final String dsbMitgliedVorname = "Mario";
-    private static final String dsbMitgliedNachname = "Gomez";
-    private static final Long rueckennummer = 5L;
-    private static final Long wettkampId = 30L;
-    private static final Long platzhalterMitgliedId = 1L;
-    private static final Long platzhalterId = 6969L;
-    private static final Long dsbMitgliedPlatzhalterId = 1L;
-    private static final String dsbMitgliedPlatzhalterVorname = "PlatzhalterVorname1";
-    private static final String dsbMitgliedPlatzhalterNachname = "PlatzhalterNachname1";
-    private static final Long rueckennummerPlatzhalter = 1L;
+    private static final Long ID = 1L;
+    private static final Long MANNSCHAFTS_ID = 1L;
+    private static final Long DSB_MITGLIED_ID = 100L;
+    private static final Integer DSB_MITGLIED_EINGESETZT = 1;
+    private static final String DSB_MITGLIED_VORNAME = "Mario";
+    private static final String DSB_MITGLIED_NACHNAME = "Gomez";
+    private static final Long RUECKENNUMMER = 5L;
+    private static final Long WETTKAMP_ID = 30L;
+    private static final Long PLATZHALTER_MITGLIED_ID = 1L;
+    private static final Long PLATZHALTER_ID = 6969L;
+    private static final Long DSB_MITGLIED_PLATZHALTER_ID = 1L;
+    private static final String DSB_MITGLIED_PLATZHALTER_VORNAME = "PlatzhalterVorname1";
+    private static final String DSB_MITGLIED_PLATZHALTER_NACHNAME = "PlatzhalterNachname1";
+    private static final Long RUECKENNUMMER_PLATZHALTER = 1L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -72,38 +72,39 @@ public class MannschaftsmitgliedServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                mannschaftsId, "die Mannschaft", id, 23L,
-                id, id, 2L, 1L
+                MANNSCHAFTS_ID, "die Mannschaft", ID, 23L,
+                ID, ID, 2L, 1L
         );
     }
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
-                id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer
+                ID, MANNSCHAFTS_ID, DSB_MITGLIED_ID, DSB_MITGLIED_EINGESETZT, DSB_MITGLIED_VORNAME,
+                DSB_MITGLIED_NACHNAME, RUECKENNUMMER
         );
     }
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedPlatzhalterDO() {
         return new MannschaftsmitgliedDO(
-                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
-                dsbMitgliedPlatzhalterVorname, dsbMitgliedPlatzhalterNachname, rueckennummerPlatzhalter
+                PLATZHALTER_MITGLIED_ID, PLATZHALTER_ID, DSB_MITGLIED_PLATZHALTER_ID, 1,
+                DSB_MITGLIED_PLATZHALTER_VORNAME, DSB_MITGLIED_PLATZHALTER_NACHNAME, RUECKENNUMMER_PLATZHALTER
         );
     }
 
     public static MannschaftsMitgliedDTO getMannschaftsmitgliedPlatzhalterDTO() {
         return new MannschaftsMitgliedDTO(
-                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
-                rueckennummerPlatzhalter
+                PLATZHALTER_MITGLIED_ID, PLATZHALTER_ID, DSB_MITGLIED_PLATZHALTER_ID, 1,
+                RUECKENNUMMER_PLATZHALTER
         );
     }
 
 
     public static MannschaftsMitgliedDTO getMannschaftsmitgliedDTO() {
         final MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO();
-        mannschaftsMitgliedDTO.setMannschaftsId(mannschaftsId);
-        mannschaftsMitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
-        mannschaftsMitgliedDTO.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
-        mannschaftsMitgliedDTO.setRueckennummer(rueckennummer);
+        mannschaftsMitgliedDTO.setMannschaftsId(MANNSCHAFTS_ID);
+        mannschaftsMitgliedDTO.setDsbMitgliedId(DSB_MITGLIED_ID);
+        mannschaftsMitgliedDTO.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
+        mannschaftsMitgliedDTO.setRueckennummer(RUECKENNUMMER);
         return mannschaftsMitgliedDTO;
     }
 
@@ -150,14 +151,14 @@ public class MannschaftsmitgliedServiceTest {
         when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
 
         // call test method
-        final List<MannschaftsMitgliedDTO> actual = underTest.findByTeamId(mannschaftsId);
+        final List<MannschaftsMitgliedDTO> actual = underTest.findByTeamId(MANNSCHAFTS_ID);
 
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.get(0).getMannschaftsId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
 
         // verify invocations
-        verify(mannschaftsmitgliedComponent).findByTeamId(mannschaftsId);
+        verify(mannschaftsmitgliedComponent).findByTeamId(MANNSCHAFTS_ID);
     }
 
 
@@ -167,10 +168,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId)).thenReturn(
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(MANNSCHAFTS_ID, DSB_MITGLIED_ID)).thenReturn(
                 mannschaftsmitgliedDO);
 
-        final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId);
+        final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(MANNSCHAFTS_ID, DSB_MITGLIED_ID);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
@@ -183,10 +184,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId)).thenReturn(
+        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(MANNSCHAFTS_ID, DSB_MITGLIED_ID)).thenReturn(
                 mannschaftsmitgliedDO);
 
-        final MannschaftsMitgliedDTO actual = underTest.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId);
+        final MannschaftsMitgliedDTO actual = underTest.findByTeamIdAndRueckennummer(MANNSCHAFTS_ID, DSB_MITGLIED_ID);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
@@ -199,23 +200,23 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId)).thenReturn(
+        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(MANNSCHAFTS_ID, DSB_MITGLIED_ID)).thenReturn(
                 mannschaftsmitgliedDO);
 
         assertThatThrownBy(()->{
-            underTest.findByTeamIdAndRueckennummer(0, dsbMitgliedId);
+            underTest.findByTeamIdAndRueckennummer(0, DSB_MITGLIED_ID);
         }).isInstanceOf(BusinessException.class);
 
         assertThatThrownBy(()->{
-            underTest.findByTeamIdAndRueckennummer(-1, dsbMitgliedId);
+            underTest.findByTeamIdAndRueckennummer(-1, DSB_MITGLIED_ID);
         }).isInstanceOf(BusinessException.class);
 
         assertThatThrownBy(()->{
-            underTest.findByTeamIdAndRueckennummer(mannschaftsId, 0);
+            underTest.findByTeamIdAndRueckennummer(MANNSCHAFTS_ID, 0);
         }).isInstanceOf(BusinessException.class);
 
         assertThatThrownBy(()->{
-            underTest.findByTeamIdAndRueckennummer(mannschaftsId, 0);
+            underTest.findByTeamIdAndRueckennummer(MANNSCHAFTS_ID, 0);
         }).isInstanceOf(BusinessException.class);
     }
 
@@ -225,8 +226,9 @@ public class MannschaftsmitgliedServiceTest {
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId)).thenReturn(mannschaftsmitgliedDOList);
-        final List<MannschaftsMitgliedDTO> actual = underTest.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(MANNSCHAFTS_ID, WETTKAMP_ID)).thenReturn(mannschaftsmitgliedDOList);
+        final List<MannschaftsMitgliedDTO> actual = underTest.findSchuetzenInUebergelegenerLiga(MANNSCHAFTS_ID,
+                WETTKAMP_ID);
 
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDOList.get(0).getDsbMitgliedId());
     }
@@ -238,10 +240,10 @@ public class MannschaftsmitgliedServiceTest {
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsId)).thenReturn(mannschaftsmitgliedDOList);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(MANNSCHAFTS_ID)).thenReturn(mannschaftsmitgliedDOList);
 
         // call test method
-        final List<MannschaftsMitgliedDTO> actual = underTest.findAllSchuetzeInTeam(mannschaftsId);
+        final List<MannschaftsMitgliedDTO> actual = underTest.findAllSchuetzeInTeam(MANNSCHAFTS_ID);
 
         // assert result
         assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
@@ -262,14 +264,14 @@ public class MannschaftsmitgliedServiceTest {
         when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
 
         // call test method
-        final List<MannschaftsMitgliedDTO> actual = underTest.findByMemberId(dsbMitgliedId);
+        final List<MannschaftsMitgliedDTO> actual = underTest.findByMemberId(DSB_MITGLIED_ID);
 
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
 
         // verify invocations
-        verify(mannschaftsmitgliedComponent).findByMemberId(dsbMitgliedId);
+        verify(mannschaftsmitgliedComponent).findByMemberId(DSB_MITGLIED_ID);
     }
 
 
@@ -454,7 +456,7 @@ public class MannschaftsmitgliedServiceTest {
 
         /* call test method */
         try {
-            underTest.delete(mannschaftsId, principal);
+            underTest.delete(MANNSCHAFTS_ID, principal);
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
@@ -474,7 +476,7 @@ public class MannschaftsmitgliedServiceTest {
 
         // call test method
         try {
-            underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal);
+            underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
@@ -500,7 +502,7 @@ public class MannschaftsmitgliedServiceTest {
 
         // call test method
         try {
-            underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal);
+            underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
@@ -525,6 +527,6 @@ public class MannschaftsmitgliedServiceTest {
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(()-> underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal));
+                .isThrownBy(()-> underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal));
      }
 }

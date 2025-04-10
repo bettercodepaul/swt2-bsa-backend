@@ -49,7 +49,7 @@ public class AltsystemSaisonTest {
 
         // assert result
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(
-                AltsystemUebersetzungKategorie.Saison_Sportjahr,
+                AltsystemUebersetzungKategorie.SAISON_SPORTJAHR,
                 altsystemSaisonDOMock.getId(),
                 0L,
                 SPORTJAHR_AS_STRING
@@ -73,7 +73,7 @@ public class AltsystemSaisonTest {
 
         // assert result
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(
-                AltsystemUebersetzungKategorie.Saison_Sportjahr,
+                AltsystemUebersetzungKategorie.SAISON_SPORTJAHR,
                 altsystemSaisonDOMock.getId(),
                 0L,
                 SPORTJAHR_AS_STRING

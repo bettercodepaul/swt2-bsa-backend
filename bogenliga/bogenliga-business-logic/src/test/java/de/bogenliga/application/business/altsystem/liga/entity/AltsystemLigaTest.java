@@ -57,7 +57,7 @@ public class AltsystemLigaTest {
         verify(altsystemLigaMapper).toDO(new LigaDO(), altsystemLigaDO);
         verify(altsystemLigaMapper).addDefaultFields(result, CURRENTUSERID);
         verify(ligaComponent).create(result, CURRENTUSERID);
-        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), result.getId(), "");
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId(), result.getId(), "");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class AltsystemLigaTest {
         result.setId(4L);
 
         // Mocks konfigurieren
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId())).thenReturn(altsystemUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId())).thenReturn(altsystemUebersetzungDO);
         when(ligaComponent.findById(altsystemUebersetzungDO.getBogenligaId())).thenReturn(result);
         when(altsystemLigaMapper.toDO(any(), any())).thenReturn(result);
         when(ligaComponent.update(result, CURRENTUSERID)).thenReturn(result);
@@ -83,7 +83,7 @@ public class AltsystemLigaTest {
         altsystemLiga.update(altsystemLigaDO, CURRENTUSERID);
 
         // Test dass alle Methoden aufgerufen wurden
-        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId());
+        verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.LIGA_LIGA, altsystemLigaDO.getId());
         verify(ligaComponent).findById(altsystemUebersetzungDO.getBogenligaId());
         verify(altsystemLigaMapper).toDO(result, altsystemLigaDO);
         verify(ligaComponent).update(result, CURRENTUSERID);

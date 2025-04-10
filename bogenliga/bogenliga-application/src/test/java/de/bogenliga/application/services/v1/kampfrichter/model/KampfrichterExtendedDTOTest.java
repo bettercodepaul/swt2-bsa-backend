@@ -22,12 +22,12 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     private static final boolean LEITEND = false;
 
     // Test Data for the setter methods
-    private static final long nUSERID = 2442;
-    private static final long nWETTKAMPFID = 8888;
-    private static final String nVORNAME = "Moritz";
-    private static final String nNACHNAME = "Musterfrau";
-    private static final String nEMAIL = "moritz.musterfrau@test.de";
-    private static final boolean nLEITEND = true;
+    private static final long N_USERID = 2442;
+    private static final long N_WETTKAMPFID = 8888;
+    private static final String N_VORNAME = "Moritz";
+    private static final String N_NACHNAME = "Musterfrau";
+    private static final String N_EMAIL = "moritz.musterfrau@test.de";
+    private static final boolean N_LEITEND = true;
 
     /**
      * Utility method to generate a test object
@@ -52,10 +52,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetUserId() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setUserId(nUSERID);
+        actual.setUserId(N_USERID);
         long actualUserId = actual.getUserID();
 
-        assertEquals(nUSERID, actualUserId);
+        assertEquals(N_USERID, actualUserId);
     }
 
 
@@ -70,10 +70,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetWettkampfId() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setWettkampfId(nWETTKAMPFID);
+        actual.setWettkampfId(N_WETTKAMPFID);
         long actualWettkampfId = actual.getWettkampfID();
 
-        assertEquals(nWETTKAMPFID, actualWettkampfId);
+        assertEquals(N_WETTKAMPFID, actualWettkampfId);
 
     }
 
@@ -89,10 +89,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetLeitend() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setLeitend(nLEITEND);
+        actual.setLeitend(N_LEITEND);
         boolean actualLeitend = actual.getLeitend();
 
-        assertEquals(nLEITEND, actualLeitend);
+        assertEquals(N_LEITEND, actualLeitend);
     }
 
 
@@ -107,10 +107,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetKampfrichterVorname() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setKampfrichterVorname(nVORNAME);
+        actual.setKampfrichterVorname(N_VORNAME);
         String actualVorname = actual.getKampfrichterVorname();
 
-        assertEquals(nVORNAME, actualVorname);
+        assertEquals(N_VORNAME, actualVorname);
     }
 
 
@@ -125,10 +125,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetKampfrichterNachname() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setKampfrichterNachname(nNACHNAME);
+        actual.setKampfrichterNachname(N_NACHNAME);
         String actualNachname = actual.getKampfrichterNachname();
 
-        assertEquals(nNACHNAME, actualNachname);
+        assertEquals(N_NACHNAME, actualNachname);
     }
 
 
@@ -143,10 +143,10 @@ public class KampfrichterExtendedDTOTest extends TestCase {
     @Test
     public void testSetEmail() {
         KampfrichterExtendedDTO actual = getExpectedDTO();
-        actual.setEmail(nEMAIL);
+        actual.setEmail(N_EMAIL);
         String actualEmail = actual.getEmail();
 
-        assertEquals(nEMAIL, actualEmail);
+        assertEquals(N_EMAIL, actualEmail);
     }
 
 

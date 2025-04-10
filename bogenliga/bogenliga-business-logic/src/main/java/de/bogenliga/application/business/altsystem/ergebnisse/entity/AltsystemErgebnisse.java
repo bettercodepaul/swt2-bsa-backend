@@ -75,7 +75,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
 
         Long ergebnissIdUebersetzung = Long.valueOf(bldAltsystemId.toString());
 
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen,ergebnissIdUebersetzung , 0L, passeIdString);
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.ERGEBNIS_PASSEN,ergebnissIdUebersetzung , 0L, passeIdString);
 
     }
 
@@ -96,7 +96,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         Long ergebnissId_uebersetzung = Long.valueOf(bldAltsystemId.toString());
 
         // Ids der zugehörigen Passen extrahieren
-        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, ergebnissId_uebersetzung);
+        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.ERGEBNIS_PASSEN, ergebnissId_uebersetzung);
         String passeIdString = uebersetzungDO.getWert().trim();
         String[] passeIds = passeIdString.split(";");
 

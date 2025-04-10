@@ -75,11 +75,11 @@ public class AltsystemVeranstaltungMapper {
         long sportjahr;
 
         AltsystemUebersetzungDO uebersetzungLigaDO = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Liga_Liga, (long)mannschaftDO.getLiga_id());
+                AltsystemUebersetzungKategorie.LIGA_LIGA, (long)mannschaftDO.getLiga_id());
         ligaId = uebersetzungLigaDO.getBogenligaId();
 
         AltsystemUebersetzungDO uebersetzungSaisonDO = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Saison_Sportjahr, (long)mannschaftDO.getSaison_id());
+                AltsystemUebersetzungKategorie.SAISON_SPORTJAHR, (long)mannschaftDO.getSaison_id());
         sportjahr = Long.parseLong(uebersetzungSaisonDO.getWert());
 
         try {
@@ -100,7 +100,7 @@ public class AltsystemVeranstaltungMapper {
             veranstaltungDO = createVeranstaltung(ligaId, sportjahr, currentUserId);
         }
 
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftDO.getId(),
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.MANNSCHAFT_VERANSTALTUNG, mannschaftDO.getId(),
                 veranstaltungDO.getVeranstaltungID(), "");
 
         return veranstaltungDO;
