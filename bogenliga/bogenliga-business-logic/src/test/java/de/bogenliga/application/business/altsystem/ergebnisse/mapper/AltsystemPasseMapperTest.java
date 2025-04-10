@@ -116,9 +116,9 @@ public class AltsystemPasseMapperTest{
         satzUebersetzung.setWert(String.valueOf(anzahlSaetze));
 
         // configure mocks
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied), anyLong())).thenReturn(schuetzeUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED), anyLong())).thenReturn(schuetzeUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_Mannschaft), anyLong())).thenReturn(mannschaftUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SCHUETZE_MANNSCHAFT), anyLong())).thenReturn(mannschaftUebersetzung);
 
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
@@ -126,7 +126,7 @@ public class AltsystemPasseMapperTest{
         when(altsystemMatchMapper.getCurrentWettkampfTag(anyLong(), any())).thenReturn(wettkaempfe.get(0));
         when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.MATCH_SAETZE), anyLong())).thenReturn(satzUebersetzung);
 
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(getMockMatches());
 
@@ -197,9 +197,9 @@ public class AltsystemPasseMapperTest{
         satzUebersetzung.setWert(String.valueOf(anzahlSaetze));
 
         // configure mocks
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied), anyLong())).thenReturn(schuetzeUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED), anyLong())).thenReturn(schuetzeUebersetzung);
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Schuetze_Mannschaft), anyLong())).thenReturn(mannschaftUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.SCHUETZE_MANNSCHAFT), anyLong())).thenReturn(mannschaftUebersetzung);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkaempfe);
@@ -207,7 +207,7 @@ public class AltsystemPasseMapperTest{
         when(altsystemMatchMapper.getCurrentBsappMatch(anyLong())).thenReturn(MATCH_ID);
 
 
-        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Match_Saetze), anyLong())).thenReturn(satzUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.MATCH_SAETZE), anyLong())).thenReturn(satzUebersetzung);
 
         when(matchComponent.findByMannschaftId(anyLong())).thenReturn(new LinkedList<>());
 

@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.Sync.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
@@ -11,9 +10,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgli
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
-import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 /**
  * @author Jonas Sigloch
@@ -23,12 +20,12 @@ public class SyncWrapperTest {
             new LigaSyncMannschaftsmitgliedDTO(1000L, 2L, 1001L, 1202L, 3L)));
     private static final List<LigaSyncMatchDTO> matchList = new ArrayList<>(Collections.singletonList(SyncServiceTest.getLigaSyncMatchDTO()));
     private static final List<LigaSyncPasseDTO> passeList = new ArrayList<>(Collections.singletonList(SyncServiceTest.getLigaSyncPasseDTO()));
-    private static final String offlineToken = "testToken";
-    private static final long wettkampfId = 1009L;
+    private static final String OFFLINE_TOKEN = "testToken";
+    private static final long WETTKAMPF_ID = 1009L;
 
 
     private SyncWrapper getSyncWrapper() {
-        return new SyncWrapper(matchList, passeList, mitgliedList, offlineToken, wettkampfId);
+        return new SyncWrapper(matchList, passeList, mitgliedList, OFFLINE_TOKEN, WETTKAMPF_ID);
     }
 
     @Test
@@ -36,8 +33,8 @@ public class SyncWrapperTest {
         SyncWrapper undertest = getSyncWrapper();
 
         assertThat(undertest).isNotNull();
-        assertThat(undertest.getWettkampfId()).isEqualTo(wettkampfId);
-        assertThat(undertest.getOfflineToken()).isEqualTo(offlineToken);
+        assertThat(undertest.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
+        assertThat(undertest.getOfflineToken()).isEqualTo(OFFLINE_TOKEN);
         assertThat(undertest.getMannschaftsmitglied()).hasSize(1);
         assertThat(undertest.getMatch()).hasSize(1);
         assertThat(undertest.getPasse()).hasSize(1);
@@ -50,8 +47,8 @@ public class SyncWrapperTest {
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Long.toString(wettkampfId))
-                .contains(offlineToken);
+                .contains(Long.toString(WETTKAMPF_ID))
+                .contains(OFFLINE_TOKEN);
     }
 
     @Test
@@ -64,11 +61,11 @@ public class SyncWrapperTest {
         syncWrapper.setPasse(passeList);
         Assert.assertEquals(passeList, syncWrapper.getPasse());
 
-        syncWrapper.setOfflineToken(offlineToken);
-        Assert.assertEquals(offlineToken, syncWrapper.getOfflineToken());
+        syncWrapper.setOfflineToken(OFFLINE_TOKEN);
+        Assert.assertEquals(OFFLINE_TOKEN, syncWrapper.getOfflineToken());
 
-        syncWrapper.setWettkampfId(wettkampfId);
-        Assert.assertEquals(wettkampfId, syncWrapper.getWettkampfId());
+        syncWrapper.setWettkampfId(WETTKAMPF_ID);
+        Assert.assertEquals(WETTKAMPF_ID, syncWrapper.getWettkampfId());
 
         syncWrapper.setMannschaftsmitglied(mitgliedList);
         Assert.assertEquals(mitgliedList, syncWrapper.getMannschaftsmitglied());

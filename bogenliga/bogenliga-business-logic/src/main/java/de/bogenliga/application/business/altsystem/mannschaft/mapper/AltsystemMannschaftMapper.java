@@ -89,7 +89,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
 
         //Verein herausfinden
         AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
+                AltsystemUebersetzungKategorie.MANNSCHAFT_VEREIN, altsystemDataObject.getId());
 
         if(vereinUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,

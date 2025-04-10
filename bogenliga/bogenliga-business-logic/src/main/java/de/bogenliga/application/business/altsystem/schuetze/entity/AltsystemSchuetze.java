@@ -5,7 +5,6 @@ import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.user.impl.business.UserRoleComponentImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // Informationen zum Schützen im neuen System anhand der Altsystem-ID abrufen
         AltsystemUebersetzungDO schuetzeUebersetzung = null;
         try {
-            schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId());
+            schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED, altsystemSchuetzeDO.getId());
         }catch(Exception e){
             LOGGER.debug(String.valueOf(e));
         }
@@ -72,7 +71,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // die DSB-mitlgiedsID - auch die muss ja eindeutig sein...
         if (schuetzeUebersetzung == null) {
             try {
-                schuetzeUebersetzung = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, parsedIdentifier);
+                schuetzeUebersetzung = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED, parsedIdentifier);
             } catch (Exception e) {
                 LOGGER.debug(String.valueOf(e));
             }
@@ -106,15 +105,15 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         }
 
         // Übersetzung des Identifiers und Speichern in der Übersetzungstabelle
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId(),
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED, altsystemSchuetzeDO.getId(),
                 dsbMitgliedId, parsedIdentifier);
 
         // Informationen zur Mannschaft des Schützen aus dem Altsystem abrufen
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT,
                 Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()));
 
         // Übersetzung der Mannschaftsdaten und Speichern in der Übersetzungstabelle
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getId(),
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.SCHUETZE_MANNSCHAFT, altsystemSchuetzeDO.getId(),
                 altsystemUebersetzungDO.getBogenligaId(), "");
     }
 
@@ -127,7 +126,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
     @Override
     public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId) {
         // Das Objekt aus der Uebersetzungs-ID auslesen
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.SCHUETZE_DSB_MITGLIED,
                 altsystemSchuetzeDO.getId());
 
         // Das zu aktualisierende Objekt im neuen System finden
@@ -145,7 +144,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         dsbMitgliedComponent.update(dsbMitgliedDO, currentUserId);
 
         //Mannschaftsmitglied aktualisieren
-        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()));
+        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.MANNSCHAFT_MANNSCHAFT, Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()));
         // bisherigen Datensatz lesen
         MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsmitgliedComponent.findByMemberAndTeamId(uebersetzungMannschaftDO.getBogenligaId(), dsbMitgliedDO.getId());
         //Daten mit neuen Inhalten überschreiben
