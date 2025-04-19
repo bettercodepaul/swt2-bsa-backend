@@ -56,7 +56,7 @@ jobs:
       - name: Clone frontend repository
         uses: actions/checkout@v2
         with:
-          repository: aminaacid/bogenliga_bbf  
+          repository: bettercodepaul/swt2-bsa-frontend
           token: ${{ secrets.GITHUB_TOKEN }}   
           
       - name: Set up Node.js
