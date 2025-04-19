@@ -1,6 +1,5 @@
 name: Cypress test pipeline
-on: 
-  workflow_dispatch:
+on: [push, pull_request]
 jobs:
   build:
     name: Build
