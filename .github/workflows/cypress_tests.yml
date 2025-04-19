@@ -82,3 +82,8 @@ jobs:
       - name: Build completion
         if: success()
         run: echo "Build and tests completed successfully!"
+
+      - name: Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./bogenliga
