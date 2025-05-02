@@ -1,12 +1,15 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
+
 /**
  * Entity für eine Tablet-Schusszettel-Session.
  * Repräsentiert eine persistente Autorisierungs- und Statusinstanz pro Team am Spieltag.
  *
  * @author Marty Lauterbach, mklemmingen
  */
-public class TabletSessionEntity {
+public class TabletSessionEntity extends CommonBusinessEntity {
+
     private Long id;
     private String token;
     private Long teamId;
@@ -15,11 +18,9 @@ public class TabletSessionEntity {
     private Integer currentPasseNumber;
     private String status;
     private Long gegnerTeamId;
-    private Boolean finalized;
 
-    // Getter & Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
@@ -41,7 +42,4 @@ public class TabletSessionEntity {
 
     public Long getGegnerTeamId() { return gegnerTeamId; }
     public void setGegnerTeamId(Long gegnerTeamId) { this.gegnerTeamId = gegnerTeamId; }
-
-    public Boolean getFinalized() { return finalized; }
-    public void setFinalized(Boolean finalized) { this.finalized = finalized; }
 }
