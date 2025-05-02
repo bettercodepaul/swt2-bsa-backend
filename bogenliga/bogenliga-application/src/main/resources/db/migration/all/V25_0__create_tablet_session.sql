@@ -3,14 +3,13 @@
 CREATE TABLE schusszettel_tablet_session (
     id BIGSERIAL PRIMARY KEY,
     token TEXT NOT NULL UNIQUE,
-    team_id BIGINT NOT NULL REFERENCES mannschaft(id),
-    wettkampf_id BIGINT NOT NULL REFERENCES wettkampf(id),
-    current_match_id BIGINT REFERENCES match(id),
+    team_id BIGINT NOT NULL REFERENCES mannschaft(mannschaft_id),
+    wettkampf_id BIGINT NOT NULL REFERENCES wettkampf(wettkampf_id),
+    current_match_id BIGINT REFERENCES match(match_id),
     current_passe_number INTEGER DEFAULT 1,
     status VARCHAR(50) NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    gegner_team_id BIGINT REFERENCES mannschaft(id)
-    -- kein finalized-Flag nötig, da Statusvergleich ausreichend
+    gegner_team_id BIGINT REFERENCES mannschaft(mannschaft_id)
 );
 
 -- Indexe für schnelle Abfragen

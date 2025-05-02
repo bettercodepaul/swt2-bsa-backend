@@ -1,6 +1,19 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import de.bogenliga.application.business.schusszettel.impl.business.TabletSessionEntity;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
  * DAO für die schusszettel_tablet_session Tabelle.
@@ -8,18 +21,74 @@ import java.util.Optional;
  *
  * @author Marty Lauterbach, mklemmingen
  */
-public class TabletSessionDAO {
+@Repository
+public class TabletSessionDAO implements DataAccessObject {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabletSessionDAO.class);
+    private static final String TABLE = "schusszettel_tablet_session";
+
+    private static final String TABLE_ID = "id";
+    private static final String TABLE_TOKEN = "token";
+    private static final String TABLE_TEAM_ID = "team_id";
+    private static final String TABLE_WETTKAMPF_ID = "wettkampf_id";
+    private static final String TABLE_MATCH_ID = "current_match_id";
+    private static final String TABLE_PASSE_NR = "current_passe_number";
+    private static final String TABLE_STATUS = "status";
+    private static final String TABLE_LAST_UPDATED = "last_updated";
+    private static final String TABLE_GEGENR_TEAM_ID = "gegner_team_id";
+
+    private static final BusinessEntityConfiguration<TabletSessionEntity> TABLET_SESSION =
+            new BusinessEntityConfiguration<>(TabletSessionEntity.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+
+    private final BasicDAO basicDao;
+
+    public TabletSessionDAO(BasicDAO basicDao) {
+        this.basicDao = basicDao;
+    }
+
+    private static Map<String, String> getColumnsToFieldsMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put(TABLE_ID, "id");
+        map.put(TABLE_TOKEN, "token");
+        map.put(TABLE_TEAM_ID, "teamId");
+        map.put(TABLE_WETTKAMPF_ID, "wettkampfId");
+        map.put(TABLE_MATCH_ID, "currentMatchId");
+        map.put(TABLE_PASSE_NR, "currentPasseNumber");
+        map.put(TABLE_STATUS, "status");
+        map.put(TABLE_LAST_UPDATED, "lastUpdated");
+        map.put(TABLE_GEGENR_TEAM_ID, "gegnerTeamId");
+        map.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+        return map;
+    }
 
     public Optional<TabletSessionEntity> findByToken(String token) {
-        // TODO: SELECT * FROM schusszettel_tablet_session WHERE token = ?
-        return Optional.empty();
+        String sql = new QueryBuilder()
+                .selectAll()
+                .from(TABLE)
+                .whereEquals(TABLE_TOKEN)
+                .compose().toString();
+
+        return basicDao.selectEntityList(TABLET_SESSION, sql, token).stream().findFirst();
     }
 
-    public void updateStatus(Long id, String newStatus, Integer currentPasse, Long matchId, boolean finalized) {
-        // TODO: UPDATE schusszettel_tablet_session SET ... WHERE id = ?
+    public Optional<TabletSessionEntity> findByWettkampfUndTeam(Long wettkampfId, Long teamId) {
+        String sql = new QueryBuilder()
+                .selectAll()
+                .from(TABLE)
+                .whereEquals(TABLE_WETTKAMPF_ID)
+                .andEquals(TABLE_TEAM_ID)
+                .compose().toString();
+
+        return basicDao.selectEntityList(TABLET_SESSION, sql, wettkampfId, teamId).stream().findFirst();
     }
 
-    public void createSession(TabletSessionEntity entity) {
-        // TODO: INSERT INTO schusszettel_tablet_session VALUES (...)
+    public TabletSessionEntity createSession(TabletSessionEntity entity, Long currentUserId) {
+        basicDao.setCreationAttributes(entity, currentUserId);
+        return basicDao.insertEntity(TABLET_SESSION, entity);
+    }
+
+    public TabletSessionEntity updateStatus(TabletSessionEntity entity, Long currentUserId) {
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLET_SESSION, entity, TABLE_ID);
     }
 }
