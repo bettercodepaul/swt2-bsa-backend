@@ -1,6 +1,5 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.api;
 
-import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 import org.springframework.stereotype.Service;
 

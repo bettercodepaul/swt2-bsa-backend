@@ -1,16 +1,21 @@
 package de.bogenliga.application.services.v1.schusszettel;
 
-import de.bogenliga.application.services.v1.schusszettel.model.*;
-import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
+import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
+import de.bogenliga.application.business.schusszettel.impl.business.TabletSchusszettelComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 /**
- * REST-Controller zur Bereitstellung der Tablet-Schusszettel-API.
+ * REST-Controller für den Tablet-Schusszettel.
  *
- * @author Marty Lauterbach, mklemmingen
+ * Bietet GET- und POST-Endpunkte zur Statusabfrage und Eingabeübermittlung.
+ *
+ * @author Marty Lauterbach
  */
 @RestController
 @RequestMapping("/api/tablet-schusszettel")
@@ -18,33 +23,43 @@ public class TabletSchusszettelController {
 
     private final TabletSchusszettelComponent component;
 
-    public TabletSchusszettelController(final TabletSchusszettelComponent component) {
+    @Autowired
+    public TabletSchusszettelController(TabletSchusszettelComponent component) {
         this.component = component;
     }
 
+    /**
+     * Holt aktuellen Status und relevante Daten für ein Team-Tablet.
+     */
     @GetMapping
     public ResponseEntity<TabletSchusszettelDTO> getSchusszettel(
-            @RequestParam long wettkampfid,
-            @RequestParam long teamid,
-            @RequestParam String token) {
-        return ResponseEntity.ok(component.getStatus(wettkampfid, teamid, token));
+            @RequestParam("token") String token,
+            @RequestParam("wettkampfid") Long wettkampfId,
+            @RequestParam("teamid") Long teamId) {
+
+        TabletSchusszettelDTO dto = component.getStatus(wettkampfId, teamId, token);
+        return ResponseEntity.ok(dto);
     }
 
+    /**
+     * POST-Verarbeitung für Schützenmeldung oder Satz-Eingabe.
+     */
     @PostMapping
     public ResponseEntity<Map<String, String>> postEingabe(
-            @RequestParam long wettkampfid,
-            @RequestParam long teamid,
-            @RequestParam String token,
-            @RequestBody Object request) {
+            @RequestParam("token") String token,
+            @RequestParam("wettkampfid") Long wettkampfId,
+            @RequestParam("teamid") Long teamId,
+            @RequestBody Map<String, Object> payload) {
 
-        if (request instanceof SatzEingabeDTO satz) {
-            component.submitSatz(wettkampfid, teamid, token, satz);
-        } else if (request instanceof SchuetzenMeldungDTO meldung) {
-            component.submitSchuetzen(wettkampfid, teamid, token, meldung);
-        } else {
-            return ResponseEntity.badRequest().body(Map.of("message", "Ungültiger Request"));
+        String typ = (String) payload.get("typ");
+        if ("SATZEINGABE".equals(typ)) {
+            SatzEingabeDTO dto = SatzEingabeDTO.fromMap(payload);
+            component.submitSatz(wettkampfId, teamId, token, dto);
+        } else if ("SCHUETZENMELDUNG".equals(typ)) {
+            SchuetzenMeldungDTO dto = SchuetzenMeldungDTO.fromMap(payload);
+            component.submitSchuetzen(wettkampfId, teamId, token, dto);
         }
 
-        return ResponseEntity.ok(Map.of("message", "Eingabe erfolgreich gespeichert"));
+        return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
     }
 }
