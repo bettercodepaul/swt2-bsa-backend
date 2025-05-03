@@ -1,23 +1,24 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.services.v1.schusszettel.model;
 
 /**
- * Repräsentiert einen Schützen mit Name und Rückennummer.
- * Wird vom Business-Layer verwendet und an das REST-DTO übergeben.
+ * DTO für Schützeninformationen, die an das Tablet geliefert werden.
+ *
+ * Wird für die Anzeige der Namen, Rückennummern und IDs verwendet.
  *
  * @author Marty Lauterbach
  */
-public class SchuetzenInfoDO {
+public class SchuetzeStammdatenDTO {
 
     private Long schuetzenId;
     private Integer rueckennummer;
     private String vorname;
     private String nachname;
 
-    public SchuetzenInfoDO() {
-        // Standard-Konstruktor
+    public SchuetzeStammdatenDTO() {
+        // Standard-Konstruktor für Jackson
     }
 
-    public SchuetzenInfoDO(Long schuetzenId, Integer rueckennummer, String vorname, String nachname) {
+    public SchuetzeStammdatenDTO(Long schuetzenId, Integer rueckennummer, String vorname, String nachname) {
         this.schuetzenId = schuetzenId;
         this.rueckennummer = rueckennummer;
         this.vorname = vorname;

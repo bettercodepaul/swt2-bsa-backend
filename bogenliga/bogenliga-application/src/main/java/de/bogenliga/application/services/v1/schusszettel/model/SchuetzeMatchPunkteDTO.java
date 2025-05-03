@@ -4,15 +4,15 @@ package de.bogenliga.application.services.v1.schusszettel.model;
  * Repräsentiert einen Schützen und seine bisherige Punktzahl im laufenden Match.
  * @author Marty Lauterbach, mklemmingen
  */
-public class SchuetzeInfoDTO {
+public class SchuetzeMatchPunkteDTO {
     private Long schuetzenId;
     private Integer punkteBisher;
 
-    public SchuetzeInfoDTO() {
+    public SchuetzeMatchPunkteDTO() {
         // Leerer Konstruktor für Jackson
     }
 
-    public SchuetzeInfoDTO(Long schuetzenId, Integer punkteBisher) {
+    public SchuetzeMatchPunkteDTO(Long schuetzenId, Integer punkteBisher) {
         this.schuetzenId = schuetzenId;
         this.punkteBisher = punkteBisher;
     }

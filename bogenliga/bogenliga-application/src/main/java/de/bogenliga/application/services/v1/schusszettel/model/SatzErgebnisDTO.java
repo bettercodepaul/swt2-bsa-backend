@@ -9,6 +9,16 @@ public class SatzErgebnisDTO {
     private Integer team1Punkte;
     private Integer team2Punkte;
 
+    public SatzErgebnisDTO() {
+        // Für Jackson
+    }
+
+    public SatzErgebnisDTO(Integer satzNr, Integer team1Punkte, Integer team2Punkte) {
+        this.satzNr = satzNr;
+        this.team1Punkte = team1Punkte;
+        this.team2Punkte = team2Punkte;
+    }
+
     public Integer getSatzNr() { return satzNr; }
     public void setSatzNr(Integer satzNr) { this.satzNr = satzNr; }
 

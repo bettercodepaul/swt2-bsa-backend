@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.schusszettel.model;
 
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzeStammdatenDO;
 import java.util.List;
 
 /**
@@ -13,7 +14,8 @@ public class TabletSchusszettelDTO {
     private TabletSchusszettelStatus status;
     private TeamInfoDTO eigenesTeam;
     private TeamInfoDTO gegnerischesTeam;
-    private List<SchuetzeInfoDTO> schuetzen;
+    private List<SchuetzeMatchPunkteDTO> schuetzenMatchPunkte;
+    private List<SchuetzeStammdatenDTO> schuetzeStammDaten;
     private List<SatzErgebnisDTO> satzErgebnisse;
     private List<TeamMatchInfoDTO> matchErgebnis;
     private List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen;
@@ -28,8 +30,11 @@ public class TabletSchusszettelDTO {
     public TeamInfoDTO getGegnerischesTeam() { return gegnerischesTeam; }
     public void setGegnerischesTeam(TeamInfoDTO gegnerischesTeam) { this.gegnerischesTeam = gegnerischesTeam; }
 
-    public List<SchuetzeInfoDTO> getSchuetzen() { return schuetzen; }
-    public void setSchuetzen(List<SchuetzeInfoDTO> schuetzen) { this.schuetzen = schuetzen; }
+    public List<SchuetzeMatchPunkteDTO> getSchuetzenMatchPunkte() {return schuetzenMatchPunkte;}
+    public void setSchuetzenMatchPunkte(List<SchuetzeMatchPunkteDTO> schuetzenMatchPunkte) {this.schuetzenMatchPunkte = schuetzenMatchPunkte;}
+
+    public List<SchuetzeStammdatenDTO> getSchuetzeStammDaten() {return schuetzeStammDaten;}
+    public void setSchuetzeStammDaten(List<SchuetzeStammdatenDTO> schuetzeStammDaten) {this.schuetzeStammDaten = schuetzeStammDaten;}
 
     public List<SatzErgebnisDTO> getSatzErgebnisse() { return satzErgebnisse; }
     public void setSatzErgebnisse(List<SatzErgebnisDTO> satzErgebnisse) { this.satzErgebnisse = satzErgebnisse; }

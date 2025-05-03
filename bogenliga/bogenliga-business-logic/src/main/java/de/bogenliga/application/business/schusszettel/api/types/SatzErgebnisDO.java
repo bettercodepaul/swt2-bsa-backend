@@ -9,6 +9,14 @@ public class SatzErgebnisDO {
     private Integer team1Punkte;
     private Integer team2Punkte;
 
+    public SatzErgebnisDO(Integer satzNr, Integer team1Punkte, Integer team2Punkte) {
+        this.satzNr = satzNr;
+        this.team1Punkte = team1Punkte;
+        this.team2Punkte = team2Punkte;
+    }
+
+    public SatzErgebnisDO() {}
+
     public Integer getSatzNr() { return satzNr; }
     public void setSatzNr(Integer satzNr) { this.satzNr = satzNr; }
 

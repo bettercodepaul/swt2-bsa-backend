@@ -9,7 +9,16 @@ import java.util.List;
  * @author Marty Lauterbach
  */
 public class SatzEingabeDO {
+
     private List<SchuetzenSatzDO> satzeingabe;
+
+    // Leerer Konstruktor für Frameworks / Jackson
+    public SatzEingabeDO() {}
+
+    // Konstruktor mit allen Feldern für Mapper
+    public SatzEingabeDO(List<SchuetzenSatzDO> satzeingabe) {
+        this.satzeingabe = satzeingabe;
+    }
 
     public List<SchuetzenSatzDO> getSatzeingabe() {
         return satzeingabe;
