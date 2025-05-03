@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzenInfoDO;
-import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenInfoDTO;
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzeStammdatenDO;
+import de.bogenliga.application.services.v1.schusszettel.model.SchuetzeStammdatenDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
  */
 public class SchuetzenInfoMapper {
 
-    public static SchuetzenInfoDTO toDTO(SchuetzenInfoDO doObj) {
+    public static SchuetzeStammdatenDTO toDTO(SchuetzeStammdatenDO doObj) {
         if (doObj == null) {
             return null;
         }
 
-        return new SchuetzenInfoDTO(
+        return new SchuetzeStammdatenDTO(
                 doObj.getSchuetzenId(),
                 doObj.getRueckennummer(),
                 doObj.getVorname(),
@@ -25,12 +25,12 @@ public class SchuetzenInfoMapper {
         );
     }
 
-    public static SchuetzenInfoDO toDO(SchuetzenInfoDTO dto) {
+    public static SchuetzeStammdatenDO toDO(SchuetzeStammdatenDTO dto) {
         if (dto == null) {
             return null;
         }
 
-        return new SchuetzenInfoDO(
+        return new SchuetzeStammdatenDO(
                 dto.getSchuetzenId(),
                 dto.getRueckennummer(),
                 dto.getVorname(),
@@ -38,13 +38,13 @@ public class SchuetzenInfoMapper {
         );
     }
 
-    public static List<SchuetzenInfoDTO> toDTOList(List<SchuetzenInfoDO> doList) {
+    public static List<SchuetzeStammdatenDTO> toDTOList(List<SchuetzeStammdatenDO> doList) {
         return doList == null ? null : doList.stream()
                 .map(SchuetzenInfoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public static List<SchuetzenInfoDO> toDOList(List<SchuetzenInfoDTO> dtoList) {
+    public static List<SchuetzeStammdatenDO> toDOList(List<SchuetzeStammdatenDTO> dtoList) {
         return dtoList == null ? null : dtoList.stream()
                 .map(SchuetzenInfoMapper::toDO)
                 .collect(Collectors.toList());

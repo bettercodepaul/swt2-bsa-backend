@@ -1,7 +1,9 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
 import de.bogenliga.application.business.schusszettel.api.types.SatzErgebnisDO;
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzenInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzeMatchPunkteDO;
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzeStammdatenDO;
+import de.bogenliga.application.business.schusszettel.api.types.TeamMatchInfoDO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 
 import java.util.List;
@@ -17,30 +19,32 @@ public class TabletSchusszettelDTOMapper {
             TabletSchusszettelDTO.TabletSchusszettelStatus status,
             TeamInfoDTO eigenesTeam,
             TeamInfoDTO gegnerischesTeam,
-            List<SchuetzenInfoDO> eingesetzteSchuetzen,
+            List<SchuetzeMatchPunkteDO> schuetzenMatchPunkte,
+            List<SchuetzeStammdatenDO> eingesetzteSchuetzen,
             List<SatzErgebnisDO> satzErgebnisse,
-            List<SatzErgebnisDO> matchErgebnis,
-            List<SchuetzenInfoDO> verfuegbareSchuetzen
+            List<TeamMatchInfoDO> matchErgebnis,
+            List<SchuetzeStammdatenDO> verfuegbareSchuetzen
     ) {
         TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
 
         dto.setStatus(status);
         dto.setEigenesTeam(eigenesTeam);
         dto.setGegnerischesTeam(gegnerischesTeam);
-        dto.setSchuetzen(TabletSchusszettelListenMapper.toSchuetzenInfoDTOList(eingesetzteSchuetzen));
+        dto.setSchuetzenMatchPunkte(TabletSchusszettelListenMapper.toSchuetzeMatchPunkteDTOList(schuetzenMatchPunkte));
+        dto.setSchuetzeStammDaten(TabletSchusszettelListenMapper.toSchuetzeStammdatenDTOList(eingesetzteSchuetzen));
         dto.setSatzErgebnisse(TabletSchusszettelListenMapper.toSatzErgebnisDTOList(satzErgebnisse));
-        dto.setMatchErgebnis(TabletSchusszettelListenMapper.toSatzErgebnisDTOList(matchErgebnis));
-        dto.setVerfuegbareSchuetzen(TabletSchusszettelListenMapper.toSchuetzenInfoDTOList(verfuegbareSchuetzen));
+        dto.setMatchErgebnis(TabletSchusszettelListenMapper.toTeamMatchInfoDTOList(matchErgebnis));
+        dto.setVerfuegbareSchuetzen(TabletSchusszettelListenMapper.toVerfuegbarerSchuetzeDTOList(verfuegbareSchuetzen));
 
         return dto;
     }
 
     /**
-     * Baut aus rohen Schützendaten eine Liste von SchuetzenInfoDTOs.
+     * Baut aus rohen Schützendaten eine Liste von SchuetzeStammdatenDTOs.
      */
-    public static List<SchuetzenInfoDTO> fromRawSchuetzen(List<Object[]> rawData) {
+    public static List<SchuetzeStammdatenDTO> fromRawSchuetzen(List<Object[]> rawData) {
         return rawData.stream()
-                .map(row -> new SchuetzenInfoDTO(
+                .map(row -> new SchuetzeStammdatenDTO(
                         (Long) row[0],     // schuetzenId
                         (Integer) row[1],  // rueckennummer
                         (String) row[2],   // vorname
@@ -50,10 +54,9 @@ public class TabletSchusszettelDTOMapper {
     }
 
     /**
-     * TODO: Wenn du Sätze als rawData bekommst, hier konvertieren.
+     * Konvertiert rohe Satzdaten (z.B. aus SQL JOIN) zu SatzErgebnisDTO.
      */
     public static List<SatzErgebnisDTO> fromRawSatzdaten(List<Object[]> rawData) {
-        // Beispiel: muss angepasst werden, falls SatzErgebnis nicht aus Schüssen kommt
         return rawData.stream()
                 .map(row -> {
                     SatzErgebnisDTO dto = new SatzErgebnisDTO();
@@ -67,12 +70,10 @@ public class TabletSchusszettelDTOMapper {
 
     /*
      * TODOs, die du ergänzen oder vorbereiten musst:
-     * - Eigenes Team und Gegner-Team laden (TeamInfoDTO) TeamInfoDTO eigenesTeam = new TeamInfoDTO(team.getId(), team.getName());
-TeamInfoDTO gegnerTeam = new TeamInfoDTO(opponent.getId(), opponent.getName());
-
+     * - Eigenes Team und Gegner-Team laden (z.B. über TeamDAO)
      * - Eingesetzte Schützen laden (z. B. über MitgliedZuordnungDAO)
-     * - Satzdaten und Match-Ergebnis aufbereiten (ggf. aus PasseDAO oder MatchDAO)
+     * - Satzdaten und Match-Ergebnis aufbereiten (z. B. über PasseDAO oder MatchDAO)
      * - Verfügbare Schützen aus MannschaftsmitgliedDAO holen
-     * - Optional: Statuslogik in ComponentImpl kapseln und an Mapper übergeben
+     * - Statuslogik klar kapseln und an Mapper übergeben
      */
 }

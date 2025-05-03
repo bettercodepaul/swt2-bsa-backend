@@ -3,8 +3,8 @@ package de.bogenliga.application.business.schusszettel.api.types;
 import java.util.List;
 
 /**
- * Business-Objekt für die Antwortstruktur des Tablet-Schusszettels.
- * Wird in der Geschäftslogik verwendet und vom ComponentImpl aufgebaut.
+ * Business-Objekt für die vollständige Struktur des digitalen Schusszettels.
+ * Wird vom Service- bzw. Component-Layer befüllt und an die REST-API weitergereicht.
  *
  * @author Marty Lauterbach
  */
@@ -13,7 +13,8 @@ public class TabletSchusszettelDO {
     private TabletSchusszettelStatus status;
     private TeamInfoDO eigenesTeam;
     private TeamInfoDO gegnerischesTeam;
-    private List<SchuetzeInfoDO> schuetzen;
+    private List<SchuetzeMatchPunkteDO> schuetzenMatchPunkte;
+    private List<SchuetzeStammdatenDO> schuetzeStammDaten;
     private List<SatzErgebnisDO> satzErgebnisse;
     private List<TeamMatchInfoDO> matchErgebnis;
     private List<VerfuegbarerSchuetzeDO> verfuegbareSchuetzen;
@@ -28,8 +29,11 @@ public class TabletSchusszettelDO {
     public TeamInfoDO getGegnerischesTeam() { return gegnerischesTeam; }
     public void setGegnerischesTeam(TeamInfoDO gegnerischesTeam) { this.gegnerischesTeam = gegnerischesTeam; }
 
-    public List<SchuetzeInfoDO> getSchuetzen() { return schuetzen; }
-    public void setSchuetzen(List<SchuetzeInfoDO> schuetzen) { this.schuetzen = schuetzen; }
+    public List<SchuetzeMatchPunkteDO> getSchuetzenMatchPunkte() { return schuetzenMatchPunkte; }
+    public void setSchuetzenMatchPunkte(List<SchuetzeMatchPunkteDO> schuetzenMatchPunkte) { this.schuetzenMatchPunkte = schuetzenMatchPunkte; }
+
+    public List<SchuetzeStammdatenDO> getSchuetzeStammDaten() { return schuetzeStammDaten; }
+    public void setSchuetzeStammDaten(List<SchuetzeStammdatenDO> schuetzeStammDaten) { this.schuetzeStammDaten = schuetzeStammDaten; }
 
     public List<SatzErgebnisDO> getSatzErgebnisse() { return satzErgebnisse; }
     public void setSatzErgebnisse(List<SatzErgebnisDO> satzErgebnisse) { this.satzErgebnisse = satzErgebnisse; }
@@ -43,8 +47,7 @@ public class TabletSchusszettelDO {
     }
 
     /**
-     * Statuswerte, die vom Business-Layer verwendet werden.
-     * Diese werden durch den Mapper in die DTO-Enum konvertiert.
+     * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske repräsentieren.
      */
     public enum TabletSchusszettelStatus {
         SATZEINGABE,

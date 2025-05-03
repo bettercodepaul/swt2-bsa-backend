@@ -9,6 +9,10 @@ import java.util.List;
 public class SatzEingabeDTO {
     private List<SchuetzenSatzDTO> satzeingabe;
 
+    public SatzEingabeDTO() {
+        // Für Jackson
+    }
+
     public List<SchuetzenSatzDTO> getSatzeingabe() {
         return satzeingabe;
     }

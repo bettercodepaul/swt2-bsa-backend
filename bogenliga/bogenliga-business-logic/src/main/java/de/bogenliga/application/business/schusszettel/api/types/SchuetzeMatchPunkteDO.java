@@ -6,15 +6,15 @@ package de.bogenliga.application.business.schusszettel.api.types;
  *
  * @author Marty Lauterbach
  */
-public class SchuetzeInfoDO {
+public class SchuetzeMatchPunkteDO {
     private Long schuetzenId;
     private Integer punkteBisher;
 
-    public SchuetzeInfoDO() {
+    public SchuetzeMatchPunkteDO() {
         // Standard-Konstruktor
     }
 
-    public SchuetzeInfoDO(Long schuetzenId, Integer punkteBisher) {
+    public SchuetzeMatchPunkteDO(Long schuetzenId, Integer punkteBisher) {
         this.schuetzenId = schuetzenId;
         this.punkteBisher = punkteBisher;
     }

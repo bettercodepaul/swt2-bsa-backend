@@ -23,7 +23,8 @@ public class TabletSchusszettelMapper {
         dto.setEigenesTeam(mapTeamInfo(doObj.getEigenesTeam()));
         dto.setGegnerischesTeam(mapTeamInfo(doObj.getGegnerischesTeam()));
         dto.setSatzErgebnisse(mapSatzErgebnisse(doObj.getSatzErgebnisse()));
-        dto.setSchuetzen(mapSchuetzenInfo(doObj.getSchuetzen()));
+        dto.setSchuetzenMatchPunkte(mapMatchPunkte(doObj.getSchuetzenMatchPunkte()));
+        dto.setSchuetzeStammDaten(mapSchuetzeStammdaten(doObj.getSchuetzeStammDaten()));
         dto.setMatchErgebnis(mapMatchErgebnisse(doObj.getMatchErgebnis()));
         dto.setVerfuegbareSchuetzen(mapVerfuegbareSchuetzen(doObj.getVerfuegbareSchuetzen()));
         return dto;
@@ -37,57 +38,96 @@ public class TabletSchusszettelMapper {
 
     private static TeamInfoDTO mapTeamInfo(TeamInfoDO doObj) {
         if (doObj == null) return null;
-        TeamInfoDTO dto = new TeamInfoDTO();
-        dto.setTeamId(doObj.getTeamId());
-        dto.setTeamName(doObj.getTeamName());
-        return dto;
+        return new TeamInfoDTO(doObj.getTeamId(), doObj.getTeamName());
     }
 
     private static List<SatzErgebnisDTO> mapSatzErgebnisse(List<SatzErgebnisDO> doList) {
         return doList == null ? null : doList.stream()
-                .map(s -> {
-                    SatzErgebnisDTO dto = new SatzErgebnisDTO();
-                    dto.setSatzNr(s.getSatzNr());
-                    dto.setTeam1Punkte(s.getTeam1Punkte());
-                    dto.setTeam2Punkte(s.getTeam2Punkte());
-                    return dto;
-                })
+                .map(s -> new SatzErgebnisDTO(s.getSatzNr(), s.getTeam1Punkte(), s.getTeam2Punkte()))
                 .collect(Collectors.toList());
     }
 
-    private static List<SchuetzenInfoDTO> mapSchuetzenInfo(List<SchuetzenInfoDO> doList) {
+    private static List<SchuetzeMatchPunkteDTO> mapMatchPunkte(List<SchuetzeMatchPunkteDO> doList) {
+        if (doList == null) return null;
+        return doList.stream()
+                .map(s -> new SchuetzeMatchPunkteDTO(s.getSchuetzenId(), s.getPunkteBisher()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<SchuetzeStammdatenDTO> mapSchuetzeStammdaten(List<SchuetzeStammdatenDO> doList) {
         return doList == null ? null : doList.stream()
-                .map(s -> {
-                    SchuetzenInfoDTO dto = new SchuetzenInfoDTO();
-                    dto.setSchuetzenId(s.getSchuetzenId());
-                    dto.setRueckennummer(s.getRueckennummer());
-                    dto.setVorname(s.getVorname());
-                    dto.setNachname(s.getNachname());
-                    return dto;
-                })
+                .map(s -> new SchuetzeStammdatenDTO(s.getSchuetzenId(), s.getRueckennummer(), s.getVorname(), s.getNachname()))
                 .collect(Collectors.toList());
     }
 
     private static List<TeamMatchInfoDTO> mapMatchErgebnisse(List<TeamMatchInfoDO> doList) {
         return doList == null ? null : doList.stream()
-                .map(s -> {
-                    TeamMatchInfoDTO dto = new TeamMatchInfoDTO();
-                    dto.setTeamId(s.getTeamId());
-                    dto.setTeamName(s.getTeamName());
-                    dto.setMatchpunkte(s.getMatchpunkte());
-                    return dto;
-                })
+                .map(s -> new TeamMatchInfoDTO(s.getTeamId(), s.getTeamName(), s.getMatchpunkte()))
                 .collect(Collectors.toList());
     }
 
     private static List<VerfuegbarerSchuetzeDTO> mapVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDO> doList) {
         return doList == null ? null : doList.stream()
-                .map(s -> {
-                    VerfuegbarerSchuetzeDTO dto = new VerfuegbarerSchuetzeDTO();
-                    dto.setSchuetzenId(s.getSchuetzenId());
-                    dto.setName(s.getName());
-                    return dto;
-                })
+                .map(s -> new VerfuegbarerSchuetzeDTO(s.getSchuetzenId(), s.getName()))
+                .collect(Collectors.toList());
+    }
+
+    // --------------------------------------------------------------------
+
+    public static TabletSchusszettelDO fromDTO(TabletSchusszettelDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        TabletSchusszettelDO doObj = new TabletSchusszettelDO();
+
+        doObj.setStatus(dto.getStatus() != null
+                ? TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(dto.getStatus().name())
+                : TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED);
+
+        doObj.setEigenesTeam(fromTeamInfo(dto.getEigenesTeam()));
+        doObj.setGegnerischesTeam(fromTeamInfo(dto.getGegnerischesTeam()));
+        doObj.setSatzErgebnisse(fromSatzErgebnisse(dto.getSatzErgebnisse()));
+        doObj.setSchuetzenMatchPunkte(fromMatchPunkte(dto.getSchuetzenMatchPunkte()));
+        doObj.setSchuetzeStammDaten(fromSchuetzeStammdaten(dto.getSchuetzeStammDaten()));
+        doObj.setMatchErgebnis(fromMatchErgebnisse(dto.getMatchErgebnis()));
+        doObj.setVerfuegbareSchuetzen(fromVerfuegbareSchuetzen(dto.getVerfuegbareSchuetzen()));
+
+        return doObj;
+    }
+
+
+    private static TeamInfoDO fromTeamInfo(TeamInfoDTO dto) {
+        return dto == null ? null : new TeamInfoDO(dto.getTeamId(), dto.getTeamName());
+    }
+
+    private static List<SatzErgebnisDO> fromSatzErgebnisse(List<SatzErgebnisDTO> dtoList) {
+        return dtoList == null ? null : dtoList.stream()
+                .map(dto -> new SatzErgebnisDO(dto.getSatzNr(), dto.getTeam1Punkte(), dto.getTeam2Punkte()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<SchuetzeMatchPunkteDO> fromMatchPunkte(List<SchuetzeMatchPunkteDTO> dtoList) {
+        return dtoList == null ? null : dtoList.stream()
+                .map(dto -> new SchuetzeMatchPunkteDO(dto.getSchuetzenId(), dto.getPunkteBisher()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<SchuetzeStammdatenDO> fromSchuetzeStammdaten(List<SchuetzeStammdatenDTO> dtoList) {
+        return dtoList == null ? null : dtoList.stream()
+                .map(dto -> new SchuetzeStammdatenDO(dto.getSchuetzenId(), dto.getRueckennummer(), dto.getVorname(), dto.getNachname()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<TeamMatchInfoDO> fromMatchErgebnisse(List<TeamMatchInfoDTO> dtoList) {
+        return dtoList == null ? null : dtoList.stream()
+                .map(dto -> new TeamMatchInfoDO(dto.getTeamId(), dto.getTeamName(), dto.getMatchpunkte()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<VerfuegbarerSchuetzeDO> fromVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDTO> dtoList) {
+        return dtoList == null ? null : dtoList.stream()
+                .map(dto -> new VerfuegbarerSchuetzeDO(dto.getSchuetzenId(), dto.getName()))
                 .collect(Collectors.toList());
     }
 }
