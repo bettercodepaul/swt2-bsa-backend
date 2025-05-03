@@ -10,6 +10,7 @@ import de.bogenliga.application.services.v1.schusszettel.mapper.TabletSchusszett
 import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
+import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +46,9 @@ public class TabletSchusszettelController {
             @RequestParam("wettkampfid") Long wettkampfId,
             @RequestParam("teamid") Long teamId) {
 
-        // TODO @Youmna
-        // Exclaimer: Die component ist der zentrale Einstiegspunkt zur Business-Logik. Nutz die Mapper am besten immer sauber zur Trennung zwischen REST-Modellen (DTO) und Business-Layer (DO). Für Exception Handling, HTTP-Codes und Tests lohnt ein Blick auf andere Controller im Projekt.
-        // 1. Rufe die Component-Methode getStatus(...) mit den Parametern auf.
-        // 2. Mappe das zurückgegebene DO-Objekt mit TabletSchusszettelMapper.toDTO(...)
-        // 3. Rückgabe: ResponseEntity.ok(dto);
-
-        return null; // Platzhalter
+        TabletSchusszettelDO tabletDO = component.getStatus(wettkampfId, teamId, token);
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(tabletDO);
+        return ResponseEntity.ok(dto);
     }
 
     /**
@@ -64,22 +61,22 @@ public class TabletSchusszettelController {
             @RequestParam("teamid") Long teamId,
             @RequestBody Map<String, Object> payload) {
 
-        // TODO @Youmna
-        // 1. Lese das Feld "typ" aus dem payload-Map
-        // 2. Wenn typ == "SATZEINGABE":
-        //    a. Konvertiere payload mit objectMapper zu SatzEingabeDTO
-        //    b. Mappe zu DO mit TabletSatzEingabeMapper.toDO(...)
-        //    c. Übergib an component.submitSatz(...)
-        //
-        // 3. Wenn typ == "SCHUETZENMELDUNG":
-        //    a. Konvertiere payload zu SchuetzenMeldungDTO
-        //    b. Mappe zu DO mit TabletSchuetzenMeldungMapper.toDO(...)
-        //    c. Übergib an component.submitSchuetzen(...)
-        //
-        // 4. Falls typ unbekannt → gib BAD_REQUEST mit Fehlermeldung zurück
-        //
-        // 5. Erfolgsfall: gib { "message": "Eingabe gespeichert" } zurück
+        String typ = (String) payload.get("typ");
 
-        return null; // Platzhalter
+        if ("SATZEINGABE".equals(typ)) {
+            SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
+            SatzEingabeDO satzDO = TabletSatzEingabeMapper.toDO(dto);
+            component.submitSatz(wettkampfId, teamId, token, satzDO);
+        } else if ("SCHUETZENMELDUNG".equals(typ)) {
+            SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
+            SchuetzenMeldungDO meldungDO = TabletSchuetzenMeldungMapper.toDO(dto);
+            component.submitSchuetzen(wettkampfId, teamId, token, meldungDO);
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", "Ungültiger Typ: " + typ));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
+
+
     }
 }
