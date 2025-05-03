@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.entity;
 
 /**
  * Datenbank-Entity für einen Schuss eines Schützen im Wettkampfkontext.

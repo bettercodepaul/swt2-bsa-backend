@@ -1,7 +1,6 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.dao;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import de.bogenliga.application.business.schusszettel.impl.business.TabletSessionEntity;
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSessionEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;

@@ -1,5 +1,6 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.dao;
 
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import java.util.List;
 
 /**
