@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.entity;
 
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 

@@ -1,6 +1,10 @@
-package de.bogenliga.application.business.schusszettel.api;
+package de.bogenliga.application.business.schusszettel.impl.business;
 
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
+import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDTO;
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
+import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDTO;
 import org.springframework.stereotype.Service;
 
 /**

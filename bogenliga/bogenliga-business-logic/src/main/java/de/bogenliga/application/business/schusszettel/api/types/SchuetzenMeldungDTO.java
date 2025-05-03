@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.business.schusszettel.api.types;
 
 import java.util.List;
 

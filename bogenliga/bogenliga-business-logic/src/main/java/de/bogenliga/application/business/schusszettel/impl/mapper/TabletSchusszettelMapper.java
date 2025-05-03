@@ -1,5 +1,6 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.mapper;
 
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenSatzDTO;
 

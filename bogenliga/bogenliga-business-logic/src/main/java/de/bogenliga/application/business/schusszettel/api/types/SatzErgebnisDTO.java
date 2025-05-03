@@ -1,6 +1,4 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
-
-import java.util.List;
+package de.bogenliga.application.business.schusszettel.api.types;
 
 /**
  * Stellt das Ergebnis eines Satzes für beide Teams dar.

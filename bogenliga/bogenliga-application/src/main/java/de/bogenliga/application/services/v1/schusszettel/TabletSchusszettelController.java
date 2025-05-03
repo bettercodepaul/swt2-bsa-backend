@@ -1,9 +1,10 @@
 package de.bogenliga.application.services.v1.schusszettel;
 
-import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
-import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungDTO;
-import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
-import de.bogenliga.application.business.schusszettel.impl.business.TabletSchusszettelComponent;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
+import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDTO;
+import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDTO;
+import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
