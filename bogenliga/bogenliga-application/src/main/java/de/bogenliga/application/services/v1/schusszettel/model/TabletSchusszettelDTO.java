@@ -1,14 +1,15 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.services.v1.schusszettel.model;
 
 import java.util.List;
 
 /**
- * Enthält die Gesamtdaten für den Tablet-Schusszettel-Zustand.
- * Wird über die REST-API als Antwort geliefert.
+ * Enthält die vollständige Antwortstruktur für den digitalen Schusszettel auf dem Tablet.
+ * Diese DTO wird über die REST-API zurückgegeben und umfasst Status, Teams, Schützen und Ergebnisse.
  *
- * @author Marty Lauterbach, mklemmingen
+ * @author Marty Lauterbach
  */
 public class TabletSchusszettelDTO {
+
     private TabletSchusszettelStatus status;
     private TeamInfoDTO eigenesTeam;
     private TeamInfoDTO gegnerischesTeam;
@@ -17,6 +18,7 @@ public class TabletSchusszettelDTO {
     private List<TeamMatchInfoDTO> matchErgebnis;
     private List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen;
 
+    // Getter/Setter
     public TabletSchusszettelStatus getStatus() { return status; }
     public void setStatus(TabletSchusszettelStatus status) { this.status = status; }
 
@@ -36,16 +38,18 @@ public class TabletSchusszettelDTO {
     public void setMatchErgebnis(List<TeamMatchInfoDTO> matchErgebnis) { this.matchErgebnis = matchErgebnis; }
 
     public List<VerfuegbarerSchuetzeDTO> getVerfuegbareSchuetzen() { return verfuegbareSchuetzen; }
-    public void setVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen) { this.verfuegbareSchuetzen = verfuegbareSchuetzen; }
+    public void setVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen) {
+        this.verfuegbareSchuetzen = verfuegbareSchuetzen;
+    }
 
     /**
-     * Statuswerte für den aktuellen Zustand des Tablets im Wettkampf.
+     * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske darstellen.
      */
     public enum TabletSchusszettelStatus {
         SATZEINGABE,          // Aktive Eingabe einer Passe
         SCHUETZENMELDUNG,     // Eingabe der Rückennummern
         WARTE,                // Team wartet auf gegnerisches Team
-        NOT_ALLOWED,          // Token ungültig oder Team nicht erlaubt
-        WETTKAMPF_ENDE        // Alle Matches des Tages sind beendet
+        NOT_ALLOWED,          // Token ungültig oder Team-Zuordnung falsch
+        WETTKAMPF_ENDE        // Alle Durchgänge abgeschlossen
     }
 }

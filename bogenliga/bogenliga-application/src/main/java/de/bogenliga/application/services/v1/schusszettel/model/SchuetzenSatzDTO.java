@@ -1,10 +1,10 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.services.v1.schusszettel.model;
 
 /**
  * Einzelne Satzdaten eines Schützen
  * @author Marty Lauterbach, mklemmingen
  */
-class SchuetzenSatzDTO {
+public class SchuetzenSatzDTO {
     private Long schuetzenId;
     private Integer schuss1;
     private Integer schuss2;
