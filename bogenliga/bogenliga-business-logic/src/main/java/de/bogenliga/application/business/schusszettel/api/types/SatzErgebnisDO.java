@@ -1,10 +1,10 @@
 package de.bogenliga.application.business.schusszettel.api.types;
 
 /**
- * Stellt das Ergebnis eines Satzes für beide Teams dar.
+ * Business-Objekt zur Darstellung eines Satz-Ergebnisses.
  * @author Marty Lauterbach, mklemmingen
  */
-class SatzErgebnisDTO {
+public class SatzErgebnisDO {
     private Integer satzNr;
     private Integer team1Punkte;
     private Integer team2Punkte;
