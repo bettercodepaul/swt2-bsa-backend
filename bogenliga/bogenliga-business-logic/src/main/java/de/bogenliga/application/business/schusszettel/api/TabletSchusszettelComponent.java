@@ -11,4 +11,10 @@ public interface TabletSchusszettelComponent {
     void submitSatz(long wettkampfid, long teamid, String token, SatzEingabeDO doObj);
 
     void submitSchuetzen(long wettkampfid, long teamid, String token, SchuetzenMeldungDO doObj);
+
+    void initializeForWettkampf(long wettkampfId, long teamId);
+
+    void deleteForWettkampf(long wettkampfId);
+
+    boolean existsForWettkampf(long wettkampfId);
 }

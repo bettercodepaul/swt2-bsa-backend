@@ -60,14 +60,16 @@ public class TabletSessionDAO implements DataAccessObject {
         return map;
     }
 
-    public Optional<TabletSessionEntity> findByToken(String token) {
+    public Optional<TabletSessionEntity> findByToken(long wettkampfId, long teamId, String token) {
         String sql = new QueryBuilder()
                 .selectAll()
                 .from(TABLE)
                 .whereEquals(TABLE_TOKEN)
+                .andEquals(TABLE_WETTKAMPF_ID)
+                .andEquals(TABLE_TEAM_ID)
                 .compose().toString();
 
-        return basicDao.selectEntityList(TABLET_SESSION, sql, token).stream().findFirst();
+        return basicDao.selectEntityList(TABLET_SESSION, sql, token, wettkampfId, teamId).stream().findFirst();
     }
 
     public Optional<TabletSessionEntity> findByWettkampfUndTeam(Long wettkampfId, Long teamId) {

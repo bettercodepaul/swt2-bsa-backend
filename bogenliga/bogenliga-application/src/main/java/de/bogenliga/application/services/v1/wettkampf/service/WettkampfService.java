@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import java.security.Principal;
 import java.util.List;
 import javax.naming.NoPermissionException;
@@ -46,7 +47,8 @@ public class WettkampfService implements ServiceFacade {
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
-
+    @Autowired
+    private TabletSchusszettelComponent tabletSchusszettelComponent;
 
     /**
      * Constructor with dependency injection
@@ -143,6 +145,10 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
+
+        // Hook: Initialize TabletSchusszettel database entry
+        tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId(), savedWettkampfDO.getTeamId());
+
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
@@ -166,6 +172,9 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         wettkampfComponent.delete(wettkampfDO, userId);
+
+        // Delete the TabletSchusszettel entry for the Wettkampf
+        tabletSchusszettelComponent.deleteForWettkampf(id);
     }
 
 
@@ -205,6 +214,13 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+
+        // Check if TabletSchusszettel entry exists for the Wettkampf
+        if (!tabletSchusszettelComponent.existsForWettkampf(wettkampfDO.getId())) {
+            // Create the TabletSchusszettel entry
+            tabletSchusszettelComponent.initializeForWettkampf(wettkampfDO.getId(), wettkampfDO.getTeamId());
+        }
+
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 
