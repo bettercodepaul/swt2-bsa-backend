@@ -53,10 +53,10 @@ public class TabletSchusszettelController {
             @RequestParam("token") String token,
             @RequestParam("wettkampfid") Long wettkampfId,
             @RequestParam("teamid") Long teamId) {
-
-        TabletSchusszettelDO tabletDO = component.getStatus(wettkampfId, teamId, token);
-        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(tabletDO);
-        return ResponseEntity.ok(dto);
+        final TabletSchusszettelDO businessDO = component.getStatus(wettkampfId, teamId, token);
+        // *only* one mapping line here:
+        final TabletSchusszettelDTO outerDTO = TabletSchusszettelMapper.toDTO(businessDO);
+        return ResponseEntity.ok(outerDTO);
     }
 
     @PostMapping

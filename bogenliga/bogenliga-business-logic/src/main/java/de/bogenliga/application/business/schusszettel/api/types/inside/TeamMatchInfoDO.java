@@ -1,25 +1,23 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.business.schusszettel.api.types.inside;
 
 /**
- * Aggregiertes Match-Ergebnis eines Teams, bestehend aus ID, Name und Matchpunkten.
+ * Aggregiertes Match-Ergebnis eines Teams im Business-Layer.
  * @author Marty Lauterbach, mklemmingen
  */
-public class TeamMatchInfoDTO {
+public class TeamMatchInfoDO {
     private Long teamId;
     private String teamName;
     private Integer matchpunkte;
 
-    public TeamMatchInfoDTO() {
-        // Standard-Konstruktor
+    public TeamMatchInfoDO() {
+        // für Mapper etc.
     }
 
-    public TeamMatchInfoDTO(Long teamId, String teamName, Integer matchpunkte) {
+    public TeamMatchInfoDO(Long teamId, String teamName, Integer matchpunkte) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.matchpunkte = matchpunkte;
     }
-
-
 
     public Long getTeamId() { return teamId; }
     public void setTeamId(Long teamId) { this.teamId = teamId; }

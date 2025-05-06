@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.services.v1.schusszettel.model.inside;
 
 /**
  * Liste von Vereinsmitgliedern zur Auswahl bei Schützenmeldung.

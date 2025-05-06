@@ -1,7 +1,7 @@
-package de.bogenliga.application.services.v1.schusszettel.mapper;
+package de.bogenliga.application.services.v1.schusszettel.mapper.inside;
 
-import de.bogenliga.application.business.schusszettel.api.types.TeamInfoDO;
-import de.bogenliga.application.services.v1.schusszettel.model.TeamInfoDTO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamInfoDTO;
 
 /**
  * Mapper zur Konvertierung zwischen TeamInfoDTO (Service Layer)

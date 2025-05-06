@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,6 +213,11 @@ public class DsbMannschaftDAOext implements DataAccessObject {
         return  basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_WITH_NAME);}
     public List<DsbMannschaftBEext> findAllByVeranstaltungsIdwithName(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_VERANSTALTUNGS_ID_WITH_NAME, id);}
+
+
+    public FileChannel findById(long teamId) {
+        return null;
+    }
     /**
      * Return all dsbmannschaft entries that are currently in the waiting queue
      *

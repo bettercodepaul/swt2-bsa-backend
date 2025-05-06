@@ -1,6 +1,12 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
 import de.bogenliga.application.business.schusszettel.api.types.*;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SatzErgebnisDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeMatchPunkteDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -9,7 +15,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

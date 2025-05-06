@@ -1,9 +1,16 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
-import de.bogenliga.application.business.schusszettel.api.types.*;
-import de.bogenliga.application.services.v1.schusszettel.model.*;
 import org.junit.Test;
 
+import de.bogenliga.application.business.schusszettel.api.types.inside.SatzErgebnisDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeMatchPunkteDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SatzErgebnisDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeMatchPunkteDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeStammdatenDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamMatchInfoDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.VerfuegbarerSchuetzeDTO;
 import java.util.Collections;
 import java.util.List;
 

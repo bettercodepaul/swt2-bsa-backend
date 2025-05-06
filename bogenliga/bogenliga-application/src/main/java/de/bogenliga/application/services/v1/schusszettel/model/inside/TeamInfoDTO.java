@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.services.v1.schusszettel.model.inside;
 
 /**
  * Enthält ID und Name eines Teams für Anzeigezwecke.

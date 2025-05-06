@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.business.schusszettel.api.types.inside;
 
 /**
  * Business-Objekt zur Darstellung eines Satz-Ergebnisses.

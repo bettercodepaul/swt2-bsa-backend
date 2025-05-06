@@ -1,7 +1,7 @@
-package de.bogenliga.application.services.v1.schusszettel.mapper;
+package de.bogenliga.application.services.v1.schusszettel.mapper.inside;
 
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzenSatzDO;
-import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenSatzDTO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzenSatzDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzenSatzDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

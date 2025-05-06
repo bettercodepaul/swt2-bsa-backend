@@ -1,7 +1,8 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.services.v1.schusszettel.model.inside;
 
 /**
  * Stellt das Ergebnis eines Satzes für beide Teams dar.
+ *
  * @author Marty Lauterbach, mklemmingen
  */
 public class SatzErgebnisDTO {
