@@ -6,6 +6,8 @@ import java.util.List;
  * Business-Objekt für die vollständige Struktur des digitalen Schusszettels.
  * Wird vom Service- bzw. Component-Layer befüllt und an die REST-API weitergereicht.
  *
+ * acts as JSON object for frontend; all data comes from here.
+ *
  * @author Marty Lauterbach
  */
 public class TabletSchusszettelDO {
