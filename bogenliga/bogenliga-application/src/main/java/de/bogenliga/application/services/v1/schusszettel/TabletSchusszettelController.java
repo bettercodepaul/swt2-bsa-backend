@@ -12,7 +12,6 @@ import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungD
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +22,7 @@ import java.util.Map;
  * Bietet GET- und POST-Endpunkte zur Statusabfrage und Eingabeübermittlung.
  *
  * @author Marty Lauterbach
+ * @author Youmna Samouneh
  */
 @RestController
 @RequestMapping("/api/tablet-schusszettel")
@@ -72,7 +72,7 @@ public class TabletSchusszettelController {
             SchuetzenMeldungDO meldungDO = TabletSchuetzenMeldungMapper.toDO(dto);
             component.submitSchuetzen(wettkampfId, teamId, token, meldungDO);
         } else {
-            return ResponseEntity.badRequest().body(Map.of("message", "Ungültiger Typ: " + typ));
+            return ResponseEntity.badRequest().body(Map.of("error", "Ungültiger Typ: " + typ));
         }
 
         return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
