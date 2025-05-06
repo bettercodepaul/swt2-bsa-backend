@@ -1,30 +1,33 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
 import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDO;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDO;
+import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSessionDAO;
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSessionEntity;
-import de.bogenliga.application.business.schusszettel.impl.mapper.TabletSessionMapper;
 import de.bogenliga.application.business.schusszettel.impl.mapper.TabletSchusszettelMapper;
-import de.bogenliga.application.business.match.impl.dao.MatchDAO;
-import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.schuetze.impl.dao.MitgliedZuordnungDAO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.common.errorhandling.exception.UnauthorizedException;
 import de.bogenliga.application.common.errorhandling.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
-/**
- * Implementierung der TabletSchusszettelComponent Businesslogik.
- *
- * @author Marty Lauterbach, mklemmingen
- */
+import static de.bogenliga.application.api.ResourceStrings.StatusValues.*;
+
+/*
+*  Impl der TabletSchusszettelComponent
+*  @author Marty Lauterbach, mklemmingen
+*/
 @Service
 public class TabletSchusszettelComponentImpl implements TabletSchusszettelComponent {
 
@@ -32,16 +35,19 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     private TabletSessionDAO tabletSessionDAO;
 
     @Autowired
-    private PasseDAO passeDAO;
+    private TabletSchusszettelDAO tabletSchusszettelDAO;
 
     @Autowired
-    private MatchDAO matchDAO;
+    private MitgliedZuordnungDAO mitgliedZuordnungDAO;
 
     @Autowired
     private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
     @Autowired
-    private MitgliedZuordnungDAO mitgliedZuordnungDAO;
+    private MatchDAO matchDAO;
+
+    @Autowired
+    private MatchComponent matchComponent;
 
     @Override
     public TabletSchusszettelDO getStatus(long wettkampfid, long teamid, String token) {
@@ -52,78 +58,84 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             return TabletSchusszettelDO.notAllowed();
         }
 
-        TabletSchusszettelDO resultDO = new TabletSchusszettelDO();
-        resultDO.setStatus(TabletSessionMapper.mapStatus(session.getStatus()));
+        TabletSchusszettelDO result = new TabletSchusszettelDO();
+        result.setStatus(mapStatus(session.getStatus()));
 
-        if ("SATZEINGABE".equals(session.getStatus())) {
-            MatchBE match = matchDAO.findById(session.getCurrentMatchId());
-            resultDO.setSatzErgebnisse(passeDAO.findGroupedBySchuetze(match.getId(), teamid));
-            // TODO: fill rest of TabletSchusszettelDO with TeamInfo, Schützen, etc.
+        if (SATZEINGABE.equals(session.getStatus())) {
+            List<TabletSchusszettelEntity> satzdaten = tabletSchusszettelDAO.findByWettkampfUndTeam(wettkampfid, teamid);
+            result.setSatzErgebnisse(SchusszettelHelper.buildSatzErgebnisse(satzdaten, session.getCurrentPasseNumber()));
+
+            result.setEigenesTeam(SchusszettelHelper.buildTeamInfo(session.getTeamId(), matchComponent));
+            result.setGegnerischesTeam(SchusszettelHelper.buildTeamInfo(session.getGegnerTeamId(), matchComponent));
+            result.setSchuetzenMatchPunkte(SchusszettelHelper.buildMatchPunkte(satzdaten));
+            result.setSchuetzeStammDaten(SchusszettelHelper.buildSchuetzeStammdaten(session.getCurrentMatchId(), mitgliedZuordnungDAO));
         }
 
-        if ("WARTE".equals(session.getStatus())) {
-            Optional<TabletSessionEntity> gegnerSession = tabletSessionDAO.findByWettkampfUndTeam(
-                    wettkampfid, session.getGegnerTeamId());
+        if (WARTE.equals(session.getStatus())) {
+            Optional<TabletSessionEntity> gegner = tabletSessionDAO.findByWettkampfUndTeam(wettkampfid, session.getGegnerTeamId());
+            boolean beideWarten = gegner.isPresent() && WARTE.equals(gegner.get().getStatus());
 
-            boolean beideInWarte = gegnerSession.isPresent()
-                    && "WARTE".equals(gegnerSession.get().getStatus());
+            if (beideWarten) {
+                List<TabletSchusszettelEntity> satzdaten = tabletSchusszettelDAO.findByWettkampfUndTeam(wettkampfid, teamid);
+                int anzahlSaetze = (int) satzdaten.stream().map(TabletSchusszettelEntity::getSatzNr).distinct().count();
 
-            if (beideInWarte) {
-                int passeCount = passeDAO.countByMatchAndTeam(session.getCurrentMatchId(), teamid);
-                if (passeCount >= 15) {
-                    tabletSessionDAO.updateStatus(session.getId(), "WETTKAMPF_ENDE",
-                            session.getCurrentPasseNumber(), session.getCurrentMatchId());
-                    resultDO.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.WETTKAMPF_ENDE);
+                if (anzahlSaetze >= 5) {
+                    session.setStatus(WETTKAMPF_ENDE);
                 } else {
-                    tabletSessionDAO.updateStatus(session.getId(), "SATZEINGABE",
-                            session.getCurrentPasseNumber(), session.getCurrentMatchId());
-                    resultDO.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.SATZEINGABE);
+                    session.setStatus(SATZEINGABE);
+                    session.setCurrentPasseNumber(session.getCurrentPasseNumber() + 1);
                 }
+                tabletSessionDAO.updateStatus(session, -1L); // -1L = System
+                result.setStatus(mapStatus(session.getStatus()));
             }
         }
 
-        return resultDO;
+        return result;
     }
 
     @Override
-    public void submitSchuetzen(long wettkampfid, long teamid, String token, SchuetzenMeldungDO doObj) {
+    public void submitSchuetzen(long wettkampfid, long teamid, String token, SchuetzenMeldungDO input) {
         TabletSessionEntity session = tabletSessionDAO.findByToken(token)
                 .orElseThrow(() -> new UnauthorizedException("Ungültiger Token"));
 
-        for (Long mitgliedId : doObj.getGemeldeteSchuetzen()) {
-            if (!mannschaftsmitgliedDAO.isMemberOfTeam(mitgliedId, teamid)) {
-                throw new ValidationException("Schütze gehört nicht zum Team");
+        for (Long schuetzenId : input.getGemeldeteSchuetzen()) {
+            if (!mannschaftsmitgliedDAO.isMemberOfTeam(schuetzenId, teamid)) {
+                throw new ValidationException("Schütze " + schuetzenId + " gehört nicht zum Team " + teamid);
             }
-            mitgliedZuordnungDAO.assignToMatch(session.getCurrentMatchId(), mitgliedId);
+            mitgliedZuordnungDAO.assignToMatch(session.getCurrentMatchId(), schuetzenId);
         }
 
-        tabletSessionDAO.updateStatus(session.getId(), "SATZEINGABE", 1, session.getCurrentMatchId());
+        session.setStatus(SATZEINGABE);
+        session.setCurrentPasseNumber(1);
+        tabletSessionDAO.updateStatus(session, -1L);
     }
 
     @Override
-    public void submitSatz(long wettkampfid, long teamid, String token, SatzEingabeDO doObj) {
+    public void submitSatz(long wettkampfid, long teamid, String token, SatzEingabeDO eingabe) {
         TabletSessionEntity session = tabletSessionDAO.findByToken(token)
                 .orElseThrow(() -> new UnauthorizedException("Ungültiger Token"));
 
-        int aktuellePasse = session.getCurrentPasseNumber();
+        int satzNr = session.getCurrentPasseNumber();
+        List<TabletSchusszettelEntity> entities = TabletSchusszettelMapper.fromDTO(wettkampfid, teamid, eingabe);
+        entities.forEach(e -> e.setSatzNr(satzNr));
+        entities.forEach(tabletSchusszettelDAO::saveSatzEingabe);
 
-        doObj.getSatzeingabe().forEach(satz -> passeDAO.insertPasse(
-                session.getCurrentMatchId(),
-                wettkampfid,
-                teamid,
-                satz.getSchuetzenId(),
-                aktuellePasse,
-                satz.getSchuss1(),
-                satz.getSchuss2(),
-                satz.getSchuss3()
-        ));
+        int satzCount = (int) tabletSchusszettelDAO
+                .findByWettkampfUndTeam(wettkampfid, teamid)
+                .stream().map(TabletSchusszettelEntity::getSatzNr).distinct().count();
 
-        int totalSatzEingaben = passeDAO.countByMatchAndTeam(session.getCurrentMatchId(), teamid);
+        session.setStatus(satzCount >= 5 ? WARTE : SATZEINGABE);
+        session.setCurrentPasseNumber(satzNr + 1);
+        tabletSessionDAO.updateStatus(session, -1L);
+    }
 
-        if (totalSatzEingaben >= 15) {
-            tabletSessionDAO.updateStatus(session.getId(), "WARTE", aktuellePasse + 1, session.getCurrentMatchId());
-        } else {
-            tabletSessionDAO.updateStatus(session.getId(), "SATZEINGABE", aktuellePasse + 1, session.getCurrentMatchId());
-        }
+    private TabletSchusszettelDO.TabletSchusszettelStatus mapStatus(String status) {
+        return switch (status) {
+            case SATZEINGABE -> TabletSchusszettelDO.TabletSchusszettelStatus.SATZEINGABE;
+            case SCHUETZENMELDUNG -> TabletSchusszettelDO.TabletSchusszettelStatus.SCHUETZENMELDUNG;
+            case WARTE -> TabletSchusszettelDO.TabletSchusszettelStatus.WARTE;
+            case WETTKAMPF_ENDE -> TabletSchusszettelDO.TabletSchusszettelStatus.WETTKAMPF_ENDE;
+            default -> TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED;
+        };
     }
 }
