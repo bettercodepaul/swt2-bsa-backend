@@ -1,6 +1,11 @@
 package de.bogenliga.application.services.v1.schusszettel.model;
 
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzeStammdatenDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SatzErgebnisDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeMatchPunkteDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeStammdatenDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamInfoDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamMatchInfoDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.VerfuegbarerSchuetzeDTO;
 import java.util.List;
 
 /**

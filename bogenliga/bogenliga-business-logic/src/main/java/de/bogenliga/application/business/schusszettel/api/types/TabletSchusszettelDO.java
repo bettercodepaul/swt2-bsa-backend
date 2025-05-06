@@ -1,5 +1,11 @@
 package de.bogenliga.application.business.schusszettel.api.types;
 
+import de.bogenliga.application.business.schusszettel.api.types.inside.SatzErgebnisDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeMatchPunkteDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
 import java.util.List;
 
 /**
@@ -47,6 +53,26 @@ public class TabletSchusszettelDO {
     public void setVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDO> verfuegbareSchuetzen) {
         this.verfuegbareSchuetzen = verfuegbareSchuetzen;
     }
+
+
+    public void setCurrentMatchId(Long currentMatchId) {
+        // TODO
+    }
+
+
+    public void setCurrentPasseNumber(Integer currentPasseNumber) {
+        // TODO
+    }
+
+
+    public void setSchuetzenStammDaten(List<Object> collect) {
+        // TODO
+    }
+
+
+    public void setCurrentMatchId(Long currentMatchId) {
+    }
+
 
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske repräsentieren.

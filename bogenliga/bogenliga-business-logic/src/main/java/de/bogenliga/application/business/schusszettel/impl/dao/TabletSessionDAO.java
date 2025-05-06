@@ -92,4 +92,17 @@ public class TabletSessionDAO implements DataAccessObject {
         basicDao.setModificationAttributes(entity, currentUserId);
         return basicDao.updateEntity(TABLET_SESSION, entity, TABLE_ID);
     }
+
+
+    public void deleteByWettkampfId(long wettkampfId) {
+        // An allen Stellen, an denen die WettkampfID genannt wird: delete
+        // TODO
+    }
+
+
+    public boolean existsByWettkampfId(long wettkampfId) {
+        // True, falls es einen eintrag für wettkampfId gibt
+        // False, falls es keine eintrag/einträge für die wettkampfId gibt
+        // TODO
+    }
 }

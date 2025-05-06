@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.business.schusszettel.api.types.inside;
 
 /**
  * Repräsentiert einen Schützen mit Punktestand für das laufende Match.

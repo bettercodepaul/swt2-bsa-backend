@@ -1,7 +1,7 @@
-package de.bogenliga.application.services.v1.schusszettel.mapper;
+package de.bogenliga.application.services.v1.schusszettel.mapper.inside;
 
-import de.bogenliga.application.business.schusszettel.api.types.TeamMatchInfoDO;
-import de.bogenliga.application.services.v1.schusszettel.model.TeamMatchInfoDTO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamMatchInfoDTO;
 
 public class TeamMatchInfoMapper {
 

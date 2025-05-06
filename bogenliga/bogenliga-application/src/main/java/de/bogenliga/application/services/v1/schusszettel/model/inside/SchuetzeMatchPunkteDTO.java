@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.schusszettel.model;
+package de.bogenliga.application.services.v1.schusszettel.model.inside;
 
 /**
  * Repräsentiert einen Schützen und seine bisherige Punktzahl im laufenden Match.

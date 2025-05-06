@@ -1,11 +1,14 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
-import de.bogenliga.application.business.schusszettel.api.types.SatzErgebnisDO;
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzeMatchPunkteDO;
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzeStammdatenDO;
-import de.bogenliga.application.business.schusszettel.api.types.TeamMatchInfoDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SatzErgebnisDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeMatchPunkteDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SatzErgebnisDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeStammdatenDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamInfoDTO;
 import java.util.List;
 
 /**
@@ -69,7 +72,7 @@ public class TabletSchusszettelDTOMapper {
     }
 
     /*
-     * TODOs, die du ergänzen oder vorbereiten musst:
+     * TODOs:
      * - Eigenes Team und Gegner-Team laden (z.B. über TeamDAO)
      * - Eingesetzte Schützen laden (z. B. über MitgliedZuordnungDAO)
      * - Satzdaten und Match-Ergebnis aufbereiten (z. B. über PasseDAO oder MatchDAO)

@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.api.types;
+package de.bogenliga.application.business.schusszettel.api.types.inside;
 
 /**
  * Repräsentiert ein Vereinsmitglied, das im aktuellen Match als Schütze auswählbar ist.

@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.schusszettel.api.types;
 
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzenSatzDO;
 import java.util.List;
 
 /**

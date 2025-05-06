@@ -1,9 +1,9 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
 import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
-import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenSatzDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzenSatzDTO;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzenSatzDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzenSatzDO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +55,6 @@ public class TabletSatzEingabeMapper {
         return dto;
     }
 
-    @SuppressWarnings("unchecked")
     public static SatzEingabeDTO fromMap(Map<String, Object> payload) {
         SatzEingabeDTO dto = new SatzEingabeDTO();
 
