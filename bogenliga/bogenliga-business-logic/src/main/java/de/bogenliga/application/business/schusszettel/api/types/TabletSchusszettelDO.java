@@ -54,26 +54,6 @@ public class TabletSchusszettelDO {
         this.verfuegbareSchuetzen = verfuegbareSchuetzen;
     }
 
-
-    public void setCurrentMatchId(Long currentMatchId) {
-        // TODO
-    }
-
-
-    public void setCurrentPasseNumber(Integer currentPasseNumber) {
-        // TODO
-    }
-
-
-    public void setSchuetzenStammDaten(List<Object> collect) {
-        // TODO
-    }
-
-
-    public void setCurrentMatchId(Long currentMatchId) {
-    }
-
-
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske repräsentieren.
      */
