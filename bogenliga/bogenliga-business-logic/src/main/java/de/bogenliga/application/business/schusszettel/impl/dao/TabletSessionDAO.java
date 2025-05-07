@@ -14,9 +14,33 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
+
 /**
  * DAO für die schusszettel_tablet_session Tabelle.
  * Verwaltet Authentifizierung und Spielstatus pro Tablet-Team.
+ *
+ * Implementierung der Methoden für Persistenz:
+ * - setCurrentMatchId
+ * - setCurrentPasseNumber
+ * - deleteByWettkampfId
+ * - existsByWettkampfId
+ *
+ * Tabellenstruktur:
+ * schusszettel_tablet_session (
+ *   id BIGSERIAL PRIMARY KEY,
+ *   token TEXT NOT NULL UNIQUE,
+ *   team_id BIGINT NOT NULL REFERENCES mannschaft(mannschaft_id),
+ *   wettkampf_id BIGINT NOT NULL REFERENCES wettkampf(wettkampf_id),
+ *   current_match_id BIGINT REFERENCES match(match_id),
+ *   current_passe_number INTEGER DEFAULT 1,
+ *   status VARCHAR(50) NOT NULL,
+ *   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ *   gegner_team_id BIGINT REFERENCES mannschaft(mannschaft_id)
+ * );
+ *
+ * Indexe:
+ * CREATE INDEX idx_tablet_session_token ON schusszettel_tablet_session(token);
+ * CREATE INDEX idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
  *
  * @author Marty Lauterbach, mklemmingen
  */
@@ -60,6 +84,49 @@ public class TabletSessionDAO implements DataAccessObject {
         return map;
     }
 
+
+    /**
+     * Setzt die aktuelle Match-ID in der Session-Tabelle.
+     */
+    public void setCurrentMatchId(long wettkampfId, long teamId, long matchId) {
+        String sql = new QueryBuilder()
+                .update(TABLE)
+                .set(TABLE_MATCH_ID)
+                .setExpression(TABLE_LAST_UPDATED + " = now()")
+                .whereEquals(TABLE_WETTKAMPF_ID)
+                .andEquals(TABLE_TEAM_ID)
+                .compose().toString();
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue(TABLE_MATCH_ID, matchId)
+                .addValue(TABLE_WETTKAMPF_ID, wettkampfId)
+                .addValue(TABLE_TEAM_ID, teamId);
+        basicDao.getNamedParameterJdbcTemplate().update(sql, params);
+    }
+
+
+    /**
+     * Setzt die aktuelle Passe-Nummer in der Session-Tabelle.
+     */
+    public void setCurrentPasseNumber(long wettkampfId, long teamId, Integer currentPasseNumber) {
+        String sql = new QueryBuilder()
+                .update(TABLE)
+                .set(TABLE_PASSE_NR)
+                .setExpression(TABLE_LAST_UPDATED + " = now()")
+                .whereEquals(TABLE_WETTKAMPF_ID)
+                .andEquals(TABLE_TEAM_ID)
+                .compose().toString();
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue(TABLE_PASSE_NR, currentPasseNumber)
+                .addValue(TABLE_WETTKAMPF_ID, wettkampfId)
+                .addValue(TABLE_TEAM_ID, teamId);
+        basicDao.getNamedParameterJdbcTemplate().update(sql, params);
+    }
+
+    /**
+     * Liest eine Session über Token, Wettkampf und Team.
+     */
     public Optional<TabletSessionEntity> findByToken(long wettkampfId, long teamId, String token) {
         String sql = new QueryBuilder()
                 .selectAll()
@@ -72,6 +139,9 @@ public class TabletSessionDAO implements DataAccessObject {
         return basicDao.selectEntityList(TABLET_SESSION, sql, token, wettkampfId, teamId).stream().findFirst();
     }
 
+    /**
+     * Liest eine Session über Wettkampf und Team.
+     */
     public Optional<TabletSessionEntity> findByWettkampfUndTeam(Long wettkampfId, Long teamId) {
         String sql = new QueryBuilder()
                 .selectAll()
@@ -83,26 +153,53 @@ public class TabletSessionDAO implements DataAccessObject {
         return basicDao.selectEntityList(TABLET_SESSION, sql, wettkampfId, teamId).stream().findFirst();
     }
 
+    /**
+     * Erstellt eine neue Tablet-Session.
+     */
     public TabletSessionEntity createSession(TabletSessionEntity entity, Long currentUserId) {
         basicDao.setCreationAttributes(entity, currentUserId);
         return basicDao.insertEntity(TABLET_SESSION, entity);
     }
 
+    /**
+     * Aktualisiert den Status in der Session-Entität.
+     */
     public TabletSessionEntity updateStatus(TabletSessionEntity entity, Long currentUserId) {
         basicDao.setModificationAttributes(entity, currentUserId);
         return basicDao.updateEntity(TABLET_SESSION, entity, TABLE_ID);
     }
 
 
+    /**
+     * Löscht alle Sessions zu einem Wettkampf.
+     */
     public void deleteByWettkampfId(long wettkampfId) {
-        // An allen Stellen, an denen die WettkampfID genannt wird: delete
-        // TODO
+        String sql = new QueryBuilder()
+                .delete()
+                .from(TABLE)
+                .whereEquals(TABLE_WETTKAMPF_ID)
+                .compose().toString();
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue(TABLE_WETTKAMPF_ID, wettkampfId);
+        basicDao.getNamedParameterJdbcTemplate().update(sql, params);
     }
 
 
+    /**
+     * Prüft, ob Sessions für einen Wettkampf existieren.
+     */
     public boolean existsByWettkampfId(long wettkampfId) {
-        // True, falls es einen eintrag für wettkampfId gibt
-        // False, falls es keine eintrag/einträge für die wettkampfId gibt
-        // TODO
+        String sql = new QueryBuilder()
+                .selectCount()
+                .from(TABLE)
+                .whereEquals(TABLE_WETTKAMPF_ID)
+                .compose().toString();
+
+        Integer count = basicDao.getNamedParameterJdbcTemplate()
+                .queryForObject(sql,
+                        new MapSqlParameterSource().addValue(TABLE_WETTKAMPF_ID, wettkampfId),
+                        Integer.class);
+        return count != null && count > 0;
     }
 }

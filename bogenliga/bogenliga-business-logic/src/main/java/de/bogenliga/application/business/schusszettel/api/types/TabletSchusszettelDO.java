@@ -14,6 +14,8 @@ import java.util.List;
  *
  * acts as JSON object for frontend; all data comes from here.
  *
+ * Referenced by getStatus(), handleSatzeingabe(), handleEnde().
+ *
  * @author Marty Lauterbach
  */
 public class TabletSchusszettelDO {
