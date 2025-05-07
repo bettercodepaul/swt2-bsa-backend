@@ -1,21 +1,22 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
-import de.bogenliga.application.business.match.impl.dao.MatchDAO;
-import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
-import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.schusszettel.api.types.*;
-import de.bogenliga.application.business.schusszettel.api.types.inside.SatzErgebnisDO;
-import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeMatchPunkteDO;
-import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
-import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
-import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
-import de.bogenliga.application.business.schusszettel.impl.dao.MatchShooterDAO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.*;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSessionDAO;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSessionEntity;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -24,209 +25,261 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
+/**
+ * Core implementation of the Tablet Schusszettel workflow.
+ * Handles session state (GET), shooter registration (POST), shot entry (POST), and transitions.
+ */
 @Service
 public class TabletSchusszettelComponentImpl implements TabletSchusszettelComponent {
 
-    private static final int MAX_SETS = 5;
-    private static final int SHOOTERS_PER_TEAM = 3;
+    // Constants controlling match logic
+    private static final int MAX_SETS = 5;                     // Maximum number of sets per match
+    private static final int SHOOTERS_PER_TEAM = 3;            // Exactly three shooters per set
 
+    // State identifiers for session
     private static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
     private static final String STATUS_SATZEINGABE      = "SATZEINGABE";
     private static final String STATUS_WARTE           = "WARTE";
     private static final String STATUS_WETTKAMPF_ENDE  = "WETTKAMPF_ENDE";
 
-    private final TabletSessionDAO sessionDAO;
-    private final PasseDAO passeDAO;
-    private final MatchDAO matchDAO;
-    private final MannschaftsmitgliedDAO mmDAO;
-    private final MatchShooterDAO mzDAO;
-    private final DsbMitgliedDAO mitgliedDAO;
-    private final DsbMannschaftDAOext mannschaftDAO;
-    private final MatchShooterDAO matchShooterDAO;
-
-    public class MatchShooter {
-        private long dsbMitgliedId;
-        private int  rueckennummer;
-
-        public MatchShooter(long dsbMitgliedId, int rueckennummer) {
-            this.dsbMitgliedId = dsbMitgliedId;
-            this.rueckennummer = rueckennummer;
-        }
-
-        public long getDsbMitgliedId() {
-            return dsbMitgliedId;
-        }
-
-        public int getRueckennummer() {
-            return rueckennummer;
-        }
-    }
+    // Injected business components / DAOs
+    private final TabletSessionDAO            sessionDAO;
+    private final PasseComponent              passeComponent;
+    private final MatchComponent              matchComponent;
+    private final MannschaftsmitgliedComponent mmComponent;
+    private final DsbMitgliedComponent        mitgliedComponent;
+    private final DsbMannschaftComponent      mannschaftComponent;
+    private final VereinComponent             vereinComponent;
 
     @Autowired
     public TabletSchusszettelComponentImpl(
             TabletSessionDAO sessionDAO,
-            PasseDAO passeDAO,
-            MatchDAO matchDAO,
-            MannschaftsmitgliedDAO mmDAO,
-            MatchShooterDAO mzDAO,
-            DsbMitgliedDAO mitgliedDAO,
-            DsbMannschaftDAOext mannschaftDAO,
-            MatchShooterDAO matchShooterDAO) {
-        this.sessionDAO   = sessionDAO;
-        this.passeDAO     = passeDAO;
-        this.matchDAO     = matchDAO;
-        this.mmDAO        = mmDAO;
-        this.mzDAO        = mzDAO;
-        this.mitgliedDAO  = mitgliedDAO;
-        this.mannschaftDAO= mannschaftDAO;
-        this.matchShooterDAO = matchShooterDAO;
+            PasseComponent passeComponent,
+            MatchComponent matchComponent,
+            MannschaftsmitgliedComponent mmComponent,
+            DsbMitgliedComponent mitgliedComponent,
+            DsbMannschaftComponent mannschaftComponent,
+            VereinComponent vereinComponent) {
+        this.sessionDAO        = sessionDAO;
+        this.passeComponent    = passeComponent;
+        this.matchComponent    = matchComponent;
+        this.mmComponent       = mmComponent;
+        this.mitgliedComponent = mitgliedComponent;
+        this.mannschaftComponent = mannschaftComponent;
+        this.vereinComponent     = vereinComponent;
     }
 
+    /**
+     * GET /api/tablet-schusszettel
+     * -> Validate token & session
+     * -> Build full match history and state-specific details
+     */
     @Override
     public TabletSchusszettelDO getStatus(long wettkampfId, long teamId, String token) {
-        // Token & session validation
+        // 1) Token presence / emptiness check
         if (token == null || token.isEmpty()) {
-            return notAllowedResponse();
+            return notAllowed();
         }
-        Optional<TabletSessionEntity> optSession = sessionDAO.findByToken(wettkampfId, teamId, token);
-        if (optSession.isEmpty()) {
-            return notAllowedResponse();
+        // 2) Lookup session, return NOT_ALLOWED if none
+        TabletSessionEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
+                .orElse(null);
+        if (session == null) {
+            return notAllowed();
         }
-        TabletSessionEntity session = optSession.get();
 
-        // Prepare response
-        TabletSchusszettelDO out = new TabletSchusszettelDO();
-        out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
-        out.setEigenesTeam(getTeamInfo(teamId));
-        out.setGegnerischesTeam(getTeamInfo(session.getGegnerTeamId()));
-        out.setCurrentMatchId(session.getCurrentMatchId());
-        out.setCurrentPasseNumber(session.getCurrentPasseNumber());
+        // Extract match and opponent IDs
+        long matchId = session.getCurrentMatchId();
+        long oppTeam = session.getGegnerTeamId();
+        // Fetch all recorded passes for this match
+        List<PasseDO> passen = passeComponent.findByMatchId(matchId);
+        // Build full set history (Satz-Ergebnisse)
+        List<SatzErgebnisDO> satzHistory = buildSatzErgebnisse(passen, teamId, oppTeam, Integer.MAX_VALUE);
 
-        long matchId   = session.getCurrentMatchId();
-        long oppTeamId = session.getGegnerTeamId();
-        // Always return full Satz-Ergebnisse regardless of current passe
-        List<PasseBE> allPassen = passeDAO.findByMatchId(matchId);
-        List<SatzErgebnisDO> satzErg = buildSatzErgebnisse(allPassen, teamId, oppTeamId, Integer.MAX_VALUE);
-        out.setSatzErgebnisse(satzErg);
-        out.setSchuetzenMatchPunkte(buildMatchPunkte(allPassen, teamId));
-        out.setMatchErgebnis(buildTeamMatchInfo(satzErg, teamId, oppTeamId));
+        // Populate base DTO
+        TabletSchusszettelDO result = new TabletSchusszettelDO();
+        result.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
+        result.setEigenesTeam(getTeamInfo(teamId));
+        result.setGegnerischesTeam(getTeamInfo(oppTeam));
+        result.setCurrentMatchId(matchId);
+        result.setCurrentPasseNumber(session.getCurrentPasseNumber());
+        result.setSatzErgebnisse(satzHistory);
+        result.setSchuetzenMatchPunkte(buildMatchPunkte(passen, teamId));
+        result.setMatchErgebnis(buildTeamMatchInfo(satzHistory, teamId, oppTeam));
 
-        // Handle specific states
+        // Append additional data depending on session state
         switch (session.getStatus()) {
             case STATUS_SCHUETZENMELDUNG:
-                handleSchuetzenmeldung(session, out, teamId);
+                handleSchuetzenmeldung(session, result, teamId);
                 break;
             case STATUS_SATZEINGABE:
-                handleSatzeingabe(session, out);
+                handleSatzeingabe(session, result);
                 break;
             case STATUS_WARTE:
-                handleWarteState(wettkampfId, session, out);
+                handleWarte(session, result, wettkampfId, teamId);
                 break;
             case STATUS_WETTKAMPF_ENDE:
-                handleEnde(session, out, wettkampfId, teamId);
+                handleEnde(session, result, wettkampfId, teamId);
                 break;
             default:
-                // no-op
+                // Unexpected state => ignore
         }
-
-        return out;
+        return result;
     }
 
-    private TabletSchusszettelDO notAllowedResponse() {
-        TabletSchusszettelDO out = new TabletSchusszettelDO();
-        out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED);
-        return out;
+    /**
+     * Convenience for NOT_ALLOWED response
+     */
+    private TabletSchusszettelDO notAllowed() {
+        TabletSchusszettelDO dto = new TabletSchusszettelDO();
+        dto.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED);
+        return dto;
     }
 
+    /**
+     * POST /api/tablet-schusszettel (Schuetzenmeldung)
+     * -> Validate exactly 3 shooters
+     * -> Verify membership
+     * -> Create placeholder passes to lock-in registration
+     * -> Transition session to SATZEINGABE
+     */
     @Override
     public void submitSchuetzen(long wettkampfId, long teamId, String token, SchuetzenMeldungDO input) {
-        if (input == null || input.getGemeldeteSchuetzen() == null || input.getGemeldeteSchuetzen().size() != SHOOTERS_PER_TEAM) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Exactly 3 shooters must be selected");
+        // Validate payload
+        if (input == null
+                || input.getGemeldeteSchuetzen() == null
+                || input.getGemeldeteSchuetzen().size() != SHOOTERS_PER_TEAM) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Exactly 3 shooters must be selected");
         }
+
+        // Validate session exists
         TabletSessionEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
-                        "Invalid token or session expired"));
+                        "Invalid or expired token"));
 
-        // Validate and assign shooters
-        input.getGemeldeteSchuetzen().forEach(dsbId -> {
-            if (!mmDAO.isMemberOfTeam(dsbId, teamId)) {
+        // Register each shooter
+        for (Long dsbId : input.getGemeldeteSchuetzen()) {
+            // Membership check via component
+            if (mmComponent.findByMemberAndTeamId(teamId, dsbId) == null) {
                 throw new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
-                        "Shooter " + dsbId + " is not a member of team " + teamId);
+                        "Shooter " + dsbId + " is not on team " + teamId);
             }
-            mzDAO.assignToMatch(session.getCurrentMatchId(), dsbId);
-        });
-
+            // Create a 'registration' PasseDO with zero scores to reserve the slot
+            PasseDO passe = new PasseDO(
+                    null,
+                    teamId,
+                    wettkampfId,
+                    session.getCurrentPasseNumber(),
+                    session.getCurrentMatchId(),
+                    session.getCurrentPasseNumber(),
+                    dsbId,
+                    0, 0, 0, 0, 0, 0);
+            passeComponent.create(passe, /*userId*/ -1L);
+        }
         // Move to shot entry
         session.setStatus(STATUS_SATZEINGABE);
         session.setCurrentPasseNumber(1);
-        sessionDAO.updateStatus(session, -1L);
+        sessionDAO.updateStatus(session, /*userId*/ -1L);
     }
 
+    /**
+     * POST /api/tablet-schusszettel (Satzeingabe)
+     * -> Persist each shooter’s three arrows
+     * -> Check if both teams completed this set
+     *    • if yes: evaluate match completeness and advance set/match/day
+     *    • if no: set state to WARTE for waiting team
+     */
     @Override
     public void submitSatz(long wettkampfId, long teamId, String token, SatzEingabeDO eingabe) {
-        if (eingabe == null || eingabe.getSatzeingabe() == null) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Satz input cannot be null");
+        // Validate payload
+        if (eingabe == null || eingabe.getSatzeingabe() == null
+                || eingabe.getSatzeingabe().size() != SHOOTERS_PER_TEAM) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Three shooters’ scores required");
         }
-        if (eingabe.getSatzeingabe().size() != SHOOTERS_PER_TEAM) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Exactly 3 shooter entries are required");
-        }
+
+        // Retrieve session
         TabletSessionEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
-                        "Invalid token or session expired"));
+                        "Invalid or expired token"));
 
-        long matchId    = session.getCurrentMatchId();
-        int  currentSet = session.getCurrentPasseNumber();
+        long matchId = session.getCurrentMatchId();
+        long passeNr = session.getCurrentPasseNumber();
 
-        // Persist shot data
-        eingabe.getSatzeingabe().forEach(s ->
-            matchShooterDAO.insertPasse(matchId, teamId, currentSet,
-                                 s.getSchuetzenId(), s.getSchuss1(), s.getSchuss2(), s.getSchuss3()));
+        // Persist each shot set
+        for (SchuetzenSatzDO s : eingabe.getSatzeingabe()) {
+            PasseDO passe = new PasseDO(
+                    null,
+                    teamId,
+                    wettkampfId,
+                    session.getCurrentMatchNumber(),
+                    matchId,
+                    passeNr,
+                    s.getSchuetzenId(),
+                    s.getSchuss1(),
+                    s.getSchuss2(),
+                    s.getSchuss3(),
+                    0, 0);
+            passeComponent.create(passe, /*userId*/ -1L);
+        }
 
-        // Check completion status
-        long ownCount = passeDAO.countByMatchAndTeam(matchId, teamId, currentSet);
-        long oppCount = passeDAO.countByMatchAndTeam(matchId, session.getGegnerTeamId(), currentSet);
-        boolean bothDone = (ownCount == SHOOTERS_PER_TEAM) && (oppCount == SHOOTERS_PER_TEAM);
+        // Count entries for this set
+        long ownCount = passeComponent.findByMatchId(matchId).stream()
+                .filter(p -> p.getPasseMannschaftId() == teamId && p.getPasseLfdnr() == passeNr)
+                .count();
+        long oppCount = passeComponent.findByMatchId(matchId).stream()
+                .filter(p -> p.getPasseMannschaftId() == session.getGegnerTeamId() && p.getPasseLfdnr() == passeNr)
+                .count();
 
-        if (bothDone) {
-            List<SatzErgebnisDO> full = buildSatzErgebnisse(
-                    passeDAO.findByMatchId(matchId), teamId, session.getGegnerTeamId(), Integer.MAX_VALUE);
-            if (isMatchComplete(full)) {
+        if (ownCount == SHOOTERS_PER_TEAM && oppCount == SHOOTERS_PER_TEAM) {
+            // Both completed: evaluate match status
+            List<SatzErgebnisDO> fullHistory = buildSatzErgebnisse(
+                    passeComponent.findByMatchId(matchId),
+                    teamId, session.getGegnerTeamId(), Integer.MAX_VALUE);
+            if (isMatchComplete(fullHistory)) {
+                // Match done → next match or end of day
                 advanceToNextMatchOrEnd(wettkampfId, session);
-                // In submitSatz there is no outgoing DTO; session changes will be picked up in a subsequent GET.
             } else {
-                session.setCurrentPasseNumber(currentSet + 1);
+                // Next set
+                session.setCurrentPasseNumber(passeNr + 1);
                 session.setStatus(STATUS_SATZEINGABE);
                 sessionDAO.updateStatus(session, -1L);
             }
         } else {
+            // One side done → wait for opponent
             session.setStatus(STATUS_WARTE);
             sessionDAO.updateStatus(session, -1L);
         }
     }
 
+    /**
+     * Initialize sessions at start of competition day for a team
+     */
     @Override
     public void initializeForWettkampf(long wettkampfId, long teamId) {
-        // Initialize a session for the given team
-        List<Long> matches = matchDAO.findMatchIdsByWettkampfAndTeam(wettkampfId, teamId);
-        if (matches.isEmpty()) {
+        // Get all team matches sorted by round number
+        List<MatchDO> teamMatches = matchComponent.findByWettkampfId(wettkampfId).stream()
+                .filter(m -> m.getMannschaftId() == teamId)
+                .sorted(Comparator.comparingLong(MatchDO::getNr))
+                .collect(Collectors.toList());
+        if (teamMatches.isEmpty()) {
             throw new BusinessException(
                     ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    "No matches found for team " + teamId + " and competition " + wettkampfId);
+                    "No matches for team " + teamId);
         }
         TabletSessionEntity session = new TabletSessionEntity();
         session.setWettkampfId(wettkampfId);
         session.setTeamId(teamId);
-        session.setCurrentMatchId(matches.get(0));
+        session.setCurrentMatchId(teamMatches.get(0).getId());
         session.setCurrentPasseNumber(1);
         session.setStatus(STATUS_SCHUETZENMELDUNG);
-        // Determine opponent from first match
-        long opp = matchDAO.findOpponentTeamId(matches.get(0), teamId);
-        session.setGegnerTeamId(opp);
+        session.setGegnerTeamId(findOpponentTeamId(teamMatches.get(0), teamId));
         sessionDAO.createSession(session, -1L);
     }
 
@@ -240,68 +293,74 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         return sessionDAO.existsByWettkampfId(wettkampfId);
     }
 
-    /* === Handlers === */
+    //================================================================================
+    // Private helpers
+    //================================================================================
+
+    /**
+     * SCHUETZENMELDUNG: return list of selectable shooters with IDs & names
+     */
     private void handleSchuetzenmeldung(TabletSessionEntity session,
                                         TabletSchusszettelDO out,
                                         long teamId) {
-        var members = mmDAO.findByTeamId(teamId);
-        List<VerfuegbarerSchuetzeDO> list = members.stream().map(m -> {
-            var be = mitgliedDAO.findById(m.getDsbMitgliedId());
-            if (be == null) throw new TechnicalException(
-                    ErrorCode.DATABASE_ERROR,
-                    "Missing member data for ID " + m.getDsbMitgliedId());
-            return new VerfuegbarerSchuetzeDO(
-                    be.getDsbMitgliedId(),
-                    be.getDsbMitgliedVorname() + " " + be.getDsbMitgliedNachname());
-        }).collect(Collectors.toList());
-        out.setVerfuegbareSchuetzen(list);
+        List<MannschaftsmitgliedDO> members = mmComponent.findByTeamId(teamId);
+        List<VerfuegbarerSchuetzeDO> available = members.stream()
+                .map(m -> {
+                    DsbMitgliedDO dm = mitgliedComponent.findById(m.getDsbMitgliedId());
+                    return new VerfuegbarerSchuetzeDO(dm.getId(), dm.getVorname() + " " + dm.getNachname());
+                }).collect(Collectors.toList());
+        out.setVerfuegbareSchuetzen(available);
     }
 
-    private void handleSatzeingabe(TabletSessionEntity session,
-                                   TabletSchusszettelDO out) {
+    /**
+     * SATZEINGABE: show assigned shooters (Stammdaten) + remaining selectable ones
+     */
+    private void handleSatzeingabe(TabletSessionEntity session, TabletSchusszettelDO out) {
         long matchId = session.getCurrentMatchId();
-        var assigns = mzDAO.findByMatchId(matchId);
-        out.setSchuetzenStammDaten(assigns.stream().map(a -> {
-            var be = mitgliedDAO.findById(a.getDsbMitgliedId());
-            if (be == null) throw new TechnicalException(
-                    ErrorCode.DATABASE_ERROR,
-                    "Missing shooter data for ID " + a.getDsbMitgliedId());
-            return new SchuetzenStammdatenDO(
-                    be.getDsbMitgliedId(), a.getRueckennummer(),
-                    be.getDsbMitgliedVorname(), be.getDsbMitgliedNachname());
-        }).collect(Collectors.toList()));
-
-        // available shooters remaining
-        Set<Long> used = assigns.stream().map(a -> a.getDsbMitgliedId()).collect(Collectors.toSet());
-        List<VerfuegbarerSchuetzeDO> rest = mmDAO.findByTeamId(session.getTeamId()).stream()
-                .map(m -> m.getDsbMitgliedId())
+        long passeNr = session.getCurrentPasseNumber();
+        List<PasseDO> assigns = passeComponent.findByMatchId(matchId).stream()
+                .filter(p -> p.getPasseLfdnr() == passeNr)
+                .collect(Collectors.toList());
+        // Map assigned passes to shooter metadata
+        List<SchuetzenStammdatenDO> meta = assigns.stream().map(p -> {
+            DsbMitgliedDO dm = mitgliedComponent.findById(p.getPasseDsbMitgliedId());
+            MannschaftsmitgliedDO mm = mmComponent.findByMemberAndTeamId(session.getTeamId(), p.getPasseDsbMitgliedId());
+            return new SchuetzenStammdatenDO(dm.getId(), mm.getRueckennummer(), dm.getVorname(), dm.getNachname());
+        }).collect(Collectors.toList());
+        out.setSchuetzenStammDaten(meta);
+        // Compute remaining
+        Set<Long> used = assigns.stream().map(PasseDO::getPasseDsbMitgliedId).collect(Collectors.toSet());
+        List<VerfuegbarerSchuetzeDO> left = mmComponent.findByTeamId(session.getTeamId()).stream()
+                .map(MannschaftsmitgliedDO::getDsbMitgliedId)
                 .filter(id -> !used.contains(id))
                 .map(id -> {
-                    var be = mitgliedDAO.findById(id);
-                    if (be == null) throw new TechnicalException(
-                            ErrorCode.DATABASE_ERROR,
-                            "Missing shooter data for ID " + id);
-                    return new VerfuegbarerSchuetzeDO(
-                            id, be.getDsbMitgliedVorname() + " " + be.getDsbMitgliedNachname());
+                    DsbMitgliedDO dm = mitgliedComponent.findById(id);
+                    return new VerfuegbarerSchuetzeDO(dm.getId(), dm.getVorname() + " " + dm.getNachname());
                 }).collect(Collectors.toList());
-        out.setVerfuegbareSchuetzen(rest);
+        out.setVerfuegbareSchuetzen(left);
     }
 
-    private void handleWarteState(long wettkampfId,
-                                  TabletSessionEntity session,
-                                  TabletSchusszettelDO out) {
-        long matchId   = session.getCurrentMatchId();
-        long oppTeamId = session.getGegnerTeamId();
-        Optional<TabletSessionEntity> opp = sessionDAO.findByWettkampfUndTeam(wettkampfId, oppTeamId);
-        if (opp.isPresent() && STATUS_WARTE.equals(opp.get().getStatus())) {
+    /**
+     * WARTE: if opponent also waiting → advance set or match/day; else repeat SATZEINGABE view
+     */
+    private void handleWarte(TabletSessionEntity session,
+                             TabletSchusszettelDO out,
+                             long wettkampfId,
+                             long teamId) {
+        Optional<TabletSessionEntity> oppSession = sessionDAO.findByWettkampfUndTeam(
+                wettkampfId, session.getGegnerTeamId());
+        // Both sides waiting?
+        if (oppSession.isPresent() && STATUS_WARTE.equals(oppSession.get().getStatus())) {
             List<SatzErgebnisDO> full = buildSatzErgebnisse(
-                    passeDAO.findByMatchId(matchId), session.getTeamId(), oppTeamId, Integer.MAX_VALUE);
+                    passeComponent.findByMatchId(session.getCurrentMatchId()),
+                    teamId, session.getGegnerTeamId(), Integer.MAX_VALUE);
             if (isMatchComplete(full)) {
+                // match over
                 advanceToNextMatchOrEnd(wettkampfId, session);
-                updateOutWithSession(session, out);
-                // Repopulate shooter roster for the new SCHUETZENMELDUNG state
-                handleSchuetzenmeldung(session, out, session.getTeamId());
+                out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
+                handleSchuetzenmeldung(session, out, teamId);
             } else {
+                // next set
                 session.setCurrentPasseNumber(session.getCurrentPasseNumber() + 1);
                 session.setStatus(STATUS_SATZEINGABE);
                 sessionDAO.updateStatus(session, -1L);
@@ -309,130 +368,149 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 handleSatzeingabe(session, out);
             }
         } else {
+            // still waiting for opponent → show SATZEINGABE view
             handleSatzeingabe(session, out);
         }
     }
 
+    /**
+     * WETTKAMPF_ENDE: clear input-related fields and show final match recap
+     */
     private void handleEnde(TabletSessionEntity session,
                             TabletSchusszettelDO out,
                             long wettkampfId,
                             long teamId) {
-        // Clear fields not applicable at end-of-day
+        // clear transient data
         out.setSatzErgebnisse(Collections.emptyList());
         out.setSchuetzenMatchPunkte(Collections.emptyList());
         out.setSchuetzenStammDaten(Collections.emptyList());
         out.setVerfuegbareSchuetzen(Collections.emptyList());
-        // Build recap using dynamic opponent lookup per match
-        List<Long> matchIds = matchDAO.findMatchIdsByWettkampfAndTeam(wettkampfId, teamId);
-        List<TeamMatchInfoDO> recap = matchIds.stream()
-                .map(mid -> {
-                    long oppTeam = matchDAO.findOpponentTeamId(mid, teamId);
-                    List<PasseBE> passen = passeDAO.findByMatchId(mid);
-                    List<SatzErgebnisDO> sets = buildSatzErgebnisse(passen, teamId, oppTeam, Integer.MAX_VALUE);
-                    return buildTeamMatchInfo(sets, teamId, oppTeam);
-                }).flatMap(Collection::stream).collect(Collectors.toList());
+
+        // build recap across all team matches
+        List<TeamMatchInfoDO> recap = matchComponent.findByWettkampfId(wettkampfId).stream()
+                .filter(m -> m.getMannschaftId() == teamId)
+                .flatMap(m -> {
+                    long opp = findOpponentTeamId(m, teamId);
+                    List<PasseDO> ps = passeComponent.findByMatchId(m.getId());
+                    return buildTeamMatchInfo(
+                            buildSatzErgebnisse(ps, teamId, opp, Integer.MAX_VALUE),
+                            teamId, opp).stream();
+                }).collect(Collectors.toList());
         out.setMatchErgebnis(recap);
-        // Reflect session values in DTO
-        out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
-        out.setCurrentMatchId(session.getCurrentMatchId());
-        out.setCurrentPasseNumber(session.getCurrentPasseNumber());
     }
 
-    // Helper: Update the outgoing DTO based on the current session state.
-    private void updateOutWithSession(TabletSessionEntity session, TabletSchusszettelDO out) {
-        out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
-        out.setCurrentMatchId(session.getCurrentMatchId());
-        out.setCurrentPasseNumber(session.getCurrentPasseNumber());
-        long oppTeamId = matchDAO.findOpponentTeamId(session.getCurrentMatchId(), session.getTeamId());
-        List<PasseBE> newPassen = passeDAO.findByMatchId(session.getCurrentMatchId());
-        List<SatzErgebnisDO> newSatzErg = buildSatzErgebnisse(newPassen, session.getTeamId(), oppTeamId, Integer.MAX_VALUE);
-        out.setSatzErgebnisse(newSatzErg);
-        out.setSchuetzenMatchPunkte(buildMatchPunkte(newPassen, session.getTeamId()));
-        out.setMatchErgebnis(buildTeamMatchInfo(newSatzErg, session.getTeamId(), oppTeamId));
+    /**
+     * Find opponent team ID using match round & pairing logic
+     */
+    private long findOpponentTeamId(MatchDO m, long own) {
+        return matchComponent.findByWettkampfId(m.getWettkampfId()).stream()
+                .filter(o -> o.getNr() == m.getNr()
+                        && o.getBegegnung() == m.getBegegnung()
+                        && o.getMannschaftId() != own)
+                .findFirst()
+                .map(MatchDO::getMannschaftId)
+                .orElseThrow(() -> new TechnicalException(
+                        ErrorCode.INTERNAL_ERROR,
+                        "Opponent not found for match " + m.getId()));
     }
 
-    private boolean isMatchComplete(List<SatzErgebnisDO> satzErg) {
-        int mp1 = 0, mp2 = 0;
-        for (SatzErgebnisDO s : satzErg) {
+    /**
+     * Sum up arrow points per shooter in this match
+     */
+    private List<SchuetzeMatchPunkteDO> buildMatchPunkte(List<PasseDO> passen, long teamId) {
+        return passen.stream()
+                .filter(p -> p.getPasseMannschaftId() == teamId)
+                .collect(Collectors.groupingBy(
+                        PasseDO::getPasseDsbMitgliedId,
+                        Collectors.summingInt(x -> x.getPfeil1() + x.getPfeil2() + x.getPfeil3())))
+                .entrySet().stream()
+                .map(e -> new SchuetzeMatchPunkteDO(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Build list of set results up to given set number
+     */
+    private List<SatzErgebnisDO> buildSatzErgebnisse(
+            List<PasseDO> passen, long t1, long t2, int upto) {
+        return passen.stream()
+                .filter(p -> p.getPasseLfdnr() <= upto)
+                .collect(Collectors.groupingBy(PasseDO::getPasseLfdnr))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> {
+                    int set = e.getKey();
+                    int sum1 = e.getValue().stream()
+                            .filter(p -> p.getPasseMannschaftId() == t1)
+                            .mapToInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3())
+                            .sum();
+                    int sum2 = e.getValue().stream()
+                            .filter(p -> p.getPasseMannschaftId() == t2)
+                            .mapToInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3())
+                            .sum();
+                    return new SatzErgebnisDO(set, sum1, sum2);
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * Checks if match is won by points (>=6) or max sets reached
+     */
+    private boolean isMatchComplete(List<SatzErgebnisDO> sets) {
+        int mp1=0, mp2=0;
+        for (SatzErgebnisDO s : sets) {
             if (s.getTeam1Punkte() > s.getTeam2Punkte()) mp1 += 2;
             else if (s.getTeam1Punkte() < s.getTeam2Punkte()) mp2 += 2;
             else { mp1++; mp2++; }
         }
-        return mp1 >= 6 || mp2 >= 6 || satzErg.size() >= MAX_SETS;
+        return mp1 >= 6 || mp2 >= 6 || sets.size() >= MAX_SETS;
     }
 
-    private List<SchuetzeMatchPunkteDO> buildMatchPunkte(List<PasseBE> passen, long teamId) {
-        return passen.stream()
-                .filter(p -> p.getMannschaftId() == teamId)
-                .collect(Collectors.groupingBy(
-                        PasseBE::getDsbMitgliedId,
-                        Collectors.summingInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3())))
-                .entrySet().stream()
-                .map(en -> new SchuetzeMatchPunkteDO(en.getKey(), en.getValue()))
-                .collect(Collectors.toList());
-    }
-
-    private List<SatzErgebnisDO> buildSatzErgebnisse(
-            List<PasseBE> passen,
-            long teamA,
-            long teamB,
-            int uptoSet) {
-        return passen.stream()
-                .filter(p -> p.getLfdnr() <= uptoSet)
-                .collect(Collectors.groupingBy(PasseBE::getLfdnr))
-                .entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(en -> {
-                    int set = en.getKey();
-                    int sumA = en.getValue().stream().filter(p -> p.getMannschaftId() == teamA)
-                            .mapToInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3()).sum();
-                    int sumB = en.getValue().stream().filter(p -> p.getMannschaftId() == teamB)
-                            .mapToInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3()).sum();
-                    return new SatzErgebnisDO(set, sumA, sumB);
-                }).collect(Collectors.toList());
-    }
-
+    /**
+     * Convert Satz-Ergebnisse to total match points per team
+     */
     private List<TeamMatchInfoDO> buildTeamMatchInfo(
-            List<SatzErgebnisDO> ergebnisse,
-            long ownTeam,
-            long oppTeam) {
-        int mpOwn = 0, mpOpp = 0;
-        for (SatzErgebnisDO s : ergebnisse) {
-            if (s.getTeam1Punkte() > s.getTeam2Punkte()) {
-                mpOwn += 2;
-            } else if (s.getTeam1Punkte() < s.getTeam2Punkte()) {
-                mpOpp += 2;
-            } else {
-                mpOwn++; mpOpp++;
-            }
+            List<SatzErgebnisDO> sets, long own, long opp) {
+        int ownMp=0, oppMp=0;
+        for (SatzErgebnisDO s : sets) {
+            if (s.getTeam1Punkte() > s.getTeam2Punkte()) ownMp += 2;
+            else if (s.getTeam1Punkte() < s.getTeam2Punkte()) oppMp += 2;
+            else { ownMp++; oppMp++; }
         }
         return Arrays.asList(
-                new TeamMatchInfoDO(ownTeam, getTeamName(ownTeam), mpOwn),
-                new TeamMatchInfoDO(oppTeam, getTeamName(oppTeam), mpOpp)
+                new TeamMatchInfoDO(own, getTeamName(own), ownMp),
+                new TeamMatchInfoDO(opp, getTeamName(opp), oppMp)
         );
     }
 
+    /**
+     * Helper to fetch team name via DsbMannschaft and Verein
+     */
     private TeamInfoDO getTeamInfo(long teamId) {
-        return new TeamInfoDO(teamId, getTeamName(teamId));
+        DsbMannschaftDO md = mannschaftComponent.findById(teamId);
+        VereinDO v = vereinComponent.findById(md.getVereinId());
+        String name = v.getName() + (md.getNummer() > 1 ? " " + md.getNummer() : "");
+        return new TeamInfoDO(teamId, name);
     }
 
-    private String getTeamName(long teamId) {
-        return mannschaftDAO.findById(teamId)
-                .map(be -> be.getName())
-                .orElse("<unknown>");
-    }
-
+    /**
+     * Advance to next match or end of day state
+     */
     private void advanceToNextMatchOrEnd(long wettkampfId, TabletSessionEntity session) {
-        List<Long> ids = matchDAO.findMatchIdsByWettkampfAndTeam(wettkampfId, session.getTeamId());
-        int idx = ids.indexOf(session.getCurrentMatchId());
-        if (idx >= 0 && idx + 1 < ids.size()) {
-            session.setCurrentMatchId(ids.get(idx + 1));
-            session.setStatus(STATUS_SCHUETZENMELDUNG);
+        // Find all team matches ordered
+        List<MatchDO> teamMatches = matchComponent.findByWettkampfId(wettkampfId).stream()
+                .filter(m -> m.getMannschaftId() == session.getTeamId())
+                .sorted(Comparator.comparingLong(MatchDO::getNr))
+                .collect(Collectors.toList());
+        int idx = teamMatches.indexOf(
+                teamMatches.stream() .filter(m -> m.getId() == session.getCurrentMatchId()).findFirst().get());
+        if (idx + 1 < teamMatches.size()) {
+            MatchDO next = teamMatches.get(idx + 1);
+            session.setCurrentMatchId(next.getId());
             session.setCurrentPasseNumber(1);
+            session.setStatus(STATUS_SCHUETZENMELDUNG);
         } else {
             session.setStatus(STATUS_WETTKAMPF_ENDE);
         }
         sessionDAO.updateStatus(session, -1L);
     }
 }
-

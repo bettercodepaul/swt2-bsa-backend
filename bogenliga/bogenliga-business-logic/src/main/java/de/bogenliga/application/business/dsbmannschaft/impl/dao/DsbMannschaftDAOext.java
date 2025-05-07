@@ -216,8 +216,11 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
 
     public FileChannel findById(long teamId) {
+        // TODO
+        
         return null;
     }
+
     /**
      * Return all dsbmannschaft entries that are currently in the waiting queue
      *

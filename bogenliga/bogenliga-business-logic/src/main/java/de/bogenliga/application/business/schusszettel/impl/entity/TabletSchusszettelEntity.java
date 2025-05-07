@@ -40,4 +40,5 @@ public class TabletSchusszettelEntity {
 
     public Long getWettkampfId() { return wettkampfId; }
     public void setWettkampfId(Long wettkampfId) { this.wettkampfId = wettkampfId; }
+
 }

@@ -25,7 +25,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
     // Define logger
     private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelDAO.class);
 
-    // SQL statements
+    // SQL statements using positional parameters
     private static final String FIND_BY_WETTKAMPF_AND_TEAM =
             "SELECT * FROM schusszettel_tablet_session " +
             "WHERE wettkampf_id = :wettkampfId AND team_id = :teamId";
@@ -76,11 +76,8 @@ public class TabletSchusszettelDAO implements DataAccessObject {
      * @return List of TabletSchusszettelEntity
      */
     public List<TabletSchusszettelEntity> findByWettkampfUndTeam(Long wettkampfId, Long teamId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("wettkampfId", wettkampfId);
-        params.put("teamId", teamId);
-
-        return basicDAO.selectEntityList(FIND_BY_WETTKAMPF_AND_TEAM, params, tabletSchusszettelConfig);
+        return basicDAO.selectEntityList(tabletSchusszettelConfig, FIND_BY_WETTKAMPF_AND_TEAM,
+                wettkampfId, teamId);
     }
 
     /**
@@ -89,16 +86,19 @@ public class TabletSchusszettelDAO implements DataAccessObject {
      * @param entity the entity to save
      */
     public void saveSatzEingabe(TabletSchusszettelEntity entity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("token", entity.getToken());
-        params.put("teamId", entity.getTeamId());
-        params.put("wettkampfId", entity.getWettkampfId());
-        params.put("currentMatchId", entity.getCurrentMatchId());
-        params.put("currentPasseNumber", entity.getCurrentPasseNumber());
-        params.put("status", entity.getStatus());
-        params.put("gegnerTeamId", entity.getGegnerTeamId());
-
-        basicDAO.insertOrUpdateEntity(INSERT_SATZ_EINGABE, params, tabletSchusszettelConfig);
+        // Using positional parameters: first 7 for insert, next 3 for update clause.
+        basicDAO.executeUpdate(INSERT_SATZ_EINGABE,
+                entity.getToken(),
+                entity.getTeamId(),
+                entity.getWettkampfId(),
+                entity.getCurrentMatchId(),
+                entity.getCurrentPasseNumber(),
+                entity.getStatus(),
+                entity.getGegnerTeamId(),
+                // update values:
+                entity.getCurrentMatchId(),
+                entity.getCurrentPasseNumber(),
+                entity.getStatus());
     }
 
     /**
@@ -108,11 +108,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
      * @param teamId ID of the team
      */
     public void deleteAllForWettkampfTeam(Long wettkampfId, Long teamId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("wettkampfId", wettkampfId);
-        params.put("teamId", teamId);
-
-        basicDAO.executeUpdate(DELETE_ALL_FOR_WETTKAMPF_TEAM, params);
+        basicDAO.executeUpdate(DELETE_ALL_FOR_WETTKAMPF_TEAM, wettkampfId, teamId);
     }
 
     /**
@@ -133,10 +129,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
      * @param wettkampfId ID of the wettkampf
      */
     public void deleteByWettkampfId(long wettkampfId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("wettkampfId", wettkampfId);
-
-        basicDAO.executeUpdate(DELETE_BY_WETTKAMPF_ID, params);
+        basicDAO.executeUpdate(DELETE_BY_WETTKAMPF_ID, wettkampfId);
     }
 
     /**
@@ -146,9 +139,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
      * @return true if entries exist, false otherwise
      */
     public boolean existsByWettkampfId(long wettkampfId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("wettkampfId", wettkampfId);
-
-        return basicDAO.selectSingleValue(EXISTS_BY_WETTKAMPF_ID, params, Long.class) > 0;
+        Long count = basicDAO.selectSingleValue(EXISTS_BY_WETTKAMPF_ID, wettkampfId, Long.class);
+        return count != null && count > 0;
     }
 }
