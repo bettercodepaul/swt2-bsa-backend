@@ -28,7 +28,25 @@ import java.util.stream.Collectors;
 
 /**
  * Core implementation of the Tablet Schusszettel workflow.
- * Handles session state (GET), shooter registration (POST), shot entry (POST), and transitions.
+ *
+ * Use Case Overview:
+ * 1) GET /api/tablet-schusszettel?token=...&wettkampfid=...&teamid=...
+ *    - Liefert aktuellen Status (NOT_ALLOWED, SCHUETZENMELDUNG, SATZEINGABE, WARTE, WETTKAMPF_ENDE)
+ *    - Abhängig vom Zustand werden sämtliche Daten für alle Sätze zurückgegeben,
+ *      inkl. Schützenlisten, Satz-Ergebnisse, Match-Ergebnisse, verfügbare Schützen.
+ *
+ * 2) POST /api/tablet-schusszettel?token=...
+ *    - Typ SCHUETZENMELDUNG: gemeldete_schuetzen -> Registrierung
+ *    - Typ SATZEINGABE: satzeingabe -> Schussdaten erfassen
+ *    - Automatische Statuswechsel nach Regeln in advanceToNextMatchOrEnd() und im GET-Handler.
+ *
+ * State Machine:
+ * NOT_ALLOWED -> (ungültiger Token) remains NOT_ALLOWED
+ * SCHUETZENMELDUNG -> (nach POST Registrierung) SATZEINGABE
+ * SATZEINGABE -> (nach POST volle Sätze) WARTE
+ * WARTE -> (Gegner auch WARTE & Match beendet) SCHUETZENMELDUNG oder WETTKAMPF_ENDE
+ * WARTE -> (Gegner nicht fertig) SATZEINGABE
+ * WETTKAMPF_ENDE -> Endzustand
  */
 @Service
 public class TabletSchusszettelComponentImpl implements TabletSchusszettelComponent {
@@ -71,9 +89,14 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     /**
-     * GET /api/tablet-schusszettel
-     * -> Validate token & session
-     * -> Build full match history and state-specific details
+     * GET-Handler: Tablet Status abfragen
+     * 1) Token prüfen -> NOT_ALLOWED oder Session laden
+     * 2) Basis DTO befüllen (eigene & gegnerische TeamInfo)
+     * 3) Je nach Session-Status spezifische Handler aufrufen
+     *    - SCHUETZENMELDUNG: verfügbare Schützen
+     *    - SATZEINGABE: bereits gemeldete Schützen + verbleibende
+     *    - WARTE: ggf. Statuswechsel, sonst Ansicht wie SATZEINGABE
+     *    - WETTKAMPF_ENDE: Finale Zusammenfassung
      */
     @Override
     public TabletSchusszettelDO getStatus(long wettkampfId, long teamId, String token) {
@@ -101,8 +124,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         result.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
         result.setEigenesTeam(getTeamInfo(teamId));
         result.setGegnerischesTeam(getTeamInfo(oppTeam));
-        result.setCurrentMatchId(matchId);
-        result.setCurrentPasseNumber(session.getCurrentPasseNumber());
+
+        // Call to TabletSessionDAO
+        TabletSessionDAO.setCurrentMatchId(wettkampfId, teamId, matchId);
+        TabletSessionDAO.setCurrentPasseNumber(wettkampfId, teamId, session.getCurrentPasseNumber());
+
         result.setSatzErgebnisse(satzHistory);
         result.setSchuetzenMatchPunkte(buildMatchPunkte(passen, teamId));
         result.setMatchErgebnis(buildTeamMatchInfo(satzHistory, teamId, oppTeam));
@@ -128,7 +154,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     /**
-     * Convenience for NOT_ALLOWED response
+     * Hilfsmethode für NOT_ALLOWED
      */
     private TabletSchusszettelDO notAllowed() {
         TabletSchusszettelDO dto = new TabletSchusszettelDO();
@@ -137,11 +163,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     /**
-     * POST /api/tablet-schusszettel (Schuetzenmeldung)
-     * -> Validate exactly 3 shooters
-     * -> Verify membership
-     * -> Create placeholder passes to lock-in registration
-     * -> Transition session to SATZEINGABE
+     * POST-Handler: Schützenmeldung
+     * - Prüfe genau 3 Schützen
+     * - Mitgliedschaft validieren
+     * - Reservation durch leere Passen erzeugen
+     * - Statuswechsel -> SATZEINGABE
      */
     @Override
     public void submitSchuetzen(long wettkampfId, long teamId, String token, SchuetzenMeldungDO input) {
@@ -154,7 +180,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     "Exactly 3 shooters must be selected");
         }
 
-        // Validate session exists
+        // Registrierungsschritte für jeden Schützen
         TabletSessionEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
@@ -168,30 +194,45 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                         ErrorCode.NO_PERMISSION_ERROR,
                         "Shooter " + dsbId + " is not on team " + teamId);
             }
-            // Create a 'registration' PasseDO with zero scores to reserve the slot
+            /*
+            public PasseDO(
+                Long id,
+                Long passeMannschaftId,
+                Long passeWettkampfId,
+                Long passeMatchNr,
+                Long passeMatchId,
+                Long passeLfdnr,
+                Long passeDsbMitgliedId,
+                Integer pfeil1,
+                Integer pfeil2,
+                Integer pfeil3,
+                Integer pfeil4,
+                Integer pfeil5,
+                Integer pfeil6
+            )
+             */
+            // Passen-Reservation ohne Werte
             PasseDO passe = new PasseDO(
-                    null,
+                    session.getCurrentPasseNumber(),
                     teamId,
                     wettkampfId,
-                    session.getCurrentPasseNumber(),
+                    session.getCurrentMatchNumber(),
                     session.getCurrentMatchId(),
-                    session.getCurrentPasseNumber(),
+                    session.getLfdnr(),
                     dsbId,
-                    0, 0, 0, 0, 0, 0);
+                    null, null, null, null, null, null);
             passeComponent.create(passe, /*userId*/ -1L);
         }
-        // Move to shot entry
+        // Wechsel in Eingabemodus
         session.setStatus(STATUS_SATZEINGABE);
         session.setCurrentPasseNumber(1);
-        sessionDAO.updateStatus(session, /*userId*/ -1L);
+        sessionDAO.updateStatus(session, -1L);
     }
 
     /**
-     * POST /api/tablet-schusszettel (Satzeingabe)
-     * -> Persist each shooter’s three arrows
-     * -> Check if both teams completed this set
-     *    • if yes: evaluate match completeness and advance set/match/day
-     *    • if no: set state to WARTE for waiting team
+     * POST-Handler: Satzeingabe
+     * - Schussdaten speichern
+     * - Prüfen, ob beide Teams fertig -> ggf. Satz-, Match- oder Tag beenden
      */
     @Override
     public void submitSatz(long wettkampfId, long teamId, String token, SatzEingabeDO eingabe) {
@@ -212,24 +253,18 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         long matchId = session.getCurrentMatchId();
         long passeNr = session.getCurrentPasseNumber();
 
-        // Persist each shot set
+        // Speichere jede Passe mit drei Pfeilwerten
         for (SchuetzenSatzDO s : eingabe.getSatzeingabe()) {
             PasseDO passe = new PasseDO(
-                    null,
-                    teamId,
-                    wettkampfId,
-                    session.getCurrentMatchNumber(),
-                    matchId,
-                    passeNr,
-                    s.getSchuetzenId(),
-                    s.getSchuss1(),
-                    s.getSchuss2(),
-                    s.getSchuss3(),
+                    null, teamId, wettkampfId,
+                    session.getCurrentMatchNumber(), matchId,
+                    passeNr, s.getSchuetzenId(),
+                    s.getSchuss1(), s.getSchuss2(), s.getSchuss3(),
                     0, 0);
             passeComponent.create(passe, /*userId*/ -1L);
         }
 
-        // Count entries for this set
+        // Zähle eigene und gegnerische Einträge in dieser Passe
         long ownCount = passeComponent.findByMatchId(matchId).stream()
                 .filter(p -> p.getPasseMannschaftId() == teamId && p.getPasseLfdnr() == passeNr)
                 .count();
@@ -238,21 +273,21 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 .count();
 
         if (ownCount == SHOOTERS_PER_TEAM && oppCount == SHOOTERS_PER_TEAM) {
-            // Both completed: evaluate match status
+            // Beide Seiten fertig: Match bewerten
             List<SatzErgebnisDO> fullHistory = buildSatzErgebnisse(
                     passeComponent.findByMatchId(matchId),
                     teamId, session.getGegnerTeamId(), Integer.MAX_VALUE);
             if (isMatchComplete(fullHistory)) {
-                // Match done → next match or end of day
+                // Match abgeschlossen
                 advanceToNextMatchOrEnd(wettkampfId, session);
             } else {
-                // Next set
-                session.setCurrentPasseNumber(passeNr + 1);
+                // Weiterer Satz
+                session.setCurrentPasseNumber((int) passeNr + 1);
                 session.setStatus(STATUS_SATZEINGABE);
                 sessionDAO.updateStatus(session, -1L);
             }
         } else {
-            // One side done → wait for opponent
+            // Eine Seite fertig -> WARTE-Modus
             session.setStatus(STATUS_WARTE);
             sessionDAO.updateStatus(session, -1L);
         }
@@ -263,7 +298,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     @Override
     public void initializeForWettkampf(long wettkampfId, long teamId) {
-        // Get all team matches sorted by round number
+        // Sitzungen initialisieren: erster Match, Passe=1, Schuetzenmeldung
         List<MatchDO> teamMatches = matchComponent.findByWettkampfId(wettkampfId).stream()
                 .filter(m -> m.getMannschaftId() == teamId)
                 .sorted(Comparator.comparingLong(MatchDO::getNr))
@@ -294,11 +329,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     //================================================================================
-    // Private helpers
+    // Private helper methods
     //================================================================================
 
     /**
-     * SCHUETZENMELDUNG: return list of selectable shooters with IDs & names
+     * SCHUETZENMELDUNG: verfügbar machen aller Vereins-Schützen
      */
     private void handleSchuetzenmeldung(TabletSessionEntity session,
                                         TabletSchusszettelDO out,
@@ -313,23 +348,24 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     /**
-     * SATZEINGABE: show assigned shooters (Stammdaten) + remaining selectable ones
+     * SATZEINGABE: bereits registrierte Schützen + verbleibende zum Auswählen
      */
     private void handleSatzeingabe(TabletSessionEntity session, TabletSchusszettelDO out) {
-        long matchId = session.getCurrentMatchId();
         long passeNr = session.getCurrentPasseNumber();
+        long matchId = session.getCurrentMatchId();
         List<PasseDO> assigns = passeComponent.findByMatchId(matchId).stream()
                 .filter(p -> p.getPasseLfdnr() == passeNr)
                 .collect(Collectors.toList());
-        // Map assigned passes to shooter metadata
-        List<SchuetzenStammdatenDO> meta = assigns.stream().map(p -> {
+        // Stammdaten der gemeldeten Schützen
+        List<SchuetzeStammdatenDO> meta = assigns.stream().map(p -> {
             DsbMitgliedDO dm = mitgliedComponent.findById(p.getPasseDsbMitgliedId());
             MannschaftsmitgliedDO mm = mmComponent.findByMemberAndTeamId(session.getTeamId(), p.getPasseDsbMitgliedId());
-            return new SchuetzenStammdatenDO(dm.getId(), mm.getRueckennummer(), dm.getVorname(), dm.getNachname());
+            return new SchuetzeStammdatenDO(dm.getId(), mm.getRueckennummer(), dm.getVorname(), dm.getNachname());
         }).collect(Collectors.toList());
-        out.setSchuetzenStammDaten(meta);
-        // Compute remaining
-        Set<Long> used = assigns.stream().map(PasseDO::getPasseDsbMitgliedId).collect(Collectors.toSet());
+        out.setSchuetzeStammDaten(meta);
+        // Verbleibende Schützen
+        Set<Long> used = assigns.stream()
+                .map(PasseDO::getPasseDsbMitgliedId).collect(Collectors.toSet());
         List<VerfuegbarerSchuetzeDO> left = mmComponent.findByTeamId(session.getTeamId()).stream()
                 .map(MannschaftsmitgliedDO::getDsbMitgliedId)
                 .filter(id -> !used.contains(id))
@@ -341,7 +377,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     }
 
     /**
-     * WARTE: if opponent also waiting → advance set or match/day; else repeat SATZEINGABE view
+     * WARTE: Gegner-Status prüfen -> ggf. neue Phase starten oder Eingabeansicht erneut
      */
     private void handleWarte(TabletSessionEntity session,
                              TabletSchusszettelDO out,
@@ -349,18 +385,19 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                              long teamId) {
         Optional<TabletSessionEntity> oppSession = sessionDAO.findByWettkampfUndTeam(
                 wettkampfId, session.getGegnerTeamId());
-        // Both sides waiting?
-        if (oppSession.isPresent() && STATUS_WARTE.equals(oppSession.get().getStatus())) {
+        boolean opponentWaiting = oppSession.isPresent() && STATUS_WARTE.equals(oppSession.get().getStatus());
+        if (opponentWaiting) {
+            // Beide Teams fertig -> prüfen Match-Ende
             List<SatzErgebnisDO> full = buildSatzErgebnisse(
                     passeComponent.findByMatchId(session.getCurrentMatchId()),
                     teamId, session.getGegnerTeamId(), Integer.MAX_VALUE);
             if (isMatchComplete(full)) {
-                // match over
+                // Match beendet -> nächste Registrierung oder Wettkampf-Ende
                 advanceToNextMatchOrEnd(wettkampfId, session);
                 out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.valueOf(session.getStatus()));
                 handleSchuetzenmeldung(session, out, teamId);
             } else {
-                // next set
+                // Weiterer Satz -> SATZEINGABE
                 session.setCurrentPasseNumber(session.getCurrentPasseNumber() + 1);
                 session.setStatus(STATUS_SATZEINGABE);
                 sessionDAO.updateStatus(session, -1L);
@@ -368,25 +405,23 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 handleSatzeingabe(session, out);
             }
         } else {
-            // still waiting for opponent → show SATZEINGABE view
+            // Warten noch -> Anzeige SATZEINGABE
             handleSatzeingabe(session, out);
         }
     }
 
     /**
-     * WETTKAMPF_ENDE: clear input-related fields and show final match recap
+     * WETTKAMPF_ENDE: Aufräumen und finale Recaps zeigen
      */
     private void handleEnde(TabletSessionEntity session,
                             TabletSchusszettelDO out,
                             long wettkampfId,
                             long teamId) {
-        // clear transient data
         out.setSatzErgebnisse(Collections.emptyList());
         out.setSchuetzenMatchPunkte(Collections.emptyList());
-        out.setSchuetzenStammDaten(Collections.emptyList());
+        out.setSchuetzeStammDaten(Collections.emptyList());
         out.setVerfuegbareSchuetzen(Collections.emptyList());
-
-        // build recap across all team matches
+        // Recap aller Matches des Tages
         List<TeamMatchInfoDO> recap = matchComponent.findByWettkampfId(wettkampfId).stream()
                 .filter(m -> m.getMannschaftId() == teamId)
                 .flatMap(m -> {
@@ -439,7 +474,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> {
-                    int set = e.getKey();
+                    int set = (long) e.getKey();
                     int sum1 = e.getValue().stream()
                             .filter(p -> p.getPasseMannschaftId() == t1)
                             .mapToInt(p -> p.getPfeil1() + p.getPfeil2() + p.getPfeil3())
@@ -481,6 +516,13 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 new TeamMatchInfoDO(opp, getTeamName(opp), oppMp)
         );
     }
+
+
+    private String getTeamName(long teamId) {
+        VereinDO verein = findById(teamId);
+        return verein.getName();
+    }
+
 
     /**
      * Helper to fetch team name via DsbMannschaft and Verein
