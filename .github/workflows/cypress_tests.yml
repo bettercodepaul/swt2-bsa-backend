@@ -81,7 +81,14 @@ jobs:
           npm start &
       - name: Wait for frontend to be ready
         run: |
-          npx wait-on http://localhost:4200    
+          npx wait-on http://localhost:4200
+      - name: Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: "http://localhost:4200"
+          browser: chrome
+          wait-on-timeout: 120
+          working-directory: ./bogenliga    
       - name: Build completion
         if: success()
         run: echo "Build and tests completed successfully!"
