@@ -70,16 +70,16 @@ jobs:
       - name: Start backend, frontend and run Cypress tests
         working-directory: .
         run: |
-          # Start backend
+          echo "Start backend"
           mvn -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
 
-          # Start frontend
-          nohup npm --prefix ./swt2-bsa-frontend/bogenliga &
+          echo "Start frontend"
+          nohup npm --prefix ./swt2-bsa-frontend/bogenliga start  &
 
-          # Wait for both to be ready
+          echo "Wait for both to be ready"
           npx wait-on http://localhost:4200
 
-          # Run Cypress tests
+          echo "Run Cypress tests"
           npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga
 
           # Optional: show logs for debugging
