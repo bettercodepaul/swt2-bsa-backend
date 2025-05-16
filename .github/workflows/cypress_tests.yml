@@ -21,20 +21,21 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-           fetch-depth: 0   
-      
-      - name: Build dependencies
-        working-directory: ./bogenliga
-        run: mvn clean install
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
            distribution: 'zulu'
            java-version: '17'
+    
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+           fetch-depth: 0  
+
+      - name: Clone frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: bettercodepaul/swt2-bsa-frontend 
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -49,15 +50,6 @@ jobs:
           java -version
           export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED"
           mvn clean install -T 1C
-
-      - name: Start backend
-        working-directory: ./bogenliga/bogenliga-application
-        run: |
-          mvn spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
-      - name: Clone frontend repository
-        uses: actions/checkout@v2
-        with:
-          repository: bettercodepaul/swt2-bsa-frontend 
           
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -74,22 +66,30 @@ jobs:
         run: |
           npm run build  
 
-      - name: Start frontend
-        working-directory: ./bogenliga
+      - name: Start backend, frontend and run Cypress tests
+        working-directory: .
         run: |
-          npm start 
-      - name: Wait for frontend to be ready
-        run: |
-          npx wait-on http://localhost:4200
-          
-      - name: Cypress
-        uses: cypress-io/github-action@v6
-        with:
-          wait-on: "http://localhost:4200"
-          browser: chrome
-          wait-on-timeout: 200
-          working-directory: ./bogenliga   
-          
+          # Start backend
+          nohup ./bogenliga/bogenliga-application/mvnw -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" > backend.log 2>&1 &
+
+          # Start frontend
+          nohup npm --prefix ./bogenliga-frontend start > frontend.log 2>&1 &
+
+          # Wait for both to be ready
+          npx wait-on http://localhost:8080 http://localhost:4200
+
+          # Run Cypress tests
+          npx cypress run --browser chrome --project ./bogenliga-frontend
+
+          # Optional: show logs for debugging
+          echo "::group::Backend Log"
+          cat backend.log
+          echo "::endgroup::"
+
+          echo "::group::Frontend Log"
+          cat frontend.log
+          echo "::endgroup::"
+                    
       - name: Tests completed
         if: success()
         run: echo "Build and tests completed successfully!"
