@@ -12,7 +12,7 @@ public interface TabletSchusszettelComponent {
 
     void submitSchuetzen(long wettkampfid, long teamid, String token, SchuetzenMeldungDO doObj);
 
-    void initializeForWettkampf(long wettkampfId, long teamId);
+    void initializeForWettkampf(long wettkampfId);
 
     void deleteForWettkampf(long wettkampfId);
 

@@ -6,6 +6,7 @@ CREATE TABLE schusszettel_tablet_session (
     team_id BIGINT NOT NULL REFERENCES mannschaft(mannschaft_id),
     wettkampf_id BIGINT NOT NULL REFERENCES wettkampf(wettkampf_id),
     current_match_id BIGINT REFERENCES match(match_id),
+    current_match_number INTEGER   NOT NULL DEFAULT 1,
     current_passe_number INTEGER DEFAULT 1,
     status VARCHAR(50) NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
