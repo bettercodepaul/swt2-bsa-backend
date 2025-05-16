@@ -71,7 +71,7 @@ jobs:
         working-directory: .
         run: |
           echo "Start backend"
-          mvn -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
+          mvn -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" > backend.log 2>&1 &
 
           echo "Start frontend"
           nohup npm --prefix ./swt2-bsa-frontend/bogenliga start  &
