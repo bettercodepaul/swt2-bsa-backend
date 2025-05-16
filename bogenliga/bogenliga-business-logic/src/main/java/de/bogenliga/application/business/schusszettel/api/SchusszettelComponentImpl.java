@@ -1131,7 +1131,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         return 175f  / text.length();
     }
 
-    class SchusszettelComponentAsync {
+    public class SchusszettelComponentAsync {
 
         // Asynchronous method to generate a PDF page for Schusszettel
         @Async
