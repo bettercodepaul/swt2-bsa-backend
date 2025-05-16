@@ -81,15 +81,6 @@ jobs:
 
           echo "Run Cypress tests"
           npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga
-
-          # Optional: show logs for debugging
-          echo "::group::Backend Log"
-          cat backend.log
-          echo "::endgroup::"
-
-          echo "::group::Frontend Log"
-          cat frontend.log
-          echo "::endgroup::"
                     
       - name: Tests completed
         if: success()
