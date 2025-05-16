@@ -87,7 +87,7 @@ jobs:
         with:
           wait-on: "http://localhost:4200"
           browser: chrome
-          wait-on-timeout: 500
+          wait-on-timeout: 200
           working-directory: ./bogenliga   
           
       - name: Tests completed
