@@ -35,7 +35,8 @@ jobs:
       - name: Clone frontend repository
         uses: actions/checkout@v2
         with:
-          repository: bettercodepaul/swt2-bsa-frontend 
+          repository: bettercodepaul/swt2-bsa-frontend
+          path: swt2-bsa-frontend
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -57,12 +58,12 @@ jobs:
           node-version: '16'  
           
       - name: Install frontend dependencies
-        working-directory: ./bogenliga
+        working-directory: ./swt2-bsa-frontend/bogenliga
         run: |
           npm install
 
       - name: Build frontend
-        working-directory: ./bogenliga
+        working-directory: ./swt2-bsa-frontend/bogenliga
         run: |
           npm run build  
 
@@ -73,13 +74,13 @@ jobs:
           nohup ./bogenliga/bogenliga-application/mvnw -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" > backend.log 2>&1 &
 
           # Start frontend
-          nohup npm --prefix ./bogenliga-frontend start > frontend.log 2>&1 &
+          nohup npm --prefix ./swt2-bsa-frontend/bogenliga > frontend.log 2>&1 &
 
           # Wait for both to be ready
           npx wait-on http://localhost:8080 http://localhost:4200
 
           # Run Cypress tests
-          npx cypress run --browser chrome --project ./bogenliga-frontend
+          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga
 
           # Optional: show logs for debugging
           echo "::group::Backend Log"
