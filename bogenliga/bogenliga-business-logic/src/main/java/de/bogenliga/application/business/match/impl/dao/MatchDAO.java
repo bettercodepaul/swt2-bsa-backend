@@ -296,15 +296,4 @@ public class MatchDAO implements DataAccessObject {
 
         return basicDao.selectEntityList(MATCH, query, wettkampfId, mannschaftId);
     }
-
-
-    public List<Long> findMatchIdsByWettkampfAndTeam(long wettkampfId, long teamId) {
-        // TODO
-    }
-
-
-    public long findOpponentTeamId(Long aLong, long teamId) {
-        // TODO
-    }
-
 }

@@ -147,7 +147,7 @@ public class WettkampfService implements ServiceFacade {
         final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
 
         // Hook: Initialize TabletSchusszettel database entry
-        tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId(), savedWettkampfDO.getTeamId());
+        tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId());
 
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
@@ -218,7 +218,7 @@ public class WettkampfService implements ServiceFacade {
         // Check if TabletSchusszettel entry exists for the Wettkampf
         if (!tabletSchusszettelComponent.existsForWettkampf(wettkampfDO.getId())) {
             // Create the TabletSchusszettel entry
-            tabletSchusszettelComponent.initializeForWettkampf(wettkampfDO.getId(), wettkampfDO.getTeamId());
+            tabletSchusszettelComponent.initializeForWettkampf(wettkampfDO.getId());
         }
 
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);

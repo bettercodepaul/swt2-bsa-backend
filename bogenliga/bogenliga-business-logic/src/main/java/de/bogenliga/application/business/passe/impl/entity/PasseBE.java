@@ -179,11 +179,6 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public long getMannschaftId() {
-        return passeMannschaftId;
-    }
-
-
     public Long getDsbMitgliedId() {
         return passeDsbMitgliedId;
     }
@@ -194,7 +189,5 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public Long getMannschaftId() {
-        return passeMannschaftId;
-    }
+    public Long getMannschaftId() {return passeMannschaftId;}
 }

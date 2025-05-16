@@ -8,16 +8,18 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @author Marty Lauterbach, mklemmingen
  */
-public class TabletSessionEntity extends CommonBusinessEntity {
+public class TabletSchusszettelEntity extends CommonBusinessEntity {
 
     private Long id;
     private String token;
     private Long teamId;
     private Long wettkampfId;
     private Long currentMatchId;
+    private Integer currentMatchNr;
     private Integer currentPasseNumber;
     private String status;
     private Long gegnerTeamId;
+    private Long lastUpdated;
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
@@ -34,6 +36,9 @@ public class TabletSessionEntity extends CommonBusinessEntity {
     public Long getCurrentMatchId() { return currentMatchId; }
     public void setCurrentMatchId(Long currentMatchId) { this.currentMatchId = currentMatchId; }
 
+    public Long getCurrentMatchNumber() {return Long.valueOf(currentMatchNr);}
+    public void setCurrentMatchNumber(Integer currentMatchNr) { this.currentMatchNr = currentMatchNr; }
+
     public Integer getCurrentPasseNumber() { return currentPasseNumber; }
     public void setCurrentPasseNumber(Integer currentPasseNumber) { this.currentPasseNumber = currentPasseNumber; }
 
@@ -42,4 +47,7 @@ public class TabletSessionEntity extends CommonBusinessEntity {
 
     public Long getGegnerTeamId() { return gegnerTeamId; }
     public void setGegnerTeamId(Long gegnerTeamId) { this.gegnerTeamId = gegnerTeamId; }
+
+    public void setLastUpdatedNow() {lastUpdated = System.currentTimeMillis();}
+    public Long getLastUpdated() {return lastUpdated;}
 }
