@@ -71,13 +71,13 @@ jobs:
         working-directory: .
         run: |
           # Start backend
-          nohup ./bogenliga/bogenliga-application/mvnw -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" > backend.log 2>&1 &
+          ./bogenliga/bogenliga-application/mvnw -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
 
           # Start frontend
-          nohup npm --prefix ./swt2-bsa-frontend/bogenliga > frontend.log 2>&1 &
+          nohup npm --prefix ./swt2-bsa-frontend/bogenliga &
 
           # Wait for both to be ready
-          npx wait-on http://localhost:8080 http://localhost:4200
+          npx wait-on http://localhost:4200
 
           # Run Cypress tests
           npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga
