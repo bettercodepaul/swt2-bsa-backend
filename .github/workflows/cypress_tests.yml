@@ -78,7 +78,10 @@ jobs:
       - name: Start frontend
         working-directory: ./bogenliga
         run: |
-          npm start &  
+          npm start &
+      - name: Wait for frontend to be ready
+        run: |
+          npx wait-on http://localhost:4200    
       - name: Build completion
         if: success()
         run: echo "Build and tests completed successfully!"
