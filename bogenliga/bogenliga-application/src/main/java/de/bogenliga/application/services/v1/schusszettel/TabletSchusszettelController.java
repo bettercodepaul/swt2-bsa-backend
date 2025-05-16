@@ -40,7 +40,8 @@ public class TabletSchusszettelController {
     }
 
     @Autowired
-    public TabletSchusszettelController(TabletSchusszettelComponent component, ObjectMapper objectMapper) {
+    public TabletSchusszettelController(TabletSchusszettelComponent component,
+                                        ObjectMapper objectMapper) {
         this.component = component;
         this.objectMapper = objectMapper;
     }
@@ -49,67 +50,101 @@ public class TabletSchusszettelController {
      * Holt den aktuellen Zustand des Tablets (Status + Teams + Schützen + Ergebnisse).
      */
     @GetMapping
-    public ResponseEntity<TabletSchusszettelDTO> getSchusszettel(
-            @RequestParam("token") String token,
-            @RequestParam("wettkampfid") Long wettkampfId,
-            @RequestParam("teamid") Long teamId) {
-        final TabletSchusszettelDO businessDO = component.getStatus(wettkampfId, teamId, token);
-        // *only* one mapping line here:
-        final TabletSchusszettelDTO outerDTO = TabletSchusszettelMapper.toDTO(businessDO);
-        return ResponseEntity.ok(outerDTO);
-    }
-
-    @PostMapping
-    public ResponseEntity<?> postEingabe(
-            @RequestParam("token") String token,
-            @RequestParam("wettkampfid") Long wettkampfId,
-            @RequestParam("teamid") Long teamId,
-            @RequestBody Map<String, Object> payload) {
-
+    public ResponseEntity<?> getSchusszettel(
+            @RequestParam String token,
+            @RequestParam Long wettkampfid,
+            @RequestParam Long teamid) {
         try {
-            String typRaw = (String) payload.get("typ");
-
-            EingabeTyp typ;
-            try {
-                typ = EingabeTyp.valueOf(typRaw);
-            } catch (IllegalArgumentException | NullPointerException e) {
-                throw new BusinessException(
-                        ErrorCode.INVALID_ARGUMENT_ERROR,
-                        "Ungültiger Eingabetyp: " + typRaw
-                );
-            }
-
-            switch (typ) {
-                case SATZEINGABE -> {
-                    SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
-                    SatzEingabeDO satzDO = TabletSatzEingabeMapper.toDO(dto);
-                    component.submitSatz(wettkampfId, teamId, token, satzDO);
-                }
-                case SCHUETZENMELDUNG -> {
-                    SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
-                    SchuetzenMeldungDO meldungDO = TabletSchuetzenMeldungMapper.toDO(dto);
-                    component.submitSchuetzen(wettkampfId, teamId, token, meldungDO);
-                }
-            }
-
-            return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
+            TabletSchusszettelDO businessDO = component.getStatus(wettkampfid, teamid, token);
+            TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(businessDO);
+            return ResponseEntity.ok(dto);
 
         } catch (BusinessException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", e.getErrorCode().name(),
-                    "message", e.getMessage()
+            // NO_PERMISSION_ERROR or other business errors
+            return ResponseEntity.status(403).body(Map.of(
+                    "error", e.getMessage()
             ));
 
         } catch (TechnicalException e) {
             return ResponseEntity.status(500).body(Map.of(
-                    "error", e.getErrorCode().name(),
-                    "message", e.getMessage()
+                    "error", e.getMessage()
             ));
 
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of(
-                    "error", ErrorCode.UNEXPECTED_ERROR.name(),
-                    "message", "Ein unerwarteter Fehler ist aufgetreten"
+                    "error", "Ein unerwarteter Fehler ist aufgetreten"
+            ));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> postEingabe(
+            @RequestParam String token,
+            @RequestParam Long wettkampfid,
+            @RequestParam Long teamid,
+            @RequestBody Map<String, Object> payload) {
+        try {
+            // 1) Validiere, ob 'typ' existiert
+            Object typObj = payload.get("typ");
+            if (typObj == null) {
+                throw new BusinessException(
+                        ErrorCode.INVALID_ARGUMENT_ERROR,
+                        "Eingabetyp fehlt"
+                );
+            }
+            String typRaw = typObj.toString();
+
+            EingabeTyp typ;
+            try {
+                typ = EingabeTyp.valueOf(typRaw);
+            } catch (IllegalArgumentException e) {
+                // 2) Ungültiger Typ
+                throw new BusinessException(
+                        ErrorCode.INVALID_ARGUMENT_ERROR,
+                        "Unbekannter Eingabetyp: " + typRaw
+                );
+            }
+
+            // 3) Dispatch je nach Typ
+            switch (typ) {
+                case SATZEINGABE -> {
+                    SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
+                    SatzEingabeDO doObj = TabletSatzEingabeMapper.toDO(dto);
+                    component.submitSatz(wettkampfid, teamid, token, doObj);
+                }
+                case SCHUETZENMELDUNG -> {
+                    SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
+                    SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
+                    component.submitSchuetzen(wettkampfid, teamid, token, doObj);
+                }
+                default -> {
+                    // Sollte nie passieren, da valueOf abgefangen wird
+                    throw new BusinessException(
+                            ErrorCode.INVALID_ARGUMENT_ERROR,
+                            "Unbekannter Eingabetyp: " + typRaw
+                    );
+                }
+            }
+
+            // Erfolgreiche Speicherung
+            return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
+
+        } catch (BusinessException e) {
+            // Validierungsfehler → 400
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage()
+            ));
+
+        } catch (TechnicalException e) {
+            // Interner Fehler → 500
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", e.getMessage()
+            ));
+
+        } catch (Exception e) {
+            // Unerwarteter Fehler → 500
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Ein unerwarteter Fehler ist aufgetreten"
             ));
         }
     }
