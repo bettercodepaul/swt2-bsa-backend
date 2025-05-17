@@ -20,7 +20,6 @@ import de.bogenliga.application.common.database.queries.QueryBuilder;
  * DAO für die schusszettel_tablet_session Tabelle.
  * Verwaltet Authentifizierung und Spielstatus pro Tablet-Team.
  * Erweiterung um current_match_number nach Projektstandard.
- *
  * Tabellenstruktur:
  * schusszettel_tablet_session (
  *   id BIGSERIAL PRIMARY KEY,
@@ -34,11 +33,9 @@ import de.bogenliga.application.common.database.queries.QueryBuilder;
  *   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  *   gegner_team_id BIGINT REFERENCES mannschaft(mannschaft_id)
  * );
- *
  * Indexe:
  * CREATE INDEX idx_tablet_session_token ON schusszettel_tablet_session(token);
  * CREATE INDEX idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
- *
  * SQL-Konstanten und DAO-Methoden nach Projektstandard.
  *
  * @author Marty Lauterbach
@@ -85,7 +82,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
     /**
      * Liest eine Session via Token, Wettkampf und Team.
      */
-    public Optional<TabletSchusszettelEntity> findByToken(long wettkampfId, long teamId, String token) {
+    public Optional<TabletSchusszettelEntity> findByTokenWettkampfUndTeam(long wettkampfId, long teamId, String token) {
         String sql = new QueryBuilder()
                 .selectAll()
                 .from(TABLE)
@@ -182,5 +179,123 @@ public class TabletSchusszettelDAO implements DataAccessObject {
                         .compose().toString(),
                 wettkampfId);
         return !list.isEmpty();
+    }
+
+    /**
+     * Prüft, ob eine Session für einen Wettkampf und ein Team existiert.
+     */
+    public boolean existsByWettkampfIdAndTeamId(long wettkampfId, long teamId) {
+        List<TabletSchusszettelEntity> list = basicDao.selectEntityList(
+                TABLE_CONFIG,
+                new QueryBuilder()
+                        .selectAll()
+                        .from(TABLE)
+                        .whereEquals(COL_WETTKAMPF_ID)
+                        .andEquals(COL_TEAM_ID)
+                        .compose().toString(),
+                wettkampfId, teamId);
+        return !list.isEmpty();
+    }
+
+    /**
+     * Set the Token after finding the Session via WettkampfId and TeamId
+     */
+    public TabletSchusszettelEntity setToken(long wettkampfId, long teamId, String token, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setToken(token);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Set the Enemy TeamID after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity setGegnerTeamId(long wettkampfId, long teamId, Long gegnerTeamId, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setGegnerTeamId(gegnerTeamId);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Set the CurrentMatchID after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity setCurrentMatchId(long wettkampfId, long teamId, Long currentMatchId, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setCurrentMatchId(currentMatchId);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Set the CurrentMatchNumber after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity setCurrentMatchNumber(long wettkampfId, long teamId, Integer currentMatchNumber, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setCurrentMatchNumber(currentMatchNumber);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * set the CurrentPasseNumber after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity setCurrentPasseNumber(long wettkampfId, long teamId, Integer currentPasseNumber, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setCurrentPasseNumber(currentPasseNumber);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Set the Status after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity setStatus(long wettkampfId, long teamId, String status, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setStatus(status);
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Set the LastUpdated after finding the Session via WettkampfId und TeamId
+     */
+    public TabletSchusszettelEntity updateLastUpdated(long wettkampfId, long teamId, Long currentUserId) {
+        TabletSchusszettelEntity entity = findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Keine Tablet-Session für wettkampfId=%d und teamId=%d gefunden", wettkampfId, teamId)));
+        entity.setLastUpdatedNow();
+        basicDao.setModificationAttributes(entity, currentUserId);
+        return basicDao.updateEntity(TABLE_CONFIG, entity, COL_ID);
+    }
+
+    /**
+     * Liest alle Sessions für einen Wettkampf aus.
+     */
+    public List<TabletSchusszettelEntity> findByWettkampfId(long wettkampfId) {
+        String sql = new QueryBuilder()
+                .selectAll()
+                .from(TABLE)
+                .whereEquals(COL_WETTKAMPF_ID)
+                .compose().toString();
+        return basicDao.selectEntityList(TABLE_CONFIG, sql, wettkampfId);
     }
 }

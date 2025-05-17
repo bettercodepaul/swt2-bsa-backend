@@ -108,7 +108,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             return notAllowed();
         }
         // 2) Lookup session, return NOT_ALLOWED if none
-        TabletSchusszettelEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
+        TabletSchusszettelEntity session = sessionDAO.findByTokenWettkampfUndTeam(wettkampfId, teamId, token)
                 .orElse(null);
         if (session == null) {
             return notAllowed();
@@ -190,7 +190,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
         // 2) Lookup session, return NOT_ALLOWED if none
         TabletSchusszettelEntity session = sessionDAO
-                .findByToken(wettkampfId, teamId, token)
+                .findByTokenWettkampfUndTeam(wettkampfId, teamId, token)
                 .orElseThrow(() ->
                         new BusinessException(
                                 ErrorCode.NO_PERMISSION_ERROR,
@@ -253,7 +253,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     "Token argument is empty");
         }
         // 2) Lookup session, return NOT_ALLOWED if none
-        TabletSchusszettelEntity session = sessionDAO.findByToken(wettkampfId, teamId, token)
+        TabletSchusszettelEntity session = sessionDAO.findByTokenWettkampfUndTeam(wettkampfId, teamId, token)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
                         "Invalid or expired token"));
@@ -422,6 +422,48 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     @Override
     public boolean existsForWettkampf(long wettkampfId) {
         return sessionDAO.existsByWettkampfId(wettkampfId);
+    }
+
+
+    /**
+     * Re-tokenizes the schusszettel for a given wettkampf and team.
+     *
+     * @param wettkampfId
+     * @param teamId
+     */
+    @Override
+    public void reTokenize(long wettkampfId, long teamId) {
+        // 1) Lookup session, return NOT AVALIABLE if none
+        TabletSchusszettelEntity session = sessionDAO
+                .findByWettkampfUndTeam(wettkampfId, teamId)
+                .orElseThrow(() ->
+                        new BusinessException(
+                                ErrorCode.NO_PERMISSION_ERROR,
+                                "Invalid"));
+
+        // 2) Generate new token
+        String newToken = generateUrlSafeToken();
+        session.setToken(newToken);
+
+        // 3) Update session with new token
+        sessionDAO.setToken(wettkampfId, teamId, newToken, -1L);
+    }
+
+
+    /**
+     * Generates a TabletSessionInfoDO for a given wettkampfId. - WettkampfId Per Team: - TeamId - TeamName - Status -
+     * Token
+     *
+     * @param wettkampfId
+     */
+    @Override
+    public TabletSessionInfoDO generateSchusszettelSessions(long wettkampfId) {
+
+        // 1) Lookup session, return NOT AVALIABLE if none
+        List<TabletSchusszettelEntity> sessions = sessionDAO.findByWettkampfId(wettkampfId);
+
+
+        return null;
     }
 
     //================================================================================
