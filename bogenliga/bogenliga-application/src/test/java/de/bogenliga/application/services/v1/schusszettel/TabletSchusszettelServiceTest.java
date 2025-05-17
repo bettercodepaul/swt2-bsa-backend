@@ -11,6 +11,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
+import de.bogenliga.application.services.v1.schusszettel.service.TabletSchusszettelService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.verify;
  * Testet die REST-Controller-Funktionalität des TabletSchusszettelController.
  * @Marty Lauterbach
  */
-public class TabletSchusszettelControllerTest {
+public class TabletSchusszettelServiceTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -45,7 +46,7 @@ public class TabletSchusszettelControllerTest {
     private ObjectMapper objectMapper;
 
     @InjectMocks
-    private TabletSchusszettelController underTest;
+    private TabletSchusszettelService underTest;
 
     private final String token      = "abc123";
     private final Long   wettkampfId = 1L;
@@ -53,7 +54,7 @@ public class TabletSchusszettelControllerTest {
 
     @Before
     public void setup() {
-        underTest = new TabletSchusszettelController(component, objectMapper);
+        underTest = new TabletSchusszettelService(component, objectMapper);
     }
 
     @Test
