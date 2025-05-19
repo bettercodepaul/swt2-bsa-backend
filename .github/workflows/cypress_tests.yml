@@ -36,7 +36,7 @@ jobs:
       - name: Clone frontend repository
         uses: actions/checkout@v2
         with:
-          repository: bettercodepaul/swt2-bsa-frontend develop
+          repository: bettercodepaul/swt2-bsa-frontend
           ref: develop
           path: swt2-bsa-frontend
 
