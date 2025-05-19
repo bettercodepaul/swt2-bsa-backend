@@ -30,12 +30,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
+           ref: develop
            fetch-depth: 0  
 
       - name: Clone frontend repository
         uses: actions/checkout@v2
         with:
-          repository: bettercodepaul/swt2-bsa-frontend
+          repository: bettercodepaul/swt2-bsa-frontend develop
+          ref: develop
           path: swt2-bsa-frontend
 
       - name: Cache Maven packages
