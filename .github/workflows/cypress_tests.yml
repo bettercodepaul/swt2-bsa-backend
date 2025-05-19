@@ -80,7 +80,7 @@ jobs:
           npx wait-on http://localhost:4200
 
           echo "Run Cypress tests"
-          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --reporter junit --reporter-options "mochaFile=cypress-results/results.xml" || echo "Cypress tests failed, but pipeline continues"
+          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --reporter junit --reporter-options "mochaFile=cypress-results/results.xml"
           
       - name: Upload Cypress test results
         uses: actions/upload-artifact@v4
