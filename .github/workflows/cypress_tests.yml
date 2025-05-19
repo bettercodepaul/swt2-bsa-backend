@@ -80,7 +80,7 @@ jobs:
           npx wait-on http://localhost:4200
 
           echo "Run Cypress tests"
-          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --spec ./swt2-bsa-frontend/bogenliga/cypress/e2e/bsapp/bsapp-e2e-default.cy.js --reporter junit --reporter-options "mochaFile=./results.xml"
+          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --spec ./swt2-bsa-frontend/bogenliga/cypress/e2e/bsapp/bsapp-e2e-shortcutbutton.cy.js --reporter junit --reporter-options "mochaFile=results.xml"
 
           ls
           
@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cypress-results
-          path: ./results.xml
+          path: ./swt2-bsa-frontend/bogenliga/results.xml
           
       - name: Tests completed
         if: success()
