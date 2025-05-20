@@ -3,6 +3,7 @@ package de.bogenliga.application.business.passe.impl.business;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,18 +50,29 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
 
     private PasseComponentImpl underTest;
 
-
-
-
     private BasicComponentTest<PasseComponentImpl, PasseDO> basicComponentTest;
     private BasicTest<PasseBE, PasseDO> basicTest;
-
 
     @Before
     public void testSetup() {
         expectedBE = getPasseBE();
         underTest = new PasseComponentImpl(passeDAO, ligapasseDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
+
+        Map<String, Object> valuesToMethodNames = getValuesToMethodMap();
+        valuesToMethodNames.put(
+                "getDsbMitgliedId",
+                expectedBE.getPasseDsbMitgliedId()
+        );
+        valuesToMethodNames.put(
+                "getLfdnr",
+                expectedBE.getPasseLfdnr()
+        );
+        valuesToMethodNames.put(
+                "getMannschaftId",
+                expectedBE.getPasseMannschaftId()
+        );
+
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }
 

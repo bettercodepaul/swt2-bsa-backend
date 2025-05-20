@@ -8,6 +8,7 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
  * Contains the values of the Passe business entity.
  *
  * @author Kay Scheerer
+ * @author Marty Lauterbach
  */
 public class PasseDO extends CommonDataObject {
     private static final long serialVersionUID = 4713470931564147295L;
@@ -210,6 +211,23 @@ public class PasseDO extends CommonDataObject {
         this.passeDsbMitgliedId = passeDsbMitgliedId;
     }
 
+    public Long getDsbMitgliedId() {
+        return getPasseDsbMitgliedId();
+    }
+
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        setPasseDsbMitgliedId(dsbMitgliedId);
+    }
+
+    /** alias for getPasseLfdnr(), to satisfy BE↔DO symmetry in our tests */
+    public Long getLfdnr() {
+        return getPasseLfdnr();
+    }
+
+    /** Alias for getPasseMannschaftId(), to mirror PasseBE and satisfy our BasicTest. */
+    public Long getMannschaftId() {
+        return getPasseMannschaftId();
+    }
 
     public Long getId() {
         return id;

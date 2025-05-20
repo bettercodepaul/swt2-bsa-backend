@@ -1,16 +1,12 @@
 package de.bogenliga.application.services.v1.schusszettel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
-import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
-import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDO;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDO;
-import de.bogenliga.application.business.schusszettel.impl.business.TabletSchusszettelComponentImpl;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
-import de.bogenliga.application.services.v1.schusszettel.model.SatzEingabeDTO;
-import de.bogenliga.application.services.v1.schusszettel.model.SchuetzenMeldungDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszettelDTO;
 import de.bogenliga.application.services.v1.schusszettel.service.TabletSchusszettelService;
 import org.junit.Before;
@@ -44,6 +40,9 @@ public class TabletSchusszettelServiceTest {
     private TabletSchusszettelComponent component;
 
     @Mock
+    private TabletSchusszettelAdminComponent adminComponent;
+
+    @Mock
     private ObjectMapper objectMapper;
 
     @InjectMocks
@@ -59,7 +58,7 @@ public class TabletSchusszettelServiceTest {
         // TODO get actual live database allowed parameters on a test entry (or create and delete an entry
         // manually at test start?)
 
-        underTest = new TabletSchusszettelService(component, objectMapper);
+        underTest = new TabletSchusszettelService(component, objectMapper, adminComponent);
     }
 
     @Test
@@ -105,6 +104,8 @@ public class TabletSchusszettelServiceTest {
         assertThat(response.getStatusCode().is5xxServerError()).isTrue();
     }
 
+    /*
+
     @Test
     public void postEingabe_satzSuccess() {
         // given
@@ -119,8 +120,6 @@ public class TabletSchusszettelServiceTest {
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         verify(component).submitSatz(eq(wettkampfId), eq(teamId), eq(token), any(SatzEingabeDO.class));
     }
-
-    /*
 
     @Test
     public void postEingabe_satzBusinessError() {

@@ -16,6 +16,7 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDO;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
+import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzenSatzDO;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszettelDO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
@@ -64,6 +65,8 @@ public class TabletSchusszettelComponentImplTest {
     private VereinComponent vereinComponent;
 
     private TabletSchusszettelComponentImpl underTest;
+    private TabletSchusszettelAdminComponentImpl underTestAdmin;
+
     private List<PasseDO> inMemoryPasses;
 
     // Used for tracking sessions in tests that need to access them
@@ -75,6 +78,9 @@ public class TabletSchusszettelComponentImplTest {
         underTest = new TabletSchusszettelComponentImpl(
                 sessionDAO, passeComponent, matchComponent, mmComponent,
                 mitgliedComponent, mannschaftComponent, vereinComponent);
+
+        underTestAdmin = new TabletSchusszettelAdminComponentImpl(sessionDAO, matchComponent,
+                mannschaftComponent, vereinComponent);
 
         inMemoryPasses = new ArrayList<>();
         when(passeComponent.findByMatchId(anyLong())).thenAnswer(invocation -> {
@@ -210,7 +216,7 @@ public class TabletSchusszettelComponentImplTest {
         matches.add(match2);
         when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
         when(matchComponent.findById(anyLong())).thenReturn(match1);
-        underTest.initializeForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.initializeForWettkampf(WETTKAMPF_ID);
         verify(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
         verify(sessionDAO, times(2)).createSession(any(TabletSchusszettelEntity.class), eq(-1L));
     }
@@ -218,19 +224,19 @@ public class TabletSchusszettelComponentImplTest {
     @Test(expected = BusinessException.class)
     public void testInitializeForWettkampf_NoMatches() {
         when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.emptyList());
-        underTest.initializeForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.initializeForWettkampf(WETTKAMPF_ID);
     }
 
     @Test
     public void testDeleteForWettkampf() {
-        underTest.deleteForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.deleteForWettkampf(WETTKAMPF_ID);
         verify(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
     }
 
     @Test
     public void testExistsForWettkampf() {
         when(sessionDAO.existsByWettkampfId(WETTKAMPF_ID)).thenReturn(true);
-        boolean result = underTest.existsForWettkampf(WETTKAMPF_ID);
+        boolean result = underTestAdmin.existsForWettkampf(WETTKAMPF_ID);
         Assertions.assertThat(result).isTrue();
         verify(sessionDAO).existsByWettkampfId(WETTKAMPF_ID);
     }
@@ -242,14 +248,14 @@ public class TabletSchusszettelComponentImplTest {
         session.setTeamId(TEAM1_ID);
         session.setToken(VALID_TOKEN);
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenReturn(Optional.of(session));
-        underTest.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+        underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
         verify(sessionDAO).setToken(eq(WETTKAMPF_ID), eq(TEAM1_ID), anyString(), eq(-1L));
     }
 
     @Test(expected = BusinessException.class)
     public void testReTokenize_InvalidSession() {
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenReturn(Optional.empty());
-        underTest.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+        underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
     }
 
     @Test
@@ -365,7 +371,7 @@ public class TabletSchusszettelComponentImplTest {
         }).when(sessionDAO).updateStatus(any(), anyLong());
 
         // initialize and register shooters
-        underTest.initializeForWettkampf(uniqueWettkampfId);
+        underTestAdmin.initializeForWettkampf(uniqueWettkampfId);
 
         List<Long> team1Shooters = List.of(101L, 102L, 103L);
         SchuetzenMeldungDO meldung = new SchuetzenMeldungDO();
@@ -421,7 +427,7 @@ public class TabletSchusszettelComponentImplTest {
             return null;
         }).when(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), anyLong());
 
-        underTest.initializeForWettkampf(uniqueWettkampfId);
+        underTestAdmin.initializeForWettkampf(uniqueWettkampfId);
         verify(sessionDAO).deleteByWettkampfId(uniqueWettkampfId);
         verify(sessionDAO, times(2)).createSession(any(TabletSchusszettelEntity.class), eq(-1L));
         TabletSchusszettelDO team1Status = underTest.getStatus(uniqueWettkampfId, team1Id, VALID_TOKEN);
@@ -578,31 +584,31 @@ public class TabletSchusszettelComponentImplTest {
         session.setCurrentMatchId(9999L);
         when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.singletonList(new MatchDO()));
         when(matchComponent.findById(9999L)).thenReturn(new MatchDO());
-        underTest.initializeForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.initializeForWettkampf(WETTKAMPF_ID);
     }
 
     @Test(expected = TechnicalException.class)
     public void testInitializeForWettkampf_TechnicalException() {
         when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenThrow(new RuntimeException("DB error"));
-        underTest.initializeForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.initializeForWettkampf(WETTKAMPF_ID);
     }
 
     @Test(expected = TechnicalException.class)
     public void testDeleteForWettkampf_TechnicalException() {
         doThrow(new RuntimeException("DB error")).when(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
-        underTest.deleteForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.deleteForWettkampf(WETTKAMPF_ID);
     }
 
     @Test(expected = TechnicalException.class)
     public void testExistsForWettkampf_TechnicalException() {
         when(sessionDAO.existsByWettkampfId(WETTKAMPF_ID)).thenThrow(new RuntimeException("DB error"));
-        underTest.existsForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.existsForWettkampf(WETTKAMPF_ID);
     }
 
     @Test(expected = TechnicalException.class)
     public void testReTokenize_TechnicalException() {
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenThrow(new RuntimeException("DB error"));
-        underTest.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+        underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
     }
 
     @Test(expected = BusinessException.class)
@@ -640,28 +646,30 @@ public class TabletSchusszettelComponentImplTest {
     @Test
     public void testDeleteForWettkampf_Success() {
         // Should call DAO delete
-        underTest.deleteForWettkampf(WETTKAMPF_ID);
+        underTestAdmin.deleteForWettkampf(WETTKAMPF_ID);
         verify(sessionDAO, times(1)).deleteByWettkampfId(WETTKAMPF_ID);
     }
 
     @Test
     public void testExistsForWettkampf_True() {
         when(sessionDAO.existsByWettkampfId(WETTKAMPF_ID)).thenReturn(true);
-        Assertions.assertThat(underTest.existsForWettkampf(WETTKAMPF_ID)).isTrue();
+        Assertions.assertThat(underTestAdmin.existsForWettkampf(WETTKAMPF_ID)).isTrue();
         verify(sessionDAO, times(1)).existsByWettkampfId(WETTKAMPF_ID);
     }
 
     @Test
     public void testExistsForWettkampf_False() {
         when(sessionDAO.existsByWettkampfId(WETTKAMPF_ID)).thenReturn(false);
-        Assertions.assertThat(underTest.existsForWettkampf(WETTKAMPF_ID)).isFalse();
+        Assertions.assertThat(underTestAdmin.existsForWettkampf(WETTKAMPF_ID)).isFalse();
         verify(sessionDAO, times(1)).existsByWettkampfId(WETTKAMPF_ID);
     }
 
     @Test
     public void testGenerateSchusszettelSessions_Empty() {
         when(sessionDAO.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.emptyList());
-        Assertions.assertThat(underTest.generateSchusszettelSessions(WETTKAMPF_ID)).isNull();
+
+        TabletSessionInfoDO info = underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+        Assertions.assertThat(info.getTabletSessionSingDOs()).isEmpty();
     }
 
     @Test
@@ -680,7 +688,7 @@ public class TabletSchusszettelComponentImplTest {
 
         // act & assert: simply calls the method — if it throws, the test will fail
         try {
-            underTest.generateSchusszettelSessions(WETTKAMPF_ID);
+            underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
         } catch (Exception e) {
             fail("generateSchusszettelSessions should not have thrown, but did: " + e.getMessage());
         }
@@ -693,14 +701,14 @@ public class TabletSchusszettelComponentImplTest {
         session.setTeamId(TEAM1_ID);
         session.setToken("oldtoken");
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenReturn(Optional.of(session));
-        underTest.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+        underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
         verify(sessionDAO, times(1)).setToken(eq(WETTKAMPF_ID), eq(TEAM1_ID), anyString(), eq(-1L));
     }
 
     @Test(expected = BusinessException.class)
     public void testReTokenize_NoSession() {
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenReturn(Optional.empty());
-        underTest.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+        underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
     }
 
     /**
