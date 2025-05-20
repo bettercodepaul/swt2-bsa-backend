@@ -22,8 +22,6 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,8 +69,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     private final DsbMitgliedComponent        mitgliedComponent;
     private final DsbMannschaftComponent      mannschaftComponent;
     private final VereinComponent             vereinComponent;
-
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Autowired
     public TabletSchusszettelComponentImpl(
@@ -367,166 +363,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 sessionDAO.updateStatus(oppSession, -1L);
             }
         }
-    }
-
-
-    /**
-     * Erzeuge Sessions für alle Teams des Wettkampfs
-     * @author Marty Lauterbach
-     */
-    @Override
-    public void initializeForWettkampf(long wettkampfId) {
-        try {
-            // 1) Lösche alte Sessions
-            sessionDAO.deleteByWettkampfId(wettkampfId);
-
-            // 2) Lade alle Matches
-            List<MatchDO> allMatches = matchComponent.findByWettkampfId(wettkampfId);
-            if (allMatches.isEmpty()) {
-                throw new BusinessException(
-                        ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                        "No matches found for wettkampf " + wettkampfId);
-            }
-
-            // Wenn irgendein Match keine MannschaftId hat, werfen wir eine BusinessException
-            for (MatchDO m : allMatches) {
-                if (m.getMannschaftId() == null) {
-                    throw new BusinessException(
-                            ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                            "Invalid match data (missing team) for wettkampf " + wettkampfId);
-                }
-            }
-
-            // 3) Einmalige Team-IDs extrahieren
-            Set<Long> teamIds = allMatches.stream()
-                    .map(MatchDO::getMannschaftId)
-                    .collect(Collectors.toSet());
-
-            // 4) Für jedes Team die erste Begegnung anlegen
-            for (Long teamId : teamIds) {
-                List<MatchDO> teamMatches = allMatches.stream()
-                        .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
-                        .sorted(Comparator.comparingLong(MatchDO::getNr))
-                        .toList();
-
-                if (teamMatches.isEmpty()) {
-                    throw new BusinessException(
-                            ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                            "No matches for team " + teamId);
-                }
-
-                MatchDO firstMatch = teamMatches.get(0);
-
-                long opponentId = findOpponentTeamId(firstMatch, teamId);
-
-                TabletSchusszettelEntity session = new TabletSchusszettelEntity();
-
-                session.setWettkampfId(wettkampfId);
-                session.setTeamId(teamId);
-                session.setCurrentMatchId(firstMatch.getId());
-                session.setCurrentMatchNumber(Math.toIntExact(firstMatch.getNr()));
-                session.setCurrentPasseNumber(1);
-                session.setStatus(STATUS_SCHUETZENMELDUNG);
-                session.setGegnerTeamId(opponentId);
-
-                session.setToken(generateUrlSafeToken());
-
-                sessionDAO.createSession(session, -1L);
-            }
-
-        } catch (BusinessException be) {
-            // Test‐fälle, die ausdrücklich eine BusinessException erwarten, greifen hier
-            throw be;
-        } catch (Exception e) {
-            // Alle anderen Fehler werden als TechnicalException weitergereicht
-            throw new TechnicalException(
-                    ErrorCode.INTERNAL_ERROR,
-                    "initializeForWettkampf failed for wettkampf "
-                            + wettkampfId + ": " + e.getMessage());
-        }
-    }
-
-    /**
-     * 16-byte URL-safe token, no padding
-     * @author Marty Lauterbach
-     */
-    private String generateUrlSafeToken() {
-        byte[] buf = new byte[16];
-        SECURE_RANDOM.nextBytes(buf);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
-    }
-
-    @Override
-    public void deleteForWettkampf(long wettkampfId) {
-        try {
-            sessionDAO.deleteByWettkampfId(wettkampfId);
-        } catch (BusinessException be) {
-            // let business errors bubble
-            throw be;
-        } catch (Exception e) {
-            throw new TechnicalException(
-                    ErrorCode.INTERNAL_ERROR,
-                    "deleteForWettkampf failed for wettkampf " + wettkampfId + ": " + e.getMessage());
-        }
-    }
-
-    @Override
-    public boolean existsForWettkampf(long wettkampfId) {
-        try {
-            return sessionDAO.existsByWettkampfId(wettkampfId);
-        } catch (BusinessException be) {
-            throw be;
-        } catch (Exception e) {
-            throw new TechnicalException(
-                    ErrorCode.INTERNAL_ERROR,
-                    "existsForWettkampf failed for wettkampf " + wettkampfId + ": " + e.getMessage());
-        }
-    }
-
-    /**
-     * Re-tokenizes the schusszettel for a given wettkampf and team.
-     *
-     * @param wettkampfId : Wettkampf ID
-     * @param teamId : Team ID
-     */
-    @Override
-    public void reTokenize(long wettkampfId, long teamId) {
-        try {
-            // 1) Lookup session, return NOT AVALIABLE if none
-            TabletSchusszettelEntity session = sessionDAO
-                    .findByWettkampfUndTeam(wettkampfId, teamId)
-                    .orElseThrow(() -> new BusinessException(
-                            ErrorCode.NO_PERMISSION_ERROR, "Invalid"));
-            // 2) Generate new token
-            String newToken = generateUrlSafeToken();
-            session.setToken(newToken);
-            // 3) Update session with new token
-            sessionDAO.setToken(wettkampfId, teamId, newToken, -1L);
-
-        } catch (BusinessException be) {
-            throw be;
-        } catch (Exception e) {
-            throw new TechnicalException(
-                    ErrorCode.INTERNAL_ERROR,
-                    "reTokenize failed for wettkampf " + wettkampfId
-                            + ", team " + teamId + ": " + e.getMessage());
-        }
-    }
-
-    /**
-     * Generates a TabletSessionInfoDO for a given wettkampfId. - WettkampfId Per Team: - TeamId - TeamName - Status -
-     * Token
-     *
-     * @param wettkampfId : Wettkampf ID
-     */
-    @Override
-    public TabletSessionInfoDO generateSchusszettelSessions(long wettkampfId) {
-
-        // 1) Lookup session, return NOT AVALIABLE if none
-        List<TabletSchusszettelEntity> sessions = sessionDAO.findByWettkampfId(wettkampfId);
-
-
-        return null;
     }
 
     //================================================================================

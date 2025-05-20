@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.schusszettel.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
 import de.bogenliga.application.business.schusszettel.api.types.SchuetzenMeldungDO;
@@ -33,10 +34,12 @@ import java.util.Map;
  * @author Youmna Samouneh
  */
 @RestController
-@RequestMapping("/api/tablet-schusszettel")
+@RequestMapping("/v1/tablet-schusszettel")
 public class TabletSchusszettelService {
 
     private final TabletSchusszettelComponent component;
+    private final TabletSchusszettelAdminComponent adminComponent;
+
     private final ObjectMapper objectMapper;
 
     private enum EingabeTyp {
@@ -46,9 +49,11 @@ public class TabletSchusszettelService {
 
     @Autowired
     public TabletSchusszettelService(TabletSchusszettelComponent component,
-                                     ObjectMapper objectMapper) {
+                                     ObjectMapper objectMapper,
+                                     TabletSchusszettelAdminComponent adminComponent) {
         this.component = component;
         this.objectMapper = objectMapper;
+        this.adminComponent = adminComponent;
     }
 
     /**
@@ -169,7 +174,7 @@ public class TabletSchusszettelService {
             @RequestParam Long wettkampfid,
             @RequestParam Long teamid) {
         try {
-            component.reTokenize(wettkampfid, teamid);
+            adminComponent.reTokenize(wettkampfid, teamid);
             return ResponseEntity.ok(Map.of("message", "Schusszettel erfolgreich neu tokenisiert"));
 
         } catch (BusinessException e) {
@@ -208,7 +213,7 @@ public class TabletSchusszettelService {
     @GetMapping("/sessions")
     public ResponseEntity<?> getTabletSessionInfo(@RequestParam Long wettkampfid) {
         try {
-            TabletSessionInfoDO businessDO = component.generateSchusszettelSessions(wettkampfid);
+            TabletSessionInfoDO businessDO = adminComponent.generateSchusszettelSessions(wettkampfid);
             TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
             return ResponseEntity.ok(dto);
 
