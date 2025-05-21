@@ -2,7 +2,11 @@ package de.bogenliga.application.services.v1.schusszettel.mapper;
 
 import de.bogenliga.application.business.schusszettel.api.types.*;
 import de.bogenliga.application.business.schusszettel.api.types.inside.*;
+import de.bogenliga.application.services.v1.schusszettel.mapper.inside.SchuetzeMatchPunkteMapper;
+import de.bogenliga.application.services.v1.schusszettel.mapper.inside.SchuetzenSatzMapper;
+import de.bogenliga.application.services.v1.schusszettel.mapper.inside.TabletSatzErgebnisMapper;
 import de.bogenliga.application.services.v1.schusszettel.mapper.inside.TabletSessionSingMapper;
+import de.bogenliga.application.services.v1.schusszettel.mapper.inside.TeamInfoMapper;
 import de.bogenliga.application.services.v1.schusszettel.mapper.inside.TeamMatchInfoMapper;
 import de.bogenliga.application.services.v1.schusszettel.mapper.inside.VerfuegbarerSchuetzeMapper;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
@@ -647,6 +651,134 @@ public class TabletSmallMapperTest {
         assertNull(TabletSchusszettelListenMapper.toTeamMatchInfoDTOList(null));
         assertNull(TabletSchusszettelListenMapper.toVerfuegbarerSchuetzeDTOList(null));
         assertNull(TabletSchusszettelListenMapper.toSchuetzeMatchPunkteDTOList(null));
+    }
+
+    // =============================================================================================
+    // Additional inside mapper tests
+    // =============================================================================================
+
+    @Test
+    public void testSchuetzeMatchPunkteMapper() {
+        // Arrange - single object mapping
+        SchuetzeMatchPunkteDO doObj = new SchuetzeMatchPunkteDO(1L, 10);
+
+        // Act & Assert - toDTO
+        SchuetzeMatchPunkteDTO dto = SchuetzeMatchPunkteMapper.toDTO(doObj);
+        assertEquals(Long.valueOf(1L), dto.getSchuetzenId());
+        assertEquals(Integer.valueOf(10), dto.getPunkteBisher());
+
+        // Act & Assert - toDO
+        SchuetzeMatchPunkteDO mappedDO = SchuetzeMatchPunkteMapper.toDO(dto);
+        assertEquals(Long.valueOf(1L), mappedDO.getSchuetzenId());
+        assertEquals(Integer.valueOf(10), mappedDO.getPunkteBisher());
+
+        // Arrange - list mapping
+        List<SchuetzeMatchPunkteDO> doList = Arrays.asList(
+                new SchuetzeMatchPunkteDO(1L, 10),
+                new SchuetzeMatchPunkteDO(2L, 8)
+        );
+
+        // Act & Assert - toDTOList
+        List<SchuetzeMatchPunkteDTO> dtoList = SchuetzeMatchPunkteMapper.toDTOList(doList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(dtoList.size()));
+        assertEquals(Long.valueOf(1L), dtoList.get(0).getSchuetzenId());
+        assertEquals(Integer.valueOf(8), dtoList.get(1).getPunkteBisher());
+
+        // Act & Assert - toDOList
+        List<SchuetzeMatchPunkteDO> mappedDOList = SchuetzeMatchPunkteMapper.toDOList(dtoList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(mappedDOList.size()));
+        assertEquals(Long.valueOf(2L), mappedDOList.get(1).getSchuetzenId());
+        assertEquals(Integer.valueOf(8), mappedDOList.get(1).getPunkteBisher());
+    }
+
+    @Test
+    public void testSchuetzenSatzMapper() {
+        // Arrange - single object mapping
+        SchuetzenSatzDO doObj = new SchuetzenSatzDO(1L, 10, 9, 8);
+
+        // Act & Assert - toDTO
+        SchuetzenSatzDTO dto = SchuetzenSatzMapper.toDTO(doObj);
+        assertEquals(Long.valueOf(1L), dto.getSchuetzenId());
+        assertEquals(Integer.valueOf(10), dto.getSchuss1());
+        assertEquals(Integer.valueOf(9), dto.getSchuss2());
+        assertEquals(Integer.valueOf(8), dto.getSchuss3());
+
+        // Act & Assert - toDO
+        SchuetzenSatzDO mappedDO = SchuetzenSatzMapper.toDO(dto);
+        assertEquals(Long.valueOf(1L), mappedDO.getSchuetzenId());
+        assertEquals(Integer.valueOf(10), mappedDO.getSchuss1());
+        assertEquals(Integer.valueOf(9), mappedDO.getSchuss2());
+        assertEquals(Integer.valueOf(8), mappedDO.getSchuss3());
+
+        // Arrange - list mapping
+        List<SchuetzenSatzDO> doList = Arrays.asList(
+                new SchuetzenSatzDO(1L, 10, 9, 8),
+                new SchuetzenSatzDO(2L, 9, 8, 7)
+        );
+
+        // Act & Assert - toDTOList
+        List<SchuetzenSatzDTO> dtoList = SchuetzenSatzMapper.toDTOList(doList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(dtoList.size()));
+        assertEquals(Long.valueOf(1L), dtoList.get(0).getSchuetzenId());
+        assertEquals(Integer.valueOf(9), dtoList.get(1).getSchuss1());
+
+        // Act & Assert - toDOList
+        List<SchuetzenSatzDO> mappedDOList = SchuetzenSatzMapper.toDOList(dtoList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(mappedDOList.size()));
+        assertEquals(Long.valueOf(2L), mappedDOList.get(1).getSchuetzenId());
+        assertEquals(Integer.valueOf(7), mappedDOList.get(1).getSchuss3());
+    }
+
+    @Test
+    public void testTabletSatzErgebnisMapper() {
+        // Arrange - single object mapping
+        SatzErgebnisDO doObj = new SatzErgebnisDO(1, 10, 8);
+
+        // Act & Assert - toDTO
+        SatzErgebnisDTO dto = TabletSatzErgebnisMapper.toDTO(doObj);
+        assertEquals(Integer.valueOf(1), dto.getSatzNr());
+        assertEquals(Integer.valueOf(10), dto.getTeam1Punkte());
+        assertEquals(Integer.valueOf(8), dto.getTeam2Punkte());
+
+        // Act & Assert - toDO
+        SatzErgebnisDO mappedDO = TabletSatzErgebnisMapper.toDO(dto);
+        assertEquals(Integer.valueOf(1), mappedDO.getSatzNr());
+        assertEquals(Integer.valueOf(10), mappedDO.getTeam1Punkte());
+        assertEquals(Integer.valueOf(8), mappedDO.getTeam2Punkte());
+
+        // Arrange - list mapping
+        List<SatzErgebnisDO> doList = Arrays.asList(
+                new SatzErgebnisDO(1, 10, 8),
+                new SatzErgebnisDO(2, 9, 9)
+        );
+
+        // Act & Assert - toDTOList
+        List<SatzErgebnisDTO> dtoList = TabletSatzErgebnisMapper.toDTOList(doList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(dtoList.size()));
+        assertEquals(Integer.valueOf(1), dtoList.get(0).getSatzNr());
+        assertEquals(Integer.valueOf(9), dtoList.get(1).getTeam1Punkte());
+
+        // Act & Assert - toDOList
+        List<SatzErgebnisDO> mappedDOList = TabletSatzErgebnisMapper.toDOList(dtoList);
+        assertEquals(Integer.valueOf(2), Integer.valueOf(mappedDOList.size()));
+        assertEquals(Integer.valueOf(2), mappedDOList.get(1).getSatzNr());
+        assertEquals(Integer.valueOf(9), mappedDOList.get(1).getTeam2Punkte());
+    }
+
+    @Test
+    public void testTeamInfoMapper() {
+        // Arrange
+        TeamInfoDO doObj = new TeamInfoDO(1L, "Team A");
+
+        // Act & Assert - toDTO
+        TeamInfoDTO dto = TeamInfoMapper.toDTO(doObj);
+        assertEquals(Long.valueOf(1L), dto.getTeamId());
+        assertEquals("Team A", dto.getTeamName());
+
+        // Act & Assert - toDO
+        TeamInfoDO mappedDO = TeamInfoMapper.toDO(dto);
+        assertEquals(Long.valueOf(1L), mappedDO.getTeamId());
+        assertEquals("Team A", mappedDO.getTeamName());
     }
 
     // =============================================================================================
