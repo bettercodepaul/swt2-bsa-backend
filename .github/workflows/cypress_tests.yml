@@ -21,20 +21,24 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-           fetch-depth: 0   
-      
-      - name: Build dependencies
-        working-directory: ./bogenliga
-        run: mvn clean install  # Сборка зависимостей
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
            distribution: 'zulu'
            java-version: '17'
+    
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+           ref: develop
+           fetch-depth: 0  
+
+      - name: Clone frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: bettercodepaul/swt2-bsa-frontend
+          ref: develop
+          path: swt2-bsa-frontend
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -49,16 +53,6 @@ jobs:
           java -version
           export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED"
           mvn clean install -T 1C
-
-      - name: Start backend
-        working-directory: ./bogenliga/bogenliga-application
-        run: |
-          mvn spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" &
-      - name: Clone frontend repository
-        uses: actions/checkout@v2
-        with:
-          repository: aminaacid/bogenliga_bbf  
-          token: ${{ secrets.GITHUB_TOKEN }}   
           
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -66,19 +60,39 @@ jobs:
           node-version: '16'  
           
       - name: Install frontend dependencies
-        working-directory: ./bogenliga
+        working-directory: ./swt2-bsa-frontend/bogenliga
         run: |
           npm install
 
       - name: Build frontend
-        working-directory: ./bogenliga
+        working-directory: ./swt2-bsa-frontend/bogenliga
         run: |
           npm run build  
 
-      - name: Start frontend
-        working-directory: ./bogenliga
+      - name: Start backend, frontend and run Cypress tests
+        working-directory: .
         run: |
-          npm start &  
-      - name: Build completion
+          echo "Start backend"
+          mvn -f ./bogenliga/bogenliga-application/pom.xml spring-boot:run -Dspring-boot.run.jvmArguments="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED" > backend.log 2>&1 &
+
+          echo "Start frontend"
+          nohup npm --prefix ./swt2-bsa-frontend/bogenliga start  &
+
+          echo "Wait for both to be ready"
+          npx wait-on http://localhost:4200
+
+          echo "Run Cypress tests"
+          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --reporter mochawesome  --reporter-options reportDir=cypress-results,overwrite=false,html=true,json=true
+
+          ls
+          
+      - name: Upload Cypress test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-results
+          path: ./swt2-bsa-frontend/bogenliga/cypress-results
+          
+      - name: Tests completed
         if: success()
         run: echo "Build and tests completed successfully!"
