@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.impl.dao;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +40,21 @@ public class PasseBasicDAOTest extends PasseBaseDAOTest{
     @Before
     public void testSetup() {
         expectedBE = getPasseBE();
+
+        Map<String, Object> valuesToMethodNames = getValuesToMethodMap();
+        valuesToMethodNames.put(
+                "getDsbMitgliedId",
+                expectedBE.getPasseDsbMitgliedId()
+        );
+        valuesToMethodNames.put(
+                "getLfdnr",
+                expectedBE.getPasseLfdnr()
+        );
+        valuesToMethodNames.put(
+                "getMannschaftId",
+                expectedBE.getPasseMannschaftId()
+        );
+
         basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
     }
 
