@@ -236,7 +236,32 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return columnsToFieldsMapExtended;
     }
 
+    /**
+     * Prüft, ob ein bestimmtes Mitglied Teil eines bestimmten Teams ist.
+     * Wird für die Schützenvalidierung im Tablet-Schusszettel benötigt.
+     *
+     * @param teamId     ID des Teams
+     * @param memberId   ID des Mitglieds
+     * @return true, wenn das Mitglied dem Team zugeordnet ist, sonst false
+     */
+    public boolean isMemberOfTeam(long teamId, final long memberId) {
+        try {
+            MannschaftsmitgliedExtendedBE be = findByMemberAndTeamId(teamId, memberId);
+            return be != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    /**
+     * Gibt alle Schützen eines bestimmten Teams zurück.
+     *
+     * @param teamId ID des Teams
+     * @return Liste aller Teammitglieder
+     */
+    public List<MannschaftsmitgliedExtendedBE> findAllByMannschaftId(final long teamId) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_TEAM_ID, teamId);
+    }
 
     /**
      * Return all mannschaftsmitglied entries

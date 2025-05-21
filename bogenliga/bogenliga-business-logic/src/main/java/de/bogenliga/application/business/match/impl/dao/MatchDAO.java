@@ -14,7 +14,8 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * @author Dominik Halle, HSRT MKI SS19 - SWT2
+ * Data Access Object for managing match entries.
+ * @author Dominik Halle, HSRT MKI SS19 - SWT2, Marty Lauterbach
  */
 @Repository
 public class MatchDAO implements DataAccessObject {
@@ -277,4 +278,22 @@ public class MatchDAO implements DataAccessObject {
         basicDao.deleteEntity(MATCH, matchBE, MATCH_BE_ID);
     }
 
+    /**
+     * Return all match entries from a team in a given Wettkampf.
+     * Used by tablet logic to determine current or next match.
+     *
+     * @param wettkampfId the Wettkampf ID
+     * @param mannschaftId the team ID
+     * @return list of all match entries for that team in the given Wettkampf
+     */
+    public List<MatchBE> findByWettkampfIdAndTeamId(Long wettkampfId, Long mannschaftId) {
+        final String query = new QueryBuilder()
+                .selectAll()
+                .from(TABLE)
+                .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
+                .andEquals(MATCH_TABLE_MANNSCHAFT_ID)
+                .compose().toString();
+
+        return basicDao.selectEntityList(MATCH, query, wettkampfId, mannschaftId);
+    }
 }
