@@ -70,13 +70,4 @@ public class TabletSchusszettelDTOMapper {
                 })
                 .toList();
     }
-
-    /*
-     * TODOs:
-     * - Eigenes Team und Gegner-Team laden (z.B. über TeamDAO)
-     * - Eingesetzte Schützen laden (z. B. über MitgliedZuordnungDAO)
-     * - Satzdaten und Match-Ergebnis aufbereiten (z. B. über PasseDAO oder MatchDAO)
-     * - Verfügbare Schützen aus MannschaftsmitgliedDAO holen
-     * - Statuslogik klar kapseln und an Mapper übergeben
-     */
 }
