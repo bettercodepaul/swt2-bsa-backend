@@ -20,6 +20,8 @@ import de.bogenliga.application.services.v1.schusszettel.model.TabletSchusszette
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSessionInfoDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +39,10 @@ import java.util.Map;
 @RequestMapping("/v1/tablet-schusszettel")
 public class TabletSchusszettelService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelService.class);
+
     private final TabletSchusszettelComponent component;
     private final TabletSchusszettelAdminComponent adminComponent;
-
     private final ObjectMapper objectMapper;
 
     private enum EingabeTyp {
@@ -71,16 +74,19 @@ public class TabletSchusszettelService {
 
         } catch (BusinessException e) {
             // NO_PERMISSION_ERROR or other business errors
+            LOGGER.warn("Business exception in getSchusszettel: {}", e.getMessage());
             return ResponseEntity.status(403).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (TechnicalException e) {
+            LOGGER.error("Technical exception in getSchusszettel", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (Exception e) {
+            LOGGER.error("Unexpected error in getSchusszettel", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", "Ein unerwarteter Fehler ist aufgetreten"
             ));
@@ -141,18 +147,21 @@ public class TabletSchusszettelService {
 
         } catch (BusinessException e) {
             // Validierungsfehler → 400
+            LOGGER.warn("Business exception in postEingabe: {}", e.getMessage());
             return ResponseEntity.badRequest().body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (TechnicalException e) {
             // Interner Fehler → 500
+            LOGGER.error("Technical exception in postEingabe", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (Exception e) {
             // Unerwarteter Fehler → 500
+            LOGGER.error("Unexpected error in postEingabe", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", "Ein unerwarteter Fehler ist aufgetreten"
             ));
@@ -179,16 +188,19 @@ public class TabletSchusszettelService {
 
         } catch (BusinessException e) {
             // NO_PERMISSION_ERROR or other business errors
+            LOGGER.warn("Business exception in reTokenize: {}", e.getMessage());
             return ResponseEntity.status(403).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (TechnicalException e) {
+            LOGGER.error("Technical exception in reTokenize", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (Exception e) {
+            LOGGER.error("Unexpected error in reTokenize", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", "Ein unerwarteter Fehler ist aufgetreten"
             ));
@@ -213,22 +225,33 @@ public class TabletSchusszettelService {
     @GetMapping("/sessions")
     public ResponseEntity<?> getTabletSessionInfo(@RequestParam Long wettkampfid) {
         try {
+
+            // If no sessions exist yet, initialize them
+            if (!adminComponent.existsForWettkampf(wettkampfid)) {
+                LOGGER.info("No existing sessions for Wettkampf {}. Initializing...", wettkampfid);
+                adminComponent.initializeForWettkampf(wettkampfid);
+            }
+
+            // Fetch and map sessions
             TabletSessionInfoDO businessDO = adminComponent.generateSchusszettelSessions(wettkampfid);
             TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
             return ResponseEntity.ok(dto);
 
         } catch (BusinessException e) {
+            LOGGER.warn("Business exception in getTabletSessionInfo: {}", e.getMessage());
             // NO_PERMISSION_ERROR or other business errors
             return ResponseEntity.status(403).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (TechnicalException e) {
+            LOGGER.error("Technical exception in getTabletSessionInfo", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", e.getMessage()
             ));
 
         } catch (Exception e) {
+            LOGGER.error("Unexpected error in getTabletSessionInfo", e);
             return ResponseEntity.status(500).body(Map.of(
                     "error", "Ein unerwarteter Fehler ist aufgetreten"
             ));
