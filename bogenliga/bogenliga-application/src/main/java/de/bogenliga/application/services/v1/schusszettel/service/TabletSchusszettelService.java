@@ -221,40 +221,39 @@ public class TabletSchusszettelService {
      *      * - CurrentPasse
      *      * - Nächster Gegner (can be null)
      */
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    @RequiresOnePermissions(perm = {
+            UserPermission.CAN_MODIFY_WETTKAMPF,
+            UserPermission.CAN_MODIFY_MY_WETTKAMPF})
     @GetMapping("/sessions")
     public ResponseEntity<?> getTabletSessionInfo(@RequestParam Long wettkampfid) {
         try {
-
-            // If no sessions exist yet, initialize them
+            // 1) initialize (in case it does not exist yet)
             if (!adminComponent.existsForWettkampf(wettkampfid)) {
                 LOGGER.info("No existing sessions for Wettkampf {}. Initializing...", wettkampfid);
                 adminComponent.initializeForWettkampf(wettkampfid);
             }
 
-            // Fetch and map sessions
+            // 2) fetch business DO
             TabletSessionInfoDO businessDO = adminComponent.generateSchusszettelSessions(wettkampfid);
-            TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
+
+            // 3) map into a DTO
+            final TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
             return ResponseEntity.ok(dto);
 
         } catch (BusinessException e) {
             LOGGER.warn("Business exception in getTabletSessionInfo: {}", e.getMessage());
-            // NO_PERMISSION_ERROR or other business errors
-            return ResponseEntity.status(403).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
+            return ResponseEntity.status(403)
+                    .body(Map.of("error", e.getMessage()));
         } catch (TechnicalException e) {
             LOGGER.error("Technical exception in getTabletSessionInfo", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
+            return ResponseEntity.status(500)
+                    .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             LOGGER.error("Unexpected error in getTabletSessionInfo", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", "Ein unerwarteter Fehler ist aufgetreten"
-            ));
+            return ResponseEntity.status(500)
+                    .body(Map.of("error",
+                            "Ein unerwarteter Fehler ist aufgetreten"));
         }
     }
+
 }

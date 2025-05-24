@@ -19,7 +19,7 @@ public class TabletSchusszettelEntity extends CommonBusinessEntity {
     private Integer currentPasseNumber;
     private String status;
     private Long gegnerTeamId;
-    private Long lastUpdated;
+    private java.sql.Timestamp lastUpdated;
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
@@ -38,6 +38,8 @@ public class TabletSchusszettelEntity extends CommonBusinessEntity {
 
     public Long getCurrentMatchNumber() {return Long.valueOf(currentMatchNr);}
     public void setCurrentMatchNumber(Integer currentMatchNr) { this.currentMatchNr = currentMatchNr; }
+    public Integer getCurrentMatchNr() {return this.currentMatchNr;}
+    public void setCurrentMatchNr(Integer currentMatchNr) {this.currentMatchNr = currentMatchNr;}
 
     public Integer getCurrentPasseNumber() { return currentPasseNumber; }
     public void setCurrentPasseNumber(Integer currentPasseNumber) { this.currentPasseNumber = currentPasseNumber; }
@@ -48,6 +50,11 @@ public class TabletSchusszettelEntity extends CommonBusinessEntity {
     public Long getGegnerTeamId() { return gegnerTeamId; }
     public void setGegnerTeamId(Long gegnerTeamId) { this.gegnerTeamId = gegnerTeamId; }
 
-    public void setLastUpdatedNow() {lastUpdated = System.currentTimeMillis();}
-    public Long getLastUpdated() {return lastUpdated;}
+    /** set to now, for your `last_updated TIMESTAMP` column */
+    public void setLastUpdatedNow() {
+    this.lastUpdated = new java.sql.Timestamp(System.currentTimeMillis());
+    }
+    public java.sql.Timestamp getLastUpdated() {
+        return lastUpdated;
+    }
 }

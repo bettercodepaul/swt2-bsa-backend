@@ -1,5 +1,9 @@
 package de.bogenliga.application.services.v1.schusszettel.mapper;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TabletSessionSingDO;
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSessionInfoDTO;
@@ -7,39 +11,28 @@ import de.bogenliga.application.services.v1.schusszettel.model.inside.TabletSess
 
 /**
  * Mapper to convert between TabletSessionInfoDO and TabletSessionInfoDTO
- *
- * @author Marty Lauterbach
  */
 public class TabletSessionInfoMapper {
 
-    /**
-     * Maps a TabletSessionInfoDO to a TabletSessionInfoDTO
-     *
-     * @param do_ the data object to convert
-     * @return the converted DTO
-     */
-    public static TabletSessionInfoDTO toDTO(TabletSessionInfoDO do_) {
+    /** convenience: full mapping to DTO */
+    public static TabletSessionInfoDTO toDTO(final TabletSessionInfoDO businessDO) {
         TabletSessionInfoDTO dto = new TabletSessionInfoDTO();
-        dto.setWettkampfId(do_.getWettkampfId());
-
-        TabletSessionSingDO[] singDOs = do_.getTabletSessionSingDOs();
-        TabletSessionSingDTO[] singDTOs = new TabletSessionSingDTO[singDOs.length];
-
-        for (int i = 0; i < singDOs.length; i++) {
-            singDTOs[i] = toSingDTO(singDOs[i]);
-        }
-
-        dto.setTabletSessionSingDTOs(singDTOs);
+        dto.setWettkampfId(businessDO.getWettkampfId());
+        dto.setTabletSessionSingDTOs(
+                toDTOList(businessDO)
+                        .toArray(new TabletSessionSingDTO[0])
+        );
         return dto;
     }
 
-    /**
-     * Maps a TabletSessionSingDO to a TabletSessionSingDTO
-     *
-     * @param singDO the data object to convert
-     * @return the converted DTO
-     */
-    private static TabletSessionSingDTO toSingDTO(TabletSessionSingDO singDO) {
+    /** map the array from DO → List<DTO> */
+    public static List<TabletSessionSingDTO> toDTOList(final TabletSessionInfoDO businessDO) {
+        return Arrays.stream(businessDO.getTabletSessionSingDOs())
+                .map(TabletSessionInfoMapper::toSingDTO)
+                .collect(Collectors.toList());
+    }
+
+    private static TabletSessionSingDTO toSingDTO(final TabletSessionSingDO singDO) {
         return new TabletSessionSingDTO(
                 singDO.getTeamId(),
                 singDO.getTeamName(),
@@ -50,34 +43,14 @@ public class TabletSessionInfoMapper {
         );
     }
 
-    /**
-     * Maps a TabletSessionInfoDTO to a TabletSessionInfoDO
-     *
-     * @param dto the DTO to convert
-     * @return the converted data object
-     */
-    public static TabletSessionInfoDO toDO(TabletSessionInfoDTO dto) {
+    public static TabletSessionInfoDO toDO(final TabletSessionInfoDTO dto) {
         TabletSessionInfoDO do_ = new TabletSessionInfoDO();
         do_.setWettkampfId(dto.getWettkampfId());
-
-        TabletSessionSingDTO[] singDTOs = dto.getTabletSessionSingDTOs();
-        TabletSessionSingDO[] singDOs = new TabletSessionSingDO[singDTOs.length];
-
-        for (int i = 0; i < singDTOs.length; i++) {
-            singDOs[i] = toSingDO(singDTOs[i]);
-        }
-
-        do_.setTabletSessionSingDOs(singDOs);
+        do_.setTabletSessionSingDOs(toDOs(dto));
         return do_;
     }
 
-    /**
-     * Maps a TabletSessionSingDTO to a TabletSessionSingDO
-     *
-     * @param singDTO the DTO to convert
-     * @return the converted data object
-     */
-    private static TabletSessionSingDO toSingDO(TabletSessionSingDTO singDTO) {
+    private static TabletSessionSingDO toSingDO(final TabletSessionSingDTO singDTO) {
         return new TabletSessionSingDO(
                 singDTO.getTeamId(),
                 singDTO.getTeamName(),
@@ -86,5 +59,23 @@ public class TabletSessionInfoMapper {
                 singDTO.getCurrentPasse(),
                 singDTO.getNaechsterGegner()
         );
+    }
+
+    /**
+     * array-based helper for DTO
+     */
+    public static TabletSessionSingDTO[] toDTOs(final TabletSessionInfoDO businessDO) {
+        return Arrays.stream(businessDO.getTabletSessionSingDOs())
+                .map(TabletSessionInfoMapper::toSingDTO)
+                .toArray(TabletSessionSingDTO[]::new);
+    }
+
+    /**
+     * array-based helper for DO
+     */
+    public static TabletSessionSingDO[] toDOs(final TabletSessionInfoDTO dto) {
+        return Arrays.stream(dto.getTabletSessionSingDTOs())
+                .map(TabletSessionInfoMapper::toSingDO)
+                .toArray(TabletSessionSingDO[]::new);
     }
 }

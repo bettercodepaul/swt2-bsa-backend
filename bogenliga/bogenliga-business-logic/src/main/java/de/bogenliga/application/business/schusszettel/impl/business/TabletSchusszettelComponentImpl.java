@@ -241,13 +241,13 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                         /* dsbMitgliedId: */ dsbId,                  // which shooter
                         /* pfeil1–6:      */ null, null, null, null, null, null
                 );
-                passeComponent.create(passe, /*userId*/ -1L);
+                passeComponent.create(passe, /*userId*/ 0L);
             }
         }
 
         // 5) Switch session into Satz-Eingabe mode
         session.setStatus(STATUS_SATZEINGABE);
-        sessionDAO.updateStatus(session, /*userId*/ -1L);
+        sessionDAO.updateStatus(session, /*userId*/ 0L);
     }
 
     /**
@@ -300,7 +300,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     if (ARROWS_PER_SHOOTER >= 2) passe.setPfeil2(satz.getSchuss2());
                     if (ARROWS_PER_SHOOTER >= 3) passe.setPfeil3(satz.getSchuss3());
                     // TODO PasseDO is missing pfeil4-6, even though the database entry has 6?
-                    passeComponent.update(passe, -1L);
+                    passeComponent.update(passe, 0L);
 
                 } else {
                     // create new PasseDO, filling exactly ARROWS_PER_SHOOTER slots
@@ -317,7 +317,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                             (ARROWS_PER_SHOOTER >= 3 ? satz.getSchuss3() : null),
                             null, null, null // TODO PASSEDO doesnt have pfeil4-6
                     );
-                    passeComponent.create(passe, -1L);
+                    passeComponent.create(passe, 0L);
                 }
             } catch (Exception e) {
                 throw new TechnicalException(
@@ -335,7 +335,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         if (!oppOpt.isPresent() || !STATUS_WARTE.equals(oppOpt.get().getStatus())) {
             // Opponent not yet done → go into WAIT
             session.setStatus(STATUS_WARTE);
-            sessionDAO.updateStatus(session, -1L);
+            sessionDAO.updateStatus(session, 0L);
 
         } else {
             // Both sides done with this end → recompute full history
@@ -355,12 +355,12 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 // match still on → advance both to next end
                 session.setCurrentPasseNumber(passeNr + 1);
                 session.setStatus(STATUS_SATZEINGABE);
-                sessionDAO.updateStatus(session, -1L);
+                sessionDAO.updateStatus(session, 0L);
 
                 TabletSchusszettelEntity oppSession = oppOpt.get();
                 oppSession.setCurrentPasseNumber(passeNr + 1);
                 oppSession.setStatus(STATUS_SATZEINGABE);
-                sessionDAO.updateStatus(oppSession, -1L);
+                sessionDAO.updateStatus(oppSession, 0L);
             }
         }
     }
@@ -497,7 +497,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 // Weiterer Satz -> SATZEINGABE
                 session.setCurrentPasseNumber(session.getCurrentPasseNumber() + 1);
                 session.setStatus(STATUS_SATZEINGABE);
-                sessionDAO.updateStatus(session, -1L);
+                sessionDAO.updateStatus(session, 0L);
                 out.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.SATZEINGABE);
                 handleSatzeingabe(session, out);
             }
@@ -705,6 +705,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             session.setStatus(STATUS_WETTKAMPF_ENDE);
         }
 
-        sessionDAO.updateStatus(session, -1L);
+        sessionDAO.updateStatus(session, 0L);
     }
 }
