@@ -8,11 +8,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -40,6 +44,8 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 @Service
 public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelAdminComponent {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelAdminComponentImpl.class);
+
     private static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -48,16 +54,22 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
+    private final PasseComponent passeComponent;
+    private final TabletSchusszettelSyncComponent syncComponent;
 
     @Autowired
     public TabletSchusszettelAdminComponentImpl(final TabletSchusszettelDAO sessionDAO,
                                                 final MatchComponent matchComponent,
                                                 final DsbMannschaftComponent mannschaftComponent,
-                                                final VereinComponent vereinComponent) {
+                                                final VereinComponent vereinComponent,
+                                                final PasseComponent passeComponent,
+                                                final TabletSchusszettelSyncComponent syncComponent) {
         this.sessionDAO        = sessionDAO;
         this.matchComponent    = matchComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent     = vereinComponent;
+        this.passeComponent      = passeComponent;
+        this.syncComponent      = syncComponent;
     }
 
     /**
@@ -180,52 +192,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     }
 
     /**
-     * Lists all tablet‐sessions for a competition, including team & opponent club names.
-     */
-    @Override
-    public TabletSessionInfoDO generateSchusszettelSessions(final long wettkampfId) {
-
-        // load all sessions
-        final List<TabletSchusszettelEntity> entities =
-                sessionDAO.findByWettkampfId(wettkampfId);
-
-        // map into DTOs
-        final TabletSessionSingDO[] singDOs = entities.stream()
-                .map(e -> {
-                    // lookup own team name
-                    final DsbMannschaftDO team = mannschaftComponent.findById(e.getTeamId());
-                    final VereinDO vTeam = vereinComponent.findById(team.getVereinId());
-                    final String teamName = vTeam.getName()
-                            + (team.getNummer() > 1 ? " " + team.getNummer() : "");
-
-                    // lookup next opponent name (may stay null)
-                    String opponentName = null;
-                    if (e.getGegnerTeamId() != null) {
-                        final DsbMannschaftDO opp = mannschaftComponent.findById(e.getGegnerTeamId());
-                        final VereinDO vOpp = vereinComponent.findById(opp.getVereinId());
-                        opponentName = vOpp.getName()
-                                + (opp.getNummer() > 1 ? " " + opp.getNummer() : "");
-                    }
-
-                    return new TabletSessionSingDO(
-                            e.getTeamId(),
-                            teamName,
-                            e.getStatus(),
-                            e.getToken(),
-                            e.getCurrentPasseNumber(),
-                            opponentName
-                    );
-                })
-                .toArray(TabletSessionSingDO[]::new);
-
-        // assemble info
-        final TabletSessionInfoDO info = new TabletSessionInfoDO();
-        info.setWettkampfId(wettkampfId);
-        info.setTabletSessionSingDOs(singDOs);
-        return info;
-    }
-
-    /**
      * 16‐byte, URL‐safe token without padding.
      */
     private String generateUrlSafeToken() {
@@ -248,5 +214,77 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.INTERNAL_ERROR,
                         "Opponent not found for match " + m.getId()));
+    }
+
+    /**
+     * Lists all tablet‐sessions for a competition, including team & opponent club names.
+     * Optionally synchronizes session data with current match state for accurate admin view.
+     */
+    @Override
+    public TabletSessionInfoDO generateSchusszettelSessions(final long wettkampfId) {
+
+        // Load all sessions
+        final List<TabletSchusszettelEntity> entities = sessionDAO.findByWettkampfId(wettkampfId);
+
+        entities.forEach(session -> {
+            try {
+                // Use the shared sync component - don't update database for admin view
+                TabletSchusszettelSyncComponent.SyncResult syncResult =
+                        syncComponent.synchronizeSession(session, wettkampfId, session.getTeamId(), false); // updateDatabase = false
+
+                if (!syncResult.success) {
+                    LOGGER.warn("Failed to synchronize session for team {} in admin view: {}",
+                            session.getTeamId(), syncResult.message);
+                } else if (syncResult.dataWasUpdated) {
+                    LOGGER.debug("Admin view: Session data synchronized for team {}: {}",
+                            session.getTeamId(), syncResult.message);
+                }
+
+            } catch (Exception e) {
+                // Log but don't fail - admin view should be resilient
+                LOGGER.warn("Exception during admin synchronization for team {}: {}",
+                        session.getTeamId(), e.getMessage());
+            }
+        });
+
+        // Map into DTOs
+        final TabletSessionSingDO[] singDOs = entities.stream()
+                .map(e -> {
+                    // lookup own team name
+                    final DsbMannschaftDO team = mannschaftComponent.findById(e.getTeamId());
+                    final VereinDO vTeam = vereinComponent.findById(team.getVereinId());
+                    final String teamName = vTeam.getName()
+                            + (team.getNummer() > 1 ? " " + team.getNummer() : "");
+
+                    // lookup next opponent name (may stay null)
+                    String opponentName = null;
+                    if (e.getGegnerTeamId() != null) {
+                        try {
+                            final DsbMannschaftDO opp = mannschaftComponent.findById(e.getGegnerTeamId());
+                            final VereinDO vOpp = vereinComponent.findById(opp.getVereinId());
+                            opponentName = vOpp.getName()
+                                    + (opp.getNummer() > 1 ? " " + opp.getNummer() : "");
+                        } catch (Exception ex) {
+                            LOGGER.warn("Failed to get opponent name for team {}: {}", e.getGegnerTeamId(), ex.getMessage());
+                            opponentName = "Unknown Opponent";
+                        }
+                    }
+
+                    return new TabletSessionSingDO(
+                            e.getTeamId(),
+                            teamName,
+                            e.getStatus(),
+                            e.getToken(),
+                            e.getCurrentPasseNumber(),
+                            opponentName
+                    );
+                })
+                .toArray(TabletSessionSingDO[]::new);
+
+        // assemble info
+        final TabletSessionInfoDO info = new TabletSessionInfoDO();
+        info.setWettkampfId(wettkampfId);
+        info.setTabletSessionSingDOs(singDOs);
+        return info;
     }
 }

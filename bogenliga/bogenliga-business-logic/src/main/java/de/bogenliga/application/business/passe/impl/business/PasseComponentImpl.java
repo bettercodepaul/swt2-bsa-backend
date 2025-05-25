@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.impl.business;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,16 @@ import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
 import de.bogenliga.application.common.validation.Preconditions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Kay Scheerer
  */
 @Component
 public class PasseComponentImpl implements PasseComponent {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasseComponentImpl.class);
 
     public static final String PRECONDITION_FIELD_MITGLIED_ID = "dsbMemberId";
     public static final String PRECONDITION_FIELD_WETTKAMPF_ID = "wettkampfId";
@@ -251,7 +257,6 @@ public class PasseComponentImpl implements PasseComponent {
         return PasseMapper.toPasseDO.apply(passeBE);
     }
 
-
     /**
      * Create a new passe in the database.
      *
@@ -321,4 +326,36 @@ public class PasseComponentImpl implements PasseComponent {
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
         passeDAO.delete(passeBE, currentMemberId);
     }
+
+
+    /**
+     * Find a passe by its primary key attributes.
+     *
+     * @param wettkampfId   the wettkampf id
+     * @param matchNr       the match number
+     * @param mannschaftId  the team id
+     * @param passeLfdNr    the passe number
+     * @param dsbMitgliedId the member id
+     *
+     * @return an Optional containing the found PasseDO, or empty if not found
+     */
+    public Optional<PasseDO> findByPkOptional(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
+        // Still check preconditions first
+        checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkPreconditions(matchNr, PRECONDITION_FIELD_MATCH_NR);
+        checkPreconditions(mannschaftId, PRECONDITION_FIELD_MANNSCHAFT_ID);
+        checkPreconditions(passeLfdNr, PRECONDITION_FIELD_LFD_NR);
+        checkPreconditions(dsbMitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
+
+        try {
+            final PasseBE passeBE = passeDAO.findByPk(wettkampfId, matchNr, mannschaftId, passeLfdNr, dsbMitgliedId);
+            return Optional.of(PasseMapper.toPasseDO.apply(passeBE));
+        } catch (Exception e) {
+            // Log for debugging but return empty for "not found" cases
+            LOGGER.debug("Passe not found for pk: wettkampfId={}, matchNr={}, mannschaftId={}, passeLfdNr={}, dsbMitgliedId={}",
+                    wettkampfId, matchNr, mannschaftId, passeLfdNr, dsbMitgliedId);
+            return Optional.empty();
+        }
+    }
+
 }
