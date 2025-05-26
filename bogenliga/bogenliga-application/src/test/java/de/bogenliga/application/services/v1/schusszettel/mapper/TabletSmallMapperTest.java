@@ -43,10 +43,19 @@ public class TabletSmallMapperTest {
         TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(sessionInfoDO);
 
         // Assert
-        assertNotNull(dto);
-        assertEquals(Long.valueOf(42L), Long.valueOf(dto.getWettkampfId()));
-        assertEquals(Integer.valueOf(2), Integer.valueOf(dto.getTabletSessionSingDTOs().length));
+        assertNotNull("DTO should not be null", dto);
+        assertEquals(42L, dto.getWettkampfId());
+        assertNotNull("SingDTOs array should not be null",
+                dto.getTabletSessionSingDTOs());
+        assertEquals(2, dto.getTabletSessionSingDTOs().length);
+
+        // first entry
         assertEquals("Team 1", dto.getTabletSessionSingDTOs()[0].getTeamName());
+        assertEquals("ACTIVE", dto.getTabletSessionSingDTOs()[0].getStatus());
+        assertEquals("token1", dto.getTabletSessionSingDTOs()[0].getToken());
+
+        // second entry
+        assertEquals("Team 2", dto.getTabletSessionSingDTOs()[1].getTeamName());
         assertEquals("WAITING", dto.getTabletSessionSingDTOs()[1].getStatus());
         assertEquals("token2", dto.getTabletSessionSingDTOs()[1].getToken());
     }

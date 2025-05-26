@@ -70,7 +70,7 @@ public class TabletSchusszettelDAO implements DataAccessObject {
         map.put(COL_TEAM_ID, "teamId");
         map.put(COL_WETTKAMPF_ID, "wettkampfId");
         map.put(COL_MATCH_ID, "currentMatchId");
-        map.put(COL_MATCH_NUMBER, "currentMatchNumber");
+        map.put(COL_MATCH_NUMBER, "currentMatchNr");
         map.put(COL_PASSE_NR, "currentPasseNumber");
         map.put(COL_STATUS, "status");
         map.put(COL_LAST_UPDATED, "lastUpdated");
