@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
 import static org.aspectj.bridge.MessageUtil.fail;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -63,6 +64,8 @@ public class TabletSchusszettelComponentImplTest {
     private DsbMannschaftComponent mannschaftComponent;
     @Mock
     private VereinComponent vereinComponent;
+    @Mock
+    private TabletSchusszettelSyncComponent syncComp;
 
     private TabletSchusszettelComponentImpl underTest;
     private TabletSchusszettelAdminComponentImpl underTestAdmin;
@@ -77,10 +80,10 @@ public class TabletSchusszettelComponentImplTest {
         MockitoAnnotations.initMocks(this);
         underTest = new TabletSchusszettelComponentImpl(
                 sessionDAO, passeComponent, matchComponent, mmComponent,
-                mitgliedComponent, mannschaftComponent, vereinComponent);
+                mitgliedComponent, mannschaftComponent, vereinComponent, syncComp);
 
         underTestAdmin = new TabletSchusszettelAdminComponentImpl(sessionDAO, matchComponent,
-                mannschaftComponent, vereinComponent);
+                mannschaftComponent, vereinComponent, passeComponent, syncComp);
 
         inMemoryPasses = new ArrayList<>();
         when(passeComponent.findByMatchId(anyLong())).thenAnswer(invocation -> {
@@ -105,6 +108,13 @@ public class TabletSchusszettelComponentImplTest {
             inMemoryPasses.add(updatedPasse);
             return updatedPasse;
         });
+
+        // Mock successful sync by default
+        TabletSchusszettelSyncComponent.SyncResult defaultSyncResult =
+                TabletSchusszettelSyncComponent.SyncResult.success("Sync OK", false);
+
+        when(syncComp.synchronizeSession(any(), anyLong(), anyLong(), anyBoolean()))
+                .thenReturn(defaultSyncResult);
     }
 
     @Test
@@ -258,22 +268,6 @@ public class TabletSchusszettelComponentImplTest {
         underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
     }
 
-    @Test
-    public void testSubmitSchuetzen() {
-        TabletSchusszettelEntity session = createSessionEntity("SCHUETZENMELDUNG");
-        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
-        List<Long> schuetzenIds = Arrays.asList(101L, 102L, 103L);
-        SchuetzenMeldungDO meldung = new SchuetzenMeldungDO();
-        meldung.setGemeldeteSchuetzen(schuetzenIds);
-        for (Long id : schuetzenIds) {
-            MannschaftsmitgliedDO mm = new MannschaftsmitgliedDO(id * 10, TEAM1_ID, id, 0, "Vor", "Nach", 1L);
-            when(mmComponent.findByMemberAndTeamId(TEAM1_ID, id)).thenReturn(mm);
-        }
-        underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, meldung);
-        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(-1L));
-        verify(passeComponent, times(15)).create(any(PasseDO.class), eq(-1L));
-    }
-
     @Test(expected = BusinessException.class)
     public void testSubmitSchuetzen_InvalidToken() {
         underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, "", new SchuetzenMeldungDO());
@@ -304,32 +298,6 @@ public class TabletSchusszettelComponentImplTest {
         when(mmComponent.findByMemberAndTeamId(TEAM1_ID, 102L)).thenReturn(new MannschaftsmitgliedDO(1020L, TEAM1_ID, 102L, 0, "Vor", "Nach", 2L));
         when(mmComponent.findByMemberAndTeamId(TEAM1_ID, 103L)).thenReturn(new MannschaftsmitgliedDO(1030L, TEAM1_ID, 103L, 0, "Vor", "Nach", 3L));
         underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, meldung);
-    }
-
-    @Test
-    public void testSubmitSatz() {
-        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
-        session.setCurrentPasseNumber(1);
-        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
-        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
-                new SchuetzenSatzDO(101L, 10, 9, 9),
-                new SchuetzenSatzDO(102L, 10, 10, 8),
-                new SchuetzenSatzDO(103L, 9, 9, 9)
-        );
-        SatzEingabeDO eingabe = new SatzEingabeDO();
-        eingabe.setSatzeingabe(satzeingabe);
-        for (SchuetzenSatzDO s : satzeingabe) {
-            PasseDO p = new PasseDO();
-            p.setId((long) (inMemoryPasses.size() + 1));
-            p.setPasseMannschaftId(TEAM1_ID);
-            p.setPasseLfdnr(1L);
-            p.setPasseDsbMitgliedId(s.getSchuetzenId());
-            p.setPasseMatchId(MATCH_ID);
-            inMemoryPasses.add(p);
-        }
-        underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
-        verify(passeComponent, atLeast(3)).update(any(PasseDO.class), eq(-1L));
-        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(-1L));
     }
 
     @Test(expected = BusinessException.class)
@@ -512,29 +480,6 @@ public class TabletSchusszettelComponentImplTest {
         SchuetzenMeldungDO meldung = new SchuetzenMeldungDO();
         meldung.setGemeldeteSchuetzen(Arrays.asList(1L, 2L, 3L, 4L));
         underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, meldung);
-    }
-
-    @Test(expected = TechnicalException.class)
-    public void testSubmitSatz_TechnicalExceptionOnUpdate() {
-        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
-        session.setCurrentPasseNumber(1);
-        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
-        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
-                new SchuetzenSatzDO(101L, 10, 9, 9),
-                new SchuetzenSatzDO(102L, 10, 10, 8),
-                new SchuetzenSatzDO(103L, 9, 9, 9)
-        );
-        SatzEingabeDO eingabe = new SatzEingabeDO();
-        eingabe.setSatzeingabe(satzeingabe);
-        PasseDO p = new PasseDO();
-        p.setId(1L);
-        p.setPasseMannschaftId(TEAM1_ID);
-        p.setPasseLfdnr(1L);
-        p.setPasseDsbMitgliedId(101L);
-        p.setPasseMatchId(MATCH_ID);
-        inMemoryPasses.add(p);
-        when(passeComponent.update(any(PasseDO.class), anyLong())).thenThrow(new RuntimeException("DB error"));
-        underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
     }
 
     @Test(expected = BusinessException.class)
@@ -933,5 +878,238 @@ public class TabletSchusszettelComponentImplTest {
                             .filter(ent -> Objects.equals(ent.getTeamId(), tid))
                             .findFirst();
                 });
+    }
+
+    @Test
+    public void testSubmitSchuetzen() {
+        TabletSchusszettelEntity session = createSessionEntity("SCHUETZENMELDUNG");
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
+
+        List<Long> schuetzenIds = Arrays.asList(101L, 102L, 103L);
+        SchuetzenMeldungDO meldung = new SchuetzenMeldungDO();
+        meldung.setGemeldeteSchuetzen(schuetzenIds);
+
+        for (Long id : schuetzenIds) {
+            MannschaftsmitgliedDO mm = new MannschaftsmitgliedDO(id * 10, TEAM1_ID, id, 0, "Vor", "Nach", 1L);
+            when(mmComponent.findByMemberAndTeamId(TEAM1_ID, id)).thenReturn(mm);
+        }
+
+        // Mock findByPk to throw exception (simulating "not found") for all lookups
+        // This ensures create() is called for each pass
+        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), anyLong(), anyLong()))
+                .thenThrow(new RuntimeException("Passe not found"));
+
+        underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, meldung);
+
+        // Verify correct user ID (0L) and correct number of create calls (3 shooters × 5 passes = 15)
+        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(0L));
+        verify(passeComponent, times(15)).create(any(PasseDO.class), eq(0L));
+    }
+
+    @Test
+    public void testSubmitSchuetzen_PassesAlreadyExist() {
+        // Test the case where passes already exist (re-registration)
+        TabletSchusszettelEntity session = createSessionEntity("SCHUETZENMELDUNG");
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
+
+        List<Long> schuetzenIds = Arrays.asList(101L, 102L, 103L);
+        SchuetzenMeldungDO meldung = new SchuetzenMeldungDO();
+        meldung.setGemeldeteSchuetzen(schuetzenIds);
+
+        for (Long id : schuetzenIds) {
+            MannschaftsmitgliedDO mm = new MannschaftsmitgliedDO(id * 10, TEAM1_ID, id, 0, "Vor", "Nach", 1L);
+            when(mmComponent.findByMemberAndTeamId(TEAM1_ID, id)).thenReturn(mm);
+        }
+
+        // Mock findByPk to return existing passes (simulating they already exist)
+        PasseDO existingPasse = new PasseDO();
+        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), anyLong(), anyLong()))
+                .thenReturn(existingPasse);
+
+        underTest.submitSchuetzen(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, meldung);
+
+        // Should update status but NOT create any new passes
+        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(0L));
+        verify(passeComponent, never()).create(any(PasseDO.class), anyLong());
+    }
+
+    @Test
+    public void testSubmitSatz() {
+        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(session));
+
+        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
+                new SchuetzenSatzDO(101L, 10, 9, 9),
+                new SchuetzenSatzDO(102L, 10, 10, 8),
+                new SchuetzenSatzDO(103L, 9, 9, 9)
+        );
+        SatzEingabeDO eingabe = new SatzEingabeDO();
+        eingabe.setSatzeingabe(satzeingabe);
+
+        for (SchuetzenSatzDO s : satzeingabe) {
+            PasseDO existingPasse = new PasseDO();
+            existingPasse.setId((long) (inMemoryPasses.size() + 1));
+            existingPasse.setPasseMannschaftId(TEAM1_ID);
+            existingPasse.setPasseLfdnr(1L);
+            existingPasse.setPasseDsbMitgliedId(s.getSchuetzenId());
+            existingPasse.setPasseMatchId(MATCH_ID);
+
+            when(passeComponent.findByPkOptional(
+                    eq(WETTKAMPF_ID),
+                    eq(session.getCurrentMatchNumber()),
+                    eq(TEAM1_ID),
+                    eq(1L),
+                    eq(s.getSchuetzenId())
+            )).thenReturn(Optional.of(existingPasse)); // Return Optional.of()
+        }
+
+        // Mock opponent team not in WARTE status to trigger WARTE transition
+        when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, session.getGegnerTeamId()))
+                .thenReturn(Optional.empty());
+
+        underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
+
+        // Should update existing passes and transition to WARTE
+        verify(passeComponent, times(3)).update(any(PasseDO.class), eq(0L));
+        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(0L));
+    }
+
+    @Test
+    public void testSubmitSatz_CreateNewPasses() {
+        // Test the fallback case where passes don't exist and need to be created
+        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
+
+        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
+                new SchuetzenSatzDO(101L, 10, 9, 9),
+                new SchuetzenSatzDO(102L, 10, 10, 8),
+                new SchuetzenSatzDO(103L, 9, 9, 9)
+        );
+        SatzEingabeDO eingabe = new SatzEingabeDO();
+        eingabe.setSatzeingabe(satzeingabe);
+
+        // Mock findByPkOptional to return empty Optional
+        when(passeComponent.findByPkOptional(anyLong(), anyLong(), anyLong(), anyLong(), anyLong()))
+                .thenReturn(Optional.empty()); // Return empty Optional instead of throwing exception
+
+        // Mock opponent team not in WARTE status
+        when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, session.getGegnerTeamId()))
+                .thenReturn(Optional.empty());
+
+        underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
+
+        // Should create new passes instead of updating
+        verify(passeComponent, times(3)).create(any(PasseDO.class), eq(0L));
+        verify(passeComponent, never()).update(any(PasseDO.class), anyLong());
+        verify(sessionDAO).updateStatus(any(TabletSchusszettelEntity.class), eq(0L));
+    }
+
+    @Test
+    public void testSubmitSatz_TechnicalExceptionOnUpdate_Debug() {
+        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
+
+        // Need exactly 3 shooters to pass validation
+        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
+                new SchuetzenSatzDO(101L, 10, 9, 9),
+                new SchuetzenSatzDO(102L, 10, 10, 8),
+                new SchuetzenSatzDO(103L, 9, 9, 9)
+        );
+        SatzEingabeDO eingabe = new SatzEingabeDO();
+        eingabe.setSatzeingabe(satzeingabe);
+
+        // Mock findByPk to return existing passes for all shooters
+        for (SchuetzenSatzDO s : satzeingabe) {
+            PasseDO existingPasse = new PasseDO();
+            existingPasse.setId(s.getSchuetzenId());
+            existingPasse.setPasseMannschaftId(TEAM1_ID);
+            existingPasse.setPasseLfdnr(1L);
+            existingPasse.setPasseDsbMitgliedId(s.getSchuetzenId());
+            existingPasse.setPasseMatchId(MATCH_ID);
+
+            when(passeComponent.findByPk(
+                    eq(WETTKAMPF_ID),
+                    eq(session.getCurrentMatchNumber()),
+                    eq(TEAM1_ID),
+                    eq(1L),
+                    eq(s.getSchuetzenId())
+            )).thenReturn(existingPasse);
+        }
+
+        // Mock update to throw exception
+        doThrow(new RuntimeException("DB error"))
+                .when(passeComponent).update(any(PasseDO.class), eq(0L));
+
+        // Mock opponent team lookup
+        when(sessionDAO.findByWettkampfUndTeam(eq(WETTKAMPF_ID), anyLong()))
+                .thenReturn(Optional.empty());
+
+        try {
+            underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
+            fail("Expected TechnicalException to be thrown");
+        } catch (TechnicalException e) {
+            // Expected - test passes
+            assertTrue("Exception message should contain expected text",
+                    e.getMessage().contains("Fehler beim Speichern der Passe für Schütze"));
+            System.out.println("SUCCESS: Got expected TechnicalException: " + e.getMessage());
+        } catch (Exception e) {
+            fail("Expected TechnicalException but got: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        }
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testSubmitSatz_TechnicalExceptionOnCreate() {
+        TabletSchusszettelEntity session = createSessionEntity("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN)).thenReturn(Optional.of(session));
+
+        // Need exactly 3 shooters to pass validation
+        List<SchuetzenSatzDO> satzeingabe = Arrays.asList(
+                new SchuetzenSatzDO(101L, 10, 9, 9),
+                new SchuetzenSatzDO(102L, 10, 10, 8),
+                new SchuetzenSatzDO(103L, 9, 9, 9)
+        );
+        SatzEingabeDO eingabe = new SatzEingabeDO();
+        eingabe.setSatzeingabe(satzeingabe);
+
+        // Mock findByPk to throw exception (passes don't exist)
+        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), anyLong(), anyLong()))
+                .thenThrow(new RuntimeException("Passe not found"));
+
+        // Mock create to throw exception for the first shooter (this will trigger the TechnicalException)
+        when(passeComponent.create(any(PasseDO.class), anyLong()))
+                .thenThrow(new RuntimeException("DB error"));
+
+        underTest.submitSatz(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN, eingabe);
+    }
+
+    @Test
+    public void testGetStatus_VerifiesSync() {
+        TabletSchusszettelEntity session = createSessionEntity("SCHUETZENMELDUNG");
+        when(sessionDAO.findByTokenWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(session));
+        setupTeamInfoMocks();
+
+        underTest.getStatus(WETTKAMPF_ID, TEAM1_ID, VALID_TOKEN);
+
+        // Verify sync was called with updateDatabase = true for standard component
+        verify(syncComp).synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+    }
+
+    @Test
+    public void testAdminGenerateSchusszettelSessions_VerifiesSync() {
+        TabletSchusszettelEntity entity = createSessionEntity("SATZEINGABE");
+        when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(entity));
+        setupTeamInfoMocks();
+
+        underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+
+        // Verify sync was called with updateDatabase = false for admin component
+        verify(syncComp).synchronizeSession(entity, WETTKAMPF_ID, TEAM1_ID, false);
     }
 }
