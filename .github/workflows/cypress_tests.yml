@@ -84,9 +84,12 @@ jobs:
           echo "Run Cypress tests"
           npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --reporter mochawesome  --reporter-options reportDir=cypress-results,overwrite=false,html=true,json=true
 
+          
+          echo "Generating Result Report"
           npx mochawesome-merge cypress-results/*.json > cypress-results/merged-report.json
-
           npx marge cypress-results/merged-report.json --reportDir cypress-results --reportFilename merged-report
+
+          ls
           
       - name: Upload Cypress test results
         if: always()
