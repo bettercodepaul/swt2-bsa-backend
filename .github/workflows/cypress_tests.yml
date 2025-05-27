@@ -89,7 +89,7 @@ jobs:
         working-directory: .
         if: always()
         run: |
-          
+          ls
           npx mochawesome-merge cypress-results/*.json > cypress-results-merged/merged-report.json
           npx marge cypress-results-merged/merged-report.json --reportDir cypress-results-merged --reportFilename merged-report
           
