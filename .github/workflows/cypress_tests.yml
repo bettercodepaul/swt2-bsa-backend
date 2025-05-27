@@ -84,14 +84,16 @@ jobs:
           echo "Run Cypress tests"
           npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --reporter mochawesome  --reporter-options reportDir=cypress-results,overwrite=false,html=true,json=true
 
-          ls
+          npx mochawesome-merge cypress-results/*.json > cypress-results/merged-report.json
+
+          npx marge cypress-results/merged-report.json --reportDir cypress-results --reportFilename merged-report
           
       - name: Upload Cypress test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-results
-          path: ./swt2-bsa-frontend/bogenliga/cypress-results
+          path: ./cypress-results
           
       - name: Tests completed
         if: success()
