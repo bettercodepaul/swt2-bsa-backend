@@ -91,7 +91,7 @@ jobs:
         run: |
           mkdir cypress-results-merged
           ls
-          npx mochawesome-merge cypress-results/*.json > ./cypress-results-merged/merged-report.json
+          npx mochawesome-merge ./cypress-results/*.json > ./cypress-results-merged/merged-report.json
           ls
           npx marge ./cypress-results-merged/merged-report.json --reportDir cypress-results-merged --reportFilename merged-report
           
