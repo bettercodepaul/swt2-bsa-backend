@@ -89,6 +89,7 @@ jobs:
         working-directory: ./swt2-bsa-frontend/bogenliga
         if: always()
         run: |
+          mkdir cypress-results-merged
           ls
           npx mochawesome-merge cypress-results/*.json > ./cypress-results-merged/merged-report.json
           ls
