@@ -86,7 +86,7 @@ jobs:
 
           
       - name: Generate Report
-        working-directory: .
+        working-directory: ./swt2-bsa-frontend/bogenliga
         if: always()
         run: |
           ls
@@ -98,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cypress-results
-          path: ./cypress-results
+          path: ./swt2-bsa-frontend/bogenliga/cypress-results-merged
           
       - name: Tests completed
         if: success()
