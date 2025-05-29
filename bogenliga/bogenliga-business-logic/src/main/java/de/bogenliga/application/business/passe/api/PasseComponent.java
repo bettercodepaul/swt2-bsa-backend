@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.api;
 
 import java.util.List;
+import java.util.Optional;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 
@@ -142,4 +143,18 @@ public interface PasseComponent {
      * @param currentMemberId id of the member currently updating the passe
      */
     void delete(PasseDO passeDO, Long currentMemberId);
+
+
+    /**
+     * Find a passe by its primary key attributes.
+     *
+     * @param wettkampfId   the wettkampf id
+     * @param matchNr       the match number
+     * @param mannschaftId  the team id
+     * @param passeLfdNr    the passe number
+     * @param dsbMitgliedId the member id
+     *
+     * @return an Optional containing the found PasseDO, or empty if not found
+     */
+    Optional<PasseDO> findByPkOptional(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId);
 }
