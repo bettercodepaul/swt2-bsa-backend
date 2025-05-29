@@ -12,9 +12,13 @@ import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.stream.Collectors;
 
 /**
- * @author Kay Scheerer
+ * Data Access Object for managing passe (score input per set) entries.
+ * Extended to support tablet-based match input logic.
+ *
+ * @author Kay Scheerer, Marty Lauterbach
  */
 @Repository
 public class PasseDAO implements DataAccessObject {
@@ -265,6 +269,31 @@ public class PasseDAO implements DataAccessObject {
         return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID, mannschaftId, matchId);
     }
 
+    /**
+     * Zählt alle Passen eines Teams innerhalb eines Matches.
+     * Wird verwendet, um zu prüfen, ob alle Sätze bereits eingegeben wurden.
+     *
+     * @param matchId die Match-ID
+     * @param teamId die Team-ID
+     * @return Anzahl der gespeicherten Passen
+     */
+    public int countByMatchAndTeam(Long matchId, Long teamId) {
+        List<PasseBE> passen = this.findByMannschaftMatchId(teamId, matchId);
+        return passen != null ? passen.size() : 0;
+    }
+
+    /**
+     * Gruppiert alle gespeicherten Passen eines Teams im Match nach Schützen-ID.
+     * Dient zur Auswertung oder Validierung der Eingabe.
+     *
+     * @param matchId die Match-ID
+     * @param teamId die Team-ID
+     * @return Map: Schützen-ID → Liste von Passen
+     */
+    public Map<Long, List<PasseBE>> findGroupedBySchuetze(Long matchId, Long teamId) {
+        List<PasseBE> passen = this.findByMannschaftMatchId(teamId, matchId);
+        return passen.stream().collect(Collectors.groupingBy(PasseBE::getPasseDsbMitgliedId));
+    }
 
     /**
      * @param dsbMitgliedId of the mannschaftsmitglied,

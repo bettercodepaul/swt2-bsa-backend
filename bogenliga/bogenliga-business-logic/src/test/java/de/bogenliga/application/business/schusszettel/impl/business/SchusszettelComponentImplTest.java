@@ -1,11 +1,11 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import de.bogenliga.application.business.schusszettel.api.SchusszettelComponentImpl;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,7 +32,6 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CompletableFuture;

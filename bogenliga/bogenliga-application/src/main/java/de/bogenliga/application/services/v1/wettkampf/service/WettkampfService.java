@@ -1,5 +1,7 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import java.security.Principal;
 import java.util.List;
 import javax.naming.NoPermissionException;
@@ -23,7 +25,7 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 
 /**
  * I'm a REST resource and handle Wettkampf CRUD requests over the HTTP protocol
- *
+ * Hooked the TabletSchusszettel Admin Calls into these service request. -mklemmingen
  * @author Marvin Holm, Daniel Schott
  */
 @RestController
@@ -45,8 +47,7 @@ public class WettkampfService implements ServiceFacade {
 
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-
-
+    private TabletSchusszettelAdminComponent tabletSchusszettelComponent;
 
     /**
      * Constructor with dependency injection
@@ -57,9 +58,11 @@ public class WettkampfService implements ServiceFacade {
 
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
-                            RequiresOnePermissionAspect requiresOnePermissionAspect) {
+                            RequiresOnePermissionAspect requiresOnePermissionAspect,
+                            final TabletSchusszettelAdminComponent tabletSchusszettelComponent) {
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.tabletSchusszettelComponent = tabletSchusszettelComponent;
     }
 
 
@@ -143,6 +146,10 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
+
+        // call TabletSchusszettelComponent to initialize the schusszettel sessions
+        tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId());
+
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
@@ -166,6 +173,9 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         wettkampfComponent.delete(wettkampfDO, userId);
+
+        // delete all tablet schusszettel session associated with the wettkampf
+        tabletSchusszettelComponent.deleteForWettkampf(wettkampfDO.getId());
     }
 
 
@@ -205,6 +215,11 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+
+        // delete and then recreate the schusszettel sessions
+        tabletSchusszettelComponent.deleteForWettkampf(updatedWettkampfDO.getId());
+        tabletSchusszettelComponent.initializeForWettkampf(updatedWettkampfDO.getId());
+
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 

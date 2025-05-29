@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -77,6 +78,8 @@ public class WettkampfServiceTest {
     @Captor
     private ArgumentCaptor<WettkampfDO> wettkampfDOArgumentCaptor;
 
+    @Mock
+    private TabletSchusszettelAdminComponent tabletSchusszettelComponent;
 
     /***
      * Utility methods for creating business entities/data objects.
