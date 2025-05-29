@@ -3,19 +3,22 @@ package de.bogenliga.application.services.v1.schuetzenstatistikmatch.service;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
 import de.bogenliga.application.business.schuetzenstatistikmatch.api.SchuetzenstatistikMatchComponent;
 import de.bogenliga.application.business.schuetzenstatistikmatch.api.types.SchuetzenstatistikMatchDO;
 import de.bogenliga.application.services.v1.schuetzenstatistikmatch.model.SchuetzenstatistikMatchDTO;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests the SchuetzenstatistikMatchService
@@ -25,33 +28,33 @@ import static org.mockito.Mockito.*;
 public class SchuetzenstatistikMatchServiceTest {
 
     private static final long USER = 4L;
-    private static final Long veranstaltungId = 1L;
-    private static final Long wettkampfId = 2L;
-    private static final Long tag = 1L;
-    private static final Long vereinId = 7L;
-    private static final String dsbMitgliedName = "Mitglied_Name";
-    private static final float pfeilpunkteSchnitt = (float) 3.7;
-    private static final float match1 = 1.02f;
-    private static final float match2 = 12.3f;
-    private static final float match3 = 4.4f;
-    private static final float match4 = 5.21f;
-    private static final float match5 = 5.1f;
-    private static final float match6 = 2.13f;
-    private static final float match7 = 6.91f;
-    private static final int rueckennummer = 5;
+    private static final Long VERANSTALTUNGID = 1L;
+    private static final Long WETTKAMPFID = 2L;
+    private static final Long TAG = 1L;
+    private static final Long VEREINID = 7L;
+    private static final String DSBMITGLIEDNAME = "Mitglied_Name";
+    private static final float PFEILPUNKTESCHNITT = (float) 3.7;
+    private static final float MATCH1 = 1.02f;
+    private static final float MATCH2 = 12.3f;
+    private static final float MATCH3 = 4.4f;
+    private static final float MATCH4 = 5.21f;
+    private static final float MATCH5 = 5.1f;
+    private static final float MATCH6 = 2.13f;
+    private static final float MATCH7 = 6.91f;
+    private static final int RUECKENNUMMER = 5;
     
     public static SchuetzenstatistikMatchDTO getSchuetzenstatistikMatchDTO() {
         return new SchuetzenstatistikMatchDTO(
-                rueckennummer,
-                dsbMitgliedName,
-                match1,
-                match2,
-                match3,
-                match4,
-                match5,
-                match6,
-                match7,
-                pfeilpunkteSchnitt
+                RUECKENNUMMER,
+                DSBMITGLIEDNAME,
+                MATCH1,
+                MATCH2,
+                MATCH3,
+                MATCH4,
+                MATCH5,
+                MATCH6,
+                MATCH7,
+                PFEILPUNKTESCHNITT
         );
     }
 
@@ -84,7 +87,7 @@ public class SchuetzenstatistikMatchServiceTest {
         when(schuetzenstatistikMatchComponent.getSchuetzenstatistikMatchVeranstaltung(anyLong(),anyLong())).thenReturn(schuetzenstatistikMatchDOList);
 
         // call test method
-        final List<SchuetzenstatistikMatchDTO> actual = underTest.getSchuetzenstatistikMatchVeranstaltung(veranstaltungId,vereinId);
+        final List<SchuetzenstatistikMatchDTO> actual = underTest.getSchuetzenstatistikMatchVeranstaltung(VERANSTALTUNGID,VEREINID);
 
         // assert result
         assertThat(actual)
@@ -107,7 +110,7 @@ public class SchuetzenstatistikMatchServiceTest {
 
 
         // verify invocations
-        verify(schuetzenstatistikMatchComponent).getSchuetzenstatistikMatchVeranstaltung(veranstaltungId, vereinId);
+        verify(schuetzenstatistikMatchComponent).getSchuetzenstatistikMatchVeranstaltung(VERANSTALTUNGID, VEREINID);
     }
 
     @Test
@@ -121,7 +124,7 @@ public class SchuetzenstatistikMatchServiceTest {
         when(schuetzenstatistikMatchComponent.getSchuetzenstatistikMatchWettkampf(anyLong(),anyLong(), anyLong())).thenReturn(schuetzenstatistikMatchDOList);
 
         // call test method
-        final List<SchuetzenstatistikMatchDTO> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId,vereinId, tag);
+        final List<SchuetzenstatistikMatchDTO> actual = underTest.getSchuetzenstatistikMatchWettkampf(WETTKAMPFID,VEREINID, TAG);
 
         // assert result
         assertThat(actual)
@@ -143,7 +146,7 @@ public class SchuetzenstatistikMatchServiceTest {
         assertThat(actualDTO.getMatch7()).isEqualTo(schuetzenstatistikMatchDO.getMatch7());
 
         // verify invocations
-        verify(schuetzenstatistikMatchComponent).getSchuetzenstatistikMatchWettkampf(wettkampfId,vereinId, tag);
+        verify(schuetzenstatistikMatchComponent).getSchuetzenstatistikMatchWettkampf(WETTKAMPFID,VEREINID, TAG);
 
     }
     @Test

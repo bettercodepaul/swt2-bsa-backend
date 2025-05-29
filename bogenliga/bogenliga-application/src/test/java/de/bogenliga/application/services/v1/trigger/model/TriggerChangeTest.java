@@ -2,20 +2,26 @@ package de.bogenliga.application.services.v1.trigger.model;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import org.junit.Rule;
 import org.junit.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests the MigrationChange class
@@ -23,7 +29,7 @@ import static org.mockito.Mockito.*;
  */
 public class TriggerChangeTest<T extends AltsystemDO> {
 
-	private static final long triggeringUserId = 21;
+	private static final long TRIGGERING_USER_ID = 21;
 
 	private static final Long ID = 4L;
 	private static final String KATEGORIE = "re";
@@ -57,7 +63,7 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 	}
 
 	private TriggerChange<?> getExpectedTC(){
-		return new TriggerChange<>(triggerComponent, triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
+		return new TriggerChange<>(triggerComponent, triggerDO, altsystemDataObject, altsystemEntity, TRIGGERING_USER_ID);
 	}
 
 	@Test
@@ -65,7 +71,7 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 
 		TriggerDO triggerData = getExpectedDO();
 
-		TriggerChange<T> triggerChange = new TriggerChange<>(triggerComponent, triggerData, altsystemDataObject, altsystemEntity, triggeringUserId);
+		TriggerChange<T> triggerChange = new TriggerChange<>(triggerComponent, triggerData, altsystemDataObject, altsystemEntity, TRIGGERING_USER_ID);
 
 		boolean result = triggerChange.tryMigration();
 

@@ -3,19 +3,22 @@ package de.bogenliga.application.services.v1.schuetzenstatistikletztejahre.servi
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
 import de.bogenliga.application.business.schuetzenstatistikletztejahre.api.SchuetzenstatistikLetzteJahreComponent;
 import de.bogenliga.application.business.schuetzenstatistikletztejahre.api.types.SchuetzenstatistikLetzteJahreDO;
 import de.bogenliga.application.services.v1.schuetzenstatistikletztejahre.model.SchuetzenstatistikLetzteJahreDTO;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Alessa Hackh
@@ -24,40 +27,40 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
 
     private static final long USER = 4L;
 
-    private static final long vereinId = (long) 7;
-    private static final long veranstaltungId = (long) 1;
-    private static final long sportjahr = (long) 2002;
+    private static final long VEREINID = (long) 7;
+    private static final long VERANSTALTUNGID = (long) 1;
+    private static final long SPORTJAHR = (long) 2002;
 
-    private static final String schuetzenname = "Name Schütze";
-    private static final float sportjahr1 = (long) 8;
-    private static final float sportjahr2 = (long) 7;
-    private static final float sportjahr3 = (long) 6.5;
-    private static final float sportjahr4 = (long) 7.8;
-    private static final float sportjahr5 = (long) 8.2;
-    private static final float allejahre_schnitt = (long) 7.5;
+    private static final String SCHUETZENNAME = "Name Schütze";
+    private static final float SPORTJAHR1 = (long) 8;
+    private static final float SPORTJAHR2 = (long) 7;
+    private static final float SPORTJAHR3 = (long) 6.5;
+    private static final float SPORTJAHR4 = (long) 7.8;
+    private static final float SPORTJAHR5 = (long) 8.2;
+    private static final float ALLEJAHRE_SCHNITT = (long) 7.5;
 
     public static SchuetzenstatistikLetzteJahreDO getSchuetzenstatistikLetzteJahreDO() {
         final SchuetzenstatistikLetzteJahreDO expectedSchuetzenstatistikLetzteJahreDO = new SchuetzenstatistikLetzteJahreDO();
-        expectedSchuetzenstatistikLetzteJahreDO.setSchuetzenname(schuetzenname);
-        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr1(sportjahr1);
-        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr2(sportjahr2);
-        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr3(sportjahr3);
-        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr4(sportjahr4);
-        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr5(sportjahr5);
-        expectedSchuetzenstatistikLetzteJahreDO.setAllejahre_schnitt(allejahre_schnitt);
+        expectedSchuetzenstatistikLetzteJahreDO.setSchuetzenname(SCHUETZENNAME);
+        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr1(SPORTJAHR1);
+        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr2(SPORTJAHR2);
+        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr3(SPORTJAHR3);
+        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr4(SPORTJAHR4);
+        expectedSchuetzenstatistikLetzteJahreDO.setSportjahr5(SPORTJAHR5);
+        expectedSchuetzenstatistikLetzteJahreDO.setAllejahre_schnitt(ALLEJAHRE_SCHNITT);
 
         return expectedSchuetzenstatistikLetzteJahreDO;
     }
 
     public static SchuetzenstatistikLetzteJahreDTO getSchuetzenstatistikLetzteJahreDTO() {
         return new SchuetzenstatistikLetzteJahreDTO(
-                schuetzenname,
-                sportjahr1,
-                sportjahr2,
-                sportjahr3,
-                sportjahr4,
-                sportjahr5,
-                allejahre_schnitt
+                SCHUETZENNAME,
+                SPORTJAHR1,
+                SPORTJAHR2,
+                SPORTJAHR3,
+                SPORTJAHR4,
+                SPORTJAHR5,
+                ALLEJAHRE_SCHNITT
         );
     }
 
@@ -89,7 +92,7 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
         when(schuetzenstatistikLetzteJahreComponent.getSchuetzenstatistikLetzteJahre(anyLong(), anyLong(),anyLong())).thenReturn(schuetzenstatistikLetzteJahreDOList);
 
         // call test method
-        final List<SchuetzenstatistikLetzteJahreDTO> actual = underTest.getSchuetzenstatistikLetzteJahre(sportjahr, veranstaltungId,vereinId);
+        final List<SchuetzenstatistikLetzteJahreDTO> actual = underTest.getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNGID, VEREINID);
 
         // assert result
         assertThat(actual)
@@ -108,7 +111,7 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
         assertThat(actualDTO.getAllejahre_schnitt()).isEqualTo(schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt());
 
         // verify invocations
-        verify(schuetzenstatistikLetzteJahreComponent).getSchuetzenstatistikLetzteJahre(sportjahr, veranstaltungId,vereinId);
+        verify(schuetzenstatistikLetzteJahreComponent).getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNGID, VEREINID);
     }
 
     @Test

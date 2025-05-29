@@ -1,95 +1,92 @@
 package de.bogenliga.application.services.v1.schuetzenstatistik.service;
 
-import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
-import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
-import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import static org.mockito.ArgumentMatchers.anyLong;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+
+import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
+import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
+import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
 
 public class SchuetzenstatistikServiceTest {
 
         private static final long USER = 4L;
         private static final Long VERSION = 0L;
 
-        private static final Long veranstaltungId = 1L;
-        private static final String veranstaltungName = "Name_der_Veranstaltung";
-        private static final Long wettkampfId = 2L;
-        private static final int wettkampfTag = 3;
-        private static final Long mannschaftId = 4L;
-        private static final int mannschaftNummer = 9;
-        private static final Long vereinId = 7L;
-        private static final String vereinName = "Name_Verein";
-        private static final Long matchId = 6L;
-        private static final int matchNr = 2;
-        private static final Long dsbMitgliedId = 2L;
-        private static final String dsbMitgliedName = "Mitglied_Name";
-        private static final int rueckenNummer = 5;
-        private static final int pfeilpunkteSchnitt = 3;
-        private static final String[] schuetzeSaetze = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
-        private static final String schuetzeSatz1 = "{5,8}";
-        private static final String schuetzeSatz2 = "{9,3}";
-        private static final String schuetzeSatz3 = "{4,8}";
-        private static final String schuetzeSatz4 = "{5,2}";
-        private static final String schuetzeSatz5 = "{3,7}";
+        private static final Long VERANSTALTUNGID = 1L;
+        private static final String VERANSTALTUNGNAME = "Name_der_Veranstaltung";
+        private static final Long WETTKAMPFID = 2L;
+        private static final int WETTKAMPFTAG = 3;
+        private static final Long MANNSCHAFTID = 4L;
+        private static final int MANNSCHAFTNUMMER = 9;
+        private static final Long VEREINID = 7L;
+        private static final String VEREINNAME = "Name_Verein";
+        private static final Long MATCHID = 6L;
+        private static final int MATCHNR = 2;
+        private static final Long DSBMITGLIEDID = 2L;
+        private static final String DSBMITGLIEDNAME = "Mitglied_Name";
+        private static final int RUECKENNUMMER = 5;
+        private static final int PFEILPUNKTESCHNITT = 3;
+        private static final String[] SCHUETZE_SAETZE = {"{5,8}","{9,3}", "{4,8}", "{5,2}", "{3,7}"};
+        private static final String SCHUETZESATZ1 = "{5,8}";
+        private static final String SCHUETZESATZ2 = "{9,3}";
+        private static final String SCHUETZESATZ3 = "{4,8}";
+        private static final String SCHUETZESATZ4 = "{5,2}";
+        private static final String SCHUETZESATZ5 = "{3,7}";
 
-
-
-
-    public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
+        public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
             final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
-            expectedSchuetzenstatistikDO.setveranstaltungId(veranstaltungId);
-            expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
-            expectedSchuetzenstatistikDO.setwettkampfId(wettkampfId);
-            expectedSchuetzenstatistikDO.setwettkampfTag(wettkampfTag);
-            expectedSchuetzenstatistikDO.setmannschaftId(mannschaftId);
-            expectedSchuetzenstatistikDO.setmannschaftNummer(mannschaftNummer);
-            expectedSchuetzenstatistikDO.setvereinId(vereinId);
-            expectedSchuetzenstatistikDO.setvereinName(vereinName);
-            expectedSchuetzenstatistikDO.setMatchId(matchId);
-            expectedSchuetzenstatistikDO.setMatchNr(matchNr);
-            expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
-            expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
-            expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
-            expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-            expectedSchuetzenstatistikDO.setSchuetzeSaetze(schuetzeSaetze);
+            expectedSchuetzenstatistikDO.setveranstaltungId(VERANSTALTUNGID);
+            expectedSchuetzenstatistikDO.setveranstaltungName(VERANSTALTUNGNAME);
+            expectedSchuetzenstatistikDO.setwettkampfId(WETTKAMPFID);
+            expectedSchuetzenstatistikDO.setwettkampfTag(WETTKAMPFTAG);
+            expectedSchuetzenstatistikDO.setmannschaftId(MANNSCHAFTID);
+            expectedSchuetzenstatistikDO.setmannschaftNummer(MANNSCHAFTNUMMER);
+            expectedSchuetzenstatistikDO.setvereinId(VEREINID);
+            expectedSchuetzenstatistikDO.setvereinName(VEREINNAME);
+            expectedSchuetzenstatistikDO.setMatchId(MATCHID);
+            expectedSchuetzenstatistikDO.setMatchNr(MATCHNR);
+            expectedSchuetzenstatistikDO.setDsbMitgliedId(DSBMITGLIEDID);
+            expectedSchuetzenstatistikDO.setDsbMitgliedName(DSBMITGLIEDNAME);
+            expectedSchuetzenstatistikDO.setRueckenNummer(RUECKENNUMMER);
+            expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(PFEILPUNKTESCHNITT);
+            expectedSchuetzenstatistikDO.setSchuetzeSaetze(SCHUETZE_SAETZE);
             return expectedSchuetzenstatistikDO;
         }
 
         public static SchuetzenstatistikDTO getSchuetzenstatistikDTO() {
             return new SchuetzenstatistikDTO(
-                    veranstaltungId,
-                    veranstaltungName,
-                    wettkampfId,
-                    wettkampfTag,
-                    mannschaftId,
-                    mannschaftNummer,
-                    vereinId,
-                    vereinName,
-                    matchId,
-                    matchNr,
-                    dsbMitgliedId,
-                    dsbMitgliedName,
-                    rueckenNummer,
-                    pfeilpunkteSchnitt,
-                    schuetzeSatz1,
-                    schuetzeSatz2,
-                    schuetzeSatz3,
-                    schuetzeSatz4,
-                    schuetzeSatz5
+                VERANSTALTUNGID,
+                VERANSTALTUNGNAME,
+                WETTKAMPFID,
+                WETTKAMPFTAG,
+                MANNSCHAFTID,
+                MANNSCHAFTNUMMER,
+                VEREINID,
+                VEREINNAME,
+                MATCHID,
+                MATCHNR,
+                DSBMITGLIEDID,
+                DSBMITGLIEDNAME,
+                RUECKENNUMMER,
+                PFEILPUNKTESCHNITT,
+                SCHUETZESATZ1,
+                SCHUETZESATZ2,
+                SCHUETZESATZ3,
+                SCHUETZESATZ4,
+                SCHUETZESATZ5
             );
         }
 
@@ -122,7 +119,7 @@ public class SchuetzenstatistikServiceTest {
             when(schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
 
             // call test method
-            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
+            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikVeranstaltung(VERANSTALTUNGID,VEREINID);
 
             // assert result
             assertThat(actual)
@@ -153,7 +150,7 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
 
             // verify invocations
-            verify(schuetzenstatistikComponent).getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
+            verify(schuetzenstatistikComponent).getSchuetzenstatistikVeranstaltung(VERANSTALTUNGID,VEREINID);
         }
 
         @Test
@@ -167,7 +164,7 @@ public class SchuetzenstatistikServiceTest {
             when(schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
 
             // call test method
-            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
+            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikWettkampf(WETTKAMPFID,VEREINID);
 
             // assert result
             assertThat(actual)
@@ -197,7 +194,7 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getSchuetzeSatz4()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz4()));
             assertThat(actualDTO.getSchuetzeSatz5()).isEqualTo(removeCurlyBracketsFromSchuetzeSatz(schuetzenstatistikDO.getschuetzeSatz5()));
             // verify invocations
-            verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
+            verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(WETTKAMPFID,VEREINID);
 
         }
 
