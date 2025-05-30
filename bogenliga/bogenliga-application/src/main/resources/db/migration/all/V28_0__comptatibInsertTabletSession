@@ -1,0 +1,252 @@
+-- V28: Universal BasicDAO Fix für schusszettel_tablet_session 
+-- Funktioniert mit allen PostgreSQL Versionen (auch älteren als 9.6)
+-- Verwendet nur Standard SQL ohne version-spezifische Features
+
+-- Transaction für Atomicity
+BEGIN;
+
+-- Timeout für Safety
+SET statement_timeout = '300s';
+
+-- Checken ob Tabelle existiert (ohne fancy Syntax)
+DO $$
+BEGIN
+    PERFORM 1 FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session';
+    
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Tabelle schusszettel_tablet_session existiert nicht. V25 muss erst laufen!';
+    END IF;
+END $$;
+
+-- Universelle Funktion für BasicDAO Spalten (funktioniert überall)
+CREATE OR REPLACE FUNCTION fix_basicdao_columns_universal() RETURNS void AS $$
+DECLARE
+    col_exists boolean;
+    sql_statement text;
+    error_msg text;
+BEGIN
+    RAISE NOTICE 'Starte universelle BasicDAO Spalten-Fix...';
+
+    -- created_at_utc hinzufügen (falls nicht da)
+    SELECT count(*) > 0 INTO col_exists
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name = 'created_at_utc';
+    
+    IF NOT col_exists THEN
+        RAISE NOTICE 'Füge created_at_utc hinzu...';
+        sql_statement := 'ALTER TABLE schusszettel_tablet_session ADD COLUMN created_at_utc TIMESTAMP NOT NULL DEFAULT now()';
+        EXECUTE sql_statement;
+        
+        -- Bestehende Daten mit sinnvollen Werten füllen
+        UPDATE schusszettel_tablet_session 
+        SET created_at_utc = COALESCE(last_updated, now()) 
+        WHERE created_at_utc IS NULL OR created_at_utc = (SELECT min(created_at_utc) FROM schusszettel_tablet_session LIMIT 1);
+        
+        RAISE NOTICE 'created_at_utc erfolgreich hinzugefügt';
+    ELSE
+        RAISE NOTICE 'created_at_utc ist bereits vorhanden';
+    END IF;
+
+    -- created_by hinzufügen (falls nicht da)
+    SELECT count(*) > 0 INTO col_exists
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name = 'created_by';
+    
+    IF NOT col_exists THEN
+        RAISE NOTICE 'Füge created_by hinzu...';
+        sql_statement := 'ALTER TABLE schusszettel_tablet_session ADD COLUMN created_by BIGINT NOT NULL DEFAULT -1';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'created_by erfolgreich hinzugefügt';
+    ELSE
+        RAISE NOTICE 'created_by ist bereits vorhanden';
+    END IF;
+
+    -- last_modified_at_utc hinzufügen (falls nicht da)
+    SELECT count(*) > 0 INTO col_exists
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name = 'last_modified_at_utc';
+    
+    IF NOT col_exists THEN
+        RAISE NOTICE 'Füge last_modified_at_utc hinzu...';
+        sql_statement := 'ALTER TABLE schusszettel_tablet_session ADD COLUMN last_modified_at_utc TIMESTAMP NULL';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'last_modified_at_utc erfolgreich hinzugefügt';
+    ELSE
+        RAISE NOTICE 'last_modified_at_utc ist bereits vorhanden';
+    END IF;
+
+    -- last_modified_by hinzufügen (falls nicht da)
+    SELECT count(*) > 0 INTO col_exists
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name = 'last_modified_by';
+    
+    IF NOT col_exists THEN
+        RAISE NOTICE 'Füge last_modified_by hinzu...';
+        sql_statement := 'ALTER TABLE schusszettel_tablet_session ADD COLUMN last_modified_by BIGINT NULL';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'last_modified_by erfolgreich hinzugefügt';
+    ELSE
+        RAISE NOTICE 'last_modified_by ist bereits vorhanden';
+    END IF;
+
+    -- version hinzufügen (falls nicht da)
+    SELECT count(*) > 0 INTO col_exists
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name = 'version';
+    
+    IF NOT col_exists THEN
+        RAISE NOTICE 'Füge version hinzu...';
+        sql_statement := 'ALTER TABLE schusszettel_tablet_session ADD COLUMN version BIGINT NOT NULL DEFAULT 0';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'version erfolgreich hinzugefügt';
+    ELSE
+        RAISE NOTICE 'version ist bereits vorhanden';
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS error_msg = MESSAGE_TEXT;
+        RAISE EXCEPTION 'Fehler beim Hinzufügen der BasicDAO Spalten: %', error_msg;
+END;
+$$ LANGUAGE plpgsql;
+
+-- BasicDAO Spalten-Fix ausführen
+SELECT fix_basicdao_columns_universal();
+
+-- Funktion wieder löschen
+DROP FUNCTION fix_basicdao_columns_universal();
+
+-- Universelle Index-Erstellung (funktioniert mit allen PostgreSQL Versionen)
+CREATE OR REPLACE FUNCTION create_indexes_universal() RETURNS void AS $$
+DECLARE
+    index_exists boolean;
+    sql_statement text;
+    error_msg text;
+BEGIN
+    RAISE NOTICE 'Erstelle Indexe (universal kompatibel)...';
+
+    -- Token-Index erstellen (falls nicht da)
+    SELECT count(*) > 0 INTO index_exists
+    FROM pg_indexes 
+    WHERE schemaname = 'public' 
+    AND tablename = 'schusszettel_tablet_session' 
+    AND indexname = 'idx_tablet_session_token';
+    
+    IF NOT index_exists THEN
+        RAISE NOTICE 'Erstelle idx_tablet_session_token...';
+        sql_statement := 'CREATE INDEX idx_tablet_session_token ON schusszettel_tablet_session(token)';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'idx_tablet_session_token erfolgreich erstellt';
+    ELSE
+        RAISE NOTICE 'idx_tablet_session_token existiert bereits';
+    END IF;
+
+    -- Lookup-Index erstellen (falls nicht da)
+    SELECT count(*) > 0 INTO index_exists
+    FROM pg_indexes 
+    WHERE schemaname = 'public' 
+    AND tablename = 'schusszettel_tablet_session' 
+    AND indexname = 'idx_tablet_session_lookup';
+    
+    IF NOT index_exists THEN
+        RAISE NOTICE 'Erstelle idx_tablet_session_lookup...';
+        sql_statement := 'CREATE INDEX idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id)';
+        EXECUTE sql_statement;
+        RAISE NOTICE 'idx_tablet_session_lookup erfolgreich erstellt';
+    ELSE
+        RAISE NOTICE 'idx_tablet_session_lookup existiert bereits';
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS error_msg = MESSAGE_TEXT;
+        RAISE EXCEPTION 'Fehler beim Erstellen der Indexe: %', error_msg;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Index-Erstellung ausführen
+SELECT create_indexes_universal();
+
+-- Funktion wieder löschen
+DROP FUNCTION create_indexes_universal();
+
+-- Finale Validierung (ohne Exceptions, nur Logging)
+DO $$
+DECLARE
+    col_count integer;
+    index_count integer;
+    missing_items text[] := ARRAY[]::text[];
+BEGIN
+    RAISE NOTICE 'Finale Validierung der BasicDAO Struktur...';
+
+    -- Spalten zählen
+    SELECT count(*) INTO col_count
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'schusszettel_tablet_session' 
+    AND column_name IN ('created_at_utc', 'created_by', 'last_modified_at_utc', 'last_modified_by', 'version');
+    
+    -- Indexe zählen
+    SELECT count(*) INTO index_count
+    FROM pg_indexes 
+    WHERE schemaname = 'public' 
+    AND tablename = 'schusszettel_tablet_session' 
+    AND indexname IN ('idx_tablet_session_token', 'idx_tablet_session_lookup');
+
+    -- Ergebnis melden
+    IF col_count = 5 AND index_count = 2 THEN
+        RAISE NOTICE 'ERFOLG: BasicDAO Struktur ist vollständig! (% Spalten, % Indexe)', col_count, index_count;
+    ELSE
+        RAISE WARNING 'ACHTUNG: Nicht alle Elemente konnten erstellt werden (% von 5 Spalten, % von 2 Indexe)', col_count, index_count;
+        
+        -- Details welche Spalten fehlen
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'schusszettel_tablet_session' AND column_name = 'created_at_utc') THEN
+            missing_items := array_append(missing_items, 'created_at_utc');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'schusszettel_tablet_session' AND column_name = 'created_by') THEN
+            missing_items := array_append(missing_items, 'created_by');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'schusszettel_tablet_session' AND column_name = 'last_modified_at_utc') THEN
+            missing_items := array_append(missing_items, 'last_modified_at_utc');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'schusszettel_tablet_session' AND column_name = 'last_modified_by') THEN
+            missing_items := array_append(missing_items, 'last_modified_by');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'schusszettel_tablet_session' AND column_name = 'version') THEN
+            missing_items := array_append(missing_items, 'version');
+        END IF;
+        
+        -- Details welche Indexe fehlen
+        IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'schusszettel_tablet_session' AND indexname = 'idx_tablet_session_token') THEN
+            missing_items := array_append(missing_items, 'idx_tablet_session_token');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'schusszettel_tablet_session' AND indexname = 'idx_tablet_session_lookup') THEN
+            missing_items := array_append(missing_items, 'idx_tablet_session_lookup');
+        END IF;
+        
+        IF array_length(missing_items, 1) > 0 THEN
+            RAISE WARNING 'Fehlende Elemente: %', array_to_string(missing_items, ', ');
+        END IF;
+    END IF;
+END $$;
+
+-- Statement timeout zurücksetzen
+SET statement_timeout = DEFAULT;
+
+-- Transaction committen
+COMMIT;
+
+-- Abschluss-Info
+SELECT 'V28 Universal BasicDAO Migration completed successfully' as migration_status;
