@@ -1,6 +1,6 @@
 -- V29: Tablet Session Tabelle komplett neu aufbauen
--- Problem: Migration mehrmals geändert, jetzt sind Duplikate und Mist drin
--- Lösung: Einfach alles wegwerfen und neu machen (Daten sind eh nur Test-Daten)
+-- Problem: Migration mehrmals geändert
+-- Lösung: Einfach alles wegwerfen und neu machen
 
 BEGIN;
 
@@ -87,4 +87,4 @@ END $$;
 
 COMMIT;
 
--- Fertig - viel einfacher als den ganzen Mist zu reparieren
+-- Fertig
