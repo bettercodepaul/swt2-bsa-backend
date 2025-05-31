@@ -24,6 +24,10 @@ import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszette
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.assertj.core.api.Assertions;
@@ -32,9 +36,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -65,6 +71,10 @@ public class TabletSchusszettelComponentImplTest {
     @Mock
     private VereinComponent vereinComponent;
     @Mock
+    private WettkampfComponent wettkampfComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
     private TabletSchusszettelSyncComponent syncComp;
 
     private TabletSchusszettelComponentImpl underTest;
@@ -80,10 +90,12 @@ public class TabletSchusszettelComponentImplTest {
         MockitoAnnotations.initMocks(this);
         underTest = new TabletSchusszettelComponentImpl(
                 sessionDAO, passeComponent, matchComponent, mmComponent,
-                mitgliedComponent, mannschaftComponent, vereinComponent, syncComp);
+                mitgliedComponent, mannschaftComponent, vereinComponent,
+                wettkampfComponent, veranstaltungComponent, syncComp);
 
         underTestAdmin = new TabletSchusszettelAdminComponentImpl(sessionDAO, matchComponent,
-                mannschaftComponent, vereinComponent, passeComponent, syncComp);
+                mannschaftComponent, vereinComponent, passeComponent, syncComp,
+                wettkampfComponent, veranstaltungComponent);
 
         inMemoryPasses = new ArrayList<>();
         when(passeComponent.findByMatchId(anyLong())).thenAnswer(invocation -> {
@@ -115,6 +127,36 @@ public class TabletSchusszettelComponentImplTest {
 
         when(syncComp.synchronizeSession(any(), anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(defaultSyncResult);
+
+        // Setup wettkampf and veranstaltung mocks
+        setupWettkampfMocks();
+    }
+
+    /**
+     * Setup wettkampf and veranstaltung information mocking for admin component
+     */
+    private void setupWettkampfMocks() {
+        // Setup wettkampf
+        WettkampfDO wettkampf = new WettkampfDO();
+        wettkampf.setId(WETTKAMPF_ID);
+        wettkampf.setWettkampfTag(1L);
+        wettkampf.setWettkampfDatum(Date.valueOf(LocalDate.of(2024, 1, 15)));
+        wettkampf.setWettkampfBeginn(String.valueOf(LocalTime.of(9, 0)));
+        wettkampf.setWettkampfOrtsname("Test Arena");
+        wettkampf.setWettkampfOrtsinfo("Halle 1");
+        wettkampf.setWettkampfStrasse("Sportstr. 123");
+        wettkampf.setWettkampfPlz("12345");
+        wettkampf.setWettkampfVeranstaltungsId(1L);
+        when(wettkampfComponent.findById(WETTKAMPF_ID)).thenReturn(wettkampf);
+
+        // Setup veranstaltung
+        VeranstaltungDO veranstaltung = new VeranstaltungDO();
+        veranstaltung.setVeranstaltungID(1L);
+        veranstaltung.setVeranstaltungName("Test Liga 2024");
+        veranstaltung.setVeranstaltungSportJahr(2024L);
+        veranstaltung.setVeranstaltungLigaName("1. Bundesliga");
+        veranstaltung.setVeranstaltungWettkampftypName("Liga");
+        when(veranstaltungComponent.findById(1L)).thenReturn(veranstaltung);
     }
 
     @Test
@@ -266,6 +308,66 @@ public class TabletSchusszettelComponentImplTest {
     public void testReTokenize_InvalidSession() {
         when(sessionDAO.findByWettkampfUndTeam(WETTKAMPF_ID, TEAM1_ID)).thenReturn(Optional.empty());
         underTestAdmin.reTokenize(WETTKAMPF_ID, TEAM1_ID);
+    }
+
+    @Test
+    public void testGenerateSchusszettelSessions_WithWettkampfInfo() {
+        // Setup test entities
+        TabletSchusszettelEntity entity = new TabletSchusszettelEntity();
+        entity.setWettkampfId(WETTKAMPF_ID);
+        entity.setTeamId(TEAM1_ID);
+        entity.setStatus("SATZEINGABE");
+        entity.setToken("tok123");
+        entity.setCurrentPasseNumber(2);
+        entity.setGegnerTeamId(TEAM2_ID);
+
+        when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(entity));
+
+        setupTeamInfoMocks();
+
+        TabletSessionInfoDO result = underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+
+        // Verify wettkampf and veranstaltung components were called
+        verify(wettkampfComponent).findById(WETTKAMPF_ID);
+        verify(veranstaltungComponent).findById(1L);
+
+        // Verify result structure
+        Assertions.assertThat(result.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
+        Assertions.assertThat(result.getTabletSessionSingDOs()).hasSize(1);
+
+        // Verify that wettkampf info is included
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo()).isNotNull();
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo().getWettkampfId()).isEqualTo(WETTKAMPF_ID);
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo().getVeranstaltungName()).isEqualTo("Test Liga 2024");
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo().getWettkampfOrtsname()).isEqualTo("Test Arena");
+    }
+
+    @Test
+    public void testGenerateSchusszettelSessions_WettkampfInfoError() {
+        // Test graceful handling when wettkampf info cannot be retrieved
+        TabletSchusszettelEntity entity = new TabletSchusszettelEntity();
+        entity.setWettkampfId(WETTKAMPF_ID);
+        entity.setTeamId(TEAM1_ID);
+        entity.setStatus("SATZEINGABE");
+        entity.setToken("tok123");
+        entity.setCurrentPasseNumber(2);
+        entity.setGegnerTeamId(TEAM2_ID);
+
+        when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(entity));
+
+        setupTeamInfoMocks();
+
+        // Mock wettkampf component to throw exception
+        when(wettkampfComponent.findById(WETTKAMPF_ID)).thenThrow(new RuntimeException("Wettkampf not found"));
+
+        TabletSessionInfoDO result = underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+
+        // Should still return result, but with null wettkampf info
+        Assertions.assertThat(result.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
+        Assertions.assertThat(result.getTabletSessionSingDOs()).hasSize(1);
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo()).isNull();
     }
 
     @Test(expected = BusinessException.class)
@@ -631,9 +733,13 @@ public class TabletSchusszettelComponentImplTest {
         when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
                 .thenReturn(Collections.singletonList(entity));
 
+        setupTeamInfoMocks();
+
         // act & assert: simply calls the method — if it throws, the test will fail
         try {
-            underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+            TabletSessionInfoDO result = underTestAdmin.generateSchusszettelSessions(WETTKAMPF_ID);
+            // Verify that wettkampf info is included
+            Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo()).isNotNull();
         } catch (Exception e) {
             fail("generateSchusszettelSessions should not have thrown, but did: " + e.getMessage());
         }
@@ -759,6 +865,19 @@ public class TabletSchusszettelComponentImplTest {
                                            final Long team2Id,
                                            final Long match1Id,
                                            final Long match2Id) {
+
+        // Setup wettkampf and veranstaltung for this unique competition
+        WettkampfDO wettkampf = new WettkampfDO();
+        wettkampf.setId(wettkampfId);
+        wettkampf.setWettkampfTag(1L);
+        wettkampf.setWettkampfDatum(Date.valueOf(LocalDate.of(2024, 1, 15)));
+        wettkampf.setWettkampfBeginn(String.valueOf(LocalTime.of(9, 0)));
+        wettkampf.setWettkampfOrtsname("Test Arena");
+        wettkampf.setWettkampfOrtsinfo("Halle 1");
+        wettkampf.setWettkampfStrasse("Sportstr. 123");
+        wettkampf.setWettkampfPlz("12345");
+        wettkampf.setWettkampfVeranstaltungsId(1L);
+        when(wettkampfComponent.findById(wettkampfId)).thenReturn(wettkampf);
 
         // 1) Stub out both matches for this competition
         MatchDO match1 = new MatchDO();
