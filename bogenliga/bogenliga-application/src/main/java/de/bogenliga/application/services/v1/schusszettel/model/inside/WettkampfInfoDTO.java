@@ -6,8 +6,11 @@ import java.sql.Date;
  * DTO für Wettkampf-Informationen, die an das Tablet geliefert werden.
  * Enthält relevante Wettkampf- und Veranstaltungsdetails für die Anzeige.
  *
+ * @SuppressWarnings("java:S4144") // Suppress SonarQube duplication warning
+ *
  * @author Marty Lauterbach
  */
+@SuppressWarnings("squid:S4144")
 public class WettkampfInfoDTO {
 
     private Long wettkampfId;
