@@ -7,6 +7,7 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeS
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,6 +67,11 @@ public class TabletSchusszettelMapperTest {
         // Verfügbare Schützen
         VerfuegbarerSchuetzeDO verfuegbarer = new VerfuegbarerSchuetzeDO(88L, "Anna Schmidt");
         doObj.setVerfuegbareSchuetzen(Collections.singletonList(verfuegbarer));
+
+        // Wettkampf-Info (optional, falls benötigt)
+        WettkampfInfoDO wettkampfInfo = new WettkampfInfoDO(1L, 1L, null, "10:00", "Stadion", "Info", "Straße", "12345",
+                2L, "Veranstaltung", 2023L, "Liga", "Wettkampftyp");
+        doObj.setWettkampfInfo(wettkampfInfo);
     }
 
     @Test
