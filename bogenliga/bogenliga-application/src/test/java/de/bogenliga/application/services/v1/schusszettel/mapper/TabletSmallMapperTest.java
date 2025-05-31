@@ -885,8 +885,8 @@ public class TabletSmallMapperTest {
     }
 
     // =============================================================================================
-// Additional TabletSessionInfoMapper Tests for complete coverage
-// =============================================================================================
+    // Additional TabletSessionInfoMapper Tests for complete coverage
+    // =============================================================================================
 
     @Test(expected = NullPointerException.class)
     public void testTabletSessionInfoMapper_toDTOWithNull() {
@@ -1028,9 +1028,9 @@ public class TabletSmallMapperTest {
         assertNull("WettkampfInfo should be null", doObj.getTabletSessionSingDOs()[0].getWettkampfInfo());
     }
 
-// =============================================================================================
-// WettkampfInfoDTO Tests for complete coverage
-// =============================================================================================
+    // =============================================================================================
+    // WettkampfInfoDTO Tests for complete coverage
+    // =============================================================================================
 
     @Test
     public void testWettkampfInfoDTO_defaultConstructor() {
@@ -1109,10 +1109,9 @@ public class TabletSmallMapperTest {
         assertEquals("Compound", dto.getWettkampftypName());
     }
 
-// =============================================================================================
-// Additional null handling tests for complete coverage
-// =============================================================================================
-
+    // =============================================================================================
+    // Additional null handling tests for complete coverage
+    // =============================================================================================
 
     @Test(expected = NullPointerException.class)
     public void testVerfuegbarerSchuetzeMapper_toDTOWithNull() {
@@ -1291,7 +1290,5 @@ public class TabletSmallMapperTest {
         assertEquals(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE, dto.getStatus());
         assertEquals("Team 1", dto.getEigenesTeam().getTeamName());
         assertEquals("Team 2", dto.getGegnerischesTeam().getTeamName());
-        // The actual behavior might be that these lists are null, not empty
-        // Let's check what the buildDTOFromData method actually does with null inputs
     }
 }
