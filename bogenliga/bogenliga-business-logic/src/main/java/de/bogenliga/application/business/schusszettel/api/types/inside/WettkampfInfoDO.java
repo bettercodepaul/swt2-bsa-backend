@@ -6,8 +6,11 @@ import java.sql.Date;
  * Business-Objekt zur Darstellung von Wettkampf-Informationen.
  * Wird im Business-Layer für den Tablet-Schusszettel verwendet.
  *
+ * @SuppressWarnings("java:S4144") // Suppress SonarQube duplication warning
+ *
  * @author Marty Lauterbach
  */
+@SuppressWarnings("squid:S4144")
 public class WettkampfInfoDO {
 
     private Long wettkampfId;
