@@ -7,6 +7,7 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeS
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import de.bogenliga.application.services.v1.schusszettel.model.*;
 
 import de.bogenliga.application.services.v1.schusszettel.model.inside.SatzErgebnisDTO;
@@ -15,6 +16,7 @@ import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeSt
 import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamInfoDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamMatchInfoDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.inside.VerfuegbarerSchuetzeDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.WettkampfInfoDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,7 @@ public class TabletSchusszettelMapper {
         dto.setSchuetzeStammDaten(mapSchuetzeStammdaten(doObj.getSchuetzeStammDaten()));
         dto.setMatchErgebnis(mapMatchErgebnisse(doObj.getMatchErgebnis()));
         dto.setVerfuegbareSchuetzen(mapVerfuegbareSchuetzen(doObj.getVerfuegbareSchuetzen()));
+        dto.setWettkampfInfo(mapWettkampfInfo(doObj.getWettkampfInfo()));
         return dto;
     }
 
@@ -82,6 +85,25 @@ public class TabletSchusszettelMapper {
         return doList == null ? null : doList.stream()
                 .map(s -> new VerfuegbarerSchuetzeDTO(s.getSchuetzenId(), s.getName()))
                 .collect(Collectors.toList());
+    }
+
+    private static WettkampfInfoDTO mapWettkampfInfo(WettkampfInfoDO doObj) {
+        if (doObj == null) return null;
+        return new WettkampfInfoDTO(
+                doObj.getWettkampfId(),
+                doObj.getWettkampfTag(),
+                doObj.getWettkampfDatum(),
+                doObj.getWettkampfBeginn(),
+                doObj.getWettkampfOrtsname(),
+                doObj.getWettkampfOrtsinfo(),
+                doObj.getWettkampfStrasse(),
+                doObj.getWettkampfPlz(),
+                doObj.getVeranstaltungId(),
+                doObj.getVeranstaltungName(),
+                doObj.getVeranstaltungSportjahr(),
+                doObj.getLigaName(),
+                doObj.getWettkampftypName()
+        );
     }
 
     // --------------------------------------------------------------------

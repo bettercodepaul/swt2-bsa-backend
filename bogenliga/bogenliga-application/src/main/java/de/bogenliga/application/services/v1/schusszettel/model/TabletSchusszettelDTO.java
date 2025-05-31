@@ -6,11 +6,12 @@ import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeSt
 import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamInfoDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.inside.TeamMatchInfoDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.inside.VerfuegbarerSchuetzeDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.WettkampfInfoDTO;
 import java.util.List;
 
 /**
  * Enthält die vollständige Antwortstruktur für den digitalen Schusszettel auf dem Tablet.
- * Diese DTO wird über die REST-API zurückgegeben und umfasst Status, Teams, Schützen und Ergebnisse.
+ * Diese DTO wird über die REST-API zurückgegeben und umfasst Status, Teams, Schützen, Ergebnisse und Wettkampf-Informationen.
  *
  * @author Marty Lauterbach
  */
@@ -24,6 +25,7 @@ public class TabletSchusszettelDTO {
     private List<SatzErgebnisDTO> satzErgebnisse;
     private List<TeamMatchInfoDTO> matchErgebnis;
     private List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen;
+    private WettkampfInfoDTO wettkampfInfo;
 
     // Getter/Setter
     public TabletSchusszettelStatus getStatus() { return status; }
@@ -51,6 +53,9 @@ public class TabletSchusszettelDTO {
     public void setVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen) {
         this.verfuegbareSchuetzen = verfuegbareSchuetzen;
     }
+
+    public WettkampfInfoDTO getWettkampfInfo() { return wettkampfInfo; }
+    public void setWettkampfInfo(WettkampfInfoDTO wettkampfInfo) { this.wettkampfInfo = wettkampfInfo; }
 
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske darstellen.

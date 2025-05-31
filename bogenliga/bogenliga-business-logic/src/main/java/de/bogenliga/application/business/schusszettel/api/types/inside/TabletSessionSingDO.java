@@ -12,6 +12,7 @@ package de.bogenliga.application.business.schusszettel.api.types.inside;
  *      * - Token
  *      * - CurrentPasse
  *      * - Nächster Gegner (can be null)
+ *      * - WettkampfInfo (new)
  *
  * @author Marty Lauterbach
  */
@@ -22,6 +23,7 @@ public class TabletSessionSingDO {
     private String token;
     private Integer currentPasse;
     private String naechsterGegnerName;
+    private WettkampfInfoDO wettkampfInfo;
 
     // Default constructor
     public TabletSessionSingDO() {
@@ -36,6 +38,19 @@ public class TabletSessionSingDO {
         this.token = token;
         this.currentPasse = currentPasse;
         this.naechsterGegnerName = naechsterGegnerName;
+    }
+
+    // Constructor with wettkampf info
+    public TabletSessionSingDO(Long teamId, String teamName, String status, String token,
+                               Integer currentPasse, String naechsterGegnerName,
+                               WettkampfInfoDO wettkampfInfo) {
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.status = status;
+        this.token = token;
+        this.currentPasse = currentPasse;
+        this.naechsterGegnerName = naechsterGegnerName;
+        this.wettkampfInfo = wettkampfInfo;
     }
 
     // Getters and Setters
@@ -85,5 +100,13 @@ public class TabletSessionSingDO {
 
     public void setNaechsterGegnerName(String naechsterGegnerName) {
         this.naechsterGegnerName = naechsterGegnerName;
+    }
+
+    public WettkampfInfoDO getWettkampfInfo() {
+        return wettkampfInfo;
+    }
+
+    public void setWettkampfInfo(WettkampfInfoDO wettkampfInfo) {
+        this.wettkampfInfo = wettkampfInfo;
     }
 }
