@@ -6,11 +6,14 @@ import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TabletSessionSingDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import de.bogenliga.application.services.v1.schusszettel.model.TabletSessionInfoDTO;
 import de.bogenliga.application.services.v1.schusszettel.model.inside.TabletSessionSingDTO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.WettkampfInfoDTO;
 
 /**
  * Mapper to convert between TabletSessionInfoDO and TabletSessionInfoDTO
+ * Updated to include wettkampf information.
  */
 public class TabletSessionInfoMapper {
 
@@ -39,7 +42,27 @@ public class TabletSessionInfoMapper {
                 singDO.getStatus(),
                 singDO.getToken(),
                 singDO.getCurrentPasse(),
-                singDO.getNaechsterGegnerName()
+                singDO.getNaechsterGegnerName(),
+                mapWettkampfInfoToDTO(singDO.getWettkampfInfo())
+        );
+    }
+
+    private static WettkampfInfoDTO mapWettkampfInfoToDTO(WettkampfInfoDO doObj) {
+        if (doObj == null) return null;
+        return new WettkampfInfoDTO(
+                doObj.getWettkampfId(),
+                doObj.getWettkampfTag(),
+                doObj.getWettkampfDatum(),
+                doObj.getWettkampfBeginn(),
+                doObj.getWettkampfOrtsname(),
+                doObj.getWettkampfOrtsinfo(),
+                doObj.getWettkampfStrasse(),
+                doObj.getWettkampfPlz(),
+                doObj.getVeranstaltungId(),
+                doObj.getVeranstaltungName(),
+                doObj.getVeranstaltungSportjahr(),
+                doObj.getLigaName(),
+                doObj.getWettkampftypName()
         );
     }
 
@@ -57,7 +80,27 @@ public class TabletSessionInfoMapper {
                 singDTO.getStatus(),
                 singDTO.getToken(),
                 singDTO.getCurrentPasse(),
-                singDTO.getNaechsterGegner()
+                singDTO.getNaechsterGegner(),
+                mapWettkampfInfoToDO(singDTO.getWettkampfInfo())
+        );
+    }
+
+    private static WettkampfInfoDO mapWettkampfInfoToDO(WettkampfInfoDTO dto) {
+        if (dto == null) return null;
+        return new WettkampfInfoDO(
+                dto.getWettkampfId(),
+                dto.getWettkampfTag(),
+                dto.getWettkampfDatum(),
+                dto.getWettkampfBeginn(),
+                dto.getWettkampfOrtsname(),
+                dto.getWettkampfOrtsinfo(),
+                dto.getWettkampfStrasse(),
+                dto.getWettkampfPlz(),
+                dto.getVeranstaltungId(),
+                dto.getVeranstaltungName(),
+                dto.getVeranstaltungSportjahr(),
+                dto.getLigaName(),
+                dto.getWettkampftypName()
         );
     }
 

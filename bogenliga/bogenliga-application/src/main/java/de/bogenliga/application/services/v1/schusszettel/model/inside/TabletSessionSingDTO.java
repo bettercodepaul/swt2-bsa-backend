@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.schusszettel.model.inside;
 
 /**
  * Enthält eine einzige Session eines Teams an einem WettkampfTag.
+ * Erweitert um Wettkampf-Informationen für die Admin-Ansicht.
  *
  * Attributes:
  * * - WettkampfId
@@ -12,6 +13,7 @@ package de.bogenliga.application.services.v1.schusszettel.model.inside;
  *      * - Token
  *      * - CurrentPasse
  *      * - Nächster Gegner (can be null)
+ *      * - WettkampfInfo (new)
  *
  * @author Marty Lauterbach
  */
@@ -23,6 +25,7 @@ public class TabletSessionSingDTO {
     private String token;
     private Integer currentPasse;
     private String naechsterGegnerName;
+    private WettkampfInfoDTO wettkampfInfo;
 
     // Default constructor
     public TabletSessionSingDTO() {
@@ -30,13 +33,26 @@ public class TabletSessionSingDTO {
 
     // Constructor with all fields
     public TabletSessionSingDTO(Long teamId, String teamName, String status, String token,
-                               Integer currentPasse, String naechsterGegnerName) {
+                                Integer currentPasse, String naechsterGegnerName) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.status = status;
         this.token = token;
         this.currentPasse = currentPasse;
         this.naechsterGegnerName = naechsterGegnerName;
+    }
+
+    // Constructor with wettkampf info
+    public TabletSessionSingDTO(Long teamId, String teamName, String status, String token,
+                                Integer currentPasse, String naechsterGegnerName,
+                                WettkampfInfoDTO wettkampfInfo) {
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.status = status;
+        this.token = token;
+        this.currentPasse = currentPasse;
+        this.naechsterGegnerName = naechsterGegnerName;
+        this.wettkampfInfo = wettkampfInfo;
     }
 
     // Getters and Setters
@@ -95,5 +111,13 @@ public class TabletSessionSingDTO {
 
     public void setNaechsterGegnerName(String naechsterGegnerName) {
         this.naechsterGegnerName = naechsterGegnerName;
+    }
+
+    public WettkampfInfoDTO getWettkampfInfo() {
+        return wettkampfInfo;
+    }
+
+    public void setWettkampfInfo(WettkampfInfoDTO wettkampfInfo) {
+        this.wettkampfInfo = wettkampfInfo;
     }
 }
