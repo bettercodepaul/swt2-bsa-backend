@@ -775,29 +775,36 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     private WettkampfInfoDO buildWettkampfInfo(long matchId, long wettkampfId) {
         try {
-            // Get match to find wettkampf ID
-            MatchDO match = matchComponent.findById(matchId);
-            WettkampfDO wettkampf = wettkampfComponent.findById(match.getWettkampfId());
-            VeranstaltungDO veranstaltung = veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId());
+            final MatchDO matchData = matchComponent.findById(matchId);
+            final WettkampfDO competition = wettkampfComponent.findById(matchData.getWettkampfId());
+            final VeranstaltungDO event = veranstaltungComponent.findById(competition.getWettkampfVeranstaltungsId());
 
-            return new WettkampfInfoDO(
-                    wettkampf.getId(),
-                    wettkampf.getWettkampfTag(),
-                    wettkampf.getWettkampfDatum(),
-                    wettkampf.getWettkampfBeginn(),
-                    wettkampf.getWettkampfOrtsname(),
-                    wettkampf.getWettkampfOrtsinfo(),
-                    wettkampf.getWettkampfStrasse(),
-                    wettkampf.getWettkampfPlz(),
-                    veranstaltung.getVeranstaltungID(),
-                    veranstaltung.getVeranstaltungName(),
-                    veranstaltung.getVeranstaltungSportJahr(),
-                    veranstaltung.getVeranstaltungLigaName(),
-                    veranstaltung.getVeranstaltungWettkampftypName()
-            );
-        } catch (Exception e) {
-            LOGGER.warn("Could not build wettkampf info for matchId {}: {}", matchId, e.getMessage());
+            return assembleWettkampfInfo(competition, event);
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to build wettkampf info for matchId {} and wettkampfId {}: {}",
+                    matchId, wettkampfId, ex.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Assembles WettkampfInfoDO from competition and event data
+     */
+    private WettkampfInfoDO assembleWettkampfInfo(WettkampfDO competition, VeranstaltungDO event) {
+        return new WettkampfInfoDO(
+                competition.getId(),
+                competition.getWettkampfTag(),
+                competition.getWettkampfDatum(),
+                competition.getWettkampfBeginn(),
+                competition.getWettkampfOrtsname(),
+                competition.getWettkampfOrtsinfo(),
+                competition.getWettkampfStrasse(),
+                competition.getWettkampfPlz(),
+                event.getVeranstaltungID(),
+                event.getVeranstaltungName(),
+                event.getVeranstaltungSportJahr(),
+                event.getVeranstaltungLigaName(),
+                event.getVeranstaltungWettkampftypName()
+        );
     }
 }
