@@ -438,6 +438,20 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                                         TabletSchusszettelDO out,
                                         long teamId) {
         List<MannschaftsmitgliedDO> members = mmComponent.findByTeamId(teamId);
+
+        // Stammdaten aller Vereins-Schützen zusammenstellen
+        List<SchuetzeStammdatenDO> stammdaten = members.stream()
+                .map(m -> {
+                    DsbMitgliedDO dm = mitgliedComponent.findById(m.getDsbMitgliedId());
+                    return new SchuetzeStammdatenDO(
+                            dm.getId(),
+                            Math.toIntExact(m.getRueckennummer()),
+                            dm.getVorname(),
+                            dm.getNachname()
+                    );
+                }).collect(Collectors.toList());
+        out.setSchuetzeStammDaten(stammdaten);
+
         List<VerfuegbarerSchuetzeDO> available = members.stream()
                 .map(m -> {
                     DsbMitgliedDO dm = mitgliedComponent.findById(m.getDsbMitgliedId());
