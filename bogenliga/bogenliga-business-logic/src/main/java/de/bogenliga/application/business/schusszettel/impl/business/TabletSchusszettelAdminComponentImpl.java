@@ -21,9 +21,14 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TabletSessionSingDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -56,6 +61,8 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     private final VereinComponent vereinComponent;
     private final PasseComponent passeComponent;
     private final TabletSchusszettelSyncComponent syncComponent;
+    private final WettkampfComponent wettkampfComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
 
     @Autowired
     public TabletSchusszettelAdminComponentImpl(final TabletSchusszettelDAO sessionDAO,
@@ -63,13 +70,17 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                                                 final DsbMannschaftComponent mannschaftComponent,
                                                 final VereinComponent vereinComponent,
                                                 final PasseComponent passeComponent,
-                                                final TabletSchusszettelSyncComponent syncComponent) {
+                                                final TabletSchusszettelSyncComponent syncComponent,
+                                                final WettkampfComponent wettkampfComponent,
+                                                final VeranstaltungComponent veranstaltungComponent) {
         this.sessionDAO        = sessionDAO;
         this.matchComponent    = matchComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent     = vereinComponent;
         this.passeComponent      = passeComponent;
         this.syncComponent      = syncComponent;
+        this.wettkampfComponent = wettkampfComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     /**
@@ -217,11 +228,44 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     }
 
     /**
+     * Build wettkampf information from wettkampf and veranstaltung data
+     */
+    private WettkampfInfoDO buildWettkampfInfo(long wettkampfId) {
+        try {
+            WettkampfDO wettkampf = wettkampfComponent.findById(wettkampfId);
+            VeranstaltungDO veranstaltung = veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId());
+
+            return new WettkampfInfoDO(
+                    wettkampf.getId(),
+                    wettkampf.getWettkampfTag(),
+                    wettkampf.getWettkampfDatum(),
+                    wettkampf.getWettkampfBeginn(),
+                    wettkampf.getWettkampfOrtsname(),
+                    wettkampf.getWettkampfOrtsinfo(),
+                    wettkampf.getWettkampfStrasse(),
+                    wettkampf.getWettkampfPlz(),
+                    veranstaltung.getVeranstaltungID(),
+                    veranstaltung.getVeranstaltungName(),
+                    veranstaltung.getVeranstaltungSportJahr(),
+                    veranstaltung.getVeranstaltungLigaName(),
+                    veranstaltung.getVeranstaltungWettkampftypName()
+            );
+        } catch (Exception e) {
+            LOGGER.warn("Could not build wettkampf info for wettkampfId {}: {}", wettkampfId, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Lists all tablet‐sessions for a competition, including team & opponent club names.
      * Optionally synchronizes session data with current match state for accurate admin view.
+     * Updated to include wettkampf information in each session.
      */
     @Override
     public TabletSessionInfoDO generateSchusszettelSessions(final long wettkampfId) {
+
+        // Build wettkampf info once for all sessions
+        final WettkampfInfoDO wettkampfInfo = buildWettkampfInfo(wettkampfId);
 
         // Load all sessions
         final List<TabletSchusszettelEntity> entities = sessionDAO.findByWettkampfId(wettkampfId);
@@ -276,7 +320,8 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                             e.getStatus(),
                             e.getToken(),
                             e.getCurrentPasseNumber(),
-                            opponentName
+                            opponentName,
+                            wettkampfInfo  // Include wettkampf info in each session
                     );
                 })
                 .toArray(TabletSessionSingDO[]::new);
