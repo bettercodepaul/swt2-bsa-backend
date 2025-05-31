@@ -17,6 +17,10 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -52,12 +56,11 @@ import java.util.stream.IntStream;
 @Service
 public class TabletSchusszettelComponentImpl implements TabletSchusszettelComponent {
 
-    // Logger for this class
     private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelComponentImpl.class);
 
     // Constants controlling match logic
-    private static final int MAX_SETS = 5;                     // Maximum number of sets per match
-    private static final int SHOOTERS_PER_TEAM = 3;            // Exactly three shooters per set
+    private static final int MAX_SETS = 5;
+    private static final int SHOOTERS_PER_TEAM = 3;
     private static final int ARROWS_PER_SHOOTER = 2;
 
     // State identifiers for session
@@ -74,7 +77,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     private final DsbMitgliedComponent        mitgliedComponent;
     private final DsbMannschaftComponent      mannschaftComponent;
     private final VereinComponent             vereinComponent;
-
+    private final WettkampfComponent          wettkampfComponent;
+    private final VeranstaltungComponent      veranstaltungComponent;
     private final TabletSchusszettelSyncComponent syncComponent;
 
     @Autowired
@@ -86,6 +90,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             DsbMitgliedComponent mitgliedComponent,
             DsbMannschaftComponent mannschaftComponent,
             VereinComponent vereinComponent,
+            WettkampfComponent wettkampfComponent,
+            VeranstaltungComponent veranstaltungComponent,
             TabletSchusszettelSyncComponent syncComponent) {
         this.sessionDAO        = sessionDAO;
         this.passeComponent    = passeComponent;
@@ -94,6 +100,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         this.mitgliedComponent = mitgliedComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent     = vereinComponent;
+        this.wettkampfComponent  = wettkampfComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
         this.syncComponent = syncComponent;
     }
 
@@ -106,6 +114,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      *    - SATZEINGABE: bereits gemeldete Schützen + verbleibende
      *    - WARTE: ggf. Statuswechsel, sonst Ansicht wie SATZEINGABE
      *    - WETTKAMPF_ENDE: Finale Zusammenfassung
+     *    -
+     * Updated to include wettkampf information in the response.
      * @author Marty Lauterbach
      */
     @Override
@@ -167,6 +177,9 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         result.setSatzErgebnisse(satzHistory);
         result.setSchuetzenMatchPunkte(buildMatchPunkte(passen, teamId));
         result.setMatchErgebnis(buildTeamMatchInfo(satzHistory, teamId, oppTeam));
+
+        // Build and set wettkampf information
+        result.setWettkampfInfo(buildWettkampfInfo(matchId, wettkampfId));
 
         // Call to TabletSessionDAO | Marty: Unnecessary call from a get class that infringes into setting database entry status - Why?
         // TabletSessionDAO.setCurrentMatchId(wettkampfId, teamId, matchId);
@@ -755,5 +768,43 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         }
 
         sessionDAO.updateStatus(session, 0L);
+    }
+
+    /**
+     * Build wettkampf information from match and veranstaltung data
+     */
+    private WettkampfInfoDO buildWettkampfInfo(long matchId, long wettkampfId) {
+        try {
+            final MatchDO matchData = matchComponent.findById(matchId);
+            final WettkampfDO competition = wettkampfComponent.findById(matchData.getWettkampfId());
+            final VeranstaltungDO event = veranstaltungComponent.findById(competition.getWettkampfVeranstaltungsId());
+
+            return assembleWettkampfInfo(competition, event);
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to build wettkampf info for matchId {} and wettkampfId {}: {}",
+                    matchId, wettkampfId, ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Assembles WettkampfInfoDO from competition and event data
+     */
+    private WettkampfInfoDO assembleWettkampfInfo(WettkampfDO competition, VeranstaltungDO event) {
+        return new WettkampfInfoDO(
+                competition.getId(),
+                competition.getWettkampfTag(),
+                competition.getWettkampfDatum(),
+                competition.getWettkampfBeginn(),
+                competition.getWettkampfOrtsname(),
+                competition.getWettkampfOrtsinfo(),
+                competition.getWettkampfStrasse(),
+                competition.getWettkampfPlz(),
+                event.getVeranstaltungID(),
+                event.getVeranstaltungName(),
+                event.getVeranstaltungSportJahr(),
+                event.getVeranstaltungLigaName(),
+                event.getVeranstaltungWettkampftypName()
+        );
     }
 }

@@ -6,11 +6,13 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeS
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TeamMatchInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
+import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import java.util.List;
 
 /**
  * Business-Objekt für die vollständige Struktur des digitalen Schusszettels.
  * Wird vom Service- bzw. Component-Layer befüllt und an die REST-API weitergereicht.
+ * Erweitert um Wettkampf-Informationen.
  *
  * acts as JSON object for frontend; all data comes from here.
  *
@@ -28,6 +30,7 @@ public class TabletSchusszettelDO {
     private List<SatzErgebnisDO> satzErgebnisse;
     private List<TeamMatchInfoDO> matchErgebnis;
     private List<VerfuegbarerSchuetzeDO> verfuegbareSchuetzen;
+    private WettkampfInfoDO wettkampfInfo;
 
     // Getter/Setter
     public TabletSchusszettelStatus getStatus() { return status; }
@@ -55,6 +58,9 @@ public class TabletSchusszettelDO {
     public void setVerfuegbareSchuetzen(List<VerfuegbarerSchuetzeDO> verfuegbareSchuetzen) {
         this.verfuegbareSchuetzen = verfuegbareSchuetzen;
     }
+
+    public WettkampfInfoDO getWettkampfInfo() { return wettkampfInfo; }
+    public void setWettkampfInfo(WettkampfInfoDO wettkampfInfo) { this.wettkampfInfo = wettkampfInfo; }
 
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske repräsentieren.

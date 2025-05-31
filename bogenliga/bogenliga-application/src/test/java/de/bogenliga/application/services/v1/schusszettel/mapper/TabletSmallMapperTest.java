@@ -883,4 +883,412 @@ public class TabletSmallMapperTest {
         
         return dto;
     }
+
+    // =============================================================================================
+    // Additional TabletSessionInfoMapper Tests for complete coverage
+    // =============================================================================================
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSessionInfoMapper_toDTOWithNull() {
+        // Act - This should throw NullPointerException
+        TabletSessionInfoMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSessionInfoMapper_toDOWithNull() {
+        // Act - This should throw NullPointerException
+        TabletSessionInfoMapper.toDO(null);
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_toDTOsArrayMethod() {
+        // Arrange
+        TabletSessionInfoDO sessionInfoDO = new TabletSessionInfoDO();
+        sessionInfoDO.setWettkampfId(42L);
+
+        TabletSessionSingDO[] singDOs = new TabletSessionSingDO[1];
+        singDOs[0] = new TabletSessionSingDO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2");
+        sessionInfoDO.setTabletSessionSingDOs(singDOs);
+
+        // Act
+        TabletSessionSingDTO[] dtoArray = TabletSessionInfoMapper.toDTOs(sessionInfoDO);
+
+        // Assert
+        assertNotNull("DTO array should not be null", dtoArray);
+        assertEquals(1, dtoArray.length);
+        assertEquals("Team 1", dtoArray[0].getTeamName());
+        assertEquals("ACTIVE", dtoArray[0].getStatus());
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_toDTOListMethod() {
+        // Arrange
+        TabletSessionInfoDO sessionInfoDO = new TabletSessionInfoDO();
+        sessionInfoDO.setWettkampfId(42L);
+
+        TabletSessionSingDO[] singDOs = new TabletSessionSingDO[1];
+        singDOs[0] = new TabletSessionSingDO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2");
+        sessionInfoDO.setTabletSessionSingDOs(singDOs);
+
+        // Act
+        List<TabletSessionSingDTO> dtoList = TabletSessionInfoMapper.toDTOList(sessionInfoDO);
+
+        // Assert
+        assertNotNull("DTO list should not be null", dtoList);
+        assertEquals(1, dtoList.size());
+        assertEquals("Team 1", dtoList.get(0).getTeamName());
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_withWettkampfInfo() {
+        // Arrange
+        WettkampfInfoDO wettkampfInfo = new WettkampfInfoDO(
+                1L, 2L, new java.sql.Date(System.currentTimeMillis()), "09:00",
+                "Sportzentrum", "Halle A", "Musterstraße 1", "12345",
+                10L, "Bundesliga", 2024L, "1. Liga", "Recurve"
+        );
+
+        TabletSessionInfoDO sessionInfoDO = new TabletSessionInfoDO();
+        sessionInfoDO.setWettkampfId(42L);
+
+        TabletSessionSingDO[] singDOs = new TabletSessionSingDO[1];
+        singDOs[0] = new TabletSessionSingDO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2", wettkampfInfo);
+        sessionInfoDO.setTabletSessionSingDOs(singDOs);
+
+        // Act
+        TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(sessionInfoDO);
+
+        // Assert
+        assertNotNull("DTO should not be null", dto);
+        assertNotNull("WettkampfInfo should not be null", dto.getTabletSessionSingDTOs()[0].getWettkampfInfo());
+        assertEquals(Long.valueOf(1L), dto.getTabletSessionSingDTOs()[0].getWettkampfInfo().getWettkampfId());
+        assertEquals("Sportzentrum", dto.getTabletSessionSingDTOs()[0].getWettkampfInfo().getWettkampfOrtsname());
+        assertEquals("Bundesliga", dto.getTabletSessionSingDTOs()[0].getWettkampfInfo().getVeranstaltungName());
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_withNullWettkampfInfo() {
+        // Arrange
+        TabletSessionInfoDO sessionInfoDO = new TabletSessionInfoDO();
+        sessionInfoDO.setWettkampfId(42L);
+
+        TabletSessionSingDO[] singDOs = new TabletSessionSingDO[1];
+        singDOs[0] = new TabletSessionSingDO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2", null);
+        sessionInfoDO.setTabletSessionSingDOs(singDOs);
+
+        // Act
+        TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(sessionInfoDO);
+
+        // Assert
+        assertNotNull("DTO should not be null", dto);
+        assertNull("WettkampfInfo should be null", dto.getTabletSessionSingDTOs()[0].getWettkampfInfo());
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_toDOWithWettkampfInfo() {
+        // Arrange
+        WettkampfInfoDTO wettkampfInfo = new WettkampfInfoDTO(
+                1L, 2L, new java.sql.Date(System.currentTimeMillis()), "09:00",
+                "Sportzentrum", "Halle A", "Musterstraße 1", "12345",
+                10L, "Bundesliga", 2024L, "1. Liga", "Recurve"
+        );
+
+        TabletSessionInfoDTO sessionInfoDTO = new TabletSessionInfoDTO();
+        sessionInfoDTO.setWettkampfId(42L);
+
+        TabletSessionSingDTO[] singDTOs = new TabletSessionSingDTO[1];
+        singDTOs[0] = new TabletSessionSingDTO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2", wettkampfInfo);
+        sessionInfoDTO.setTabletSessionSingDTOs(singDTOs);
+
+        // Act
+        TabletSessionInfoDO doObj = TabletSessionInfoMapper.toDO(sessionInfoDTO);
+
+        // Assert
+        assertNotNull("DO should not be null", doObj);
+        assertNotNull("WettkampfInfo should not be null", doObj.getTabletSessionSingDOs()[0].getWettkampfInfo());
+        assertEquals(Long.valueOf(1L), doObj.getTabletSessionSingDOs()[0].getWettkampfInfo().getWettkampfId());
+        assertEquals("Sportzentrum", doObj.getTabletSessionSingDOs()[0].getWettkampfInfo().getWettkampfOrtsname());
+    }
+
+    @Test
+    public void testTabletSessionInfoMapper_toDOWithNullWettkampfInfo() {
+        // Arrange
+        TabletSessionInfoDTO sessionInfoDTO = new TabletSessionInfoDTO();
+        sessionInfoDTO.setWettkampfId(42L);
+
+        TabletSessionSingDTO[] singDTOs = new TabletSessionSingDTO[1];
+        singDTOs[0] = new TabletSessionSingDTO(1L, "Team 1", "ACTIVE", "token1", 3, "Team 2", null);
+        sessionInfoDTO.setTabletSessionSingDTOs(singDTOs);
+
+        // Act
+        TabletSessionInfoDO doObj = TabletSessionInfoMapper.toDO(sessionInfoDTO);
+
+        // Assert
+        assertNotNull("DO should not be null", doObj);
+        assertNull("WettkampfInfo should be null", doObj.getTabletSessionSingDOs()[0].getWettkampfInfo());
+    }
+
+    // =============================================================================================
+    // WettkampfInfoDTO Tests for complete coverage
+    // =============================================================================================
+
+    @Test
+    public void testWettkampfInfoDTO_defaultConstructor() {
+        // Act
+        WettkampfInfoDTO dto = new WettkampfInfoDTO();
+
+        // Assert
+        assertNotNull("DTO should not be null", dto);
+        assertNull("WettkampfId should be null", dto.getWettkampfId());
+        assertNull("WettkampfTag should be null", dto.getWettkampfTag());
+        assertNull("WettkampfDatum should be null", dto.getWettkampfDatum());
+    }
+
+    @Test
+    public void testWettkampfInfoDTO_parameterizedConstructor() {
+        // Arrange
+        java.sql.Date testDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Act
+        WettkampfInfoDTO dto = new WettkampfInfoDTO(
+                1L, 2L, testDate, "09:00",
+                "Sportzentrum", "Halle A", "Musterstraße 1", "12345",
+                10L, "Bundesliga", 2024L, "1. Liga", "Recurve"
+        );
+
+        // Assert
+        assertEquals(Long.valueOf(1L), dto.getWettkampfId());
+        assertEquals(Long.valueOf(2L), dto.getWettkampfTag());
+        assertEquals(testDate, dto.getWettkampfDatum());
+        assertEquals("09:00", dto.getWettkampfBeginn());
+        assertEquals("Sportzentrum", dto.getWettkampfOrtsname());
+        assertEquals("Halle A", dto.getWettkampfOrtsinfo());
+        assertEquals("Musterstraße 1", dto.getWettkampfStrasse());
+        assertEquals("12345", dto.getWettkampfPlz());
+        assertEquals(Long.valueOf(10L), dto.getVeranstaltungId());
+        assertEquals("Bundesliga", dto.getVeranstaltungName());
+        assertEquals(Long.valueOf(2024L), dto.getVeranstaltungSportjahr());
+        assertEquals("1. Liga", dto.getLigaName());
+        assertEquals("Recurve", dto.getWettkampftypName());
+    }
+
+    @Test
+    public void testWettkampfInfoDTO_settersAndGetters() {
+        // Arrange
+        WettkampfInfoDTO dto = new WettkampfInfoDTO();
+        java.sql.Date testDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Act
+        dto.setWettkampfId(1L);
+        dto.setWettkampfTag(2L);
+        dto.setWettkampfDatum(testDate);
+        dto.setWettkampfBeginn("10:00");
+        dto.setWettkampfOrtsname("Arena");
+        dto.setWettkampfOrtsinfo("Halle B");
+        dto.setWettkampfStrasse("Sportstraße 2");
+        dto.setWettkampfPlz("54321");
+        dto.setVeranstaltungId(20L);
+        dto.setVeranstaltungName("Regionalliga");
+        dto.setVeranstaltungSportjahr(2025L);
+        dto.setLigaName("2. Liga");
+        dto.setWettkampftypName("Compound");
+
+        // Assert
+        assertEquals(Long.valueOf(1L), dto.getWettkampfId());
+        assertEquals(Long.valueOf(2L), dto.getWettkampfTag());
+        assertEquals(testDate, dto.getWettkampfDatum());
+        assertEquals("10:00", dto.getWettkampfBeginn());
+        assertEquals("Arena", dto.getWettkampfOrtsname());
+        assertEquals("Halle B", dto.getWettkampfOrtsinfo());
+        assertEquals("Sportstraße 2", dto.getWettkampfStrasse());
+        assertEquals("54321", dto.getWettkampfPlz());
+        assertEquals(Long.valueOf(20L), dto.getVeranstaltungId());
+        assertEquals("Regionalliga", dto.getVeranstaltungName());
+        assertEquals(Long.valueOf(2025L), dto.getVeranstaltungSportjahr());
+        assertEquals("2. Liga", dto.getLigaName());
+        assertEquals("Compound", dto.getWettkampftypName());
+    }
+
+    // =============================================================================================
+    // Additional null handling tests for complete coverage
+    // =============================================================================================
+
+    @Test(expected = NullPointerException.class)
+    public void testVerfuegbarerSchuetzeMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        VerfuegbarerSchuetzeMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testVerfuegbarerSchuetzeMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        VerfuegbarerSchuetzeMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTeamMatchInfoMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TeamMatchInfoMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTeamMatchInfoMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TeamMatchInfoMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSessionSingMapper_mapToTabletSessionSingDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TabletSessionSingMapper.mapToTabletSessionSingDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSessionSingMapper_mapToTabletSessionSingDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TabletSessionSingMapper.mapToTabletSessionSingDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSchuetzeMatchPunkteMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        SchuetzeMatchPunkteMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSchuetzeMatchPunkteMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        SchuetzeMatchPunkteMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSchuetzenSatzMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        SchuetzenSatzMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSchuetzenSatzMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        SchuetzenSatzMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSatzErgebnisMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TabletSatzErgebnisMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSatzErgebnisMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TabletSatzErgebnisMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTeamInfoMapper_toDTOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TeamInfoMapper.toDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTeamInfoMapper_toDOWithNull() {
+        // Test null input for single object mapping - should throw NPE
+        TeamInfoMapper.toDO(null);
+    }
+
+// =============================================================================================
+// Additional edge case tests
+// =============================================================================================
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSchusszettelDTOMapper_fromRawSchuetzenWithNull() {
+        // Act - This should throw NullPointerException
+        TabletSchusszettelDTOMapper.fromRawSchuetzen(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSchusszettelDTOMapper_fromRawSatzdatenWithNull() {
+        // Act - This should throw NullPointerException
+        TabletSchusszettelDTOMapper.fromRawSatzdaten(null);
+    }
+
+    @Test
+    public void testTabletSchusszettelDTOMapper_fromRawSchuetzenWithEmptyList() {
+        // Arrange
+        List<Object[]> rawData = new ArrayList<>();
+
+        // Act
+        List<SchuetzeStammdatenDTO> dtoList = TabletSchusszettelDTOMapper.fromRawSchuetzen(rawData);
+
+        // Assert
+        assertNotNull("List should not be null", dtoList);
+        assertTrue("List should be empty", dtoList.isEmpty());
+    }
+
+    @Test
+    public void testTabletSchusszettelDTOMapper_fromRawSatzdatenWithEmptyList() {
+        // Arrange
+        List<Object[]> rawData = new ArrayList<>();
+
+        // Act
+        List<SatzErgebnisDTO> dtoList = TabletSchusszettelDTOMapper.fromRawSatzdaten(rawData);
+
+        // Assert
+        assertNotNull("List should not be null", dtoList);
+        assertTrue("List should be empty", dtoList.isEmpty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSatzEingabeMapper_toDOWithNull() {
+        // Test null input for DTO to DO conversion - should throw NPE
+        TabletSatzEingabeMapper.toDO((SatzEingabeDTO) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSatzEingabeMapper_toDTOWithNull() {
+        // Test null input for DO to DTO conversion - should throw NPE
+        TabletSatzEingabeMapper.toDTO((SatzEingabeDO) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSchuetzenMeldungMapper_toDOWithNull() {
+        // Test null input for DTO to DO conversion - should throw NPE
+        TabletSchuetzenMeldungMapper.toDO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testTabletSchuetzenMeldungMapper_toDTOWithNull() {
+        // Test null input for DO to DTO conversion - should throw NPE
+        TabletSchuetzenMeldungMapper.toDTO(null);
+    }
+
+    // =============================================================================================
+    // Tests for edge cases in complex mappers
+    // =============================================================================================
+
+    @Test
+    public void testTabletSchusszettelDTOMapper_buildDTOFromDataWithNullLists() {
+        // Arrange
+        TeamInfoDTO eigenesTeam = new TeamInfoDTO(1L, "Team 1");
+        TeamInfoDTO gegnerischesTeam = new TeamInfoDTO(2L, "Team 2");
+
+        // Act
+        TabletSchusszettelDTO dto = TabletSchusszettelDTOMapper.buildDTOFromData(
+                TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE,
+                eigenesTeam,
+                gegnerischesTeam,
+                null, // schuetzenMatchPunkte
+                null, // eingesetzteSchuetzen
+                null, // satzErgebnisse
+                null, // matchErgebnis
+                null  // verfuegbareSchuetzen
+        );
+
+        // Assert
+        assertNotNull("DTO should not be null", dto);
+        assertEquals(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE, dto.getStatus());
+        assertEquals("Team 1", dto.getEigenesTeam().getTeamName());
+        assertEquals("Team 2", dto.getGegnerischesTeam().getTeamName());
+    }
 }
