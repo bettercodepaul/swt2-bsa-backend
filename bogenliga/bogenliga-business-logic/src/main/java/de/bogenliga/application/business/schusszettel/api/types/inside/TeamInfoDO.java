@@ -9,14 +9,16 @@ package de.bogenliga.application.business.schusszettel.api.types.inside;
 public class TeamInfoDO {
     private Long teamId;
     private String teamName;
+    private Long matchID;
 
     public TeamInfoDO() {
         // Standard-Konstruktor
     }
 
-    public TeamInfoDO(Long teamId, String teamName) {
+    public TeamInfoDO(Long teamId, String teamName, Long matchID) {
         this.teamId = teamId;
         this.teamName = teamName;
+        this.matchID = matchID;
     }
 
     public Long getTeamId() {
@@ -33,5 +35,12 @@ public class TeamInfoDO {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public Long getMatchID() {
+        return matchID;
+    }
+    public void setMatchID(Long matchID) {
+        this.matchID = matchID;
     }
 }

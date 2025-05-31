@@ -53,7 +53,7 @@ public class TabletSchusszettelMapper {
 
     private static TeamInfoDTO mapTeamInfo(TeamInfoDO doObj) {
         if (doObj == null) return null;
-        return new TeamInfoDTO(doObj.getTeamId(), doObj.getTeamName());
+        return new TeamInfoDTO(doObj.getTeamId(), doObj.getTeamName(), doObj.getMatchID());
     }
 
     private static List<SatzErgebnisDTO> mapSatzErgebnisse(List<SatzErgebnisDO> doList) {
@@ -132,7 +132,7 @@ public class TabletSchusszettelMapper {
 
 
     private static TeamInfoDO fromTeamInfo(TeamInfoDTO dto) {
-        return dto == null ? null : new TeamInfoDO(dto.getTeamId(), dto.getTeamName());
+        return dto == null ? null : new TeamInfoDO(dto.getTeamId(), dto.getTeamName(), dto.getMatchID());
     }
 
     private static List<SatzErgebnisDO> fromSatzErgebnisse(List<SatzErgebnisDTO> dtoList) {

@@ -33,6 +33,7 @@ public class TabletSchusszettelMapperTest {
 
     private static final long TEAM_ID = 42L;
     private static final String TEAM_NAME = "Reutlingen";
+    private static final long MATCH_ID = 1L;
 
     @Before
     public void setUp() {
@@ -42,8 +43,8 @@ public class TabletSchusszettelMapperTest {
         doObj.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.SATZEINGABE);
 
         // Teams
-        doObj.setEigenesTeam(new TeamInfoDO(TEAM_ID, TEAM_NAME));
-        doObj.setGegnerischesTeam(new TeamInfoDO(99L, "Gegner"));
+        doObj.setEigenesTeam(new TeamInfoDO(TEAM_ID, TEAM_NAME, MATCH_ID));
+        doObj.setGegnerischesTeam(new TeamInfoDO(99L, "Gegner", 1L));
 
         // Satz-Ergebnisse
         SatzErgebnisDO satz = new SatzErgebnisDO();

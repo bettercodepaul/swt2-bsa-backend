@@ -172,8 +172,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         TabletSchusszettelDO result = new TabletSchusszettelDO();
 
         result.setStatus(statusEnum);
-        result.setEigenesTeam(getTeamInfo(teamId));
-        result.setGegnerischesTeam(getTeamInfo(oppTeam));
+        result.setEigenesTeam(getTeamInfo(teamId, wettkampfId));
+        result.setGegnerischesTeam(getTeamInfo(oppTeam, wettkampfId));
         result.setSatzErgebnisse(satzHistory);
         result.setSchuetzenMatchPunkte(buildMatchPunkte(passen, teamId));
         result.setMatchErgebnis(buildTeamMatchInfo(satzHistory, teamId, oppTeam));
@@ -507,7 +507,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // bug, where a team has successfully gone to the next match but the other team is still stuck, then SQL
         // has done the wrong thing and I am right | if you never have that bug, then I am wrong and SQL is right
 
-        // To fix this: add a db call in handleWarte where you check if the saved in callerid row gegnerId is in
+        // To fix this, dear future reader, if race conditions apply: add a db call in handleWarte where
+        // you check if the saved in callerid row gegnerId is in
         // the next PasseNr or in the next match even (its gegnerID not the callers ID).
         // Then just call nextMatchOrEnde on the caller.
 
@@ -732,11 +733,19 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     /**
      * Helper to fetch team name via DsbMannschaft and Verein
      */
-    private TeamInfoDO getTeamInfo(long teamId) {
+    private TeamInfoDO getTeamInfo(long teamId,  long wettkampfId) {
         DsbMannschaftDO md = mannschaftComponent.findById(teamId);
         VereinDO v = vereinComponent.findById(md.getVereinId());
         String name = v.getName() + (md.getNummer() > 1 ? " " + md.getNummer() : "");
-        return new TeamInfoDO(teamId, name);
+
+        // Find the match for this team in this wettkampf
+        List<MatchDO> teamMatches = matchComponent.findByWettkampfId(wettkampfId).stream()
+                .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                .toList();
+
+        Long matchId = teamMatches.isEmpty() ? null : teamMatches.get(0).getId();
+
+        return new TeamInfoDO(teamId, name, matchId);
     }
 
     /**

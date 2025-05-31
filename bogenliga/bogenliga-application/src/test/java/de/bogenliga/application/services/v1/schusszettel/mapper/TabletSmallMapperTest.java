@@ -777,7 +777,7 @@ public class TabletSmallMapperTest {
     @Test
     public void testTeamInfoMapper() {
         // Arrange
-        TeamInfoDO doObj = new TeamInfoDO(1L, "Team A");
+        TeamInfoDO doObj = new TeamInfoDO(1L, "Team A", 1L);
 
         // Act & Assert - toDTO
         TeamInfoDTO dto = TeamInfoMapper.toDTO(doObj);
@@ -799,11 +799,11 @@ public class TabletSmallMapperTest {
         doObj.setStatus(TabletSchusszettelDO.TabletSchusszettelStatus.WARTE);
         
         // Eigenes Team
-        TeamInfoDO eigenesTeam = new TeamInfoDO(1L, "Team 1");
+        TeamInfoDO eigenesTeam = new TeamInfoDO(1L, "Team 1", 1L);
         doObj.setEigenesTeam(eigenesTeam);
         
         // Gegnerisches Team
-        TeamInfoDO gegnerischesTeam = new TeamInfoDO(2L, "Team 2");
+        TeamInfoDO gegnerischesTeam = new TeamInfoDO(2L, "Team 2", 1L);
         doObj.setGegnerischesTeam(gegnerischesTeam);
         
         // Satz Ergebnisse

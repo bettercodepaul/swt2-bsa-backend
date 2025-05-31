@@ -14,7 +14,8 @@ public class TeamInfoMapper {
     public static TeamInfoDO toDO(TeamInfoDTO dto) {
         return new TeamInfoDO(
                 dto.getTeamId(),
-                dto.getTeamName()
+                dto.getTeamName(),
+                dto.getMatchID()
         );
     }
 
@@ -22,6 +23,7 @@ public class TeamInfoMapper {
         TeamInfoDTO dto = new TeamInfoDTO();
         dto.setTeamId(doObj.getTeamId());
         dto.setTeamName(doObj.getTeamName());
+        dto.setMatchID(doObj.getMatchID());
         return dto;
     }
 }
