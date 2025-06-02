@@ -41,8 +41,8 @@ CREATE TABLE schusszettel_tablet_session (
 );
 
 -- Indexe für Performance
-CREATE INDEX idx_tablet_session_token ON schusszettel_tablet_session(token);
-CREATE INDEX idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
+CREATE INDEX IF NOT EXISTS idx_tablet_session_token ON schusszettel_tablet_session(token);
+CREATE INDEX IF NOT EXISTS idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
 
 -- Kurze Validierung dass alles ok ist
 DO $$

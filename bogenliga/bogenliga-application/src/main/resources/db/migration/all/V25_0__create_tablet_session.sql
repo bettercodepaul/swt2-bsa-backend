@@ -1,5 +1,5 @@
 -- Erstellt Tabelle für persistente Tablet-Session-Verwaltung
-CREATE TABLE schusszettel_tablet_session (
+CREATE TABLE IF NOT EXISTS schusszettel_tablet_session  (
     id BIGSERIAL PRIMARY KEY,
     token TEXT NOT NULL UNIQUE,
     team_id BIGINT NOT NULL REFERENCES mannschaft(mannschaft_id),
@@ -20,5 +20,5 @@ CREATE TABLE schusszettel_tablet_session (
 );
 
 -- Indexe für schnelle Abfragen
-CREATE INDEX idx_tablet_session_token  ON schusszettel_tablet_session(token);
-CREATE INDEX idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
+CREATE INDEX IF NOT EXISTS idx_tablet_session_token  ON schusszettel_tablet_session(token);
+CREATE INDEX IF NOT EXISTS idx_tablet_session_lookup ON schusszettel_tablet_session(wettkampf_id, team_id);
