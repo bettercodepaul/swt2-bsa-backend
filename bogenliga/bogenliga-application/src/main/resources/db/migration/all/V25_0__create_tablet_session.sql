@@ -1,5 +1,10 @@
 -- Erstellt Tabelle für persistente Tablet-Session-Verwaltung
-CREATE TABLE IF NOT EXISTS schusszettel_tablet_session  (
+
+-- Drop table if it exists (handles wrong foreign keys)
+DROP TABLE IF EXISTS schusszettel_tablet_session CASCADE;
+
+-- Create table with correct structure
+CREATE TABLE schusszettel_tablet_session (
     id BIGSERIAL PRIMARY KEY,
     token TEXT NOT NULL UNIQUE,
     team_id BIGINT NOT NULL REFERENCES mannschaft(mannschaft_id),
@@ -11,12 +16,12 @@ CREATE TABLE IF NOT EXISTS schusszettel_tablet_session  (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     gegner_team_id BIGINT REFERENCES mannschaft(mannschaft_id),
 
-    -- Audit‐Spalten für BasicDAO
-    created_at_utc       TIMESTAMP     NOT NULL DEFAULT now(),
-    created_by           BIGINT        NOT NULL,
-    last_modified_at_utc TIMESTAMP     NULL,
-    last_modified_by     BIGINT        NULL,
-    version              BIGINT        NOT NULL DEFAULT 0
+    -- BasicDAO audit columns
+    created_at_utc TIMESTAMP NOT NULL DEFAULT now(),
+    created_by BIGINT NOT NULL DEFAULT -1,
+    last_modified_at_utc TIMESTAMP NULL,
+    last_modified_by BIGINT NULL,
+    version BIGINT NOT NULL DEFAULT 0
 );
 
 -- Indexe für schnelle Abfragen
