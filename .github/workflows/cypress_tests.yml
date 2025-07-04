@@ -82,28 +82,7 @@ jobs:
           npx wait-on http://localhost:4200
 
           echo "Run Cypress tests"
-          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --spec ./swt2-bsa-frontend/bogenliga/cypress/e2e/bsapp/offline-wettkampfdurchfuehrung/datenerfassung.cy.js --reporter mochawesome  --reporter-options reportDir=cypress-results,overwrite=true,html=true,json=true
-
-          cd ./swt2-bsa-frontend/bogenliga/cypress-results
-          ls
-          
-      - name: Generate Report
-        working-directory: ./swt2-bsa-frontend/bogenliga
-        if: always()
-        run: |
-          mkdir cypress-results-merged
-          ls
-          npx mochawesome-merge ./cypress-results/*.json > ./cypress-results-merged/merged-report.json
-          ls
-          npx marge ./cypress-results-merged/merged-report.json --reportDir cypress-results-merged --reportFilename merged-report
-          
-      - name: Upload Cypress test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-results
-          path: ./swt2-bsa-frontend/bogenliga/cypress-results-merged
-          
+          npx cypress run --browser chrome --project ./swt2-bsa-frontend/bogenliga --spec ./swt2-bsa-frontend/bogenliga/cypress/e2e/bsapp/offline-wettkampfdurchfuehrung/datenerfassung.cy.js
       - name: Tests completed
         if: success()
         run: echo "Build and tests completed successfully!"
