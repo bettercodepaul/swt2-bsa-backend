@@ -42,6 +42,9 @@ public class TabletSchusszettelMapper {
         dto.setMatchErgebnis(mapMatchErgebnisse(doObj.getMatchErgebnis()));
         dto.setVerfuegbareSchuetzen(mapVerfuegbareSchuetzen(doObj.getVerfuegbareSchuetzen()));
         dto.setWettkampfInfo(mapWettkampfInfo(doObj.getWettkampfInfo()));
+        dto.setCurrentPasseNumber(doObj.getCurrentPasseNumber());
+        dto.setEigenesTeamMatchId(doObj.getEigenesTeamMatchId());
+        dto.setGegnerischesTeamMatchId(doObj.getGegnerischesTeamMatchId());
         return dto;
     }
 
@@ -58,7 +61,8 @@ public class TabletSchusszettelMapper {
 
     private static List<SatzErgebnisDTO> mapSatzErgebnisse(List<SatzErgebnisDO> doList) {
         return doList == null ? null : doList.stream()
-                .map(s -> new SatzErgebnisDTO(s.getSatzNr(), s.getTeam1Punkte(), s.getTeam2Punkte()))
+                .map(s -> new SatzErgebnisDTO(s.getSatzNr(), s.getTeam1Punkte(), s.getTeam2Punkte(),
+                                            s.getTeam1Id(), s.getTeam1Name(), s.getTeam2Id(), s.getTeam2Name()))
                 .collect(Collectors.toList());
     }
 
@@ -126,6 +130,9 @@ public class TabletSchusszettelMapper {
         doObj.setSchuetzeStammDaten(fromSchuetzeStammdaten(dto.getSchuetzeStammDaten()));
         doObj.setMatchErgebnis(fromMatchErgebnisse(dto.getMatchErgebnis()));
         doObj.setVerfuegbareSchuetzen(fromVerfuegbareSchuetzen(dto.getVerfuegbareSchuetzen()));
+        doObj.setCurrentPasseNumber(dto.getCurrentPasseNumber());
+        doObj.setEigenesTeamMatchId(dto.getEigenesTeamMatchId());
+        doObj.setGegnerischesTeamMatchId(dto.getGegnerischesTeamMatchId());
 
         return doObj;
     }
@@ -137,7 +144,8 @@ public class TabletSchusszettelMapper {
 
     private static List<SatzErgebnisDO> fromSatzErgebnisse(List<SatzErgebnisDTO> dtoList) {
         return dtoList == null ? null : dtoList.stream()
-                .map(dto -> new SatzErgebnisDO(dto.getSatzNr(), dto.getTeam1Punkte(), dto.getTeam2Punkte()))
+                .map(dto -> new SatzErgebnisDO(dto.getSatzNr(), dto.getTeam1Punkte(), dto.getTeam2Punkte(),
+                                             dto.getTeam1Id(), dto.getTeam1Name(), dto.getTeam2Id(), dto.getTeam2Name()))
                 .collect(Collectors.toList());
     }
 
