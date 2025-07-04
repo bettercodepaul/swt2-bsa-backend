@@ -181,7 +181,14 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // Build and set wettkampf information
         result.setWettkampfInfo(buildWettkampfInfo(matchId, wettkampfId));
 
-        // Call to TabletSessionDAO | Marty: Unnecessary call from a get class that infringes into setting database entry status - Why?
+        // Set current passe number from session
+        result.setCurrentPasseNumber(session.getCurrentPasseNumber());
+        
+        // Set match IDs for frontend navigation
+        result.setEigenesTeamMatchId(session.getCurrentMatchId());
+        result.setGegnerischesTeamMatchId(findEnemyMatchId(wettkampfId, session.getCurrentMatchNumber(), oppTeam));
+
+        // Call to TabletSessionDAO | Marty: Unnecessary call from a get class that infringes into setting database entry status
         // TabletSessionDAO.setCurrentMatchId(wettkampfId, teamId, matchId);
         // TabletSessionDAO.setCurrentPasseNumber(wettkampfId, teamId, session.getCurrentPasseNumber());
 
@@ -257,14 +264,22 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         final int PASSES_PER_SHOOTER = 5;
         for (Long dsbId : input.getGemeldeteSchuetzen()) {
 
-            // 4a) Membership check via component
-            if (mmComponent.findByMemberAndTeamId(teamId, dsbId) == null) {
+            // 4a) Membership and deployment status check via component
+            MannschaftsmitgliedDO member = mmComponent.findByMemberAndTeamId(teamId, dsbId);
+            if (member == null) {
                 throw new BusinessException(
                         ErrorCode.NO_PERMISSION_ERROR,
                         "Shooter " + dsbId + " is not on team " + teamId);
             }
+            
+            // 4b) Check if shooter is deployed (eingesetzt >= 1)
+            if (member.getDsbMitgliedEingesetzt() == null || member.getDsbMitgliedEingesetzt() < 1) {
+                throw new BusinessException(
+                        ErrorCode.NO_PERMISSION_ERROR,
+                        "Shooter " + dsbId + " is not deployed for competition (eingesetzt=" + member.getDsbMitgliedEingesetzt() + ")");
+            }
 
-            // 4b) Reserve empty Passen (lfdnr = 1..5) for this shooter
+            // 4c) Reserve empty Passen (lfdnr = 1..5) for this shooter
             // Check if they already exist first to avoid duplicate key violations
             for (long lfdnr = 1; lfdnr <= PASSES_PER_SHOOTER; lfdnr++) {
                 try {
@@ -432,15 +447,16 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     //================================================================================
 
     /**
-     * SCHUETZENMELDUNG: verfügbar machen aller Vereins-Schützen
+     * SCHUETZENMELDUNG: verfügbar machen nur eingesetzter Vereins-Schützen (eingesetzt >= 1)
      */
     private void handleSchuetzenmeldung(TabletSchusszettelEntity session,
                                         TabletSchusszettelDO out,
                                         long teamId) {
         List<MannschaftsmitgliedDO> members = mmComponent.findByTeamId(teamId);
 
-        // Stammdaten aller Vereins-Schützen zusammenstellen
+        // Stammdaten nur eingesetzter Vereins-Schützen zusammenstellen (eingesetzt >= 1)
         List<SchuetzeStammdatenDO> stammdaten = members.stream()
+                .filter(m -> m.getDsbMitgliedEingesetzt() != null && m.getDsbMitgliedEingesetzt() >= 1)
                 .map(m -> {
                     DsbMitgliedDO dm = mitgliedComponent.findById(m.getDsbMitgliedId());
                     return new SchuetzeStammdatenDO(
@@ -453,6 +469,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         out.setSchuetzeStammDaten(stammdaten);
 
         List<VerfuegbarerSchuetzeDO> available = members.stream()
+                .filter(m -> m.getDsbMitgliedEingesetzt() != null && m.getDsbMitgliedEingesetzt() >= 1)
                 .map(m -> {
                     DsbMitgliedDO dm = mitgliedComponent.findById(m.getDsbMitgliedId());
                     return new VerfuegbarerSchuetzeDO(dm.getId(), dm.getVorname() + " " + dm.getNachname());
@@ -479,10 +496,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         }).collect(Collectors.toList());
         out.setSchuetzeStammDaten(meta);
 
-        // Verbleibende Schützen
+        // Verbleibende Schützen - nur eingesetzte Schützen (eingesetzt >= 1)
         Set<Long> used = assigns.stream()
                 .map(PasseDO::getPasseDsbMitgliedId).collect(Collectors.toSet());
         List<VerfuegbarerSchuetzeDO> left = mmComponent.findByTeamId(session.getTeamId()).stream()
+                .filter(mm -> mm.getDsbMitgliedEingesetzt() != null && mm.getDsbMitgliedEingesetzt() >= 1)
                 .map(MannschaftsmitgliedDO::getDsbMitgliedId)
                 .filter(id -> !used.contains(id))
                 .map(id -> {
@@ -684,7 +702,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                                             (p.getPfeil3() != null ? p.getPfeil3() : 0)
                             ).sum();
 
-                    return new SatzErgebnisDO(set, sum1, sum2);
+                    // Enriched with team information for frontend display
+                    return new SatzErgebnisDO(set, sum1, sum2, t1, getTeamName(t1), t2, getTeamName(t2));
                 })
                 .collect(Collectors.toList());
     }
@@ -820,5 +839,28 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 event.getVeranstaltungLigaName(),
                 event.getVeranstaltungWettkampftypName()
         );
+    }
+
+    /**
+     * Finds the enemy team's match ID for the given competition, match number, and enemy team ID.
+     * This allows frontend to navigate to enemy team's match object.
+     */
+    private Long findEnemyMatchId(long wettkampfId, long matchNumber, long enemyTeamId) {
+        try {
+            // Find the enemy team's match using the match component
+            List<MatchDO> allMatches = matchComponent.findByWettkampfId(wettkampfId);
+            
+            return allMatches.stream()
+                    .filter(match -> match.getNr() == matchNumber && 
+                                   match.getMannschaftId().equals(enemyTeamId))
+                    .map(MatchDO::getId)
+                    .findFirst()
+                    .orElse(null); // Return null if enemy match not found
+                    
+        } catch (Exception e) {
+            LOGGER.warn("Could not find enemy match ID for wettkampfId={}, matchNr={}, enemyTeamId={}: {}", 
+                       wettkampfId, matchNumber, enemyTeamId, e.getMessage());
+            return null;
+        }
     }
 }
