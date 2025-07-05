@@ -321,7 +321,7 @@ public class MatchAnalysisServiceTest {
         Assertions.assertThat(result.get(0).getTeam1Punkte()).isEqualTo(72); // 27+24+21
         Assertions.assertThat(result.get(0).getTeam2Punkte()).isEqualTo(54); // 21+18+15
         Assertions.assertThat(result.get(1).getSatzNr()).isEqualTo(2);
-        Assertions.assertThat(result.get(1).getTeam1Punkte()).isEqualTo(54); // 24+21+18
+        Assertions.assertThat(result.get(1).getTeam1Punkte()).isEqualTo(63); // 24+21+18 = 63 (corrected)
         Assertions.assertThat(result.get(1).getTeam2Punkte()).isEqualTo(45); // 18+15+12
     }
 

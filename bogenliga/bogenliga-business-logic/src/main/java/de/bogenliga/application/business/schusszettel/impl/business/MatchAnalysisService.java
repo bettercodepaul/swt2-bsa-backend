@@ -135,8 +135,19 @@ public class MatchAnalysisService {
         List<SatzErgebnisDO> satzErgebnisse = buildSatzErgebnisse(team1Passes, team2Passes, team1Id, team2Id);
         
         if (satzErgebnisse.isEmpty()) {
-            return new MatchAnalysisResult(MatchStatus.NOT_STARTED, 0, 1, 0, 0, satzErgebnisse, 
-                                         "No sets completed yet");
+            // Check if there are any passes with shot data - if so, match is in progress
+            boolean hasAnyShots = team1Passes.stream().anyMatch(this::hasActualShotData) ||
+                                 team2Passes.stream().anyMatch(this::hasActualShotData);
+            
+            if (hasAnyShots) {
+                // Provide more detailed status for partial sets
+                String statusReason = buildPartialSetStatusReason(team1Passes, team2Passes, team1Id, team2Id);
+                return new MatchAnalysisResult(MatchStatus.IN_PROGRESS, 0, 1, 0, 0, satzErgebnisse, 
+                                             statusReason);
+            } else {
+                return new MatchAnalysisResult(MatchStatus.NOT_STARTED, 0, 1, 0, 0, satzErgebnisse, 
+                                             "No sets completed yet");
+            }
         }
 
         // Calculate Satzpunkte from completed sets
@@ -290,10 +301,13 @@ public class MatchAnalysisService {
     }
 
     /**
-     * Check if pass has actual shot data (non-null arrow values)
+     * Check if pass has actual shot data. 
+     * In match analysis context, a passe exists if it was created (even with null/invalid values).
+     * This counts as participation - null/invalid arrows are just scored as 0.
      */
     private boolean hasActualShotData(PasseDO passe) {
-        return passe.getPfeil1() != null || passe.getPfeil2() != null || passe.getPfeil3() != null;
+        // If a passe object exists, it means the shooter participated (even if all shots were 0/null/invalid)
+        return passe != null;
     }
 
     /**
@@ -331,5 +345,42 @@ public class MatchAnalysisService {
     public int getCurrentPasseNumber(long matchId, long team1Id, long team2Id) {
         MatchAnalysisResult result = analyzeMatch(matchId, team1Id, team2Id);
         return result.getCurrentPasse();
+    }
+    
+    /**
+     * Build detailed status reason for partial sets
+     */
+    private String buildPartialSetStatusReason(List<PasseDO> team1Passes, List<PasseDO> team2Passes, 
+                                              long team1Id, long team2Id) {
+        // Group passes by set number
+        Map<Long, List<PasseDO>> allPassesBySet = new ArrayList<PasseDO>() {{
+            addAll(team1Passes);
+            addAll(team2Passes);
+        }}.stream().collect(Collectors.groupingBy(PasseDO::getPasseLfdnr));
+        
+        // Find the lowest set number with partial data
+        for (Long setNumber : allPassesBySet.keySet().stream().sorted().collect(Collectors.toList())) {
+            List<PasseDO> setPasses = allPassesBySet.get(setNumber);
+            
+            long team1Shooters = setPasses.stream()
+                    .filter(p -> Objects.equals(p.getPasseMannschaftId(), team1Id))
+                    .filter(this::hasActualShotData)
+                    .count();
+                    
+            long team2Shooters = setPasses.stream()
+                    .filter(p -> Objects.equals(p.getPasseMannschaftId(), team2Id))
+                    .filter(this::hasActualShotData)
+                    .count();
+            
+            if (team1Shooters > 0 || team2Shooters > 0) {
+                if (team1Shooters == SHOOTERS_PER_TEAM && team2Shooters == SHOOTERS_PER_TEAM) {
+                    continue; // Complete set, check next
+                } else {
+                    return String.format("Set %d partially completed", setNumber);
+                }
+            }
+        }
+        
+        return "Match in progress but no sets completed yet";
     }
 }

@@ -28,8 +28,6 @@ import java.util.*;
 /**
  * Test class for TabletSchusszettelAdminComponentImpl
  * Ensures comprehensive coverage of admin-specific functionality
- *
- * @author Test Generator
  */
 public class TabletSchusszettelAdminComponentImplTest {
 
@@ -77,7 +75,7 @@ public class TabletSchusszettelAdminComponentImplTest {
         TabletSchusszettelSyncComponent.SyncResult syncResult = 
                 TabletSchusszettelSyncComponent.SyncResult.success("Sync OK", false);
         when(syncComponent.findCurrentMatchForTeam(anyList(), anyLong())).thenReturn(matches.get(0));
-        when(syncComponent.determineCorrectPasseNumber(anyLong(), anyLong())).thenReturn(1);
+        // Removed deprecated determineCorrectPasseNumber call
         when(passeComponent.findByMannschaftMatchId(anyLong(), anyLong())).thenReturn(Collections.emptyList());
 
         // Act
@@ -209,11 +207,12 @@ public class TabletSchusszettelAdminComponentImplTest {
                 .thenReturn(Collections.singletonList(session));
         
         setupTeamMocks();
+        setupWettkampfMocks();
         
         // Mock sync
         TabletSchusszettelSyncComponent.SyncResult syncResult = 
                 TabletSchusszettelSyncComponent.SyncResult.success("Synced", true);
-        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, false))
+        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true))
                 .thenReturn(syncResult);
 
         // Act
@@ -221,7 +220,7 @@ public class TabletSchusszettelAdminComponentImplTest {
 
         // Assert
         Assertions.assertThat(result.getTabletSessionSingDOs()).hasSize(1);
-        verify(syncComponent).synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, false);
+        verify(syncComponent).synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
     }
 
     @Test
@@ -232,11 +231,12 @@ public class TabletSchusszettelAdminComponentImplTest {
                 .thenReturn(Collections.singletonList(session));
         
         setupTeamMocks();
+        setupWettkampfMocks();
         
         // Mock sync failure
         TabletSchusszettelSyncComponent.SyncResult syncResult = 
                 TabletSchusszettelSyncComponent.SyncResult.failure("Sync failed");
-        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, false))
+        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true))
                 .thenReturn(syncResult);
 
         // Act - should continue despite sync failure
@@ -277,6 +277,7 @@ public class TabletSchusszettelAdminComponentImplTest {
         DsbMannschaftDO team1 = new DsbMannschaftDO();
         team1.setId(TEAM1_ID);
         team1.setVereinId(1L);
+        team1.setNummer(1L); // Fix: Add team number to prevent null pointer
         when(mannschaftComponent.findById(TEAM1_ID)).thenReturn(team1);
         
         VereinDO verein1 = new VereinDO();
@@ -288,11 +289,29 @@ public class TabletSchusszettelAdminComponentImplTest {
         DsbMannschaftDO team2 = new DsbMannschaftDO();
         team2.setId(TEAM2_ID);
         team2.setVereinId(2L);
+        team2.setNummer(2L); // Fix: Add team number to prevent null pointer
         when(mannschaftComponent.findById(TEAM2_ID)).thenReturn(team2);
         
         VereinDO verein2 = new VereinDO();
         verein2.setId(2L);
         verein2.setName("Team 2 Verein");
         when(vereinComponent.findById(2L)).thenReturn(verein2);
+    }
+    
+    private void setupWettkampfMocks() {
+        // Mock wettkampf
+        de.bogenliga.application.business.wettkampf.api.types.WettkampfDO wettkampf = 
+            new de.bogenliga.application.business.wettkampf.api.types.WettkampfDO();
+        wettkampf.setId(WETTKAMPF_ID);
+        wettkampf.setWettkampfVeranstaltungsId(1L);
+        wettkampf.setWettkampfTag(1L);
+        when(wettkampfComponent.findById(WETTKAMPF_ID)).thenReturn(wettkampf);
+        
+        // Mock veranstaltung
+        de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO veranstaltung = 
+            new de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO();
+        veranstaltung.setVeranstaltungID(1L);
+        veranstaltung.setVeranstaltungName("Test Competition");
+        when(veranstaltungComponent.findById(1L)).thenReturn(veranstaltung);
     }
 }
