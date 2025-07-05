@@ -1440,7 +1440,7 @@ public class TabletSchusszettelComponentImplTest {
                 PasseDO validationPass = new PasseDO();
                 validationPass.setId(999L + shooterId);
                 validationPass.setPasseWettkampfId(WETTKAMPF_ID);
-                validationPass.setPasseMatchNr(session.getCurrentMatchNumber().longValue());
+                validationPass.setPasseMatchNr((long) session.getCurrentMatchNumber());
                 validationPass.setPasseMannschaftId(TEAM1_ID);
                 validationPass.setPasseLfdnr(1L);
                 validationPass.setPasseDsbMitgliedId(shooterId);
@@ -1551,7 +1551,7 @@ public class TabletSchusszettelComponentImplTest {
                 PasseDO validationPass = new PasseDO();
                 validationPass.setId(999L + shooterId);
                 validationPass.setPasseWettkampfId(WETTKAMPF_ID);
-                validationPass.setPasseMatchNr(session.getCurrentMatchNumber().longValue());
+                validationPass.setPasseMatchNr((long) session.getCurrentMatchNumber());
                 validationPass.setPasseMannschaftId(TEAM1_ID);
                 validationPass.setPasseLfdnr(1L);
                 validationPass.setPasseDsbMitgliedId(shooterId);
