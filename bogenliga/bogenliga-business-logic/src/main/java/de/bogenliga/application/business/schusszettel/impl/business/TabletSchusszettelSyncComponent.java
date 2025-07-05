@@ -1,10 +1,13 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,16 +40,19 @@ public class TabletSchusszettelSyncComponent {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final DsbMannschaftComponent mannschaftComponent;
+    private final MatchAnalysisService matchAnalysisService;
 
     @Autowired
     public TabletSchusszettelSyncComponent(TabletSchusszettelDAO sessionDAO,
                                            MatchComponent matchComponent,
                                            PasseComponent passeComponent,
-                                           DsbMannschaftComponent mannschaftComponent) {
+                                           DsbMannschaftComponent mannschaftComponent,
+                                           MatchAnalysisService matchAnalysisService) {
         this.sessionDAO = sessionDAO;
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.mannschaftComponent = mannschaftComponent;
+        this.matchAnalysisService = matchAnalysisService;
     }
 
     /**
@@ -164,6 +170,10 @@ public class TabletSchusszettelSyncComponent {
             LOGGER.info("Updating session for team {} to match {} (Nr: {})",
                     teamId, correctMatch.getId(), correctMatch.getNr());
 
+            // Store original state for comparison
+            long originalMatchId = session.getCurrentMatchId();
+            String originalStatus = session.getStatus();
+
             // Update session with correct match data
             session.setCurrentMatchId(correctMatch.getId());
             session.setCurrentMatchNumber(Math.toIntExact(correctMatch.getNr()));
@@ -176,15 +186,42 @@ public class TabletSchusszettelSyncComponent {
             int correctPasseNumber = determineCorrectPasseNumber(correctMatch.getId(), teamId);
             session.setCurrentPasseNumber(correctPasseNumber);
 
+            // CRITICAL FIX: Determine and set the correct status based on match analysis
+            String correctStatus = determineCorrectStatus(correctMatch, teamId, correctPasseNumber);
+            
+            // Check if we need to advance due to match completion
+            boolean shouldAdvance = shouldAdvanceToNextMatch(session, correctMatch, teamId, correctStatus);
+            
+            if (shouldAdvance && updateDatabase) {
+                LOGGER.info("Match {} is completed for team {}, advancing to next match or ending competition", 
+                           correctMatch.getId(), teamId);
+                
+                // Implement match advancement logic directly to avoid circular dependency
+                // This handles both SCHUETZENMELDUNG (next match) and WETTKAMPF_ENDE (no more matches)
+                try {
+                    advanceToNextMatchOrEndInternal(session);
+                    LOGGER.info("Successfully advanced team {} from match {} to next state", 
+                               teamId, originalMatchId);
+                } catch (Exception e) {
+                    LOGGER.error("Failed to advance team {} from completed match {}: {}", 
+                                teamId, originalMatchId, e.getMessage());
+                    // Continue with status update even if advancement fails
+                    session.setStatus(correctStatus);
+                }
+            } else {
+                // Normal status update without advancement
+                session.setStatus(correctStatus);
+            }
+
             // Update the session in database if requested
             if (updateDatabase) {
                 sessionDAO.updateStatus(session, 0L);
-                LOGGER.info("Session database updated for team {} to match {} passe {}",
-                        teamId, correctMatch.getId(), correctPasseNumber);
+                LOGGER.info("Session database updated for team {} to match {} passe {} status {}",
+                        teamId, session.getCurrentMatchId(), session.getCurrentPasseNumber(), session.getStatus());
             }
 
             return SyncResult.success(
-                    "Session synchronized to match " + correctMatch.getId() + " passe " + correctPasseNumber,
+                    "Session synchronized to match " + session.getCurrentMatchId() + " passe " + session.getCurrentPasseNumber(),
                     true);
 
         } catch (Exception e) {
@@ -197,8 +234,9 @@ public class TabletSchusszettelSyncComponent {
     /**
      * Finds the current match for a team based on actual match progress and completion status.
      * This analyzes existing passe data to determine which match is actually in progress.
+     * Made public for use by admin initialization.
      */
-    private MatchDO findCurrentMatchForTeam(List<MatchDO> teamMatches, long teamId) {
+    public MatchDO findCurrentMatchForTeam(List<MatchDO> teamMatches, long teamId) {
         if (teamMatches.isEmpty()) {
             return null;
         }
@@ -250,17 +288,10 @@ public class TabletSchusszettelSyncComponent {
     }
 
     /**
-     * Analyzes a single match to determine its current progress and status
+     * Analyzes a single match to determine its current progress and status using shared service
      */
     private MatchAnalysis analyzeMatchProgress(MatchDO match, long teamId) {
         try {
-            // Get all passes for this match and team
-            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, match.getId());
-
-            if (teamPasses.isEmpty()) {
-                return new MatchAnalysis(MatchStatus.NOT_STARTED, 0, 0, 1);
-            }
-
             // Find opponent team ID for this match
             long opponentId;
             try {
@@ -270,11 +301,30 @@ public class TabletSchusszettelSyncComponent {
                 return new MatchAnalysis(MatchStatus.INVALID, 0, 0, 1);
             }
 
-            // Get opponent's passes too
-            List<PasseDO> opponentPasses = passeComponent.findByMannschaftMatchId(opponentId, match.getId());
-
-            // Analyze the passes to determine match status
-            return analyzePasseData(teamPasses, opponentPasses, teamId, opponentId);
+            // Use shared service for comprehensive analysis
+            MatchAnalysisService.MatchAnalysisResult result = 
+                matchAnalysisService.analyzeMatch(match.getId(), teamId, opponentId);
+            
+            // Convert to sync component's format
+            MatchStatus status;
+            switch (result.getStatus()) {
+                case NOT_STARTED:
+                    status = MatchStatus.NOT_STARTED;
+                    break;
+                case IN_PROGRESS:
+                    status = MatchStatus.IN_PROGRESS;
+                    break;
+                case COMPLETED:
+                    status = MatchStatus.COMPLETED;
+                    break;
+                case INVALID:
+                default:
+                    status = MatchStatus.INVALID;
+                    break;
+            }
+            
+            return new MatchAnalysis(status, result.getCompletedSets(), 
+                                   result.getSatzErgebnisse().size(), result.getCurrentPasse());
 
         } catch (Exception e) {
             LOGGER.error("Error analyzing match progress for match {}, team {}: {}",
@@ -284,164 +334,330 @@ public class TabletSchusszettelSyncComponent {
     }
 
     /**
-     * Analyzes passe data to determine match status and progress
+     * @deprecated Replaced by MatchAnalysisService - kept for reference only
      */
-    private MatchAnalysis analyzePasseData(List<PasseDO> teamPasses, List<PasseDO> opponentPasses,
-                                           long teamId, long opponentId) {
+    @Deprecated
+    private void placeholderDeprecatedMethod1() {
+        // Placeholder for deprecated methods - removed
+    }
 
-        // Group passes by passe number (lfdnr) to analyze sets
-        Map<Long, List<PasseDO>> teamPassesBySet = teamPasses.stream()
-                .collect(Collectors.groupingBy(PasseDO::getPasseLfdnr));
+    /**
+     * @deprecated All calculation methods replaced by MatchAnalysisService
+     */
+    @Deprecated
+    private void placeholderDeprecatedMethod2() {
+        // Placeholder for deprecated methods - removed
+    }
 
-        Map<Long, List<PasseDO>> opponentPassesBySet = opponentPasses.stream()
-                .collect(Collectors.groupingBy(PasseDO::getPasseLfdnr));
-
-        // Find the highest passe number with data
-        int maxTeamPasse = teamPasses.stream()
-                .mapToInt(p -> Math.toIntExact(p.getPasseLfdnr()))
-                .max().orElse(0);
-
-        int maxOpponentPasse = opponentPasses.stream()
-                .mapToInt(p -> Math.toIntExact(p.getPasseLfdnr()))
-                .max().orElse(0);
-
-        int maxPasse = Math.max(maxTeamPasse, maxOpponentPasse);
-
-        // Calculate completed sets and match status
-        int completedSets = 0;
-        int currentPasse = 1;
-        boolean matchInProgress = false;
-
-        // Check each passe to see if it's completed (both teams have shot data)
-        for (int passe = 1; passe <= maxPasse; passe++) {
-            boolean teamHasData = hasActualShotData(teamPassesBySet.get((long) passe));
-            boolean opponentHasData = hasActualShotData(opponentPassesBySet.get((long) passe));
-
-            if (teamHasData && opponentHasData) {
-                // Both teams completed this passe
-                completedSets++;
-            } else if (teamHasData || opponentHasData) {
-                // One team has shot, match is in progress
-                matchInProgress = true;
-                currentPasse = passe;
-                break;
-            } else {
-                // Neither team has shot yet
-                currentPasse = passe;
-                break;
+    /**
+     * Determines the correct passe number for a given match and team using shared service.
+     * Made public for use by admin initialization.
+     */
+    @Deprecated
+    public int determineCorrectPasseNumber(long matchId, long teamId) {
+        try {
+            // Find opponent to use comprehensive analysis
+            MatchDO match = matchComponent.findById(matchId);
+            long opponentId = findOpponentTeamId(match, teamId);
+            
+            // Use shared service for accurate analysis
+            return matchAnalysisService.getCurrentPasseNumber(matchId, teamId, opponentId);
+            
+        } catch (Exception e) {
+            LOGGER.warn("Error determining correct passe number for match {} team {}: {}", 
+                       matchId, teamId, e.getMessage());
+            
+            // Fallback to simple analysis
+            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+            if (teamPasses.isEmpty()) {
+                return 1;
             }
+            
+            // Find highest passe with data + 1
+            int maxPasse = teamPasses.stream()
+                    .mapToInt(p -> Math.toIntExact(p.getPasseLfdnr()))
+                    .max().orElse(0);
+            
+            return maxPasse + 1;
         }
-
-        // Determine overall match status
-        MatchStatus status;
-        if (completedSets == 0 && !matchInProgress) {
-            status = MatchStatus.NOT_STARTED;
-        } else if (completedSets >= 5 || isMatchWon(completedSets, teamPassesBySet, opponentPassesBySet, teamId, opponentId)) {
-            status = MatchStatus.COMPLETED;
-        } else {
-            status = MatchStatus.IN_PROGRESS;
-        }
-
-        return new MatchAnalysis(status, completedSets, teamPasses.size() + opponentPasses.size(), currentPasse);
-    }
-
-    /**
-     * Checks if a list of passes has actual shot data (non-null arrow values)
-     */
-    private boolean hasActualShotData(List<PasseDO> passes) {
-        if (passes == null || passes.isEmpty()) {
-            return false;
-        }
-
-        return passes.stream().anyMatch(p ->
-                p.getPfeil1() != null || p.getPfeil2() != null || p.getPfeil3() != null);
-    }
-
-    /**
-     * Determines if a match is won based on completed sets and match points
-     */
-    private boolean isMatchWon(int completedSets, Map<Long, List<PasseDO>> teamPasses,
-                               Map<Long, List<PasseDO>> opponentPasses, long teamId, long opponentId) {
-        if (completedSets < 3) {
-            return false; // Need at least 3 sets to potentially win
-        }
-
-        // Calculate match points for each completed set
-        int teamMatchPoints = 0;
-        int opponentMatchPoints = 0;
-
-        for (int set = 1; set <= completedSets; set++) {
-            int teamSetPoints = calculateSetPoints(teamPasses.get((long) set));
-            int opponentSetPoints = calculateSetPoints(opponentPasses.get((long) set));
-
-            if (teamSetPoints > opponentSetPoints) {
-                teamMatchPoints += 2;
-            } else if (opponentSetPoints > teamSetPoints) {
-                opponentMatchPoints += 2;
-            } else {
-                teamMatchPoints += 1;
-                opponentMatchPoints += 1;
-            }
-        }
-
-        // Match is won if either team has 6+ match points
-        return teamMatchPoints >= 6 || opponentMatchPoints >= 6;
-    }
-
-    /**
-     * Calculates total points for a set (sum of all arrows)
-     */
-    private int calculateSetPoints(List<PasseDO> setPasses) {
-        if (setPasses == null) {
-            return 0;
-        }
-
-        return setPasses.stream()
-                .mapToInt(p -> {
-                    int points = 0;
-                    if (p.getPfeil1() != null) points += p.getPfeil1();
-                    if (p.getPfeil2() != null) points += p.getPfeil2();
-                    if (p.getPfeil3() != null) points += p.getPfeil3();
-                    return points;
-                })
-                .sum();
-    }
-
-    /**
-     * Determines the correct passe number for a given match and team
-     */
-    private int determineCorrectPasseNumber(long matchId, long teamId) {
-        List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
-
-        if (teamPasses.isEmpty()) {
-            return 1; // No passes yet, start with passe 1
-        }
-
-        // Find the highest passe number with actual data (non-null arrows)
-        int maxPasseWithData = teamPasses.stream()
-                .filter(p -> p.getPfeil1() != null || p.getPfeil2() != null) // Has actual shot data
-                .mapToInt(p -> Math.toIntExact(p.getPasseLfdnr()))
-                .max()
-                .orElse(0);
-
-        // The current passe is the next one after the last completed passe
-        return maxPasseWithData + 1;
     }
 
     /**
      * Find opponent by matching round & pairing.
+     * Enhanced with better error handling and logging.
      */
     private long findOpponentTeamId(MatchDO m, long own) {
-        return matchComponent.findByWettkampfId(m.getWettkampfId()).stream()
-                .filter(o ->
-                        Objects.equals(o.getNr(), m.getNr()) &&
-                                Objects.equals(o.getBegegnung(), m.getBegegnung()) &&
-                                !Objects.equals(o.getMannschaftId(), own))
-                .findFirst()
-                .map(MatchDO::getMannschaftId)
-                .orElseThrow(() -> new BusinessException(
-                        ErrorCode.INTERNAL_ERROR,
-                        "Opponent not found for match " + m.getId()));
+        try {
+            return matchComponent.findByWettkampfId(m.getWettkampfId()).stream()
+                    .filter(o ->
+                            Objects.equals(o.getNr(), m.getNr()) &&
+                                    Objects.equals(o.getBegegnung(), m.getBegegnung()) &&
+                                    !Objects.equals(o.getMannschaftId(), own))
+                    .findFirst()
+                    .map(MatchDO::getMannschaftId)
+                    .orElseThrow(() -> new BusinessException(
+                            ErrorCode.INTERNAL_ERROR,
+                            "Opponent not found for match " + m.getId() + 
+                            " (team=" + own + ", nr=" + m.getNr() + ", begegnung=" + m.getBegegnung() + ")"));
+        } catch (Exception e) {
+            LOGGER.error("Error finding opponent for team {} in match {}: {}", own, m.getId(), e.getMessage());
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR,
+                    "Failed to find opponent team: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Validates that an arrow value is within the valid range (0-10)
+     */
+    private void validateArrowValue(Integer arrowValue, String arrowName) {
+        if (arrowValue != null && (arrowValue < 0 || arrowValue > 10)) {
+            LOGGER.warn("Invalid arrow value detected: {} = {} (outside 0-10 range)", arrowName, arrowValue);
+            // In sync component, we log warnings but don't throw exceptions to avoid breaking sync
+            // The main component validation will prevent such values from being saved
+        }
+    }
+
+    /**
+     * Checks if a set is complete according to official rules:
+     * - Must have exactly 3 shooters (passes)
+     * - Each shooter must have at least some shot data
+     */
+    private boolean isSetComplete(List<PasseDO> setPasses) {
+        if (setPasses == null || setPasses.size() != 3) {
+            return false; // Must have exactly 3 shooters per set
+        }
+
+        // Check that all 3 shooters have at least some shot data
+        return setPasses.stream()
+                .allMatch(p -> p.getPfeil1() != null || p.getPfeil2() != null || p.getPfeil3() != null);
+    }
+
+    /**
+     * Enhanced validation for team roster composition
+     * Checks that team has sufficient active shooters for competition
+     */
+    private boolean validateTeamComposition(long teamId) {
+        try {
+            // This would need access to MannschaftsmitgliedComponent
+            // For now, we assume teams are valid if they exist
+            DsbMannschaftDO team = mannschaftComponent.findById(teamId);
+            return team != null;
+        } catch (Exception e) {
+            LOGGER.warn("Could not validate team composition for team {}: {}", teamId, e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * CRITICAL METHOD: Determines the correct status for a team based on match analysis
+     * This is the missing piece that sets the actual team state!
+     */
+    private String determineCorrectStatus(MatchDO match, long teamId, int currentPasseNumber) {
+        try {
+            // Constants from the main component
+            final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
+            final String STATUS_SATZEINGABE = "SATZEINGABE";
+            final String STATUS_WARTE = "WARTE";
+            final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
+
+            // Analyze current match to determine proper status
+            MatchAnalysis analysis = analyzeMatchProgress(match, teamId);
+
+            // If match is completed, check if there are more matches
+            if (analysis.status == MatchStatus.COMPLETED) {
+                if (hasMoreMatches(match, teamId)) {
+                    return STATUS_SCHUETZENMELDUNG; // Next match needs shooter registration
+                } else {
+                    return STATUS_WETTKAMPF_ENDE; // All matches completed
+                }
+            }
+
+            // If match not started, need shooter registration
+            if (analysis.status == MatchStatus.NOT_STARTED) {
+                return STATUS_SCHUETZENMELDUNG;
+            }
+
+            // Match is in progress - determine if we're in SATZEINGABE or WARTE
+            if (analysis.status == MatchStatus.IN_PROGRESS) {
+                // Check if current passe has registered shooters
+                if (!hasRegisteredShooters(match.getId(), teamId, currentPasseNumber)) {
+                    return STATUS_SCHUETZENMELDUNG; // Need to register shooters first
+                }
+
+                // Check if current passe is completed by this team
+                if (isPasseCompletedByTeam(match.getId(), teamId, currentPasseNumber)) {
+                    // Check if opponent is also done with this passe
+                    long opponentId = findOpponentTeamId(match, teamId);
+                    if (isPasseCompletedByTeam(match.getId(), opponentId, currentPasseNumber)) {
+                        // Both teams done - advance or complete match
+                        return STATUS_SATZEINGABE; // Ready for next passe
+                    } else {
+                        return STATUS_WARTE; // Wait for opponent
+                    }
+                } else {
+                    return STATUS_SATZEINGABE; // Current passe not completed
+                }
+            }
+
+            // Fallback - if we can't determine, assume SATZEINGABE
+            LOGGER.warn("Could not determine correct status for team {} match {}, defaulting to SATZEINGABE", 
+                       teamId, match.getId());
+            return STATUS_SATZEINGABE;
+
+        } catch (Exception e) {
+            LOGGER.error("Error determining correct status for team {} match {}: {}", 
+                        teamId, match.getId(), e.getMessage());
+            return "SATZEINGABE"; // Safe fallback
+        }
+    }
+
+    /**
+     * Checks if team has more matches after the current one
+     */
+    private boolean hasMoreMatches(MatchDO currentMatch, long teamId) {
+        try {
+            List<MatchDO> teamMatches = matchComponent.findByWettkampfId(currentMatch.getWettkampfId()).stream()
+                    .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                    .sorted(Comparator.comparingLong(MatchDO::getNr))
+                    .toList();
+
+            // Check if there are matches with higher numbers
+            return teamMatches.stream()
+                    .anyMatch(m -> m.getNr() > currentMatch.getNr());
+        } catch (Exception e) {
+            LOGGER.warn("Error checking for more matches: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Checks if team has registered shooters for a specific passe
+     */
+    private boolean hasRegisteredShooters(long matchId, long teamId, int passeNumber) {
+        try {
+            List<PasseDO> passes = passeComponent.findByMannschaftMatchId(teamId, matchId).stream()
+                    .filter(p -> p.getPasseLfdnr() == passeNumber)
+                    .toList();
+            
+            // Should have exactly 3 registered shooters (even if no scores yet)
+            return passes.size() == 3;
+        } catch (Exception e) {
+            LOGGER.warn("Error checking registered shooters: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a team has completed a specific passe (all shooters have scores)
+     */
+    private boolean isPasseCompletedByTeam(long matchId, long teamId, int passeNumber) {
+        try {
+            List<PasseDO> passes = passeComponent.findByMannschaftMatchId(teamId, matchId).stream()
+                    .filter(p -> p.getPasseLfdnr() == passeNumber)
+                    .toList();
+            
+            if (passes.size() != 3) {
+                return false; // Must have exactly 3 shooters
+            }
+
+            // All 3 shooters must have at least some shot data
+            return passes.stream()
+                    .allMatch(p -> p.getPfeil1() != null || p.getPfeil2() != null);
+        } catch (Exception e) {
+            LOGGER.warn("Error checking passe completion: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Determines if a team should advance to the next match based on match completion analysis.
+     * Only advances when there's a genuine state mismatch to ensure idempotent behavior.
+     */
+    private boolean shouldAdvanceToNextMatch(TabletSchusszettelEntity session, MatchDO currentMatch, 
+                                           long teamId, String calculatedStatus) {
+        try {
+            // Analyze current match progress
+            MatchAnalysis analysis = analyzeMatchProgress(currentMatch, teamId);
+            
+            // Only advance if the current match is actually completed
+            if (analysis.status != MatchStatus.COMPLETED) {
+                LOGGER.debug("Match {} for team {} is not completed (status: {}), no advancement needed", 
+                           currentMatch.getId(), teamId, analysis.status);
+                return false;
+            }
+            
+            // Check if session is stuck on a completed match (state mismatch)
+            // This prevents multiple advancements from repeated sync calls
+            boolean isStuckOnCompletedMatch = session.getCurrentMatchId().equals(currentMatch.getId()) && 
+                                            (!"WETTKAMPF_ENDE".equals(session.getStatus()));
+            
+            if (!isStuckOnCompletedMatch) {
+                LOGGER.debug("Team {} is not stuck on completed match {}, no advancement needed", 
+                           teamId, currentMatch.getId());
+                return false;
+            }
+            
+            LOGGER.info("Team {} is stuck on completed match {} with status {}, advancement required", 
+                       teamId, currentMatch.getId(), session.getStatus());
+            return true;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error determining if team {} should advance from match {}: {}", 
+                        teamId, currentMatch.getId(), e.getMessage());
+            return false; // Default to no advancement on errors
+        }
+    }
+
+    /**
+     * Internal method to advance a team session to the next match or end the competition.
+     * This is a copy of the logic from TabletSchusszettelComponentImpl to avoid circular dependency.
+     */
+    private void advanceToNextMatchOrEndInternal(TabletSchusszettelEntity session) {
+        // Status constants (matching main component)
+        final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
+        final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
+        
+        long wettkampfId = session.getWettkampfId();
+        long teamId = session.getTeamId();
+        
+        // 1) Load all this team's matches, sorted by Nr
+        List<MatchDO> teamMatches = matchComponent.findByWettkampfId(wettkampfId).stream()
+                .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                .sorted(Comparator.comparingLong(MatchDO::getNr))
+                .toList();
+
+        // 2) Find index of the current match
+        OptionalInt currentIdx = IntStream.range(0, teamMatches.size())
+                .filter(i -> Objects.equals(teamMatches.get(i).getId(), session.getCurrentMatchId()))
+                .findFirst();
+
+        if (!currentIdx.isPresent()) {
+            throw new BusinessException(
+                    ErrorCode.INTERNAL_ERROR,
+                    "Current match not found for team " + teamId + " in wettkampf " + wettkampfId);
+        }
+
+        int idx = currentIdx.getAsInt();
+        if (idx + 1 < teamMatches.size()) {
+            // Advance to the next match
+            MatchDO next = teamMatches.get(idx + 1);
+            session.setCurrentMatchId(next.getId());
+            session.setCurrentMatchNumber(Math.toIntExact(next.getNr()));
+            session.setCurrentPasseNumber(1);
+
+            // Recompute opponent
+            long opponentTeamId = findOpponentTeamId(next, teamId);
+            session.setGegnerTeamId(opponentTeamId);
+
+            session.setStatus(STATUS_SCHUETZENMELDUNG);
+            LOGGER.info("Advanced team {} to next match {} (Nr: {})", teamId, next.getId(), next.getNr());
+        } else {
+            // No more matches → end of competition
+            session.setStatus(STATUS_WETTKAMPF_ENDE);
+            LOGGER.info("Team {} has completed all matches, setting status to WETTKAMPF_ENDE", teamId);
+        }
+
+        sessionDAO.updateStatus(session, 0L);
     }
 
     // Data classes and enums

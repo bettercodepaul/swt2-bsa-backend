@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -52,6 +53,9 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelAdminComponentImpl.class);
 
     private static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
+    private static final String STATUS_SATZEINGABE = "SATZEINGABE";
+    private static final String STATUS_WARTE = "WARTE";
+    private static final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -116,18 +120,34 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                         .sorted(Comparator.comparingLong(MatchDO::getNr))
                         .toList();
 
-                final MatchDO firstMatch = teamMatches.get(0);
-                final long opponentId = findOpponentTeamId(firstMatch, teamId);
+                // Use sync component to determine correct current match and state
+                MatchDO currentMatch = syncComponent.findCurrentMatchForTeam(teamMatches, teamId);
+                if (currentMatch == null) {
+                    // Fallback to first match if analysis fails
+                    currentMatch = teamMatches.get(0);
+                    LOGGER.warn("Could not determine current match for team {}, using first match", teamId);
+                }
+                
+                final long opponentId = findOpponentTeamId(currentMatch, teamId);
+                
+                // Determine correct passe number based on existing data
+                int correctPasseNumber = syncComponent.determineCorrectPasseNumber(currentMatch.getId(), teamId);
+                
+                // Determine correct status based on match progress
+                String initialStatus = determineInitialStatus(currentMatch.getId(), teamId, correctPasseNumber);
 
                 final TabletSchusszettelEntity session = new TabletSchusszettelEntity();
                 session.setWettkampfId(wettkampfId);
                 session.setTeamId(teamId);
-                session.setCurrentMatchId(firstMatch.getId());
-                session.setCurrentMatchNumber(Math.toIntExact(firstMatch.getNr()));
-                session.setCurrentPasseNumber(1);
-                session.setStatus(STATUS_SCHUETZENMELDUNG);
+                session.setCurrentMatchId(currentMatch.getId());
+                session.setCurrentMatchNumber(Math.toIntExact(currentMatch.getNr()));
+                session.setCurrentPasseNumber(correctPasseNumber);
+                session.setStatus(initialStatus);
                 session.setGegnerTeamId(opponentId);
                 session.setToken(generateUrlSafeToken());
+
+                LOGGER.info("Initializing session for team {} with match {} passe {} status {}", 
+                    teamId, currentMatch.getId(), correctPasseNumber, initialStatus);
 
                 sessionDAO.createSession(session, -1L);
             }
@@ -139,6 +159,41 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                     ErrorCode.INTERNAL_ERROR,
                     "initializeForWettkampf failed for wettkampf " + wettkampfId +
                             ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Determines the correct initial status for a tablet session based on match progress.
+     */
+    private String determineInitialStatus(long matchId, long teamId, int currentPasseNumber) {
+        try {
+            // Get all passes for this team and match
+            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+            
+            // If no passes exist, start with registration
+            if (teamPasses.isEmpty() || currentPasseNumber == 1) {
+                return STATUS_SCHUETZENMELDUNG;
+            }
+            
+            // If we have passes with actual data, we're in match progress
+            boolean hasActualData = teamPasses.stream()
+                    .anyMatch(p -> p.getPfeil1() != null || p.getPfeil2() != null || p.getPfeil3() != null);
+            
+            if (hasActualData) {
+                // Check if match is completed (5 passes or match decided)
+                if (currentPasseNumber > 5) {
+                    return STATUS_WARTE;  // Match completed, waiting for opponent or next round
+                } else {
+                    return STATUS_SATZEINGABE;  // Match in progress
+                }
+            } else {
+                return STATUS_SCHUETZENMELDUNG;  // No actual shot data yet
+            }
+            
+        } catch (Exception e) {
+            LOGGER.warn("Could not determine initial status for team {} match {}: {}", 
+                teamId, matchId, e.getMessage());
+            return STATUS_SCHUETZENMELDUNG;  // Safe fallback
         }
     }
 
@@ -272,9 +327,9 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
 
         entities.forEach(session -> {
             try {
-                // Use the shared sync component - don't update database for admin view
+                // Use the shared sync component
                 TabletSchusszettelSyncComponent.SyncResult syncResult =
-                        syncComponent.synchronizeSession(session, wettkampfId, session.getTeamId(), false); // updateDatabase = false
+                        syncComponent.synchronizeSession(session, wettkampfId, session.getTeamId(), true);
 
                 if (!syncResult.success) {
                     LOGGER.warn("Failed to synchronize session for team {} in admin view: {}",
