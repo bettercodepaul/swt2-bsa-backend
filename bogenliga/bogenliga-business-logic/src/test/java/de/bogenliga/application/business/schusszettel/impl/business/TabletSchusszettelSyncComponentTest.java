@@ -344,11 +344,11 @@ public class TabletSchusszettelSyncComponentTest {
 
         // Setup passes where team has shot data in passes 1, 2, 3 but not 4
         List<PasseDO> teamPasses = Arrays.asList(
-                createPasseWithShots(1L, 10, 9),   // Passe 1 - has shots
-                createPasseWithShots(2L, 8, 7),    // Passe 2 - has shots
-                createPasseWithShots(3L, 9, 10),   // Passe 3 - has shots
-                createPasseWithoutShots(4L),       // Passe 4 - no shots
-                createPasseWithoutShots(5L)        // Passe 5 - no shots
+                createSyncPasseWithShots(1L, 1, 9),   // Passe 1 - has shots
+                createSyncPasseWithShots(2L, 2, 7),    // Passe 2 - has shots
+                createSyncPasseWithShots(3L, 3, 10),   // Passe 3 - has shots
+                createPasseWithoutShots(4L, 4),       // Passe 4 - no shots
+                createPasseWithoutShots(5L, 5)        // Passe 5 - no shots
         );
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
@@ -356,11 +356,11 @@ public class TabletSchusszettelSyncComponentTest {
         
         // Add opponent team passes to match the same progress (3 completed passes)
         List<PasseDO> opponentPasses = Arrays.asList(
-                createPasseWithShots(1L, 8, 7),    // Opponent passe 1 - has shots
-                createPasseWithShots(2L, 9, 8),    // Opponent passe 2 - has shots  
-                createPasseWithShots(3L, 7, 9),    // Opponent passe 3 - has shots
-                createPasseWithoutShots(4L),       // Opponent passe 4 - no shots
-                createPasseWithoutShots(5L)        // Opponent passe 5 - no shots
+                createSyncPasseWithShots(1L, 1, 7),    // Opponent passe 1 - has shots
+                createSyncPasseWithShots(2L, 2, 8),    // Opponent passe 2 - has shots  
+                createSyncPasseWithShots(3L, 3, 9),    // Opponent passe 3 - has shots
+                createPasseWithoutShots(4L, 4),       // Opponent passe 4 - no shots
+                createPasseWithoutShots(5L, 5)        // Opponent passe 5 - no shots
         );
         when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
                 .thenReturn(opponentPasses);
@@ -628,9 +628,9 @@ public class TabletSchusszettelSyncComponentTest {
         when(matchComponent.findById(MATCH1_ID)).thenThrow(new RuntimeException("Match not found"));
         
         List<PasseDO> teamPasses = Arrays.asList(
-                createPasseWithShots(1L, 10, 9),
-                createPasseWithShots(2L, 8, 7),
-                createPasseWithShots(3L, 9, 8)
+                createSyncPasseWithShots(1L, 1, 9),  // Passe 1
+                createSyncPasseWithShots(2L, 2, 7),  // Passe 2  
+                createSyncPasseWithShots(3L, 3, 8)   // Passe 3
         );
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID)).thenReturn(teamPasses);
 
@@ -693,13 +693,13 @@ public class TabletSchusszettelSyncComponentTest {
 
         // Setup team has completed passe, opponent has not
         List<PasseDO> team1Passes = Arrays.asList(
-                createPasseWithShots(1L, 10, 9),
-                createPasseWithShots(1L, 8, 7),
-                createPasseWithShots(1L, 9, 8) // 3 shooters completed
+                createSyncPasseWithShots(1L, 10, 9),
+                createSyncPasseWithShots(1L, 8, 7),
+                createSyncPasseWithShots(1L, 9, 8) // 3 shooters completed
         );
         List<PasseDO> team2Passes = Arrays.asList(
-                createPasseWithShots(1L, 8, 7),
-                createPasseWithShots(1L, 7, 6) // Only 2 shooters
+                createSyncPasseWithShots(1L, 8, 7),
+                createSyncPasseWithShots(1L, 7, 6) // Only 2 shooters
         );
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID)).thenReturn(team1Passes);
@@ -759,6 +759,7 @@ public class TabletSchusszettelSyncComponentTest {
         when(matchComponent.findById(999L)).thenReturn(null);
     }
 
+
     private void setupTeamMatches_NotStarted() {
         List<MatchDO> matches = Arrays.asList(
                 createMatch(MATCH1_ID, 1L, TEAM1_ID),
@@ -811,12 +812,12 @@ public class TabletSchusszettelSyncComponentTest {
     private void setupInProgressPasses() {
         // Team1 has shot in passes 1 and 2, opponent has shot in pass 1 only
         List<PasseDO> team1Passes = Arrays.asList(
-                createPasseWithShots(1L, 10, 9),
-                createPasseWithShots(2L, 8, 7)
+                createSyncPasseWithShots(1L, 1, 9),  // Passe 1 with shots
+                createSyncPasseWithShots(2L, 2, 7)   // Passe 2 with shots
         );
 
         List<PasseDO> team2Passes = Arrays.asList(
-                createPasseWithShots(1L, 9, 8)
+                createSyncPasseWithShots(1L, 1, 8)   // Passe 1 with shots
         );
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
@@ -850,15 +851,15 @@ public class TabletSchusszettelSyncComponentTest {
     private void setupWonMatchPasses() {
         // Team1 wins match 1 with 6 match points (3 sets won)
         List<PasseDO> team1Passes = Arrays.asList(
-                createPasseWithShots(1L, 30, 29), // Team1 wins set 1 (59 vs 50)
-                createPasseWithShots(2L, 30, 29), // Team1 wins set 2 (59 vs 50)
-                createPasseWithShots(3L, 30, 29)  // Team1 wins set 3 (59 vs 50) = 6 match points
+                createSyncPasseWithShots(1L, 30, 29), // Team1 wins set 1 (59 vs 50)
+                createSyncPasseWithShots(2L, 30, 29), // Team1 wins set 2 (59 vs 50)
+                createSyncPasseWithShots(3L, 30, 29)  // Team1 wins set 3 (59 vs 50) = 6 match points
         );
 
         List<PasseDO> team2Passes = Arrays.asList(
-                createPasseWithShots(1L, 25, 25), // Team2 loses set 1
-                createPasseWithShots(2L, 25, 25), // Team2 loses set 2
-                createPasseWithShots(3L, 25, 25)  // Team2 loses set 3
+                createSyncPasseWithShots(1L, 25, 25), // Team2 loses set 1
+                createSyncPasseWithShots(2L, 25, 25), // Team2 loses set 2
+                createSyncPasseWithShots(3L, 25, 25)  // Team2 loses set 3
         );
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
@@ -885,19 +886,19 @@ public class TabletSchusszettelSyncComponentTest {
     private void setup5SetsPasses() {
         // 5 sets completed (tied 4-4 in match points, so match complete by max sets)
         List<PasseDO> team1Passes = Arrays.asList(
-                createPasseWithShots(1L, 30, 29), // Team1 wins set 1
-                createPasseWithShots(2L, 25, 25), // Team1 loses set 2
-                createPasseWithShots(3L, 30, 29), // Team1 wins set 3
-                createPasseWithShots(4L, 25, 25), // Team1 loses set 4
-                createPasseWithShots(5L, 27, 28)  // Tie set 5
+                createSyncPasseWithShots(1L, 30, 29), // Team1 wins set 1
+                createSyncPasseWithShots(2L, 25, 25), // Team1 loses set 2
+                createSyncPasseWithShots(3L, 30, 29), // Team1 wins set 3
+                createSyncPasseWithShots(4L, 25, 25), // Team1 loses set 4
+                createSyncPasseWithShots(5L, 27, 28)  // Tie set 5
         );
 
         List<PasseDO> team2Passes = Arrays.asList(
-                createPasseWithShots(1L, 25, 25), // Team2 loses set 1
-                createPasseWithShots(2L, 30, 29), // Team2 wins set 2
-                createPasseWithShots(3L, 25, 25), // Team2 loses set 3
-                createPasseWithShots(4L, 30, 29), // Team2 wins set 4
-                createPasseWithShots(5L, 27, 28)  // Tie set 5
+                createSyncPasseWithShots(1L, 25, 25), // Team2 loses set 1
+                createSyncPasseWithShots(2L, 30, 29), // Team2 wins set 2
+                createSyncPasseWithShots(3L, 25, 25), // Team2 loses set 3
+                createSyncPasseWithShots(4L, 30, 29), // Team2 wins set 4
+                createSyncPasseWithShots(5L, 27, 28)  // Tie set 5
         );
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
@@ -950,12 +951,12 @@ public class TabletSchusszettelSyncComponentTest {
     private List<PasseDO> createCompletedMatchPasses(int numberOfSets) {
         List<PasseDO> passes = new ArrayList<>();
         for (int i = 1; i <= numberOfSets; i++) {
-            passes.add(createPasseWithShots((long) i, 10, 9));
+            passes.add(createSyncPasseWithIntegerShots((long) i, 10, 9));
         }
         return passes;
     }
 
-    private PasseDO createPasseWithShots(Long lfdnr, Integer pfeil1, Integer pfeil2) {
+    private PasseDO createSyncPasseWithIntegerShots(Long lfdnr, Integer pfeil1, Integer pfeil2) {
         PasseDO passe = new PasseDO();
         passe.setId(lfdnr);
         passe.setPasseLfdnr(lfdnr);
@@ -1200,5 +1201,223 @@ public class TabletSchusszettelSyncComponentTest {
         Assertions.assertThat(result.success).isTrue();
         // Should not advance because already in WETTKAMPF_ENDE status
         Assertions.assertThat(session.getStatus()).isEqualTo("WETTKAMPF_ENDE");
+    }
+
+    @Test
+    public void testSynchronizeSession_HasRegisteredShooters() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SCHUETZENMELDUNG");
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+        
+        // Mock wettkampf matches to include opponent for findOpponentTeamId
+        // Create opponent match manually to ensure correct setup
+        MatchDO opponentMatch = new MatchDO();
+        opponentMatch.setId(MATCH1_ID + 1);
+        opponentMatch.setNr(1L);  // Same match number
+        opponentMatch.setWettkampfId(WETTKAMPF_ID);
+        opponentMatch.setMannschaftId(TEAM2_ID);  // Different team
+        opponentMatch.setBegegnung(1L);  // Same begegnung
+        
+        List<MatchDO> allMatches = Arrays.asList(
+                createMatch(MATCH1_ID, 1L, TEAM1_ID),      // Team 1 match
+                opponentMatch   // Team 2 opponent match (same nr, begegnung)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(allMatches);
+        
+        // Mock 3 registered shooters (no scores yet)
+        List<PasseDO> registeredPasses = Arrays.asList(
+                createPasseWithoutShots(1L, 1),
+                createPasseWithoutShots(2L, 1),
+                createPasseWithoutShots(3L, 1)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
+                .thenReturn(registeredPasses);
+        
+        // Mock match analysis as IN_PROGRESS
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.IN_PROGRESS, 0, 1, 1, 0, new ArrayList<>(), "Match in progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Should set status to SATZEINGABE when shooters are registered but no scores
+        Assertions.assertThat(session.getStatus()).isEqualTo("SATZEINGABE");
+    }
+
+    @Test
+    public void testSynchronizeSession_PasseCompletedByTeam() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+        
+        // Mock wettkampf matches to include opponent for findOpponentTeamId
+        // Create opponent match manually to ensure correct setup
+        MatchDO opponentMatch = new MatchDO();
+        opponentMatch.setId(MATCH1_ID + 1);
+        opponentMatch.setNr(1L);  // Same match number
+        opponentMatch.setWettkampfId(WETTKAMPF_ID);
+        opponentMatch.setMannschaftId(TEAM2_ID);  // Different team
+        opponentMatch.setBegegnung(1L);  // Same begegnung
+        
+        List<MatchDO> allMatches = Arrays.asList(
+                createMatch(MATCH1_ID, 1L, TEAM1_ID),      // Team 1 match
+                opponentMatch   // Team 2 opponent match (same nr, begegnung)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(allMatches);
+        
+        // Mock 3 shooters with completed scores
+        List<PasseDO> completedPasses = Arrays.asList(
+                createSyncPasseWithShots(1L, 1, 8),
+                createSyncPasseWithShots(2L, 1, 9),
+                createSyncPasseWithShots(3L, 1, 7)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
+                .thenReturn(completedPasses);
+        
+        // Mock opponent also completed
+        when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
+                .thenReturn(completedPasses); // Same for simplicity
+        
+        // Mock match analysis as IN_PROGRESS
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.IN_PROGRESS, 0, 1, 1, 0, new ArrayList<>(), "Match in progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Both teams completed passe, should stay in SATZEINGABE for next passe
+        Assertions.assertThat(session.getStatus()).isEqualTo("SATZEINGABE");
+    }
+
+    @Test
+    public void testSynchronizeSession_WaitingForOpponent() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SATZEINGABE");
+        session.setCurrentPasseNumber(1);
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+        
+        // Mock wettkampf matches to include opponent for findOpponentTeamId
+        // Create opponent match manually to ensure correct setup
+        MatchDO opponentMatch = new MatchDO();
+        opponentMatch.setId(MATCH1_ID + 1);
+        opponentMatch.setNr(1L);  // Same match number
+        opponentMatch.setWettkampfId(WETTKAMPF_ID);
+        opponentMatch.setMannschaftId(TEAM2_ID);  // Different team
+        opponentMatch.setBegegnung(1L);  // Same begegnung
+        
+        List<MatchDO> allMatches = Arrays.asList(
+                createMatch(MATCH1_ID, 1L, TEAM1_ID),      // Team 1 match
+                opponentMatch   // Team 2 opponent match (same nr, begegnung)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(allMatches);
+        
+        // Mock this team completed, opponent not
+        List<PasseDO> completedPasses = Arrays.asList(
+                createSyncPasseWithShots(1L, 1, 8),
+                createSyncPasseWithShots(2L, 1, 9),
+                createSyncPasseWithShots(3L, 1, 7)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
+                .thenReturn(completedPasses);
+        
+        // Mock opponent not completed (only 2 shooters)
+        List<PasseDO> incompletePasses = Arrays.asList(
+                createSyncPasseWithShots(4L, 1, 8),
+                createSyncPasseWithShots(5L, 1, 9)
+                // Missing 3rd shooter
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
+                .thenReturn(incompletePasses);
+        
+        // Mock match analysis as IN_PROGRESS
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.IN_PROGRESS, 0, 1, 1, 0, new ArrayList<>(), "Match in progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Team completed but opponent didn't, should wait
+        Assertions.assertThat(session.getStatus()).isEqualTo("WARTE");
+    }
+
+    @Test
+    public void testSynchronizeSession_ExceptionInStatusDetermination() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+        
+        // Mock passe component to throw exception
+        when(passeComponent.findByMannschaftMatchId(anyLong(), anyLong()))
+                .thenThrow(new RuntimeException("Database error"));
+        
+        // Mock analysis to be valid
+        MatchAnalysisService.MatchAnalysisResult validResult = new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.IN_PROGRESS, 1, 2, 1, 0, new ArrayList<>(), "In progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(validResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Should fallback to SATZEINGABE on exception
+        Assertions.assertThat(session.getStatus()).isEqualTo("SATZEINGABE");
+    }
+    
+    // Helper method to create passes without shot data (registered shooters)
+    private PasseDO createPasseWithoutShots(Long id, int passeNr) {
+        PasseDO passe = new PasseDO();
+        passe.setId(id);
+        passe.setPasseLfdnr((long) passeNr);
+        passe.setPasseMannschaftId(TEAM1_ID);
+        passe.setPasseMatchId(MATCH1_ID);
+        // No shot data - just registered
+        return passe;
+    }
+    
+    // Helper method to create passes with shot data for sync tests
+    private PasseDO createSyncPasseWithShots(Long id, int passeNr, int shot1) {
+        PasseDO passe = new PasseDO();
+        passe.setId(id);
+        passe.setPasseLfdnr((long) passeNr);
+        passe.setPasseMannschaftId(TEAM1_ID);
+        passe.setPasseMatchId(MATCH1_ID);
+        passe.setPfeil1(shot1);
+        passe.setPfeil2(shot1 + 1);
+        passe.setPfeil3(shot1 - 1);
+        return passe;
     }
 }

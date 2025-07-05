@@ -539,6 +539,58 @@ public class TabletSchusszettelAdminComponentImplTest {
         Assertions.assertThat(result.getTabletSessionSingDOs()[0].getWettkampfInfo()).isNull();
     }
 
+    @Test
+    public void testGenerateSchusszettelSessions_OpponentNotFound() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setGegnerTeamId(999L); // Non-existent opponent
+        when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(session));
+        
+        setupTeamMocks();
+        setupWettkampfMocks();
+        
+        // Mock opponent lookup to fail
+        when(mannschaftComponent.findById(999L))
+                .thenThrow(new RuntimeException("Opponent not found"));
+        
+        TabletSchusszettelSyncComponent.SyncResult syncResult = 
+                TabletSchusszettelSyncComponent.SyncResult.success("Synced", true);
+        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true))
+                .thenReturn(syncResult);
+
+        // Act
+        var result = underTest.generateSchusszettelSessions(WETTKAMPF_ID);
+        
+        // Assert - Should handle opponent lookup failure gracefully
+        Assertions.assertThat(result.getTabletSessionSingDOs()).hasSize(1);
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getNaechsterGegnerName()).isEqualTo("Unknown Opponent");
+    }
+
+    @Test
+    public void testGenerateSchusszettelSessions_NullOpponent() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setGegnerTeamId(null); // No opponent set
+        when(sessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(session));
+        
+        setupTeamMocks();
+        setupWettkampfMocks();
+        
+        TabletSchusszettelSyncComponent.SyncResult syncResult = 
+                TabletSchusszettelSyncComponent.SyncResult.success("Synced", true);
+        when(syncComponent.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true))
+                .thenReturn(syncResult);
+
+        // Act
+        var result = underTest.generateSchusszettelSessions(WETTKAMPF_ID);
+        
+        // Assert - Should handle null opponent gracefully
+        Assertions.assertThat(result.getTabletSessionSingDOs()).hasSize(1);
+        Assertions.assertThat(result.getTabletSessionSingDOs()[0].getNaechsterGegnerName()).isNull();
+    }
+
     @Test(expected = RuntimeException.class)
     public void testGenerateSchusszettelSessions_CriticalError() {
         // Arrange
@@ -571,5 +623,130 @@ public class TabletSchusszettelAdminComponentImplTest {
             Assertions.assertThat(e.getErrorCode())
                     .isEqualTo(de.bogenliga.application.common.errorhandling.ErrorCode.INTERNAL_ERROR);
         }
+    }
+
+    @Test
+    public void testInitializeForWettkampf_DetermineInitialStatus_WithPasses() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+                createMatch(MATCH_ID, 1L, TEAM1_ID, 1L),
+                createMatch(MATCH_ID + 1, 1L, TEAM2_ID, 1L)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
+        
+        when(syncComponent.findCurrentMatchForTeam(anyList(), anyLong()))
+                .thenReturn(matches.get(0));
+        
+        // Mock passe data with actual shot data (currentPasseNumber > 1)
+        List<de.bogenliga.application.business.passe.api.types.PasseDO> passes = Arrays.asList(
+                createPasseWithShots(1L, 1, 8),
+                createPasseWithShots(2L, 2, 9)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH_ID)).thenReturn(passes);
+        when(syncComponent.determineCorrectPasseNumber(MATCH_ID, TEAM1_ID)).thenReturn(3); // > 1
+
+        // Act
+        underTest.initializeForWettkampf(WETTKAMPF_ID);
+
+        // Assert
+        verify(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
+        verify(sessionDAO, times(2)).createSession(any(TabletSchusszettelEntity.class), eq(-1L));
+        // Should determine status based on existing passe data
+    }
+
+    @Test
+    public void testInitializeForWettkampf_DetermineInitialStatus_MatchCompleted() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+                createMatch(MATCH_ID, 1L, TEAM1_ID, 1L),
+                createMatch(MATCH_ID + 1, 1L, TEAM2_ID, 1L)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
+        
+        when(syncComponent.findCurrentMatchForTeam(anyList(), anyLong()))
+                .thenReturn(matches.get(0));
+        
+        // Mock passe data with match completed (currentPasseNumber > 5)
+        List<de.bogenliga.application.business.passe.api.types.PasseDO> passes = Arrays.asList(
+                createPasseWithShots(1L, 1, 8),
+                createPasseWithShots(2L, 2, 9),
+                createPasseWithShots(3L, 3, 7),
+                createPasseWithShots(4L, 4, 8),
+                createPasseWithShots(5L, 5, 9)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH_ID)).thenReturn(passes);
+        when(syncComponent.determineCorrectPasseNumber(MATCH_ID, TEAM1_ID)).thenReturn(6); // > 5 = completed
+
+        // Act
+        underTest.initializeForWettkampf(WETTKAMPF_ID);
+
+        // Assert
+        verify(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
+        verify(sessionDAO, times(2)).createSession(any(TabletSchusszettelEntity.class), eq(-1L));
+        // Should set status to WARTE for completed match
+    }
+
+    @Test
+    public void testInitializeForWettkampf_DetermineInitialStatus_Exception() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+                createMatch(MATCH_ID, 1L, TEAM1_ID, 1L),
+                createMatch(MATCH_ID + 1, 1L, TEAM2_ID, 1L)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
+        
+        when(syncComponent.findCurrentMatchForTeam(anyList(), anyLong()))
+                .thenReturn(matches.get(0));
+        when(syncComponent.determineCorrectPasseNumber(MATCH_ID, TEAM1_ID)).thenReturn(1);
+        
+        // Mock exception when finding passes
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH_ID))
+                .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        underTest.initializeForWettkampf(WETTKAMPF_ID);
+
+        // Assert
+        verify(sessionDAO).deleteByWettkampfId(WETTKAMPF_ID);
+        verify(sessionDAO, times(2)).createSession(any(TabletSchusszettelEntity.class), eq(-1L));
+        // Should fallback to SCHUETZENMELDUNG on exception
+    }
+
+    @Test
+    public void testInitializeForWettkampf_FindOpponentException() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+                createMatch(MATCH_ID, 1L, TEAM1_ID, 1L)
+                // No opponent match - should trigger opponent not found exception
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
+        
+        when(syncComponent.findCurrentMatchForTeam(anyList(), anyLong()))
+                .thenReturn(matches.get(0));
+        when(syncComponent.determineCorrectPasseNumber(MATCH_ID, TEAM1_ID)).thenReturn(1);
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH_ID))
+                .thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        try {
+            underTest.initializeForWettkampf(WETTKAMPF_ID);
+            Assertions.fail("Expected BusinessException");
+        } catch (BusinessException e) {
+            Assertions.assertThat(e.getErrorCode())
+                    .isEqualTo(de.bogenliga.application.common.errorhandling.ErrorCode.INTERNAL_ERROR);
+            Assertions.assertThat(e.getMessage()).contains("Opponent not found");
+        }
+    }
+
+    // Helper method to create passes with shot data
+    private de.bogenliga.application.business.passe.api.types.PasseDO createPasseWithShots(Long id, int passeNr, int shot1) {
+        de.bogenliga.application.business.passe.api.types.PasseDO passe = 
+                new de.bogenliga.application.business.passe.api.types.PasseDO();
+        passe.setId(id);
+        passe.setPasseLfdnr((long) passeNr);
+        passe.setPfeil1(shot1);
+        passe.setPfeil2(shot1 + 1);
+        passe.setPfeil3(shot1 - 1);
+        return passe;
     }
 }

@@ -87,8 +87,8 @@ public class TabletSchusszettelService {
             @RequestParam Long teamid,
             @RequestBody Map<String, Object> payload) {
         
-        LOGGER.debug("Processing input for wettkampfid={}, teamid={}, payload type={}", 
-                wettkampfid, teamid, payload.get("typ"));
+        LOGGER.debug("Processing input for wettkampfid={}, teamid={}, payload size={}", 
+                wettkampfid, teamid, payload.size());
         
         // 1) Validiere, ob 'typ' existiert
         Object typObj = payload.get("typ");
