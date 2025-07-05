@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +43,8 @@ public class TabletSchusszettelSyncComponentTest {
     private PasseComponent passeComponent;
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
+    @Mock
+    private MatchAnalysisService matchAnalysisService;
 
     private TabletSchusszettelSyncComponent underTest;
 
@@ -50,7 +52,13 @@ public class TabletSchusszettelSyncComponentTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         underTest = new TabletSchusszettelSyncComponent(
-                sessionDAO, matchComponent, passeComponent, mannschaftComponent);
+                sessionDAO, matchComponent, passeComponent, mannschaftComponent, matchAnalysisService);
+        
+        // Mock MatchAnalysisService default behaviors
+        MatchAnalysisService.MatchAnalysisResult defaultResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(anyLong(), anyLong(), anyLong())).thenReturn(defaultResult);
+        when(matchAnalysisService.getCurrentPasseNumber(anyLong(), anyLong(), anyLong())).thenReturn(1);
     }
 
     @Test
@@ -64,9 +72,9 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isFalse();
-        assertThat(result.message).contains("Team " + TEAM1_ID + " no longer exists or is invalid");
-        assertThat(result.dataWasUpdated).isFalse();
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("Team " + TEAM1_ID + " no longer exists or is invalid");
+        Assertions.assertThat(result.dataWasUpdated).isFalse();
     }
 
     @Test
@@ -80,8 +88,8 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isFalse();
-        assertThat(result.message).contains("Team " + TEAM1_ID + " no longer exists or is invalid");
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("Team " + TEAM1_ID + " no longer exists or is invalid");
     }
 
     @Test
@@ -98,9 +106,9 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.message).isEqualTo("Session data is already synchronized");
-        assertThat(result.dataWasUpdated).isFalse();
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).isEqualTo("Session data is already synchronized");
+        Assertions.assertThat(result.dataWasUpdated).isFalse();
         verify(sessionDAO, never()).updateStatus(any(), anyLong());
     }
 
@@ -119,8 +127,8 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isFalse();
-        assertThat(result.message).contains("No valid matches found for team " + TEAM1_ID);
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("No valid matches found for team " + TEAM1_ID);
     }
 
     @Test
@@ -139,16 +147,16 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.message).contains("Session synchronized to match " + MATCH1_ID);
-        assertThat(result.dataWasUpdated).isTrue();
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).contains("Session synchronized to match " + MATCH1_ID);
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
         verify(sessionDAO).updateStatus(session, 0L);
 
         // Verify session was updated correctly
-        assertThat(session.getCurrentMatchId()).isEqualTo(MATCH1_ID);
-        assertThat(session.getCurrentMatchNumber()).isEqualTo(1);
-        assertThat(session.getGegnerTeamId()).isEqualTo(TEAM2_ID);
-        assertThat(session.getCurrentPasseNumber()).isEqualTo(1);
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH1_ID);
+        Assertions.assertThat(session.getCurrentMatchNumber()).isEqualTo(1);
+        Assertions.assertThat(session.getGegnerTeamId()).isEqualTo(TEAM2_ID);
+        Assertions.assertThat(session.getCurrentPasseNumber()).isEqualTo(1);
     }
 
     @Test
@@ -167,13 +175,13 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.message).contains("Session synchronized to match " + MATCH1_ID);
-        assertThat(result.dataWasUpdated).isTrue();
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).contains("Session synchronized to match " + MATCH1_ID);
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
         verify(sessionDAO).updateStatus(session, 0L);
 
         // Should find the correct passe number (3, since first 2 have data)
-        assertThat(session.getCurrentPasseNumber()).isEqualTo(3);
+        Assertions.assertThat(session.getCurrentPasseNumber()).isEqualTo(3);
     }
 
     @Test
@@ -192,12 +200,12 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.message).contains("Session synchronized to match " + MATCH3_ID);
-        assertThat(result.dataWasUpdated).isTrue();
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).contains("Session synchronized to match " + MATCH3_ID);
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
 
         // Should return the last match when all are completed
-        assertThat(session.getCurrentMatchId()).isEqualTo(MATCH3_ID);
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH3_ID);
     }
 
     @Test
@@ -227,8 +235,8 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isFalse();
-        assertThat(result.message).contains("Failed to update session data");
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("Failed to update session data");
     }
 
     @Test
@@ -247,13 +255,13 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, false);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.dataWasUpdated).isTrue();
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
         // Database should NOT be updated
         verify(sessionDAO, never()).updateStatus(any(), anyLong());
 
         // But session object should still be updated in memory
-        assertThat(session.getCurrentMatchId()).isEqualTo(MATCH1_ID);
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH1_ID);
     }
 
     @Test
@@ -272,11 +280,11 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
-        assertThat(result.message).contains("Session synchronized to match " + MATCH2_ID);
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).contains("Session synchronized to match " + MATCH2_ID);
 
         // Should advance to next match since current one is won
-        assertThat(session.getCurrentMatchId()).isEqualTo(MATCH2_ID);
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH2_ID);
     }
 
     @Test
@@ -295,10 +303,10 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
+        Assertions.assertThat(result.success).isTrue();
 
         // Should advance to next match since 5 sets are completed
-        assertThat(session.getCurrentMatchId()).isEqualTo(MATCH2_ID);
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH2_ID);
     }
 
     @Test
@@ -319,9 +327,9 @@ public class TabletSchusszettelSyncComponentTest {
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isFalse();
-        assertThat(result.message).contains("Critical error during synchronization");
-        assertThat(result.message).contains("Critical DB error");
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("Critical error during synchronization");
+        Assertions.assertThat(result.message).contains("Critical DB error");
     }
 
     @Test
@@ -345,18 +353,179 @@ public class TabletSchusszettelSyncComponentTest {
 
         when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID))
                 .thenReturn(teamPasses);
+        
+        // Add opponent team passes to match the same progress (3 completed passes)
+        List<PasseDO> opponentPasses = Arrays.asList(
+                createPasseWithShots(1L, 8, 7),    // Opponent passe 1 - has shots
+                createPasseWithShots(2L, 9, 8),    // Opponent passe 2 - has shots  
+                createPasseWithShots(3L, 7, 9),    // Opponent passe 3 - has shots
+                createPasseWithoutShots(4L),       // Opponent passe 4 - no shots
+                createPasseWithoutShots(5L)        // Opponent passe 5 - no shots
+        );
         when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(opponentPasses);
+        
+        // Also setup passes for the opponent match (MATCH1_ID + 1)
+        when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID + 1))
+                .thenReturn(opponentPasses);
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID + 1))
+                .thenReturn(teamPasses);
+        
+        // Mock individual match lookup for determineCorrectPasseNumber
+        MatchDO match1 = createMatch(MATCH1_ID, 1L, TEAM1_ID);
+        MatchDO match1Opponent = createMatch(MATCH1_ID + 1, 1L, TEAM2_ID);
+        when(matchComponent.findById(MATCH1_ID)).thenReturn(match1);
+        when(matchComponent.findById(MATCH1_ID + 1)).thenReturn(match1Opponent);
+        
+        // Mock MatchAnalysisService to return correct current passe number (4)
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.IN_PROGRESS, 0, 4, 0, 0, new ArrayList<>(), "Match in progress: Ready for set 4");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+        when(matchAnalysisService.analyzeMatch(eq(MATCH1_ID + 1), eq(TEAM2_ID), eq(TEAM1_ID))).thenReturn(inProgressResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(4);
+        when(matchAnalysisService.getCurrentPasseNumber(eq(MATCH1_ID + 1), eq(TEAM2_ID), eq(TEAM1_ID))).thenReturn(4);
+        when(matchAnalysisService.isMatchComplete(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(false);
+        when(matchAnalysisService.isMatchComplete(eq(MATCH1_ID + 1), eq(TEAM2_ID), eq(TEAM1_ID))).thenReturn(false);
 
         // Act
         TabletSchusszettelSyncComponent.SyncResult result =
                 underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
 
         // Assert
-        assertThat(result.success).isTrue();
+        Assertions.assertThat(result.success).isTrue();
         // Should set current passe to 4 (next after the last completed passe 3)
-        assertThat(session.getCurrentPasseNumber()).isEqualTo(4);
+        Assertions.assertThat(session.getCurrentPasseNumber()).isEqualTo(4);
     }
+
+    @Test
+    public void testFindCurrentMatchForTeam_EmptyMatches() {
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(Collections.emptyList(), TEAM1_ID);
+
+        // Assert
+        Assertions.assertThat(result).isNull();
+    }
+
+    @Test
+    public void testFindCurrentMatchForTeam_FirstMatchNotStarted() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID),
+            createMatch(MATCH2_ID, 2L, TEAM1_ID)
+        );
+        
+        // Mock the full wettkampf match list including opponents
+        List<MatchDO> allMatches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID),
+            createMatch(MATCH1_ID + 1, 1L, TEAM2_ID),  // Opponent for match 1
+            createMatch(MATCH2_ID, 2L, TEAM1_ID),
+            createMatch(MATCH2_ID + 1, 2L, TEAM2_ID)   // Opponent for match 2
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(allMatches);
+        
+        setupEmptyMatch(MATCH1_ID);
+        setupEmptyMatch(MATCH2_ID);
+        
+        // Mock analysis to return NOT_STARTED for first match
+        MatchAnalysisService.MatchAnalysisResult notStartedResult = 
+            new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID))
+            .thenReturn(notStartedResult);
+
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(matches, TEAM1_ID);
+
+        // Assert
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(MATCH1_ID);
+    }
+
+    @Test
+    public void testFindCurrentMatchForTeam_MiddleMatchInProgress() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID),
+            createMatch(MATCH2_ID, 2L, TEAM1_ID),
+            createMatch(MATCH3_ID, 3L, TEAM1_ID)
+        );
+        
+        // Mock the full wettkampf match list including opponents
+        List<MatchDO> allMatches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID),
+            createMatch(MATCH1_ID + 1, 1L, TEAM2_ID),  // Opponent for match 1
+            createMatch(MATCH2_ID, 2L, TEAM1_ID),
+            createMatch(MATCH2_ID + 1, 2L, TEAM2_ID),  // Opponent for match 2
+            createMatch(MATCH3_ID, 3L, TEAM1_ID),
+            createMatch(MATCH3_ID + 1, 3L, TEAM2_ID)   // Opponent for match 3
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(allMatches);
+        
+        // Mock analysis results
+        MatchAnalysisService.MatchAnalysisResult completedResult = 
+            new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.COMPLETED, 3, 3, 6, 0, new ArrayList<>(), "Completed");
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = 
+            new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.IN_PROGRESS, 1, 2, 2, 0, new ArrayList<>(), "In progress");
+        
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID))
+            .thenReturn(completedResult);
+        when(matchAnalysisService.analyzeMatch(MATCH2_ID, TEAM1_ID, TEAM2_ID))
+            .thenReturn(inProgressResult);
+
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(matches, TEAM1_ID);
+
+        // Assert
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(MATCH2_ID); // Should return the in-progress match
+    }
+
+    @Test
+    public void testFindCurrentMatchForTeam_AllMatchesCompleted() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID),
+            createMatch(MATCH2_ID, 2L, TEAM1_ID)
+        );
+        
+        // Mock all matches as completed
+        MatchAnalysisService.MatchAnalysisResult completedResult = 
+            new MatchAnalysisService.MatchAnalysisResult(
+                MatchAnalysisService.MatchStatus.COMPLETED, 3, 3, 6, 0, new ArrayList<>(), "Completed");
+        
+        when(matchAnalysisService.analyzeMatch(anyLong(), eq(TEAM1_ID), eq(TEAM2_ID)))
+            .thenReturn(completedResult);
+
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(matches, TEAM1_ID);
+
+        // Assert - Should return last match when all are completed
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(MATCH2_ID);
+    }
+
+    @Test
+    public void testFindCurrentMatchForTeam_InvalidMatchData() {
+        // Arrange
+        List<MatchDO> matches = Arrays.asList(
+            createMatch(MATCH1_ID, 1L, TEAM1_ID)
+        );
+        
+        // Mock analysis to throw exception
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID))
+            .thenThrow(new RuntimeException("Analysis error"));
+
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(matches, TEAM1_ID);
+
+        // Assert - Should still return the match even with analysis error
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(MATCH1_ID);
+    }
+
+    // Removed deprecated method tests - determineCorrectPasseNumber is now handled internally
 
     // Helper methods
 
@@ -467,6 +636,21 @@ public class TabletSchusszettelSyncComponentTest {
         setupCompletedMatch(MATCH1_ID);
         setupCompletedMatch(MATCH2_ID);
         setupEmptyMatch(MATCH3_ID); // Last match not started
+        
+        // Mock MatchAnalysisService to return COMPLETED for matches 1 and 2
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 5, 5, 5, 5, new ArrayList<>(), "Match completed: Maximum 5 sets reached (5-5)");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.analyzeMatch(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+        when(matchAnalysisService.isMatchComplete(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+        
+        // Mock MatchAnalysisService for match 3 - not started
+        MatchAnalysisService.MatchAnalysisResult notStartedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(notStartedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(false);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
     }
 
     private void setupWonMatchPasses() {
@@ -487,6 +671,19 @@ public class TabletSchusszettelSyncComponentTest {
                 .thenReturn(team1Passes);
         when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
                 .thenReturn(team2Passes);
+
+        // Mock MatchAnalysisService to return COMPLETED for match 1 (Team1 won 6-0)
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 3, 3, 6, 0, new ArrayList<>(), "Match completed: Team scores 6-0 Satzpunkte");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+        
+        // Mock MatchAnalysisService for next match (MATCH2_ID) - not started
+        MatchAnalysisService.MatchAnalysisResult nextMatchResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(nextMatchResult);
+        when(matchAnalysisService.isMatchComplete(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(false);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
 
         setupEmptyMatch(MATCH2_ID); // Next match not started
     }
@@ -513,6 +710,27 @@ public class TabletSchusszettelSyncComponentTest {
                 .thenReturn(team1Passes);
         when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID))
                 .thenReturn(team2Passes);
+
+        // Mock individual match lookup for determineCorrectPasseNumber
+        MatchDO match1 = createMatch(MATCH1_ID, 1L, TEAM1_ID);
+        MatchDO match1Opponent = createMatch(MATCH1_ID + 1, 1L, TEAM2_ID);
+        MatchDO match2 = createMatch(MATCH2_ID, 2L, TEAM1_ID);
+        when(matchComponent.findById(MATCH1_ID)).thenReturn(match1);
+        when(matchComponent.findById(MATCH1_ID + 1)).thenReturn(match1Opponent);
+        when(matchComponent.findById(MATCH2_ID)).thenReturn(match2);
+
+        // Mock MatchAnalysisService to return COMPLETED for match 1 (5 sets = match complete)
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 5, 5, 5, 5, new ArrayList<>(), "Match completed: Maximum 5 sets reached (5-5)");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+        
+        // Mock MatchAnalysisService for next match (MATCH2_ID) - not started
+        MatchAnalysisService.MatchAnalysisResult nextMatchResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(nextMatchResult);
+        when(matchAnalysisService.isMatchComplete(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(false);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH2_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
 
         setupEmptyMatch(MATCH2_ID); // Next match not started
     }
