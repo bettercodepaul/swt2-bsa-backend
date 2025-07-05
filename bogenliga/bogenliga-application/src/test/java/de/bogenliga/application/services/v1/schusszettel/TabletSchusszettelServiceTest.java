@@ -85,52 +85,34 @@ public class TabletSchusszettelServiceTest {
         assertThat(response.getBody()).isInstanceOf(TabletSchusszettelDTO.class);
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void getSchusszettel_businessException() {
         // given
         when(component.getStatus(wettkampfId, teamId, token))
                 .thenThrow(new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "no access"));
 
-        // when
-        ResponseEntity<?> response = underTest.getSchusszettel(token, wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().value()).isEqualTo(403);
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("NO_PERMISSION_ERROR: no access");
+        // when / then - exception should be thrown
+        underTest.getSchusszettel(token, wettkampfId, teamId);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void getSchusszettel_technicalException() {
         // given
         when(component.getStatus(wettkampfId, teamId, token))
                 .thenThrow(new TechnicalException(ErrorCode.INTERNAL_ERROR, "oops"));
 
-        // when
-        ResponseEntity<?> response = underTest.getSchusszettel(token, wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INTERNAL_ERROR: oops");
+        // when / then - exception should be thrown
+        underTest.getSchusszettel(token, wettkampfId, teamId);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void getSchusszettel_unexpectedException() {
         // given
         when(component.getStatus(wettkampfId, teamId, token))
                 .thenThrow(new RuntimeException("Unexpected error"));
 
-        // when
-        ResponseEntity<?> response = underTest.getSchusszettel(token, wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("Ein unerwarteter Fehler ist aufgetreten");
+        // when / then - exception should be thrown
+        underTest.getSchusszettel(token, wettkampfId, teamId);
     }
 
     // ================================
@@ -175,37 +157,25 @@ public class TabletSchusszettelServiceTest {
         verify(component).submitSchuetzen(eq(wettkampfId), eq(teamId), eq(token), any(SchuetzenMeldungDO.class));
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void postEingabe_missingTyp() {
         // given
         Map<String, Object> payload = Map.of();
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).asString().contains("Eingabetyp fehlt");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void postEingabe_unknownType() {
         // given
         Map<String, Object> payload = Map.of("typ", "UNKNOWN");
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).asString().contains("Unbekannter Eingabetyp: UNKNOWN");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void postEingabe_satzeingabe_businessException() {
         // given
         Map<String, Object> payload = Map.of("typ", "SATZEINGABE");
@@ -222,17 +192,12 @@ public class TabletSchusszettelServiceTest {
                         any(SatzEingabeDO.class)
                 );
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INVALID_ARGUMENT_ERROR: bad data");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void postEingabe_schuetzenmeldung_businessException() {
         // given
         Map<String, Object> payload = Map.of("typ", "SCHUETZENMELDUNG");
@@ -249,16 +214,11 @@ public class TabletSchusszettelServiceTest {
                         any(SchuetzenMeldungDO.class)
                 );
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INVALID_ARGUMENT_ERROR: invalid shooters");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void postEingabe_satzeingabe_technicalException() {
         // given
         Map<String, Object> payload = Map.of("typ", "SATZEINGABE");
@@ -275,17 +235,12 @@ public class TabletSchusszettelServiceTest {
                         any(SatzEingabeDO.class)
                 );
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INTERNAL_ERROR: database error");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void postEingabe_schuetzenmeldung_technicalException() {
         // given
         Map<String, Object> payload = Map.of("typ", "SCHUETZENMELDUNG");
@@ -302,30 +257,19 @@ public class TabletSchusszettelServiceTest {
                         any(SchuetzenMeldungDO.class)
                 );
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INTERNAL_ERROR: database error");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void postEingabe_unexpectedException() {
         // given
         Map<String, Object> payload = Map.of("typ", "SATZEINGABE");
         when(objectMapper.convertValue(payload, SatzEingabeDTO.class))
                 .thenThrow(new RuntimeException("Unexpected error"));
 
-        // when
-        ResponseEntity<?> response = underTest.postEingabe(token, wettkampfId, teamId, payload);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("Ein unerwarteter Fehler ist aufgetreten");
+        // when / then - exception should be thrown
+        underTest.postEingabe(token, wettkampfId, teamId, payload);
     }
 
     // ================================
@@ -347,52 +291,34 @@ public class TabletSchusszettelServiceTest {
         verify(adminComponent).reTokenize(wettkampfId, teamId);
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void reTokenize_businessException() {
         // given
         doThrow(new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "no permission"))
                 .when(adminComponent).reTokenize(wettkampfId, teamId);
 
-        // when
-        ResponseEntity<?> response = underTest.reTokenize(wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().value()).isEqualTo(403);
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("NO_PERMISSION_ERROR: no permission");
+        // when / then - exception should be thrown
+        underTest.reTokenize(wettkampfId, teamId);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void reTokenize_technicalException() {
         // given
         doThrow(new TechnicalException(ErrorCode.INTERNAL_ERROR, "database error"))
                 .when(adminComponent).reTokenize(wettkampfId, teamId);
 
-        // when
-        ResponseEntity<?> response = underTest.reTokenize(wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INTERNAL_ERROR: database error");
+        // when / then - exception should be thrown
+        underTest.reTokenize(wettkampfId, teamId);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void reTokenize_unexpectedException() {
         // given
         doThrow(new RuntimeException("Unexpected error"))
                 .when(adminComponent).reTokenize(wettkampfId, teamId);
 
-        // when
-        ResponseEntity<?> response = underTest.reTokenize(wettkampfId, teamId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("Ein unerwarteter Fehler ist aufgetreten");
+        // when / then - exception should be thrown
+        underTest.reTokenize(wettkampfId, teamId);
     }
 
     // ================================
@@ -441,54 +367,36 @@ public class TabletSchusszettelServiceTest {
         verify(adminComponent).generateSchusszettelSessions(wettkampfId);
     }
 
-    @Test
+    @Test(expected = BusinessException.class)
     public void getTabletSessionInfo_businessException() {
         // given
         when(adminComponent.existsForWettkampf(wettkampfId)).thenReturn(true);
         when(adminComponent.generateSchusszettelSessions(wettkampfId))
                 .thenThrow(new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "no access"));
 
-        // when
-        ResponseEntity<?> response = underTest.getTabletSessionInfo(wettkampfId);
-
-        // then
-        assertThat(response.getStatusCode().value()).isEqualTo(403);
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("NO_PERMISSION_ERROR: no access");
+        // when / then - exception should be thrown
+        underTest.getTabletSessionInfo(wettkampfId);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void getTabletSessionInfo_technicalException() {
         // given
         when(adminComponent.existsForWettkampf(wettkampfId)).thenReturn(true);
         when(adminComponent.generateSchusszettelSessions(wettkampfId))
                 .thenThrow(new TechnicalException(ErrorCode.INTERNAL_ERROR, "database error"));
 
-        // when
-        ResponseEntity<?> response = underTest.getTabletSessionInfo(wettkampfId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("INTERNAL_ERROR: database error");
+        // when / then - exception should be thrown
+        underTest.getTabletSessionInfo(wettkampfId);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void getTabletSessionInfo_unexpectedException() {
         // given
         when(adminComponent.existsForWettkampf(wettkampfId)).thenReturn(true);
         when(adminComponent.generateSchusszettelSessions(wettkampfId))
                 .thenThrow(new RuntimeException("Unexpected error"));
 
-        // when
-        ResponseEntity<?> response = underTest.getTabletSessionInfo(wettkampfId);
-
-        // then
-        assertThat(response.getStatusCode().is5xxServerError()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertThat(body.get("error")).isEqualTo("Ein unerwarteter Fehler ist aufgetreten");
+        // when / then - exception should be thrown
+        underTest.getTabletSessionInfo(wettkampfId);
     }
 }

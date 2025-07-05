@@ -9,7 +9,6 @@ import de.bogenliga.application.business.schusszettel.api.types.TabletSchusszett
 import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.services.v1.schusszettel.mapper.TabletSatzEingabeMapper;
 import de.bogenliga.application.services.v1.schusszettel.mapper.TabletSchuetzenMeldungMapper;
 import de.bogenliga.application.services.v1.schusszettel.mapper.TabletSchusszettelMapper;
@@ -61,199 +60,132 @@ public class TabletSchusszettelService {
 
     /**
      * Holt den aktuellen Zustand des Tablets (Status + Teams + Schützen + Ergebnisse).
+     * Exception handling is centralized in CustomizedResponseEntityExceptionHandler.
      */
     @GetMapping
-    public ResponseEntity<?> getSchusszettel(
+    public ResponseEntity<TabletSchusszettelDTO> getSchusszettel(
             @RequestParam String token,
             @RequestParam Long wettkampfid,
             @RequestParam Long teamid) {
-        try {
-            TabletSchusszettelDO businessDO = component.getStatus(wettkampfid, teamid, token);
-            TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(businessDO);
-            return ResponseEntity.ok(dto);
-
-        } catch (BusinessException e) {
-            // NO_PERMISSION_ERROR or other business errors
-            LOGGER.warn("Business exception in getSchusszettel: {}", e.getMessage());
-            return ResponseEntity.status(403).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (TechnicalException e) {
-            LOGGER.error("Technical exception in getSchusszettel", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error in getSchusszettel", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", "Ein unerwarteter Fehler ist aufgetreten"
-            ));
-        }
+        
+        LOGGER.debug("Getting Schusszettel for wettkampfid={}, teamid={}", wettkampfid, teamid);
+        
+        TabletSchusszettelDO businessDO = component.getStatus(wettkampfid, teamid, token);
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(businessDO);
+        
+        return ResponseEntity.ok(dto);
     }
 
+    /**
+     * Processes input submissions (SATZEINGABE or SCHUETZENMELDUNG).
+     * Exception handling is centralized in CustomizedResponseEntityExceptionHandler.
+     */
     @PostMapping
-    public ResponseEntity<?> postEingabe(
+    public ResponseEntity<Map<String, String>> postEingabe(
             @RequestParam String token,
             @RequestParam Long wettkampfid,
             @RequestParam Long teamid,
             @RequestBody Map<String, Object> payload) {
-        try {
-            // 1) Validiere, ob 'typ' existiert
-            Object typObj = payload.get("typ");
-            if (typObj == null) {
-                throw new BusinessException(
-                        ErrorCode.INVALID_ARGUMENT_ERROR,
-                        "Eingabetyp fehlt"
-                );
-            }
-            String typRaw = typObj.toString();
+        
+        LOGGER.debug("Processing input for wettkampfid={}, teamid={}, payload size={}", 
+                wettkampfid, teamid, payload.size());
+        
+        // 1) Validiere, ob 'typ' existiert
+        Object typObj = payload.get("typ");
+        if (typObj == null) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Eingabetyp fehlt"
+            );
+        }
+        String typRaw = typObj.toString();
 
-            EingabeTyp typ;
-            try {
-                typ = EingabeTyp.valueOf(typRaw);
-            } catch (IllegalArgumentException e) {
-                // 2) Ungültiger Typ
+        EingabeTyp typ;
+        try {
+            typ = EingabeTyp.valueOf(typRaw);
+        } catch (IllegalArgumentException e) {
+            // 2) Ungültiger Typ
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Unbekannter Eingabetyp: " + typRaw
+            );
+        }
+
+        // 3) Dispatch je nach Typ
+        switch (typ) {
+            case SATZEINGABE -> {
+                SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
+                SatzEingabeDO doObj = TabletSatzEingabeMapper.toDO(dto);
+                component.submitSatz(wettkampfid, teamid, token, doObj);
+            }
+            case SCHUETZENMELDUNG -> {
+                SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
+                SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
+                component.submitSchuetzen(wettkampfid, teamid, token, doObj);
+            }
+            default -> {
+                // Sollte nie passieren, da valueOf abgefangen wird
                 throw new BusinessException(
                         ErrorCode.INVALID_ARGUMENT_ERROR,
                         "Unbekannter Eingabetyp: " + typRaw
                 );
             }
-
-            // 3) Dispatch je nach Typ
-            switch (typ) {
-                case SATZEINGABE -> {
-                    SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
-                    SatzEingabeDO doObj = TabletSatzEingabeMapper.toDO(dto);
-                    component.submitSatz(wettkampfid, teamid, token, doObj);
-                }
-                case SCHUETZENMELDUNG -> {
-                    SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
-                    SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
-                    component.submitSchuetzen(wettkampfid, teamid, token, doObj);
-                }
-                default -> {
-                    // Sollte nie passieren, da valueOf abgefangen wird
-                    throw new BusinessException(
-                            ErrorCode.INVALID_ARGUMENT_ERROR,
-                            "Unbekannter Eingabetyp: " + typRaw
-                    );
-                }
-            }
-
-            // Erfolgreiche Speicherung
-            return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
-
-        } catch (BusinessException e) {
-            // Validierungsfehler → 400
-            LOGGER.warn("Business exception in postEingabe: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (TechnicalException e) {
-            // Interner Fehler → 500
-            LOGGER.error("Technical exception in postEingabe", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (Exception e) {
-            // Unerwarteter Fehler → 500
-            LOGGER.error("Unexpected error in postEingabe", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", "Ein unerwarteter Fehler ist aufgetreten"
-            ));
         }
+
+        // Erfolgreiche Speicherung
+        return ResponseEntity.ok(Map.of("message", "Eingabe gespeichert"));
     }
 
     // CAN ONLY BE CALLED BY SOMEONE WITH WETTKAMPERLEITER LICENSE
 
     /**
      * Can only be called by people with the license Wettkampfleiter.
-     * --------------------------------------------------------------
      * Re-tokenizes the schusszettel for a given wettkampf and team.
-     * --------------------------------------------------------------
-     * VOID
+     * Exception handling is centralized in CustomizedResponseEntityExceptionHandler.
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
     @PostMapping("/tokenize")
-    public ResponseEntity<?> reTokenize(
+    public ResponseEntity<Map<String, String>> reTokenize(
             @RequestParam Long wettkampfid,
             @RequestParam Long teamid) {
-        try {
-            adminComponent.reTokenize(wettkampfid, teamid);
-            return ResponseEntity.ok(Map.of("message", "Schusszettel erfolgreich neu tokenisiert"));
-
-        } catch (BusinessException e) {
-            // NO_PERMISSION_ERROR or other business errors
-            LOGGER.warn("Business exception in reTokenize: {}", e.getMessage());
-            return ResponseEntity.status(403).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (TechnicalException e) {
-            LOGGER.error("Technical exception in reTokenize", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", e.getMessage()
-            ));
-
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error in reTokenize", e);
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", "Ein unerwarteter Fehler ist aufgetreten"
-            ));
-        }
+        
+        LOGGER.debug("Re-tokenizing schusszettel for wettkampfid={}, teamid={}", wettkampfid, teamid);
+        
+        adminComponent.reTokenize(wettkampfid, teamid);
+        
+        return ResponseEntity.ok(Map.of("message", "Schusszettel erfolgreich neu tokenisiert"));
     }
 
     /**
      * Can only be called by people with the license Wettkampfleiter.
-     * --------------------------------------------------------------
      * Returns a List of all TabletSchusszettelSessions as TabletSessionInfoDTO with:
      * Attributes:
-     * * - WettkampfId
-     * * -  Per Team as a TabletSessionSingDTO:
-     *      * - TeamId
-     *      * - TeamName
-     *      * - Status
-     *      * - Token
-     *      * - CurrentPasse
-     *      * - Nächster Gegner (can be null)
+     * - WettkampfId
+     * - Per Team as a TabletSessionSingDTO:
+     *   - TeamId, TeamName, Status, Token, CurrentPasse, Nächster Gegner (can be null)
+     * Exception handling is centralized in CustomizedResponseEntityExceptionHandler.
      */
     @RequiresOnePermissions(perm = {
             UserPermission.CAN_MODIFY_WETTKAMPF,
             UserPermission.CAN_MODIFY_MY_WETTKAMPF})
     @GetMapping("/sessions")
-    public ResponseEntity<?> getTabletSessionInfo(@RequestParam Long wettkampfid) {
-        try {
-            // 1) initialize (in case it does not exist yet)
-            if (!adminComponent.existsForWettkampf(wettkampfid)) {
-                LOGGER.info("No existing sessions for Wettkampf {}. Initializing...", wettkampfid);
-                adminComponent.initializeForWettkampf(wettkampfid);
-            }
-
-            // 2) fetch business DO
-            TabletSessionInfoDO businessDO = adminComponent.generateSchusszettelSessions(wettkampfid);
-
-            // 3) map into a DTO
-            final TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
-            return ResponseEntity.ok(dto);
-
-        } catch (BusinessException e) {
-            LOGGER.warn("Business exception in getTabletSessionInfo: {}", e.getMessage());
-            return ResponseEntity.status(403)
-                    .body(Map.of("error", e.getMessage()));
-        } catch (TechnicalException e) {
-            LOGGER.error("Technical exception in getTabletSessionInfo", e);
-            return ResponseEntity.status(500)
-                    .body(Map.of("error", e.getMessage()));
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error in getTabletSessionInfo", e);
-            return ResponseEntity.status(500)
-                    .body(Map.of("error",
-                            "Ein unerwarteter Fehler ist aufgetreten"));
+    public ResponseEntity<TabletSessionInfoDTO> getTabletSessionInfo(@RequestParam Long wettkampfid) {
+        
+        LOGGER.debug("Getting tablet session info for wettkampfid={}", wettkampfid);
+        
+        // 1) initialize (in case it does not exist yet)
+        if (!adminComponent.existsForWettkampf(wettkampfid)) {
+            LOGGER.info("No existing sessions for Wettkampf {}. Initializing...", wettkampfid);
+            adminComponent.initializeForWettkampf(wettkampfid);
         }
+
+        // 2) fetch business DO
+        TabletSessionInfoDO businessDO = adminComponent.generateSchusszettelSessions(wettkampfid);
+
+        // 3) map into a DTO
+        final TabletSessionInfoDTO dto = TabletSessionInfoMapper.toDTO(businessDO);
+        
+        return ResponseEntity.ok(dto);
     }
 
 }
