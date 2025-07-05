@@ -966,7 +966,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                         passeComponent.findByPk(wettkampfId, session.getCurrentMatchNumber(), 
                                               teamId, lfdnr, dsbId);
                         // If we reach here, passe exists - skip
-                        LOGGER.debug("Passe already exists for shooter {} set {}", dsbId, lfdnr);
+                        LOGGER.debug("Passe already exists for shooter in set {}", lfdnr);
                         
                     } catch (Exception e) {
                         // Passe doesn't exist, prepare for creation

@@ -80,8 +80,45 @@ public class TabletSchusszettelSyncComponent {
             MatchValidationResult matchValidation = validateCurrentMatch(session, wettkampfId, teamId);
 
             if (matchValidation.isValid) {
-                // Current match is still valid, no update needed
+                // Current match is still valid, but we should still check if status needs updating
                 LOGGER.debug("Current match {} is still valid for team {}", session.getCurrentMatchId(), teamId);
+                
+                try {
+                    // Don't override final statuses like WETTKAMPF_ENDE
+                    if ("WETTKAMPF_ENDE".equals(session.getStatus())) {
+                        LOGGER.debug("Session for team {} already at WETTKAMPF_ENDE, no status update needed", teamId);
+                        return SyncResult.success("Session data is already synchronized", false);
+                    }
+                    
+                    // Get current match for status determination
+                    MatchDO currentMatch = matchComponent.findById(session.getCurrentMatchId());
+                    if (currentMatch != null) {
+                        // Determine correct passe number and status
+                        int correctPasseNumber = determineCorrectPasseNumber(currentMatch.getId(), teamId);
+                        String correctStatus = determineCorrectStatus(currentMatch, teamId, correctPasseNumber);
+                        
+                        // Check if status or passe number needs updating
+                        boolean needsUpdate = !Objects.equals(session.getStatus(), correctStatus) || 
+                                            !Objects.equals(session.getCurrentPasseNumber(), correctPasseNumber);
+                        
+                        if (needsUpdate && updateDatabase) {
+                            session.setCurrentPasseNumber(correctPasseNumber);
+                            session.setStatus(correctStatus);
+                            sessionDAO.updateStatus(session, 0L);
+                            LOGGER.info("Updated session status for team {} to {} passe {}", 
+                                       teamId, correctStatus, correctPasseNumber);
+                            return SyncResult.success("Session status synchronized", true);
+                        } else if (needsUpdate) {
+                            // Update in memory only
+                            session.setCurrentPasseNumber(correctPasseNumber);
+                            session.setStatus(correctStatus);
+                            return SyncResult.success("Session status synchronized", true);
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Error checking status for valid match {}: {}", session.getCurrentMatchId(), e.getMessage());
+                }
+                
                 return SyncResult.success("Session data is already synchronized", false);
             }
 
@@ -486,13 +523,19 @@ public class TabletSchusszettelSyncComponent {
 
                 // Check if current passe is completed by this team
                 if (isPasseCompletedByTeam(match.getId(), teamId, currentPasseNumber)) {
-                    // Check if opponent is also done with this passe
-                    long opponentId = findOpponentTeamId(match, teamId);
-                    if (isPasseCompletedByTeam(match.getId(), opponentId, currentPasseNumber)) {
-                        // Both teams done - advance or complete match
-                        return STATUS_SATZEINGABE; // Ready for next passe
-                    } else {
-                        return STATUS_WARTE; // Wait for opponent
+                    try {
+                        // Check if opponent is also done with this passe
+                        long opponentId = findOpponentTeamId(match, teamId);
+                        if (isPasseCompletedByTeam(match.getId(), opponentId, currentPasseNumber)) {
+                            // Both teams done - advance or complete match
+                            return STATUS_SATZEINGABE; // Ready for next passe
+                        } else {
+                            return STATUS_WARTE; // Wait for opponent
+                        }
+                    } catch (Exception e) {
+                        LOGGER.warn("Could not check opponent status for team {} match {}, defaulting to SATZEINGABE: {}", 
+                                   teamId, match.getId(), e.getMessage());
+                        return STATUS_SATZEINGABE; // Safe fallback when opponent lookup fails
                     }
                 } else {
                     return STATUS_SATZEINGABE; // Current passe not completed
