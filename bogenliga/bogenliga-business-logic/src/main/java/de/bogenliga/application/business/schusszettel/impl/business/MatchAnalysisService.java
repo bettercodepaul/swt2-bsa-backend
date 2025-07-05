@@ -353,10 +353,11 @@ public class MatchAnalysisService {
     private String buildPartialSetStatusReason(List<PasseDO> team1Passes, List<PasseDO> team2Passes, 
                                               long team1Id, long team2Id) {
         // Group passes by set number
-        Map<Long, List<PasseDO>> allPassesBySet = new ArrayList<PasseDO>() {{
-            addAll(team1Passes);
-            addAll(team2Passes);
-        }}.stream().collect(Collectors.groupingBy(PasseDO::getPasseLfdnr));
+        List<PasseDO> allPasses = new ArrayList<>();
+        allPasses.addAll(team1Passes);
+        allPasses.addAll(team2Passes);
+        Map<Long, List<PasseDO>> allPassesBySet = allPasses.stream()
+                .collect(Collectors.groupingBy(PasseDO::getPasseLfdnr));
         
         // Find the lowest set number with partial data
         for (Long setNumber : allPassesBySet.keySet().stream().sorted().collect(Collectors.toList())) {

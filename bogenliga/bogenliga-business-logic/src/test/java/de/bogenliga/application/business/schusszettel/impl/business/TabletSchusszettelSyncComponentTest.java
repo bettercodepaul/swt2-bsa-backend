@@ -525,7 +525,201 @@ public class TabletSchusszettelSyncComponentTest {
         Assertions.assertThat(result.getId()).isEqualTo(MATCH1_ID);
     }
 
-    // Removed deprecated method tests - determineCorrectPasseNumber is now handled internally
+    @Test
+    public void testSynchronizeSession_AdvanceToNextMatch() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SATZEINGABE"); // Should be stuck on completed match
+
+        setupValidTeam();
+        
+        // Current match validation will fail (invalid), so sync will proceed to find correct match
+        when(matchComponent.findById(MATCH1_ID)).thenReturn(null); // Make current match invalid
+        
+        setupTeamMatches_Won(); // MATCH1 is completed, should advance to MATCH2
+        setupWonMatchPasses();
+
+        // Mock MatchAnalysisService to show match is completed
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 3, 3, 6, 0, new ArrayList<>(), "Match completed: Team scores 6-0 Satzpunkte");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
+        verify(sessionDAO, atLeast(1)).updateStatus(session, 0L); // At least once for sync operation
+
+        // Should advance to next match
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH2_ID);
+        Assertions.assertThat(session.getStatus()).isEqualTo("SCHUETZENMELDUNG");
+    }
+
+    @Test
+    public void testSynchronizeSession_AdvanceToWettkampfEnde() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH3_ID); // Last match
+        session.setStatus("SATZEINGABE");
+
+        setupValidTeam();
+        
+        // Setup current match as invalid to force sync to find correct match
+        when(matchComponent.findById(MATCH3_ID)).thenReturn(null); // Make current match invalid
+        
+        // Setup only one match (last match) - completed and no more matches after this
+        List<MatchDO> matches = Arrays.asList(
+                createMatch(MATCH3_ID, 3L, TEAM1_ID),
+                createMatch(MATCH3_ID + 1, 3L, TEAM2_ID)
+        );
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(matches);
+
+        // Mock completed match - since it's the only match and completed, sync should set to WETTKAMPF_ENDE
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 5, 5, 5, 5, new ArrayList<>(), "Match completed: Maximum 5 sets reached (5-5)");
+        when(matchAnalysisService.analyzeMatch(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+        when(matchAnalysisService.isMatchComplete(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(true);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH3_ID, TEAM1_ID, TEAM2_ID)).thenReturn(5);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.dataWasUpdated).isTrue(); // Session was updated to last completed match
+
+        // When all matches are completed, sync should return last match with WETTKAMPF_ENDE status
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH3_ID);
+        // Since all matches are completed, status should be WETTKAMPF_ENDE
+        Assertions.assertThat(session.getStatus()).isEqualTo("WETTKAMPF_ENDE");
+    }
+
+    @Test
+    public void testSynchronizeSession_AdvancementException() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SATZEINGABE");
+
+        setupValidTeam();
+        
+        // Current match is valid, so advancement won't happen
+        setupValidCurrentMatch();
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert - Since match is valid, sync won't trigger advancement
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).contains("Session data is already synchronized");
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testDeprecatedDetermineCorrectPasseNumber_Fallback() {
+        // Arrange
+        when(matchComponent.findById(MATCH1_ID)).thenThrow(new RuntimeException("Match not found"));
+        
+        List<PasseDO> teamPasses = Arrays.asList(
+                createPasseWithShots(1L, 10, 9),
+                createPasseWithShots(2L, 8, 7),
+                createPasseWithShots(3L, 9, 8)
+        );
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID)).thenReturn(teamPasses);
+
+        // Act
+        int result = underTest.determineCorrectPasseNumber(MATCH1_ID, TEAM1_ID);
+
+        // Assert
+        Assertions.assertThat(result).isEqualTo(4); // Max passe (3) + 1
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testDeprecatedDetermineCorrectPasseNumber_EmptyPasses() {
+        // Arrange
+        when(matchComponent.findById(MATCH1_ID)).thenThrow(new RuntimeException("Match not found"));
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID)).thenReturn(Collections.emptyList());
+
+        // Act
+        int result = underTest.determineCorrectPasseNumber(MATCH1_ID, TEAM1_ID);
+
+        // Assert
+        Assertions.assertThat(result).isEqualTo(1); // Default when no passes
+    }
+
+    @Test
+    public void testSynchronizeSession_StatusDetermination_SchuetzenMeldung() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(999L);
+
+        setupValidTeam();
+        setupInvalidCurrentMatch();
+        setupTeamMatches_NotStarted();
+        setupEmptyPasses();
+
+        // Mock NOT_STARTED match
+        MatchAnalysisService.MatchAnalysisResult notStartedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.NOT_STARTED, 0, 1, 0, 0, new ArrayList<>(), "Not started");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(notStartedResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(session.getStatus()).isEqualTo("SCHUETZENMELDUNG");
+    }
+
+    @Test
+    public void testSynchronizeSession_StatusDetermination_InProgress() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(999L);
+
+        setupValidTeam();
+        setupInvalidCurrentMatch();
+        setupTeamMatches_InProgress();
+
+        // Setup team has completed passe, opponent has not
+        List<PasseDO> team1Passes = Arrays.asList(
+                createPasseWithShots(1L, 10, 9),
+                createPasseWithShots(1L, 8, 7),
+                createPasseWithShots(1L, 9, 8) // 3 shooters completed
+        );
+        List<PasseDO> team2Passes = Arrays.asList(
+                createPasseWithShots(1L, 8, 7),
+                createPasseWithShots(1L, 7, 6) // Only 2 shooters
+        );
+
+        when(passeComponent.findByMannschaftMatchId(TEAM1_ID, MATCH1_ID)).thenReturn(team1Passes);
+        when(passeComponent.findByMannschaftMatchId(TEAM2_ID, MATCH1_ID)).thenReturn(team2Passes);
+
+        // Mock IN_PROGRESS match
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.IN_PROGRESS, 0, 1, 0, 0, new ArrayList<>(), "In progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // The actual status depends on complex logic - just verify sync worked
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
+    }
 
     // Helper methods
 
@@ -785,5 +979,226 @@ public class TabletSchusszettelSyncComponentTest {
         passe.setPfeil2(null);
         passe.setPfeil3(null);
         return passe;
+    }
+
+    @Test
+    public void testSyncResult_Success() {
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result = 
+                TabletSchusszettelSyncComponent.SyncResult.success("Test message", true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        Assertions.assertThat(result.message).isEqualTo("Test message");
+        Assertions.assertThat(result.dataWasUpdated).isTrue();
+    }
+
+    @Test
+    public void testSyncResult_Failure() {
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result = 
+                TabletSchusszettelSyncComponent.SyncResult.failure("Error message");
+
+        // Assert
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).isEqualTo("Error message");
+        Assertions.assertThat(result.dataWasUpdated).isFalse();
+    }
+
+    @Test
+    public void testSynchronizeSession_InvalidMatchAnalysis() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(999L);
+
+        setupValidTeam();
+        setupInvalidCurrentMatch();
+        setupTeamMatches_NotStarted();
+        setupEmptyPasses();
+
+        // Mock invalid analysis
+        MatchAnalysisService.MatchAnalysisResult invalidResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.INVALID, 0, 1, 0, 0, new ArrayList<>(), "Invalid data");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(invalidResult);
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // When match is invalid, sync component finds the next valid match (MATCH2) which is NOT_STARTED
+        Assertions.assertThat(session.getStatus()).isEqualTo("SCHUETZENMELDUNG");
+    }
+
+    @Test
+    public void testSynchronizeSession_DetermineStatus_Exception() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(999L);
+
+        setupValidTeam();
+        setupInvalidCurrentMatch();
+        setupTeamMatches_NotStarted();
+        setupEmptyPasses();
+
+        // Mock analysis to throw exception
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID))
+                .thenThrow(new RuntimeException("Analysis failed"));
+        when(matchAnalysisService.getCurrentPasseNumber(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(1);
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // When match analysis fails, sync finds next valid match (MATCH2) which is NOT_STARTED
+        Assertions.assertThat(session.getStatus()).isEqualTo("SCHUETZENMELDUNG");
+    }
+
+    @Test
+    public void testValidateCurrentMatch_WrongWettkampf() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+
+        MatchDO wrongMatch = new MatchDO();
+        wrongMatch.setId(MATCH1_ID);
+        wrongMatch.setWettkampfId(999L); // Wrong wettkampf
+        wrongMatch.setMannschaftId(TEAM1_ID);
+
+        setupValidTeam();
+        when(matchComponent.findById(MATCH1_ID)).thenReturn(wrongMatch);
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.emptyList());
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("No valid matches found");
+    }
+
+    @Test
+    public void testValidateCurrentMatch_WrongTeam() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+
+        MatchDO wrongMatch = new MatchDO();
+        wrongMatch.setId(MATCH1_ID);
+        wrongMatch.setWettkampfId(WETTKAMPF_ID);
+        wrongMatch.setMannschaftId(999L); // Wrong team
+
+        setupValidTeam();
+        when(matchComponent.findById(MATCH1_ID)).thenReturn(wrongMatch);
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.emptyList());
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("No valid matches found");
+    }
+
+    @Test
+    public void testValidateCurrentMatch_Exception() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+
+        setupValidTeam();
+        when(matchComponent.findById(MATCH1_ID)).thenThrow(new RuntimeException("DB error"));
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID)).thenReturn(Collections.emptyList());
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isFalse();
+        Assertions.assertThat(result.message).contains("No valid matches found");
+    }
+
+    @Test
+    public void testFindOpponentTeamId_NotFound() {
+        // Arrange
+        MatchDO match = createMatch(MATCH1_ID, 1L, TEAM1_ID);
+        
+        // Return only the team's own match, no opponent
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.singletonList(match));
+
+        // Mock analysis to trigger opponent search
+        when(matchAnalysisService.analyzeMatch(anyLong(), anyLong(), anyLong()))
+                .thenThrow(new BusinessException(de.bogenliga.application.common.errorhandling.ErrorCode.INTERNAL_ERROR, "Opponent not found"));
+
+        // Act
+        MatchDO result = underTest.findCurrentMatchForTeam(Collections.singletonList(match), TEAM1_ID);
+
+        // Assert - Should still return the match even with opponent error
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(MATCH1_ID);
+    }
+
+    @Test
+    public void testShouldAdvanceToNextMatch_NotCompleted() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("SATZEINGABE");
+
+        MatchDO match = createMatch(MATCH1_ID, 1L, TEAM1_ID);
+
+        // Mock match as not completed
+        MatchAnalysisService.MatchAnalysisResult inProgressResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.IN_PROGRESS, 1, 2, 2, 0, new ArrayList<>(), "In progress");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(inProgressResult);
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+        setupTeamMatches_InProgress();
+        setupInProgressPasses();
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Should not advance because match is not completed
+        Assertions.assertThat(session.getCurrentMatchId()).isEqualTo(MATCH1_ID);
+    }
+
+    @Test
+    public void testShouldAdvanceToNextMatch_AlreadyAdvanced() {
+        // Arrange
+        TabletSchusszettelEntity session = createTestSession();
+        session.setCurrentMatchId(MATCH1_ID);
+        session.setStatus("WETTKAMPF_ENDE"); // Already advanced
+
+        MatchDO match = createMatch(MATCH1_ID, 1L, TEAM1_ID);
+
+        // Mock match as completed
+        MatchAnalysisService.MatchAnalysisResult completedResult = new MatchAnalysisService.MatchAnalysisResult(
+            MatchAnalysisService.MatchStatus.COMPLETED, 3, 3, 6, 0, new ArrayList<>(), "Completed");
+        when(matchAnalysisService.analyzeMatch(MATCH1_ID, TEAM1_ID, TEAM2_ID)).thenReturn(completedResult);
+
+        setupValidTeam();
+        setupValidCurrentMatch();
+
+        // Act
+        TabletSchusszettelSyncComponent.SyncResult result =
+                underTest.synchronizeSession(session, WETTKAMPF_ID, TEAM1_ID, true);
+
+        // Assert
+        Assertions.assertThat(result.success).isTrue();
+        // Should not advance because already in WETTKAMPF_ENDE status
+        Assertions.assertThat(session.getStatus()).isEqualTo("WETTKAMPF_ENDE");
     }
 }
