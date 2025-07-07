@@ -10,14 +10,25 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.Wettkampf
 import java.util.List;
 
 /**
- * Business-Objekt für die vollständige Struktur des digitalen Schusszettels.
- * Wird vom Service- bzw. Component-Layer befüllt und an die REST-API weitergereicht.
- * Erweitert um Wettkampf-Informationen.
- *
- * acts as JSON object for frontend; all data comes from here.
- *
- * Referenced by getStatus(), handleSatzeingabe(), handleEnde().
- *
+ * Data transfer object for tablet schusszettel GET responses.
+ * 
+ * <h2>STRUCTURE</h2>
+ * Contains complete tablet session context including current state, team information,
+ * available shooters, current scores, and match results. Populated by component layer
+ * and serialized to JSON for tablet frontend consumption.
+ * 
+ * <h2>CONTENT VARIES BY STATE</h2>
+ * <ul>
+ *   <li>SCHUETZENMELDUNG: verfuegbareSchuetzen populated</li>
+ *   <li>SATZEINGABE: schuetzeStammDaten populated for registered shooters</li>
+ *   <li>WARTE: satzErgebnisse populated with current match scores</li>
+ *   <li>WETTKAMPF_ENDE: matchErgebnis populated with final results</li>
+ * </ul>
+ * 
+ * <h2>NAVIGATION DATA</h2>
+ * Includes match IDs for frontend navigation and opponent team information
+ * for match context display.
+ * 
  * @author Marty Lauterbach
  */
 public class TabletSchusszettelDO {
