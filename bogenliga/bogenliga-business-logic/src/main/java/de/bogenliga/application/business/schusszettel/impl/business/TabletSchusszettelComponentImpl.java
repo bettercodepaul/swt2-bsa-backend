@@ -270,10 +270,16 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // ROBUSTNESS: Evaluate WARTE state regardless of current status
         // This handles edge cases where teams got stuck due to system issues
         if (STATUS_WARTE.equals(session.getStatus())) {
+            String previousStatus = session.getStatus();
             if (runtime.evaluateWithOpponent(opponentSession)) {
                 LOGGER.info("GET request triggered state advancement: Team {} from WARTE to {}", 
                            teamId, session.getStatus());
                 session = runtime.getSession(); // Reload updated session
+                
+                // Check if team advanced to next match (SCHUETZENMELDUNG)
+                if (STATUS_SCHUETZENMELDUNG.equals(session.getStatus()) && !STATUS_SCHUETZENMELDUNG.equals(previousStatus)) {
+                    resetDeploymentStatusForNewMatch(teamId, Math.toIntExact(session.getCurrentMatchNumber()));
+                }
             }
         }
         
@@ -294,9 +300,15 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     sessionDAO.updateStatus(session, 0L);
                     
                     // Now evaluate with opponent to advance properly
+                    String previousStatus = session.getStatus();
                     if (runtime.evaluateWithOpponent(opponentSession)) {
                         LOGGER.info("INVALID STATE FIXED: Advanced team {} to proper state", teamId);
                         session = runtime.getSession();
+                        
+                        // Check if team advanced to next match (SCHUETZENMELDUNG)
+                        if (STATUS_SCHUETZENMELDUNG.equals(session.getStatus()) && !STATUS_SCHUETZENMELDUNG.equals(previousStatus)) {
+                            resetDeploymentStatusForNewMatch(teamId, Math.toIntExact(session.getCurrentMatchNumber()));
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -320,10 +332,18 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     runtime.nudgeAlong(); // SATZEINGABE -> WARTE
                     
                     // Now try to evaluate with opponent again
+                    String previousStatus = session.getStatus();
                     if (runtime.evaluateWithOpponent(opponentSession)) {
                         LOGGER.info("DESYNC FIX: Successfully synchronized and advanced team {}", teamId);
+                        session = runtime.getSession(); // Reload updated session
+                        
+                        // Check if team advanced to next match (SCHUETZENMELDUNG)
+                        if (STATUS_SCHUETZENMELDUNG.equals(session.getStatus()) && !STATUS_SCHUETZENMELDUNG.equals(previousStatus)) {
+                            resetDeploymentStatusForNewMatch(teamId, Math.toIntExact(session.getCurrentMatchNumber()));
+                        }
+                    } else {
+                        session = runtime.getSession(); // Reload updated session
                     }
-                    session = runtime.getSession(); // Reload updated session
                 }
             } catch (Exception e) {
                 LOGGER.warn("Error during desync recovery for team {}: {}", teamId, e.getMessage());
@@ -587,17 +607,15 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // 3.1) Enhanced validation with team roster check
         validateSchützenmeldungTeamRoster(teamId, input.getGemeldeteSchuetzen());
 
-        // 4) Mark shooters as deployed for this match using MannschaftsmitgliedComponent
+        // 4) Mark shooters as deployed for this specific match using match number
+        int currentMatchNumber = Math.toIntExact(session.getCurrentMatchNumber());
         for (Long shooterId : input.getGemeldeteSchuetzen()) {
             try {
-                // Note: Current eingesetzt field is a general counter, not match-specific
-                // Using existing deployment logic that auto-increments on first score entry
+                // Use match number as deployment indicator for better match-specific tracking
                 MannschaftsmitgliedDO member = mmComponent.findByMemberAndTeamId(teamId, shooterId);
-                if (member.getDsbMitgliedEingesetzt() == null || member.getDsbMitgliedEingesetzt() < 1) {
-                    member.setDsbMitgliedEingesetzt(1); // Mark as deployed
-                    mmComponent.update(member, 0L);
-                    LOGGER.debug("Marked shooter {} as deployed for team {}", shooterId, teamId);
-                }
+                member.setDsbMitgliedEingesetzt(currentMatchNumber); // Mark as deployed for this match
+                mmComponent.update(member, 0L);
+                LOGGER.debug("Marked shooter {} as deployed for match {} (team {})", shooterId, currentMatchNumber, teamId);
             } catch (Exception e) {
                 LOGGER.warn("Could not update deployment status for shooter {} in team {}: {}", shooterId, teamId, e.getMessage());
                 // Continue with other shooters - non-critical failure
@@ -747,38 +765,74 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     private void handleSatzeingabe(TabletSchusszettelEntity session, TabletSchusszettelDO out) {
         long passeNr = session.getCurrentPasseNumber();
         long matchId = session.getCurrentMatchId();
+        long teamId = session.getTeamId();
+        int currentMatchNumber = Math.toIntExact(session.getCurrentMatchNumber());
 
-        // Get active shooters for this team (eingesetzt >= 1)
-        Set<Long> activeShooters = mmComponent.findByTeamId(session.getTeamId()).stream()
-                .filter(mm -> mm.getDsbMitgliedEingesetzt() != null && mm.getDsbMitgliedEingesetzt() >= 1)
-                .map(MannschaftsmitgliedDO::getDsbMitgliedId)
-                .collect(Collectors.toSet());
-
-        List<PasseDO> assigns = passeComponent.findByMatchId(matchId).stream()
-                .filter(p -> p.getPasseLfdnr() == passeNr)
-                .filter(p -> activeShooters.contains(p.getPasseDsbMitgliedId())) // Only include active shooters
+        // FIXED: Get registered shooters for this specific match without requiring existing passes
+        List<Long> registeredShooters = getRegisteredShootersForCurrentMatch(session);
+        
+        // Check which registered shooters already have scores for current passe
+        List<PasseDO> existingPasses = passeComponent.findByMannschaftMatchId(teamId, matchId).stream()
+                .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr() == passeNr)
+                .filter(p -> registeredShooters.contains(p.getPasseDsbMitgliedId()))
                 .toList();
 
-        // Stammdaten der gemeldeten Schützen
-        List<SchuetzeStammdatenDO> meta = assigns.stream().map(p -> {
-            DsbMitgliedDO dm = mitgliedComponent.findById(p.getPasseDsbMitgliedId());
-            MannschaftsmitgliedDO mm = mmComponent.findByMemberAndTeamId(session.getTeamId(), p.getPasseDsbMitgliedId());
+        // Stammdaten der gemeldeten Schützen (directly from registration, not from passes)
+        List<SchuetzeStammdatenDO> meta = registeredShooters.stream().map(shooterId -> {
+            DsbMitgliedDO dm = mitgliedComponent.findById(shooterId);
+            MannschaftsmitgliedDO mm = mmComponent.findByMemberAndTeamId(teamId, shooterId);
             return new SchuetzeStammdatenDO(dm.getId(), Math.toIntExact(mm.getRueckennummer()), dm.getVorname(), dm.getNachname());
         }).collect(Collectors.toList());
         out.setSchuetzeStammDaten(meta);
 
-        // Verbleibende Schützen - nur eingesetzte Schützen (eingesetzt >= 1)
-        Set<Long> used = assigns.stream()
+        // Verbleibende Schützen - registered shooters who haven't scored this passe yet
+        Set<Long> shootersWithScores = existingPasses.stream()
                 .map(PasseDO::getPasseDsbMitgliedId).collect(Collectors.toSet());
-        List<VerfuegbarerSchuetzeDO> left = mmComponent.findByTeamId(session.getTeamId()).stream()
-                .filter(mm -> mm.getDsbMitgliedEingesetzt() != null && mm.getDsbMitgliedEingesetzt() >= 1)
-                .map(MannschaftsmitgliedDO::getDsbMitgliedId)
-                .filter(id -> !used.contains(id))
-                .map(id -> {
-                    DsbMitgliedDO dm = mitgliedComponent.findById(id);
+        List<VerfuegbarerSchuetzeDO> left = registeredShooters.stream()
+                .filter(shooterId -> !shootersWithScores.contains(shooterId))
+                .map(shooterId -> {
+                    DsbMitgliedDO dm = mitgliedComponent.findById(shooterId);
                     return new VerfuegbarerSchuetzeDO(dm.getId(), dm.getVorname() + " " + dm.getNachname());
                 }).collect(Collectors.toList());
         out.setVerfuegbareSchuetzen(left);
+        
+        LOGGER.debug("SATZEINGABE: Found {} registered shooters, {} with existing scores for passe {}", 
+                    registeredShooters.size(), shootersWithScores.size(), passeNr);
+    }
+    
+    /**
+     * Get shooters registered for the current match.
+     * Uses deployment status (eingesetzt = current match number) to identify registered shooters.
+     */
+    private List<Long> getRegisteredShootersForCurrentMatch(TabletSchusszettelEntity session) {
+        int currentMatchNumber = Math.toIntExact(session.getCurrentMatchNumber());
+        long teamId = session.getTeamId();
+        
+        return mmComponent.findByTeamId(teamId).stream()
+                .filter(mm -> mm.getDsbMitgliedEingesetzt() != null && 
+                             mm.getDsbMitgliedEingesetzt().equals(currentMatchNumber))
+                .map(MannschaftsmitgliedDO::getDsbMitgliedId)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Reset deployment status for all team members when advancing to a new match.
+     * This ensures a clean slate for schützenmeldung in the new match.
+     */
+    private void resetDeploymentStatusForNewMatch(long teamId, int newMatchNumber) {
+        try {
+            List<MannschaftsmitgliedDO> teamMembers = mmComponent.findByTeamId(teamId);
+            for (MannschaftsmitgliedDO member : teamMembers) {
+                // Reset deployment status - they need to be re-registered for new match
+                member.setDsbMitgliedEingesetzt(0);
+                mmComponent.update(member, 0L);
+            }
+            LOGGER.info("Reset deployment status for {} team members of team {} advancing to match {}", 
+                       teamMembers.size(), teamId, newMatchNumber);
+        } catch (Exception e) {
+            LOGGER.warn("Could not reset deployment status for team {} advancing to match {}: {}", 
+                       teamId, newMatchNumber, e.getMessage());
+        }
     }
 
     /**
