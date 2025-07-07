@@ -3,10 +3,26 @@ package de.bogenliga.application.business.schusszettel.impl.entity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * Entity für eine Tablet-Schusszettel-Session.
- * Repräsentiert eine persistente Autorisierungs- und Statusinstanz pro Team am Spieltag.
- *
- * @author Marty Lauterbach, mklemmingen
+ * Database entity for tablet schusszettel session state persistence.
+ * 
+ * <h2>PERSISTENCE MODEL</h2>
+ * Represents persistent session state for team tablet access during competition.
+ * Each team in competition has one entity containing authentication token,
+ * current state, match position, and pass number.
+ * 
+ * <h2>STATE TRACKING</h2>
+ * <ul>
+ *   <li>status: Current state machine state (SCHUETZENMELDUNG, SATZEINGABE, WARTE, WETTKAMPF_ENDE)</li>
+ *   <li>currentMatchId: Current match reference for team</li>
+ *   <li>currentPasseNumber: Current pass number (1-5)</li>
+ *   <li>gegnerTeamId: Opponent team reference for synchronization</li>
+ * </ul>
+ * 
+ * <h2>AUTHENTICATION</h2>
+ * Contains cryptographically secure access token for tablet API authentication.
+ * Token remains valid until session deleted or re-tokenized.
+ * 
+ * @author Marty Lauterbach
  */
 public class TabletSchusszettelEntity extends CommonBusinessEntity {
 
