@@ -5,12 +5,12 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 /**
  * Database entity for tablet schusszettel session state persistence.
  * 
- * <h2>PERSISTENCE MODEL</h2>
+ * <h3>PERSISTENCE MODEL</h3>
  * Represents persistent session state for team tablet access during competition.
  * Each team in competition has one entity containing authentication token,
  * current state, match position, and pass number.
  * 
- * <h2>STATE TRACKING</h2>
+ * <h3>STATE TRACKING</h3>
  * <ul>
  *   <li>status: Current state machine state (SCHUETZENMELDUNG, SATZEINGABE, WARTE, WETTKAMPF_ENDE)</li>
  *   <li>currentMatchId: Current match reference for team</li>
@@ -18,7 +18,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *   <li>gegnerTeamId: Opponent team reference for synchronization</li>
  * </ul>
  * 
- * <h2>AUTHENTICATION</h2>
+ * <h3>AUTHENTICATION</h3>
  * Contains cryptographically secure access token for tablet API authentication.
  * Token remains valid until session deleted or re-tokenized.
  * 
