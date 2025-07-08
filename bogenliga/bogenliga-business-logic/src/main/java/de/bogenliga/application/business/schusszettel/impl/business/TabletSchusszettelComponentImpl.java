@@ -14,6 +14,10 @@ import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
@@ -67,6 +71,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     private final MatchAnalysisService matchAnalysisService;
     private final MannschaftsmitgliedComponent mmComponent;
     private final DsbMitgliedComponent mitgliedComponent;
+    private final DsbMannschaftComponent mannschaftComponent;
+    private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
 
@@ -78,6 +84,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             MatchAnalysisService matchAnalysisService,
             MannschaftsmitgliedComponent mmComponent,
             DsbMitgliedComponent mitgliedComponent,
+            DsbMannschaftComponent mannschaftComponent,
+            VereinComponent vereinComponent,
             WettkampfComponent wettkampfComponent,
             VeranstaltungComponent veranstaltungComponent) {
 
@@ -87,6 +95,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         this.matchAnalysisService = matchAnalysisService;
         this.mmComponent = mmComponent;
         this.mitgliedComponent = mitgliedComponent;
+        this.mannschaftComponent = mannschaftComponent;
+        this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
     }
@@ -229,14 +239,28 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         TabletSchusszettelDO result = new TabletSchusszettelDO();
         result.setStatus(statusEnum);
         
-        // Basic match data - let state objects handle detailed data
-        result.setEigenesTeam(new TeamInfoDO(teamId, "Team " + teamId));
-        result.setGegnerischesTeam(new TeamInfoDO(runtime.getOpponentTeamId(), "Team " + runtime.getOpponentTeamId()));
+        // Basic match data with actual team names
+        result.setEigenesTeam(new TeamInfoDO(teamId, getTeamName(teamId)));
+        result.setGegnerischesTeam(new TeamInfoDO(runtime.getOpponentTeamId(), getTeamName(runtime.getOpponentTeamId())));
         result.setSatzErgebnisse(Collections.emptyList());
         result.setSchuetzenMatchPunkte(Collections.emptyList());
         result.setMatchErgebnis(Collections.emptyList());
         
         return result;
+    }
+
+    /**
+     * Get actual team name - just the verein name without team number.
+     */
+    private String getTeamName(long teamId) {
+        try {
+            final DsbMannschaftDO team = mannschaftComponent.findById(teamId);
+            final VereinDO verein = vereinComponent.findById(team.getVereinId());
+            return verein.getName();
+        } catch (Exception e) {
+            LOGGER.warn("Failed to get team name for team {}: {}", teamId, e.getMessage());
+            return "Team " + teamId; // Fallback to technical name
+        }
     }
 
     /**

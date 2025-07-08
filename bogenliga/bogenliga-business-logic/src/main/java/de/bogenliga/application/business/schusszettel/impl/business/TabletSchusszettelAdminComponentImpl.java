@@ -327,11 +327,10 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
         // Map into DTOs
         final TabletSessionSingDO[] singDOs = entities.stream()
                 .map(e -> {
-                    // lookup own team name
+                    // lookup own team name - just verein name
                     final DsbMannschaftDO team = mannschaftComponent.findById(e.getTeamId());
                     final VereinDO vTeam = vereinComponent.findById(team.getVereinId());
-                    final String teamName = vTeam.getName()
-                            + (team.getNummer() > 1 ? " " + team.getNummer() : "");
+                    final String teamName = vTeam.getName();
 
                     // lookup next opponent name (may stay null)
                     String opponentName = null;
@@ -339,8 +338,7 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                         try {
                             final DsbMannschaftDO opp = mannschaftComponent.findById(e.getGegnerTeamId());
                             final VereinDO vOpp = vereinComponent.findById(opp.getVereinId());
-                            opponentName = vOpp.getName()
-                                    + (opp.getNummer() > 1 ? " " + opp.getNummer() : "");
+                            opponentName = vOpp.getName();
                         } catch (Exception ex) {
                             LOGGER.warn("Failed to get opponent name for team {}: {}", e.getGegnerTeamId(), ex.getMessage());
                             opponentName = "Unknown Opponent";

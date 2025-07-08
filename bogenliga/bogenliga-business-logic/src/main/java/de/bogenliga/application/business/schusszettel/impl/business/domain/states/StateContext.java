@@ -10,6 +10,10 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.Mannschaftsmitg
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -19,6 +23,8 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.Wettkampf
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  * Context object providing controlled access to SessionRuntime data and services.
@@ -211,6 +217,14 @@ public class StateContext {
     public List<MannschaftsmitgliedDO> getDeployedTeamMembers() {
         return getTeamMembers().stream()
             .filter(m -> m.getDsbMitgliedEingesetzt() != null && m.getDsbMitgliedEingesetzt() >= 1)
+            .collect(Collectors.toMap(
+                MannschaftsmitgliedDO::getDsbMitgliedId, // Key: member ID
+                m -> m,                                   // Value: the member
+                (existing, replacement) -> existing       // Keep first if duplicate
+            ))
+            .values()
+            .stream()
+            .sorted(Comparator.comparing(MannschaftsmitgliedDO::getRueckennummer))
             .toList();
     }
     
