@@ -5,6 +5,7 @@ import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszette
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.impl.business.serviceAdapter.MatchAnalysisService;
 import de.bogenliga.application.business.schusszettel.impl.business.domain.states.State;
 import de.bogenliga.application.business.schusszettel.impl.business.domain.states.StateContext;
@@ -14,6 +15,8 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,21 +210,22 @@ public class SessionRuntime {
     
     
     /**
-     * Advance to the next match using LigamatchBE naechsteMatchId.
+     * Advance to the next match using LigamatchBE naechsteMatchId as single source of truth.
+     * This respects the planned tournament schedule and wettkampftag order.
      */
     private void advanceToNextMatch() {
         try {
             long currentMatchId = session.getCurrentMatchId();
             long teamId = session.getTeamId();
             
-            // Get current match from LigamatchBE with built-in progression data
+            // Get current match from LigamatchBE - the authoritative source
             LigamatchBE currentMatch = matchComponent.getLigamatchById(currentMatchId);
             if (currentMatch == null) {
                 throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
                     "Current match " + currentMatchId + " not found in LigamatchBE");
             }
             
-            // Use built-in naechsteMatchId field for progression
+            // Follow naechsteMatchId chain to respect tournament schedule
             if (currentMatch.getNaechsteMatchId() != null) {
                 LigamatchBE nextMatch = matchComponent.getLigamatchById(currentMatch.getNaechsteMatchId());
                 if (nextMatch != null) {
@@ -231,21 +235,26 @@ public class SessionRuntime {
                     session.setCurrentPasseNumber(1);
                     session.setStatus(STATUS_SCHUETZENMELDUNG);
                     
-                    // Find and set opponent using LigamatchBE optimized method
+                    // Find and set opponent
                     try {
                         long opponentId = matchAnalysisService.findOpponentTeamId(nextMatch.getMatchId(), teamId);
                         session.setGegnerTeamId(opponentId);
-                        LOGGER.info("Advanced team {} from match {} to match {} (opponent: {})", 
+                        LOGGER.info("Advanced team {} from match {} to next match {} (opponent: {}) following naechsteMatchId", 
                                    teamId, currentMatchId, nextMatch.getMatchId(), opponentId);
                     } catch (Exception e) {
                         LOGGER.warn("Could not find opponent for next match {}: {}", nextMatch.getMatchId(), e.getMessage());
                     }
                 } else {
-                    LOGGER.warn("Next match {} referenced by current match {} not found", 
-                               currentMatch.getNaechsteMatchId(), currentMatchId);
+                    LOGGER.warn("Next match {} referenced by naechsteMatchId not found", currentMatch.getNaechsteMatchId());
+                    // Set to WETTKAMPF_ENDE as fallback
+                    session.setCurrentPasseNumber(5);
+                    session.setStatus(STATUS_WETTKAMPF_ENDE);
                 }
             } else {
-                LOGGER.info("No next match available for current match {} (naechsteMatchId is null)", currentMatchId);
+                // No next match available - tournament complete for this team
+                session.setCurrentPasseNumber(5);
+                session.setStatus(STATUS_WETTKAMPF_ENDE);
+                LOGGER.info("Team {} completed all matches - no naechsteMatchId, setting to WETTKAMPF_ENDE", teamId);
             }
             
         } catch (Exception e) {
@@ -331,11 +340,11 @@ public class SessionRuntime {
         
         // Use MatchAnalysisService to determine initial state
         try {
-            // Find current match for team using MatchAnalysisService
+            // Find current incomplete match for team - this is the single source of truth
             LigamatchBE currentMatch = matchAnalysisService.findCurrentIncompleteMatch(wettkampfId, teamId);
             
             if (currentMatch == null) {
-                // All matches complete
+                // All matches complete - set to WETTKAMPF_ENDE
                 LigamatchBE lastMatch = matchAnalysisService.findLastMatchForTeam(wettkampfId, teamId);
                 session.setCurrentMatchId(lastMatch.getMatchId());
                 session.setCurrentMatchNumber(Math.toIntExact(lastMatch.getMatchNr()));
@@ -344,17 +353,24 @@ public class SessionRuntime {
                 
                 long opponentId = matchAnalysisService.findOpponentTeamId(lastMatch.getMatchId(), teamId);
                 session.setGegnerTeamId(opponentId);
+                
+                LOGGER.info("Team {} completed all matches - setting to WETTKAMPF_ENDE", teamId);
             } else {
-                // Found incomplete match
+                // Found incomplete match - set up session for this match
                 long opponentId = matchAnalysisService.findOpponentTeamId(currentMatch.getMatchId(), teamId);
                 int currentPasseNumber = matchAnalysisService.getCurrentPasseNumber(currentMatch.getMatchId(), teamId, opponentId);
-                String initialStatus = determineInitialStatus(currentMatch.getMatchId(), teamId, opponentId, currentPasseNumber);
+                
+                // Determine appropriate state for this incomplete match
+                String initialStatus = determineInitialStatus(currentMatch.getMatchId(), teamId, passeComponent);
                 
                 session.setCurrentMatchId(currentMatch.getMatchId());
                 session.setCurrentMatchNumber(Math.toIntExact(currentMatch.getMatchNr()));
                 session.setCurrentPasseNumber(currentPasseNumber);
                 session.setStatus(initialStatus);
                 session.setGegnerTeamId(opponentId);
+                
+                LOGGER.info("Initialized team {} for match {} (match #{}) with status {} at passe {}", 
+                           teamId, currentMatch.getMatchId(), currentMatch.getMatchNr(), initialStatus, currentPasseNumber);
             }
             
             // Save to database
@@ -369,15 +385,36 @@ public class SessionRuntime {
     }
     
     /**
-     * Determine initial session status based on current match state
+     * Determine initial session status based on current match state using simplified business logic.
+     * This method uses the correct business flow for initialization.
      */
-    private static String determineInitialStatus(long matchId, long teamId, long opponentId, int currentPasseNumber) {
-        // For now, start with basic logic - can be enhanced later
-        if (currentPasseNumber > 5) {
-            return STATUS_WETTKAMPF_ENDE;
+    private static String determineInitialStatus(long matchId, long teamId, PasseComponent passeComponent) {
+        try {
+            // Get all passes for this team and match
+            List<PasseDO> passes = passeComponent.findByMannschaftMatchId(teamId, matchId);
+            
+            // If no passes exist, need to register shooters first
+            if (passes.isEmpty()) {
+                return STATUS_SCHUETZENMELDUNG;
+            }
+            
+            // If there are passes but match is not complete, continue with SATZEINGABE at correct passe number
+            // The match completion check was already done in the calling method
+            return STATUS_SATZEINGABE;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error determining initial status for match {}, team {}: {}", matchId, teamId, e.getMessage());
+            return STATUS_SCHUETZENMELDUNG; // Safe fallback
         }
-        // Default to SCHUETZENMELDUNG for safe initialization
-        return STATUS_SCHUETZENMELDUNG;
+    }
+    
+    /**
+     * Check if a pass has actual arrow scores (not empty pre-created passes).
+     */
+    private static boolean hasActualArrowScores(PasseDO passe) {
+        return (passe.getPfeil1() != null && passe.getPfeil1() > 0) ||
+               (passe.getPfeil2() != null && passe.getPfeil2() > 0) ||
+               (passe.getPfeil3() != null && passe.getPfeil3() > 0);
     }
     
     /**

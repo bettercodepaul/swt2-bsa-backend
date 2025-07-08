@@ -395,6 +395,7 @@ public class Satzeingabe extends State {
                 .filter(mm -> mm.getDsbMitgliedEingesetzt() != null &&
                              mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchNr)))
                 .map(MannschaftsmitgliedDO::getDsbMitgliedId)
+                .distinct() // Remove duplicates
                 .collect(Collectors.toList());
         } catch (Exception e) {
             LOGGER.error("Error getting registered shooters for current match: {}", e.getMessage());

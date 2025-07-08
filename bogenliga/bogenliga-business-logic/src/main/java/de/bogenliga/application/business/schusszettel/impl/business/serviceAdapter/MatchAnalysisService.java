@@ -2,6 +2,10 @@ package de.bogenliga.application.business.schusszettel.impl.business.serviceAdap
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -298,38 +302,77 @@ public class MatchAnalysisService {
     }
     
     /**
-     * Find current incomplete match for a team.
+     * Find current incomplete match for a team by following naechsteMatchId chain.
+     * Uses LigamatchBE.naechsteMatchId as single source of truth for match progression.
      * Returns null if all matches are complete.
      */
     public LigamatchBE findCurrentIncompleteMatch(long wettkampfId, long teamId) {
         try {
+            // Get all matches for this team to find the starting point
             List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
                     .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
-                    .sorted((m1, m2) -> Long.compare(m1.getMatchNr(), m2.getMatchNr()))
                     .toList();
             
-            for (LigamatchBE match : teamMatches) {
-                // Check if this match has been started
-                List<PasseDO> passes = passeComponent.findByMannschaftMatchId(teamId, match.getMatchId());
-                if (passes.isEmpty()) {
-                    // No passes recorded - this is the current match
-                    LOGGER.debug("Found unstarted match {} for team {}", match.getMatchId(), teamId);
-                    return match;
-                }
-                
-                // Check if match is complete using existing logic
-                long opponentId = findOpponentTeamId(match.getMatchId(), teamId);
-                boolean isComplete = isMatchComplete(match.getMatchId(), teamId, opponentId);
-                if (!isComplete) {
-                    // Match in progress - this is current
-                    LOGGER.debug("Found incomplete match {} for team {}", match.getMatchId(), teamId);
-                    return match;
-                }
-                LOGGER.debug("Match {} complete for team {}, checking next", match.getMatchId(), teamId);
+            if (teamMatches.isEmpty()) {
+                throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, 
+                    "No matches found for team " + teamId + " in wettkampf " + wettkampfId);
             }
             
-            // All matches complete
-            LOGGER.info("All matches appear complete for team {} in wettkampf {}", teamId, wettkampfId);
+            // Find the first match (match with no previous match pointing to it)
+            LigamatchBE firstMatch = findFirstMatchForTeam(teamMatches);
+            
+            // Follow the naechsteMatchId chain with cycle detection
+            LigamatchBE currentMatch = firstMatch;
+            Set<Long> visitedMatches = new HashSet<>();
+            
+            while (currentMatch != null) {
+                // Cycle detection - prevent infinite loops
+                if (visitedMatches.contains(currentMatch.getMatchId())) {
+                    LOGGER.error("Detected cycle in naechsteMatchId chain for team {} at match {}", 
+                               teamId, currentMatch.getMatchId());
+                    throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
+                        "Cycle detected in match progression chain");
+                }
+                visitedMatches.add(currentMatch.getMatchId());
+                
+                // Check if this match is complete
+                try {
+                    long opponentId = findOpponentTeamId(currentMatch.getMatchId(), teamId);
+                    boolean isComplete = isMatchComplete(currentMatch.getMatchId(), teamId, opponentId);
+                    
+                    if (!isComplete) {
+                        // Found incomplete match - this is where the team should be
+                        LOGGER.debug("Found incomplete match {} for team {} (following naechsteMatchId chain)", 
+                                   currentMatch.getMatchId(), teamId);
+                        return currentMatch;
+                    }
+                    
+                    // This match is complete, follow the chain to the next match
+                    LOGGER.debug("Match {} complete for team {}, following naechsteMatchId to next match", 
+                               currentMatch.getMatchId(), teamId);
+                    
+                    if (currentMatch.getNaechsteMatchId() != null) {
+                        currentMatch = matchComponent.getLigamatchById(currentMatch.getNaechsteMatchId());
+                    } else {
+                        // No more matches in the chain
+                        currentMatch = null;
+                    }
+                    
+                } catch (Exception e) {
+                    LOGGER.warn("Error checking match {} completion for team {}: {}", 
+                               currentMatch.getMatchId(), teamId, e.getMessage());
+                    
+                    // For initialization, we should be more tolerant of missing opponents
+                    // Return this match as incomplete if we can't determine completion
+                    LOGGER.info("Returning match {} as incomplete for team {} due to completion check error", 
+                               currentMatch.getMatchId(), teamId);
+                    return currentMatch;
+                }
+            }
+            
+            // All matches in the chain are complete
+            LOGGER.info("All matches complete for team {} in wettkampf {} (followed naechsteMatchId chain)", 
+                       teamId, wettkampfId);
             return null;
             
         } catch (Exception e) {
@@ -337,6 +380,29 @@ public class MatchAnalysisService {
                         teamId, wettkampfId, e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to find current match");
         }
+    }
+    
+    /**
+     * Find the first match for a team (match with no previous match pointing to it).
+     */
+    private LigamatchBE findFirstMatchForTeam(List<LigamatchBE> teamMatches) {
+        // Find match that is not referenced by any other match's naechsteMatchId
+        Set<Long> referencedMatches = teamMatches.stream()
+                .map(LigamatchBE::getNaechsteMatchId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        
+        for (LigamatchBE match : teamMatches) {
+            if (!referencedMatches.contains(match.getMatchId())) {
+                LOGGER.debug("Found first match {} for team {}", match.getMatchId(), match.getMannschaftId());
+                return match;
+            }
+        }
+        
+        // Fallback: if no clear first match, use the one with lowest matchNr
+        return teamMatches.stream()
+                .min(Comparator.comparing(LigamatchBE::getMatchNr))
+                .orElse(teamMatches.get(0));
     }
     
     /**
