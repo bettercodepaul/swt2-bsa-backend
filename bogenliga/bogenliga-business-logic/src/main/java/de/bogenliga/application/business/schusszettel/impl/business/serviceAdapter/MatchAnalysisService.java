@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.schusszettel.impl.business;
+package de.bogenliga.application.business.schusszettel.impl.business.serviceAdapter;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,42 +16,37 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
- * THIN FACADE: Match analysis service that delegates to existing infrastructure.
+ * Service layer interface between schusszettel module and existing infrastructure.
  * 
- * <h2>DESIGN PRINCIPLE</h2>
- * This service acts as a minimal abstraction layer over existing business logic.
- * It does NOT duplicate functionality but rather coordinates existing infrastructure
- * to provide match analysis specifically for the schusszettel state machine.
+ * <h2>CURRENT ROLE</h2>
+ * This service provides the ONLY interface for schusszettel components to access external
+ * match and pass data. It delegates to existing infrastructure while providing schusszettel-specific
+ * analysis methods for match completion, opponent resolution, and pass tracking.
  * 
- * <h2>EXISTING INFRASTRUCTURE USAGE</h2>
+ * <h2>CURRENT RESPONSIBILITIES</h2>
  * <ul>
- *   <li>LigamatchBE: Uses pre-calculated Satzpunkte and Matchpunkte from database view</li>
- *   <li>LigamatchBE.matchIdGegner: Leverages built-in opponent resolution</li>
- *   <li>LigamatchBE.naechsteMatchId: Uses existing tournament progression data</li>
- *   <li>PasseComponent: Delegates to established pass retrieval methods</li>
- *   <li>MatchComponent: Uses existing LigamatchBE access methods</li>
+ *   <li>Match completion analysis using LigamatchBE database views</li>
+ *   <li>Current pass number calculation with legacy data handling</li>
+ *   <li>Opponent team resolution via LigamatchBE structure</li>
+ *   <li>Match progression and tournament state analysis</li>
  * </ul>
  * 
- * <h2>THIN FACADE RESPONSIBILITIES</h2>
+ * <h2>INFRASTRUCTURE DELEGATION</h2>
  * <ul>
- *   <li>Coordinate existing infrastructure for match state analysis</li>
- *   <li>Provide schusszettel-specific business logic abstraction</li>
- *   <li>Handle session state machine requirements only</li>
- *   <li>Delegate all calculations to existing business logic</li>
+ *   <li>Delegates to MatchComponent for LigamatchBE queries</li>
+ *   <li>Delegates to PasseComponent for pass data access</li>
+ *   <li>Uses database-calculated scores instead of manual calculation</li>
+ *   <li>Leverages existing business rules and constants</li>
  * </ul>
  * 
- * <h2>WHAT THIS SERVICE DOES NOT DO</h2>
+ * <h2>USAGE</h2>
  * <ul>
- *   <li>Calculate scores (uses LigamatchBE pre-calculated fields)</li>
- *   <li>Implement pass counting logic (delegates to existing patterns)</li>
- *   <li>Handle database access directly (uses existing components)</li>
- *   <li>Duplicate existing business rules (reuses established constants)</li>
+ *   <li>Called exclusively by SessionRuntime for external data access</li>
+ *   <li>Used by AdminComponentImpl for session initialization</li>
+ *   <li>State objects access data through StateContext, not directly</li>
  * </ul>
  * 
- * @author Marty Lauterbach 
- * @version 3.0 - Refactored as thin facade over existing infrastructure
- * @version 2.0 - Used LigamatchBE database view (contained duplicated logic)
- * @since 1.0 - Custom calculation implementation (deprecated)
+ * @author Marty Lauterbach - Infrastructure delegation implementation
  */
 @Service
 public class MatchAnalysisService {
@@ -72,7 +67,7 @@ public class MatchAnalysisService {
     }
 
     /**
-     * Simplified match analysis result using LigamatchBE data.
+     * Match analysis result using database-calculated data.
      */
     public static class MatchAnalysisResult {
         private final boolean isComplete;
@@ -97,30 +92,29 @@ public class MatchAnalysisService {
         public long getTeam2Satzpunkte() { return team2Satzpunkte; }
         public String getStatusReason() { return statusReason; }
         
-        // Legacy compatibility
+        // Compatibility methods
         public boolean isInProgress() { return !isComplete; }
         public boolean isNotStarted() { return currentPasse == 1 && team1Satzpunkte == 0 && team2Satzpunkte == 0; }
     }
 
     /**
-     * THIN FACADE: Match analysis using existing infrastructure.
-     * Delegates to LigamatchBE pre-calculated data and existing business logic.
+     * Analyzes match using database-calculated scores and existing infrastructure.
      */
     public MatchAnalysisResult analyzeMatch(long matchId, long team1Id, long team2Id) {
         try {
             LOGGER.debug("Analyzing match {} using existing infrastructure", matchId);
 
-            // REUSE: Get pre-calculated data from existing ligamatch view
+            // Get database-calculated data from ligamatch view
             LigamatchBE ligamatch = matchComponent.getLigamatchById(matchId);
             if (ligamatch == null) {
                 LOGGER.warn("Ligamatch {} not found", matchId);
                 return new MatchAnalysisResult(false, 1, 0, 0, "Match not found");
             }
 
-            // REUSE: Database-calculated scores (no manual calculation needed)
+            // Use database-calculated scores
             long satzpunkte = ligamatch.getSatzpunkte() != null ? ligamatch.getSatzpunkte() : 0;
             
-            // REUSE: Built-in opponent resolution from ligamatch view
+            // Use built-in opponent resolution from ligamatch view
             long opponentSatzpunkte = 0;
             if (ligamatch.getMatchIdGegner() != null) {
                 LigamatchBE opponentMatch = matchComponent.getLigamatchById(ligamatch.getMatchIdGegner());
@@ -129,10 +123,10 @@ public class MatchAnalysisService {
                 }
             }
             
-            // REUSE: Standard match completion rules (existing constants)
+            // Apply standard match completion rules
             boolean isComplete = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
             
-            // DELEGATE: Pass counting to existing infrastructure
+            // Calculate current pass number using infrastructure
             int currentPasse = calculateCurrentPasseUsingExistingInfrastructure(matchId, team1Id, team2Id);
             
             String reason = isComplete ? 
@@ -149,10 +143,10 @@ public class MatchAnalysisService {
     }
 
     /**
-     * THIN FACADE: Calculate current passe using existing infrastructure.
+     * Calculate current passe using existing infrastructure.
      * Delegates to established PasseComponent methods and existing patterns.
      * 
-     * FIXED: Find first incomplete passe instead of highest passe number.
+     * Find first incomplete passe instead of highest passe number.
      * This prevents confusion from pre-created empty passes.
      */
     private int calculateCurrentPasseUsingExistingInfrastructure(long matchId, long team1Id, long team2Id) {
@@ -180,11 +174,11 @@ public class MatchAnalysisService {
                     .filter(this::hasActualScores) // Only count passes with real arrow data
                     .count();
                 
-                // If either team has fewer than 3 shooters with actual scores, this passe needs completion
+                // If either team has fewer than 3 shooters with actual scores, this passé needs completion
                 if (team1ShootersWithScores < 3 || team2ShootersWithScores < 3) {
                     LOGGER.debug("Passe {} incomplete: team1={} shooters, team2={} shooters with scores", 
                                passeNr, team1ShootersWithScores, team2ShootersWithScores);
-                    return passeNr; // This passe needs completion
+                    return passeNr; // This passé needs completion
                 }
             }
             
@@ -208,8 +202,7 @@ public class MatchAnalysisService {
     }
 
     /**
-     * OPTIMIZED: Find opponent team ID using LigamatchBE built-in opponent data.
-     * Much simpler than complex begegnung logic.
+     * Finds opponent team ID using LigamatchBE structure.
      */
     public long findOpponentTeamId(long matchId, long teamId) {
         try {
@@ -255,21 +248,20 @@ public class MatchAnalysisService {
     }
 
     /**
-     * THIN FACADE: Match completion using existing infrastructure.
-     * Directly uses LigamatchBE pre-calculated scores and existing constants.
+     * Checks match completion using database-calculated scores.
      */
     public boolean isMatchComplete(long matchId, long team1Id, long team2Id) {
         try {
-            // REUSE: Get pre-calculated data from existing ligamatch view
+            // Get database-calculated data from ligamatch view
             LigamatchBE ligamatch = matchComponent.getLigamatchById(matchId);
             if (ligamatch == null) {
                 return false;
             }
             
-            // REUSE: Database-calculated scores (no manual calculation)
+            // Use database-calculated scores
             long satzpunkte = ligamatch.getSatzpunkte() != null ? ligamatch.getSatzpunkte() : 0;
             
-            // REUSE: Built-in opponent resolution from ligamatch view
+            // Use built-in opponent resolution from ligamatch view
             long opponentSatzpunkte = 0;
             if (ligamatch.getMatchIdGegner() != null) {
                 LigamatchBE opponentMatch = matchComponent.getLigamatchById(ligamatch.getMatchIdGegner());
@@ -278,7 +270,7 @@ public class MatchAnalysisService {
                 }
             }
             
-            // REUSE: Standard completion rules (existing constants)
+            // Apply standard completion rules
             boolean complete = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
             
             LOGGER.debug("Infrastructure-based completion check: match={}, team={}pts, opponent={}pts, complete={}", 
@@ -293,8 +285,7 @@ public class MatchAnalysisService {
     }
 
     /**
-     * THIN FACADE: Get current passe number using existing infrastructure.
-     * Delegates to established pass counting methods.
+     * Gets current pass number using infrastructure delegation.
      */
     public int getCurrentPasseNumber(long matchId, long team1Id, long team2Id) {
         try {
@@ -303,6 +294,72 @@ public class MatchAnalysisService {
             LOGGER.error("Error in infrastructure-based passe calculation for match {} teams {} vs {}: {}", 
                         matchId, team1Id, team2Id, e.getMessage());
             return 1; // Safe fallback
+        }
+    }
+    
+    /**
+     * Find current incomplete match for a team.
+     * Returns null if all matches are complete.
+     */
+    public LigamatchBE findCurrentIncompleteMatch(long wettkampfId, long teamId) {
+        try {
+            List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
+                    .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                    .sorted((m1, m2) -> Long.compare(m1.getMatchNr(), m2.getMatchNr()))
+                    .toList();
+            
+            for (LigamatchBE match : teamMatches) {
+                // Check if this match has been started
+                List<PasseDO> passes = passeComponent.findByMannschaftMatchId(teamId, match.getMatchId());
+                if (passes.isEmpty()) {
+                    // No passes recorded - this is the current match
+                    LOGGER.debug("Found unstarted match {} for team {}", match.getMatchId(), teamId);
+                    return match;
+                }
+                
+                // Check if match is complete using existing logic
+                long opponentId = findOpponentTeamId(match.getMatchId(), teamId);
+                boolean isComplete = isMatchComplete(match.getMatchId(), teamId, opponentId);
+                if (!isComplete) {
+                    // Match in progress - this is current
+                    LOGGER.debug("Found incomplete match {} for team {}", match.getMatchId(), teamId);
+                    return match;
+                }
+                LOGGER.debug("Match {} complete for team {}, checking next", match.getMatchId(), teamId);
+            }
+            
+            // All matches complete
+            LOGGER.info("All matches appear complete for team {} in wettkampf {}", teamId, wettkampfId);
+            return null;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error finding current incomplete match for team {} in wettkampf {}: {}", 
+                        teamId, wettkampfId, e.getMessage());
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to find current match");
+        }
+    }
+    
+    /**
+     * Find last match for a team (for completed tournaments).
+     */
+    public LigamatchBE findLastMatchForTeam(long wettkampfId, long teamId) {
+        try {
+            List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
+                    .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                    .sorted((m1, m2) -> Long.compare(m1.getMatchNr(), m2.getMatchNr()))
+                    .toList();
+            
+            if (teamMatches.isEmpty()) {
+                throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    "No matches found for team " + teamId + " in wettkampf " + wettkampfId);
+            }
+            
+            return teamMatches.get(teamMatches.size() - 1);
+            
+        } catch (Exception e) {
+            LOGGER.error("Error finding last match for team {} in wettkampf {}: {}", 
+                        teamId, wettkampfId, e.getMessage());
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to find last match");
         }
     }
 }
