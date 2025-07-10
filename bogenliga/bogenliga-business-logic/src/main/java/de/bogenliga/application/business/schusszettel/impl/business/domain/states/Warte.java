@@ -2,6 +2,8 @@ package de.bogenliga.application.business.schusszettel.impl.business.domain.stat
 
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,7 +207,7 @@ public class Warte extends State {
             }
         } catch (Exception e) {
             LOGGER.error("Error advancing to next match for team {}: {}", context.getTeamId(), e.getMessage());
-            throw new RuntimeException("Failed to advance to next match", e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "Failed to advance to next match", e);
         }
     }
 }

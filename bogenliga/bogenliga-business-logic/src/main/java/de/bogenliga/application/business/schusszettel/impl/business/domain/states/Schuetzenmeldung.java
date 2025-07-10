@@ -6,6 +6,7 @@ import de.bogenliga.application.business.schusszettel.api.types.inside.Verfuegba
 import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,7 +213,7 @@ public class Schuetzenmeldung extends State {
             }
         } catch (Exception e) {
             LOGGER.error("Error marking shooters as deployed: {}", e.getMessage());
-            throw new RuntimeException("Failed to mark shooters as deployed", e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "Failed to mark shooters as deployed", e);
         }
     }
     
