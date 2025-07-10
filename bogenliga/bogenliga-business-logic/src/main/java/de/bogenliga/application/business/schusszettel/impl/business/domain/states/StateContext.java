@@ -122,7 +122,6 @@ public class StateContext {
         long startTime = System.currentTimeMillis();
         try {
             session.setStatus(newStatus);
-            session.incrementVersion(); // Optimistic locking
             sessionDAO.updateStatus(session, 0L);
             
             long duration = System.currentTimeMillis() - startTime;
@@ -152,7 +151,6 @@ public class StateContext {
         long startTime = System.currentTimeMillis();
         try {
             session.setCurrentPasseNumber(newPasseNumber);
-            session.incrementVersion(); // Optimistic locking
             sessionDAO.updateStatus(session, 0L);
             
             long duration = System.currentTimeMillis() - startTime;
@@ -193,7 +191,6 @@ public class StateContext {
             session.setCurrentPasseNumber(1);
             session.setStatus(State.STATUS_SCHUETZENMELDUNG);
             session.setGegnerTeamId(opponentId);
-            session.incrementVersion(); // Optimistic locking
             sessionDAO.updateStatus(session, 0L);
             
             long duration = System.currentTimeMillis() - startTime;
