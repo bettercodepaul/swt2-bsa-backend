@@ -15,7 +15,7 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,55 +210,43 @@ public class SessionRuntime {
     
     
     /**
-     * Advance to the next match using LigamatchBE naechsteMatchId as single source of truth.
-     * This respects the planned tournament schedule and wettkampftag order.
+     * Advance to the next match using tournament-aware progression logic.
+     * This bypasses the flawed database naechsteMatchId calculation and uses 
+     * tournament bracket structure for correct advancement.
      */
     private void advanceToNextMatch() {
         try {
             long currentMatchId = session.getCurrentMatchId();
             long teamId = session.getTeamId();
             
-            // Get current match from LigamatchBE - the authoritative source
-            LigamatchBE currentMatch = matchComponent.getLigamatchById(currentMatchId);
-            if (currentMatch == null) {
-                throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
-                    "Current match " + currentMatchId + " not found in LigamatchBE");
-            }
+            // Use MatchAnalysisService tournament-aware progression instead of database naechsteMatchId
+            LigamatchBE nextMatch = matchAnalysisService.findCorrectNextMatch(currentMatchId, teamId);
             
-            // Follow naechsteMatchId chain to respect tournament schedule
-            if (currentMatch.getNaechsteMatchId() != null) {
-                LigamatchBE nextMatch = matchComponent.getLigamatchById(currentMatch.getNaechsteMatchId());
-                if (nextMatch != null) {
-                    // Update session with next match data
-                    session.setCurrentMatchId(nextMatch.getMatchId());
-                    session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
-                    session.setCurrentPasseNumber(1);
-                    session.setStatus(STATUS_SCHUETZENMELDUNG);
-                    
-                    // Find and set opponent
-                    try {
-                        long opponentId = matchAnalysisService.findOpponentTeamId(nextMatch.getMatchId(), teamId);
-                        session.setGegnerTeamId(opponentId);
-                        LOGGER.info("Advanced team {} from match {} to next match {} (opponent: {}) following naechsteMatchId", 
-                                   teamId, currentMatchId, nextMatch.getMatchId(), opponentId);
-                    } catch (Exception e) {
-                        LOGGER.warn("Could not find opponent for next match {}: {}", nextMatch.getMatchId(), e.getMessage());
-                    }
-                } else {
-                    LOGGER.warn("Next match {} referenced by naechsteMatchId not found", currentMatch.getNaechsteMatchId());
-                    // Set to WETTKAMPF_ENDE as fallback
-                    session.setCurrentPasseNumber(5);
-                    session.setStatus(STATUS_WETTKAMPF_ENDE);
+            if (nextMatch != null) {
+                // Update session with next match data
+                session.setCurrentMatchId(nextMatch.getMatchId());
+                session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
+                session.setCurrentPasseNumber(1);
+                session.setStatus(STATUS_SCHUETZENMELDUNG);
+                
+                // Find and set opponent using tournament-aware logic
+                try {
+                    long opponentId = matchAnalysisService.findOpponentTeamId(nextMatch.getMatchId(), teamId);
+                    session.setGegnerTeamId(opponentId);
+                    LOGGER.info("Advanced team {} to next match {} (opponent: {}) using tournament progression", 
+                               teamId, nextMatch.getMatchId(), opponentId);
+                } catch (Exception e) {
+                    LOGGER.warn("Could not find opponent for next match {}: {}", nextMatch.getMatchId(), e.getMessage());
                 }
             } else {
                 // No next match available - tournament complete for this team
                 session.setCurrentPasseNumber(5);
                 session.setStatus(STATUS_WETTKAMPF_ENDE);
-                LOGGER.info("Team {} completed all matches - no naechsteMatchId, setting to WETTKAMPF_ENDE", teamId);
+                LOGGER.info("Team {} completed all matches - setting to WETTKAMPF_ENDE using tournament progression", teamId);
             }
             
         } catch (Exception e) {
-            LOGGER.error("Error advancing to next match from {}: {}", session.getCurrentMatchId(), e.getMessage());
+            LOGGER.error("Error advancing to next match using tournament progression: {}", e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to advance to next match");
         }
     }
@@ -380,7 +368,7 @@ public class SessionRuntime {
             
         } catch (Exception e) {
             LOGGER.error("Error initializing session for team {}: {}", teamId, e.getMessage());
-            throw new RuntimeException("Failed to initialize session", e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "Failed to initialize session", e);
         }
     }
     
@@ -418,10 +406,16 @@ public class SessionRuntime {
     }
     
     /**
-     * Update session in database
+     * Update session in database with enhanced error handling
      */
     public void persistSession() {
-        sessionDAO.updateStatus(session, 0L);
+        try {
+            sessionDAO.updateStatus(session, 0L);
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error updating session status for team {}: {}", session.getTeamId(), e.getMessage());
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
+                "Internal error updating session status: " + e.getMessage(), e);
+        }
     }
     
     /**

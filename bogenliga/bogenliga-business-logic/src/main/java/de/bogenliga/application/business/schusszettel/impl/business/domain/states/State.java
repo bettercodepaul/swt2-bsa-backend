@@ -103,7 +103,7 @@ public abstract class State {
         // Add common session data that all states should provide
         data.put("currentPasseNumber", context.getCurrentPasseNumber());
         data.put("eigenesTeamMatchId", context.getCurrentMatchId());
-        data.put("gegnerischesTeamMatchId", context.getCurrentMatchId());
+        data.put("gegnerischesTeamMatchId", context.getOpponentMatchId());
         data.put("wettkampfInfo", context.buildWettkampfInfo());
         
         return data;

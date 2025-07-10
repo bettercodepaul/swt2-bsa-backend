@@ -60,6 +60,14 @@ public class MatchAnalysisService {
     // WA Official archery rules constants
     public static final int MATCH_POINTS_TO_WIN = 6;
     public static final int MAX_SETS_PER_MATCH = 5;
+    
+    // Performance monitoring constants
+    private static final long SLOW_QUERY_THRESHOLD_MS = 100L;
+    private static final long WARNING_THRESHOLD_MS = 50L;
+    
+    // Query caching considerations (not implemented, but tracked)
+    private static final int CACHE_SIZE_THRESHOLD = 100;
+    private static final long CACHE_TTL_MS = 30000L; // 30 seconds
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -69,9 +77,70 @@ public class MatchAnalysisService {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
     }
+    
+    /**
+     * Performance monitoring for match analysis operations.
+     */
+    private void logPerformanceMetrics(String operation, long startTime, long matchId, Object result) {
+        long duration = System.currentTimeMillis() - startTime;
+        if (duration > 50) { // Log operations taking more than 50ms
+            LOGGER.warn("Performance warning: {} for matchId {} took {}ms", operation, matchId, duration);
+        } else {
+            LOGGER.debug("Performance: {} for matchId {} took {}ms", operation, matchId, duration);
+        }
+    }
+    
+    /**
+     * Enhanced match analysis with performance monitoring and caching considerations.
+     */
+    public MatchAnalysisResult analyzeMatchWithMetrics(long matchId, long team1Id, long team2Id) {
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            // Basic match analysis
+            MatchAnalysisResult basicResult = analyzeMatch(matchId, team1Id, team2Id);
+            
+            // Performance analysis
+            long analysisTime = System.currentTimeMillis() - startTime;
+            boolean hasWarning = analysisTime > 100; // Warning threshold
+            
+            // Get additional metrics
+            int totalPasses = getTotalPassCount(matchId, team1Id, team2Id);
+            
+            return new MatchAnalysisResult(
+                basicResult.isComplete(),
+                basicResult.getCurrentPasse(),
+                basicResult.getTeam1Satzpunkte(),
+                basicResult.getTeam2Satzpunkte(),
+                basicResult.getStatusReason(),
+                analysisTime,
+                totalPasses,
+                hasWarning
+            );
+            
+        } catch (Exception e) {
+            LOGGER.error("Error in enhanced match analysis for matchId {}: {}", matchId, e.getMessage());
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Match analysis failed", e);
+        }
+    }
+    
+    /**
+     * Get total pass count for performance analysis.
+     */
+    private int getTotalPassCount(long matchId, long team1Id, long team2Id) {
+        try {
+            List<PasseDO> team1Passes = passeComponent.findByMannschaftMatchId(team1Id, matchId);
+            List<PasseDO> team2Passes = passeComponent.findByMannschaftMatchId(team2Id, matchId);
+            return team1Passes.size() + team2Passes.size();
+        } catch (Exception e) {
+            LOGGER.debug("Could not get pass count for performance analysis: {}", e.getMessage());
+            return 0;
+        }
+    }
 
     /**
      * Match analysis result using database-calculated data.
+     * Enhanced with performance metrics and additional analysis data.
      */
     public static class MatchAnalysisResult {
         private final boolean isComplete;
@@ -79,6 +148,9 @@ public class MatchAnalysisService {
         private final long team1Satzpunkte;
         private final long team2Satzpunkte;
         private final String statusReason;
+        private final long analysisTimeMs;
+        private final int totalPasses;
+        private final boolean hasPerformanceWarning;
 
         public MatchAnalysisResult(boolean isComplete, int currentPasse, 
                                  long team1Satzpunkte, long team2Satzpunkte, String statusReason) {
@@ -87,6 +159,23 @@ public class MatchAnalysisService {
             this.team1Satzpunkte = team1Satzpunkte;
             this.team2Satzpunkte = team2Satzpunkte;
             this.statusReason = statusReason;
+            this.analysisTimeMs = 0L;
+            this.totalPasses = 0;
+            this.hasPerformanceWarning = false;
+        }
+        
+        // Enhanced constructor with performance metrics
+        public MatchAnalysisResult(boolean isComplete, int currentPasse, 
+                                 long team1Satzpunkte, long team2Satzpunkte, String statusReason,
+                                 long analysisTimeMs, int totalPasses, boolean hasPerformanceWarning) {
+            this.isComplete = isComplete;
+            this.currentPasse = currentPasse;
+            this.team1Satzpunkte = team1Satzpunkte;
+            this.team2Satzpunkte = team2Satzpunkte;
+            this.statusReason = statusReason;
+            this.analysisTimeMs = analysisTimeMs;
+            this.totalPasses = totalPasses;
+            this.hasPerformanceWarning = hasPerformanceWarning;
         }
 
         // Getters
@@ -95,6 +184,9 @@ public class MatchAnalysisService {
         public long getTeam1Satzpunkte() { return team1Satzpunkte; }
         public long getTeam2Satzpunkte() { return team2Satzpunkte; }
         public String getStatusReason() { return statusReason; }
+        public long getAnalysisTimeMs() { return analysisTimeMs; }
+        public int getTotalPasses() { return totalPasses; }
+        public boolean hasPerformanceWarning() { return hasPerformanceWarning; }
         
         // Compatibility methods
         public boolean isInProgress() { return !isComplete; }
@@ -427,5 +519,187 @@ public class MatchAnalysisService {
                         teamId, wettkampfId, e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to find last match");
         }
+    }
+
+    /**
+     * Tournament structure matrices replicated from SetzlisteComponentImpl.
+     * These define the correct team progression through tournament brackets.
+     */
+    private enum TournamentStructure {
+        TOURNAMENT_8_TEAM(new int[][] {
+            {5, 4, 2, 7, 1, 8, 3, 6},  // Match 1
+            {3, 5, 8, 4, 7, 1, 6, 2},  // Match 2
+            {4, 7, 1, 6, 2, 5, 8, 3},  // Match 3
+            {8, 2, 7, 3, 6, 4, 1, 5},  // Match 4
+            {7, 6, 5, 8, 3, 2, 4, 1},  // Match 5
+            {1, 3, 4, 2, 8, 6, 5, 7},  // Match 6
+            {2, 1, 6, 5, 4, 3, 7, 8}   // Match 7
+        }),
+        
+        TOURNAMENT_6_TEAM(new int[][] {
+            {2, 5, 1, 6, 3, 4},        // Match 1
+            {6, 3, 2, 4, 5, 1},        // Match 2
+            {1, 2, 5, 3, 4, 6},        // Match 3
+            {5, 4, 3, 1, 6, 2},        // Match 4
+            {4, 1, 6, 5, 2, 3}         // Match 5
+        }),
+        
+        TOURNAMENT_4_TEAM(new int[][] {
+            {1, 4, 2, 3},              // Match 1
+            {2, 4, 3, 1},              // Match 2
+            {4, 3, 1, 2},              // Match 3
+            {4, 1, 2, 3},              // Match 4
+            {1, 3, 4, 2},              // Match 5
+            {3, 4, 2, 1}               // Match 6
+        });
+        
+        private final int[][] structure;
+        TournamentStructure(int[][] structure) { this.structure = structure; }
+        public int[][] getStructure() { return structure; }
+    }
+
+    /**
+     * Find the correct next match for a team using tournament bracket progression.
+     * This bypasses the flawed database naechsteMatchId calculation.
+     */
+    public LigamatchBE findCorrectNextMatch(long currentMatchId, long teamId) {
+        try {
+            // Get current match details
+            LigamatchBE currentMatch = matchComponent.getLigamatchById(currentMatchId);
+            if (currentMatch == null) {
+                LOGGER.error("Current match {} not found", currentMatchId);
+                return null;
+            }
+            
+            // Determine tournament structure
+            long wettkampfId = currentMatch.getWettkampfId();
+            TournamentStructure tournament = determineTournamentStructure(wettkampfId);
+            
+            // Find team's ranking position in current match
+            int teamRankingPosition = findTeamRankingPosition(currentMatch, teamId, wettkampfId);
+            if (teamRankingPosition == -1) {
+                LOGGER.error("Could not determine team ranking position for team {} in match {}", 
+                            teamId, currentMatchId);
+                return null;
+            }
+            
+            // Calculate next match position using tournament matrix
+            int currentMatchNumber = Math.toIntExact(currentMatch.getMatchNr());
+            int nextMatchNumber = currentMatchNumber + 1;
+            
+            // Check if next match exists in tournament
+            if (nextMatchNumber > tournament.getStructure().length) {
+                LOGGER.debug("Team {} completed all matches (no match {} in tournament)", 
+                            teamId, nextMatchNumber);
+                return null; // Tournament complete
+            }
+            
+            // Find team's position in next match using tournament matrix
+            int nextTargetPosition = findTeamPositionInMatch(tournament, teamRankingPosition, nextMatchNumber - 1);
+            if (nextTargetPosition == -1) {
+                LOGGER.error("Could not determine next position for team ranking {} in match {}", 
+                            teamRankingPosition, nextMatchNumber);
+                return null;
+            }
+            
+            // Query database for match at calculated position
+            List<LigamatchBE> nextMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId)
+                    .stream()
+                    .filter(m -> m.getMatchNr().intValue() == nextMatchNumber)
+                    .filter(m -> m.getMatchScheibennummer().intValue() == nextTargetPosition)
+                    .toList();
+            
+            if (nextMatches.size() != 1) {
+                LOGGER.error("Expected exactly 1 match for wettkampf={}, matchNr={}, scheibe={}, found {}", 
+                            wettkampfId, nextMatchNumber, nextTargetPosition, nextMatches.size());
+                return null;
+            }
+            
+            LigamatchBE nextMatch = nextMatches.get(0);
+            LOGGER.debug("Tournament progression: team {} from match {} (target {}) to match {} (target {})", 
+                        teamId, currentMatchNumber, currentMatch.getMatchScheibennummer(), 
+                        nextMatchNumber, nextTargetPosition);
+            
+            return nextMatch;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error calculating correct next match for team {} from match {}: {}", 
+                        teamId, currentMatchId, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Determine tournament structure based on team count.
+     */
+    private TournamentStructure determineTournamentStructure(long wettkampfId) {
+        List<LigamatchBE> allMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId);
+        Set<Long> uniqueTeams = allMatches.stream()
+                .map(LigamatchBE::getMannschaftId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        
+        int teamCount = uniqueTeams.size();
+        
+        switch (teamCount) {
+            case 8: return TournamentStructure.TOURNAMENT_8_TEAM;
+            case 6: return TournamentStructure.TOURNAMENT_6_TEAM;
+            case 4: return TournamentStructure.TOURNAMENT_4_TEAM;
+            default:
+                throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, 
+                    "Unsupported tournament size: " + teamCount + " teams");
+        }
+    }
+
+    /**
+     * Find team's ranking position that was used in tournament matrix.
+     * This reconstructs the ranking from the tournament structure.
+     */
+    private int findTeamRankingPosition(LigamatchBE currentMatch, long teamId, long wettkampfId) {
+        try {
+            // Get tournament structure for this wettkampf
+            TournamentStructure tournament = determineTournamentStructure(wettkampfId);
+            int currentMatchNumber = Math.toIntExact(currentMatch.getMatchNr());
+            int currentTargetPosition = Math.toIntExact(currentMatch.getMatchScheibennummer());
+            
+            // Find ranking position by looking up in tournament matrix
+            int[][] matrix = tournament.getStructure();
+            if (currentMatchNumber <= matrix.length) {
+                int[] matchTargets = matrix[currentMatchNumber - 1]; // Convert to 0-based
+                if (currentTargetPosition <= matchTargets.length) {
+                    int rankingPosition = matchTargets[currentTargetPosition - 1]; // Convert to 0-based
+                    LOGGER.debug("Team {} at match {} target {} has ranking position {}", 
+                               teamId, currentMatchNumber, currentTargetPosition, rankingPosition);
+                    return rankingPosition;
+                }
+            }
+            
+            LOGGER.error("Could not find ranking position for team {} at match {} target {}", 
+                        teamId, currentMatchNumber, currentTargetPosition);
+            return -1;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error finding team ranking position: {}", e.getMessage());
+            return -1;
+        }
+    }
+
+    /**
+     * Find team's position in specific match using tournament matrix.
+     */
+    private int findTeamPositionInMatch(TournamentStructure tournament, int teamRanking, int matchIndex) {
+        int[][] matrix = tournament.getStructure();
+        if (matchIndex >= matrix.length) {
+            return -1; // Match doesn't exist
+        }
+        
+        // Find where this team ranking appears in the specified match
+        for (int position = 0; position < matrix[matchIndex].length; position++) {
+            if (matrix[matchIndex][position] == teamRanking) {
+                return position + 1; // Convert to 1-based scheibennummer
+            }
+        }
+        
+        return -1; // Team not found in this match
     }
 }

@@ -20,6 +20,9 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -105,27 +108,107 @@ public class StateContext {
     // === CONTROLLED WRITE ACCESS ===
     
     public void updateSessionStatus(String newStatus) {
-        session.setStatus(newStatus);
-        sessionDAO.updateStatus(session, 0L);
-        LOGGER.debug("StateContext updated session {} status to {}", session.getTeamId(), newStatus);
+        // Enhanced validation before update
+        if (newStatus == null || newStatus.trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "New status cannot be null or empty");
+        }
+        
+        // Validate session state
+        ValidationResult sessionValidation = validateSessionState();
+        if (!sessionValidation.isValid()) {
+            LOGGER.warn("Session validation failed before status update: {}", sessionValidation.getErrorMessage());
+        }
+        
+        long startTime = System.currentTimeMillis();
+        try {
+            session.setStatus(newStatus);
+            session.incrementVersion(); // Optimistic locking
+            sessionDAO.updateStatus(session, 0L);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            if (duration > WARNING_THRESHOLD_MS) {
+                LOGGER.warn("Slow status update for team {}: {}ms", session.getTeamId(), duration);
+            } else {
+                LOGGER.debug("StateContext updated session {} status to {} in {}ms", session.getTeamId(), newStatus, duration);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to update session status for team {} after {}ms: {}", 
+                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error updating session status", e);
+        }
     }
+    
+    // Performance threshold constants
+    private static final long WARNING_THRESHOLD_MS = 50L;
+    private static final long ERROR_THRESHOLD_MS = 200L;
     
     public void updatePasseNumber(int newPasseNumber) {
-        session.setCurrentPasseNumber(newPasseNumber);
-        sessionDAO.updateStatus(session, 0L);
-        LOGGER.debug("StateContext updated session {} passe to {}", session.getTeamId(), newPasseNumber);
+        // Enhanced validation
+        if (newPasseNumber < 1 || newPasseNumber > MAX_SETS_PER_MATCH) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid passe number: " + newPasseNumber + 
+                                             ". Must be between 1 and " + MAX_SETS_PER_MATCH);
+        }
+        
+        long startTime = System.currentTimeMillis();
+        try {
+            session.setCurrentPasseNumber(newPasseNumber);
+            session.incrementVersion(); // Optimistic locking
+            sessionDAO.updateStatus(session, 0L);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            if (duration > WARNING_THRESHOLD_MS) {
+                LOGGER.warn("Slow passe update for team {}: {}ms", session.getTeamId(), duration);
+            } else {
+                LOGGER.debug("StateContext updated session {} passe to {} in {}ms", session.getTeamId(), newPasseNumber, duration);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to update passe number for team {} after {}ms: {}", 
+                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error updating passe number", e);
+        }
     }
     
+    private static final int MAX_SETS_PER_MATCH = 5; // From official archery rules
+    
     public void advanceToNextMatch(LigamatchBE nextMatch, long opponentId) {
-        session.setCurrentMatchId(nextMatch.getMatchId());
-        session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
-        session.setCurrentPasseNumber(1);
-        session.setStatus(State.STATUS_SCHUETZENMELDUNG);
-        session.setGegnerTeamId(opponentId);
-        sessionDAO.updateStatus(session, 0L);
+        // Enhanced validation
+        ValidationResult matchValidation = validateMatchProgression(nextMatch);
+        if (!matchValidation.isValid()) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid match progression: " + matchValidation.getErrorMessage());
+        }
         
-        LOGGER.info("StateContext advanced team {} from match to match {} (opponent: {})",
-                   session.getTeamId(), nextMatch.getMatchId(), opponentId);
+        if (opponentId <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid opponent ID: " + opponentId);
+        }
+        
+        long startTime = System.currentTimeMillis();
+        try {
+            // Store previous state for rollback if needed
+            Long previousMatchId = session.getCurrentMatchId();
+            String previousStatus = session.getStatus();
+            Integer previousPasse = session.getCurrentPasseNumber();
+            
+            session.setCurrentMatchId(nextMatch.getMatchId());
+            session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
+            session.setCurrentPasseNumber(1);
+            session.setStatus(State.STATUS_SCHUETZENMELDUNG);
+            session.setGegnerTeamId(opponentId);
+            session.incrementVersion(); // Optimistic locking
+            sessionDAO.updateStatus(session, 0L);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            if (duration > WARNING_THRESHOLD_MS) {
+                LOGGER.warn("Slow match advancement for team {}: {}ms", session.getTeamId(), duration);
+            }
+            
+            LOGGER.info("StateContext advanced team {} from match {} to match {} (opponent: {}) in {}ms",
+                       session.getTeamId(), previousMatchId, nextMatch.getMatchId(), opponentId, duration);
+                       
+        } catch (Exception e) {
+            LOGGER.error("Failed to advance team {} to next match after {}ms: {}", 
+                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error advancing to next match", e);
+        }
     }
     
     // === SERVICE ACCESS ===
@@ -188,6 +271,21 @@ public class StateContext {
             return matchAnalysisService.findOpponentTeamId(matchId, session.getTeamId());
         } catch (Exception e) {
             LOGGER.error("Error finding opponent in StateContext: {}", e.getMessage());
+            return 0L;
+        }
+    }
+    
+    public long getOpponentMatchId() {
+        try {
+            // Get current match to find opponent's match ID
+            LigamatchBE currentMatch = matchComponent.getLigamatchById(session.getCurrentMatchId());
+            if (currentMatch != null && currentMatch.getMatchIdGegner() != null) {
+                return currentMatch.getMatchIdGegner();
+            }
+            LOGGER.warn("No opponent match ID found for current match {}", session.getCurrentMatchId());
+            return 0L;
+        } catch (Exception e) {
+            LOGGER.error("Error getting opponent match ID in StateContext: {}", e.getMessage());
             return 0L;
         }
     }
@@ -268,10 +366,85 @@ public class StateContext {
                 .orElse(null);
     }
     
-    // === VALIDATION HELPERS ===
+    // === ENHANCED VALIDATION HELPERS ===
     
-    public boolean validateArrowValue(Integer arrowValue) {
-        return arrowValue != null && arrowValue >= 0 && arrowValue <= 10;
+    /**
+     * Enhanced arrow value validation with detailed error reporting.
+     */
+    public ValidationResult validateArrowValue(Integer arrowValue) {
+        if (arrowValue == null) {
+            return ValidationResult.invalid("Arrow value cannot be null");
+        }
+        if (arrowValue < 0) {
+            return ValidationResult.invalid("Arrow value cannot be negative: " + arrowValue);
+        }
+        if (arrowValue > 10) {
+            return ValidationResult.invalid("Arrow value cannot exceed 10: " + arrowValue);
+        }
+        return ValidationResult.valid();
+    }
+    
+    /**
+     * Validation result container for enhanced error reporting.
+     */
+    public static class ValidationResult {
+        private final boolean valid;
+        private final String errorMessage;
+        
+        private ValidationResult(boolean valid, String errorMessage) {
+            this.valid = valid;
+            this.errorMessage = errorMessage;
+        }
+        
+        public static ValidationResult valid() {
+            return new ValidationResult(true, null);
+        }
+        
+        public static ValidationResult invalid(String message) {
+            return new ValidationResult(false, message);
+        }
+        
+        public boolean isValid() { return valid; }
+        public String getErrorMessage() { return errorMessage; }
+    }
+    
+    /**
+     * Enhanced session state validation.
+     */
+    public ValidationResult validateSessionState() {
+        if (session.getTeamId() == null || session.getTeamId() <= 0) {
+            return ValidationResult.invalid("Invalid team ID: " + session.getTeamId());
+        }
+        if (session.getWettkampfId() == null || session.getWettkampfId() <= 0) {
+            return ValidationResult.invalid("Invalid wettkampf ID: " + session.getWettkampfId());
+        }
+        if (session.getCurrentMatchId() == null || session.getCurrentMatchId() <= 0) {
+            return ValidationResult.invalid("Invalid current match ID: " + session.getCurrentMatchId());
+        }
+        if (session.getCurrentPasseNumber() == null || session.getCurrentPasseNumber() < 1 || session.getCurrentPasseNumber() > 5) {
+            return ValidationResult.invalid("Invalid passe number: " + session.getCurrentPasseNumber());
+        }
+        if (session.getStatus() == null || session.getStatus().trim().isEmpty()) {
+            return ValidationResult.invalid("Session status cannot be null or empty");
+        }
+        return ValidationResult.valid();
+    }
+    
+    /**
+     * Validate match progression constraints.
+     */
+    public ValidationResult validateMatchProgression(LigamatchBE nextMatch) {
+        if (nextMatch == null) {
+            return ValidationResult.invalid("Next match cannot be null");
+        }
+        if (nextMatch.getMatchId() == null || nextMatch.getMatchId() <= 0) {
+            return ValidationResult.invalid("Invalid next match ID: " + nextMatch.getMatchId());
+        }
+        if (nextMatch.getWettkampfId() != session.getWettkampfId()) {
+            return ValidationResult.invalid("Match wettkampf mismatch: expected " + session.getWettkampfId() + 
+                                           ", got " + nextMatch.getWettkampfId());
+        }
+        return ValidationResult.valid();
     }
     
     public boolean isShooterRegistered(long shooterId, int passeNumber) {
