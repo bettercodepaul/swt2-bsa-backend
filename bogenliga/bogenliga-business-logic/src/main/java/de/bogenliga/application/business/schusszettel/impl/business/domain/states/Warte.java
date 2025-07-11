@@ -128,22 +128,26 @@ public class Warte extends State {
             if (matchComplete) {
                 LOGGER.info("Match {} complete for team {} - {}", context.getCurrentMatchId(), context.getTeamId(), reason);
                 
-                // Check if there are more matches
-                if (context.hasMoreMatches()) {
-                    // Advance to next match
-                    advanceToNextMatch(context);
-                    LOGGER.info("Advanced team {} to next match", context.getTeamId());
-                } else {
-                    // No more matches - end competition
-                    context.updateSessionStatus(STATUS_WETTKAMPF_ENDE);
-                    LOGGER.info("Competition ended for team {}", context.getTeamId());
-                }
+                // CRITICAL FIX: Transition to MATCH_ENDE instead of immediately progressing
+                // This allows frontend to display completed match results before next match
+                context.updateSessionStatus(STATUS_MATCH_ENDE);
+                LOGGER.info("Match completed for team {} - transitioned to MATCH_ENDE for result display", context.getTeamId());
             } else {
                 // Match not complete - advance to next passe
                 int nextPasse = context.getCurrentPasseNumber() + 1;
-                context.updatePasseNumber(nextPasse);
-                context.updateSessionStatus(STATUS_SATZEINGABE);
-                LOGGER.info("Advanced team {} to passe {} - {}", context.getTeamId(), nextPasse, reason);
+                
+                // CRITICAL FIX: Validate passe number before advancing
+                if (nextPasse > 5) {
+                    LOGGER.error("INVALID PASSE: Team {} tried to advance to passe {} - max is 5. Match should be complete!", 
+                               context.getTeamId(), nextPasse);
+                    // This indicates a logic error - force match completion check
+                    context.updateSessionStatus(STATUS_MATCH_ENDE);
+                    LOGGER.warn("Forced team {} to MATCH_ENDE due to invalid passe number", context.getTeamId());
+                } else {
+                    context.updatePasseNumber(nextPasse);
+                    context.updateSessionStatus(STATUS_SATZEINGABE);
+                    LOGGER.info("Advanced team {} to passe {} - {}", context.getTeamId(), nextPasse, reason);
+                }
             }
             
             return true;
@@ -217,21 +221,4 @@ public class Warte extends State {
         }
     }
     
-    /**
-     * Advance to the next match using LigamatchBE progression.
-     */
-    private void advanceToNextMatch(StateContext context) {
-        try {
-            LigamatchBE nextMatch = context.getNextMatch();
-            if (nextMatch != null) {
-                long opponentId = context.findOpponentTeamId(nextMatch.getMatchId());
-                context.advanceToNextMatch(nextMatch, opponentId);
-            } else {
-                LOGGER.warn("No next match available for team {}", context.getTeamId());
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error advancing to next match for team {}: {}", context.getTeamId(), e.getMessage());
-            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "Failed to advance to next match", e);
-        }
-    }
 }

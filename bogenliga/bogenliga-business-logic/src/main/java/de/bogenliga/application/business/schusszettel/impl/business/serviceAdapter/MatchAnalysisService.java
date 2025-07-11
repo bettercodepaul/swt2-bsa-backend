@@ -203,8 +203,8 @@ public class MatchAnalysisService {
                 }
             }
             
-            // Apply standard match completion rules
-            boolean isComplete = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
+            // Apply complete match completion rules (score-based + max passes)
+            boolean isComplete = isMatchComplete(matchId, team1Id, team2Id);
             
             // Calculate current pass number using infrastructure
             int currentPasse = calculateCurrentPasseUsingExistingInfrastructure(matchId, team1Id, team2Id);
@@ -272,6 +272,64 @@ public class MatchAnalysisService {
     }
 
     /**
+     * Calculate next passe number for a SPECIFIC team (team-specific calculation).
+     * CRITICAL FIX: This replaces the flawed global passe calculation that caused race conditions.
+     * Returns the next passe this team should submit scores for.
+     */
+    public int getNextPasseNumberForTeam(long matchId, long teamId) {
+        try {
+            LOGGER.debug("Calculating next passe for team {} in match {}", teamId, matchId);
+            
+            // Get passes for this specific team only
+            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+            
+            if (teamPasses.isEmpty()) {
+                LOGGER.debug("No passes found for team {} - starting at passe 1", teamId);
+                return 1; // Team hasn't started any passes yet
+            }
+            
+            // Find the highest completed passe for THIS team specifically
+            int highestCompletedPasse = 0;
+            for (int passeNr = 1; passeNr <= MAX_SETS_PER_MATCH; passeNr++) {
+                final int checkPasse = passeNr;
+                
+                // Count shooters with actual scores for this passe
+                long shootersWithScores = teamPasses.stream()
+                    .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr().intValue() == checkPasse)
+                    .filter(this::hasActualScores) // Only count passes with real arrow data
+                    .count();
+                
+                if (shootersWithScores >= 3) {
+                    // This passe is complete for this team
+                    highestCompletedPasse = passeNr;
+                    LOGGER.debug("Team {} completed passe {} ({} shooters with scores)", 
+                               teamId, passeNr, shootersWithScores);
+                } else {
+                    // This passe is incomplete - no point checking higher passes
+                    LOGGER.debug("Team {} passe {} incomplete ({} shooters with scores)", 
+                               teamId, passeNr, shootersWithScores);
+                    break;
+                }
+            }
+            
+            int nextPasse = highestCompletedPasse + 1;
+            
+            // Ensure we don't exceed maximum passes
+            if (nextPasse > MAX_SETS_PER_MATCH) {
+                LOGGER.debug("Team {} completed all {} passes", teamId, MAX_SETS_PER_MATCH);
+                return MAX_SETS_PER_MATCH + 1; // Signal match completion
+            }
+            
+            LOGGER.debug("Team {} next passe: {} (highest completed: {})", teamId, nextPasse, highestCompletedPasse);
+            return nextPasse;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error calculating next passe for team {} in match {}: {}", teamId, matchId, e.getMessage());
+            return 1; // Safe fallback
+        }
+    }
+
+    /**
      * Check if a pass has actual arrow scores vs being an empty pre-created pass.
      * Pre-created passes have null or 0 values for all arrows.
      */
@@ -328,7 +386,8 @@ public class MatchAnalysisService {
     }
 
     /**
-     * Checks match completion using database-calculated scores.
+     * Checks match completion using database-calculated scores AND max passes completion.
+     * CRITICAL FIX: Also considers when both teams completed all possible passes.
      */
     public boolean isMatchComplete(long matchId, long team1Id, long team2Id) {
         try {
@@ -350,11 +409,30 @@ public class MatchAnalysisService {
                 }
             }
             
-            // Apply standard completion rules
-            boolean complete = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
+            // RULE 1: Standard completion - either team reaches 6+ Satzpunkte
+            boolean completeByScore = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
             
-            LOGGER.debug("Infrastructure-based completion check: match={}, team={}pts, opponent={}pts, complete={}", 
-                        matchId, satzpunkte, opponentSatzpunkte, complete);
+            // RULE 2: CRITICAL FIX - Match complete when either team finished all possible passes
+            boolean completeByMaxPasses = false;
+            try {
+                int team1NextPasse = getNextPasseNumberForTeam(matchId, team1Id);
+                int team2NextPasse = getNextPasseNumberForTeam(matchId, team2Id);
+                
+                // If either team's next passe would be > MAX_SETS_PER_MATCH, that team completed all passes
+                completeByMaxPasses = (team1NextPasse > MAX_SETS_PER_MATCH) || (team2NextPasse > MAX_SETS_PER_MATCH);
+                
+                LOGGER.debug("Max passes check: team1NextPasse={}, team2NextPasse={}, maxPasses={}, completeByMaxPasses={}", 
+                           team1NextPasse, team2NextPasse, MAX_SETS_PER_MATCH, completeByMaxPasses);
+                
+            } catch (Exception e) {
+                LOGGER.warn("Error checking max passes completion for match {}: {}", matchId, e.getMessage());
+                // Continue with score-based check only
+            }
+            
+            boolean complete = completeByScore || completeByMaxPasses;
+            
+            LOGGER.debug("Infrastructure-based completion check: match={}, team={}pts, opponent={}pts, completeByScore={}, completeByMaxPasses={}, complete={}", 
+                        matchId, satzpunkte, opponentSatzpunkte, completeByScore, completeByMaxPasses, complete);
             
             return complete;
             
@@ -506,43 +584,52 @@ public class MatchAnalysisService {
      */
     public LigamatchBE findCorrectNextMatch(long currentMatchId, long teamId) {
         try {
+            LOGGER.error("🔴 TOURNAMENT MATRIX LOGIC TRIGGERED for team {} from match {}", teamId, currentMatchId);
+            
             // Get current match details
             LigamatchBE currentMatch = matchComponent.getLigamatchById(currentMatchId);
             if (currentMatch == null) {
-                LOGGER.error("Current match {} not found", currentMatchId);
+                LOGGER.error("🔴 Current match {} not found", currentMatchId);
                 return null;
             }
             
             // Determine tournament structure
             long wettkampfId = currentMatch.getWettkampfId();
             TournamentStructure tournament = determineTournamentStructure(wettkampfId);
+            LOGGER.error("🔴 Using tournament structure: {} teams", 
+                        tournament == TournamentStructure.TOURNAMENT_8_TEAM ? "8" :
+                        tournament == TournamentStructure.TOURNAMENT_6_TEAM ? "6" :
+                        tournament == TournamentStructure.TOURNAMENT_4_TEAM ? "4" : "unknown");
             
             // Find team's ranking position in current match
             int teamRankingPosition = findTeamRankingPosition(currentMatch, teamId, wettkampfId);
             if (teamRankingPosition == -1) {
-                LOGGER.error("Could not determine team ranking position for team {} in match {}", 
+                LOGGER.error("🔴 Could not determine team ranking position for team {} in match {}", 
                             teamId, currentMatchId);
                 return null;
             }
+            LOGGER.error("🔴 Team {} has ranking position {} in match {}", teamId, teamRankingPosition, currentMatchId);
             
             // Calculate next match position using tournament matrix
             int currentMatchNumber = Math.toIntExact(currentMatch.getMatchNr());
             int nextMatchNumber = currentMatchNumber + 1;
+            LOGGER.error("🔴 Looking for next match number {} after current match number {}", nextMatchNumber, currentMatchNumber);
             
             // Check if next match exists in tournament
             if (nextMatchNumber > tournament.getStructure().length) {
-                LOGGER.debug("Team {} completed all matches (no match {} in tournament)", 
-                            teamId, nextMatchNumber);
+                LOGGER.error("🔴 Team {} completed all matches (no match {} in tournament structure with {} matches)", 
+                            teamId, nextMatchNumber, tournament.getStructure().length);
                 return null; // Tournament complete
             }
             
             // Find team's position in next match using tournament matrix
             int nextTargetPosition = findTeamPositionInMatch(tournament, teamRankingPosition, nextMatchNumber - 1);
             if (nextTargetPosition == -1) {
-                LOGGER.error("Could not determine next position for team ranking {} in match {}", 
+                LOGGER.error("🔴 Could not determine next position for team ranking {} in match {}", 
                             teamRankingPosition, nextMatchNumber);
                 return null;
             }
+            LOGGER.error("🔴 Team {} should be at target position {} in next match {}", teamId, nextTargetPosition, nextMatchNumber);
             
             // Query database for match at calculated position
             List<LigamatchBE> nextMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId)
@@ -551,21 +638,24 @@ public class MatchAnalysisService {
                     .filter(m -> m.getMatchScheibennummer().intValue() == nextTargetPosition)
                     .toList();
             
+            LOGGER.error("🔴 Database query: wettkampf={}, matchNr={}, scheibe={}, found {} matches", 
+                        wettkampfId, nextMatchNumber, nextTargetPosition, nextMatches.size());
+            
             if (nextMatches.size() != 1) {
-                LOGGER.error("Expected exactly 1 match for wettkampf={}, matchNr={}, scheibe={}, found {}", 
+                LOGGER.error("🔴 Expected exactly 1 match for wettkampf={}, matchNr={}, scheibe={}, found {}", 
                             wettkampfId, nextMatchNumber, nextTargetPosition, nextMatches.size());
                 return null;
             }
             
             LigamatchBE nextMatch = nextMatches.get(0);
-            LOGGER.debug("Tournament progression: team {} from match {} (target {}) to match {} (target {})", 
+            LOGGER.error("🔴 TOURNAMENT PROGRESSION SUCCESS: team {} from match {} (target {}) to match {} (target {})", 
                         teamId, currentMatchNumber, currentMatch.getMatchScheibennummer(), 
                         nextMatchNumber, nextTargetPosition);
             
             return nextMatch;
             
         } catch (Exception e) {
-            LOGGER.error("Error calculating correct next match for team {} from match {}: {}", 
+            LOGGER.error("🔴 ERROR in tournament matrix logic for team {} from match {}: {}", 
                         teamId, currentMatchId, e.getMessage());
             return null;
         }
