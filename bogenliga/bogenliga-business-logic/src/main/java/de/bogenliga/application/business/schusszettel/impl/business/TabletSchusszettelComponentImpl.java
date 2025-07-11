@@ -121,6 +121,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             if (runtime.evaluateWithOpponentWAITstate(opponentRuntime != null ? opponentRuntime.getSession() : null)) {
                 LOGGER.info("GET request triggered state advancement for team {} from WARTE", teamId);
             }
+        } else if (State.STATUS_MATCH_ENDE.equals(runtime.getCurrentState())) {
+            // Handle MATCH_ENDE progression - advance to next match or tournament end
+            if (runtime.evaluateWithOpponentWAITstate(null)) {
+                LOGGER.info("GET request triggered state advancement for team {} from MATCH_ENDE", teamId);
+            }
         }
 
         // Build response using state objects
