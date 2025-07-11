@@ -94,6 +94,7 @@ public class TabletSchusszettelDO {
         SATZEINGABE,
         SCHUETZENMELDUNG,
         WARTE,
+        MATCH_ENDE,
         NOT_ALLOWED,
         WETTKAMPF_ENDE
     }
