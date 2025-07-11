@@ -160,6 +160,9 @@ public class Warte extends State {
     
     /**
      * Force advancement of opponent team when synchronized.
+     * 
+     * NOTE: This method is simplified to avoid creating StateContext for opponent.
+     * Complex opponent manipulation should be handled by SessionRuntime coordination.
      */
     private boolean forceOpponentAdvancement(StateContext context, TabletSchusszettelEntity opponent, String reason) {
         // Check if opponent is actually in WARTE state
@@ -169,28 +172,11 @@ public class Warte extends State {
             return false;
         }
 
-        LOGGER.info("Forcing advancement for opponent team {} - reason: {}", opponent.getTeamId(), reason);
-
-        try {
-            // Create context for opponent and attempt progression
-            StateContext opponentContext = new StateContext(
-                opponent, 
-                context.getSessionDAO(), 
-                context.getMatchComponent(), 
-                context.getPasseComponent(), 
-                context.getMatchAnalysisService(),
-                context.getMannschaftsmitgliedComponent(),
-                context.getDsbMitgliedComponent(),
-                context.getWettkampfComponent(),
-                context.getVeranstaltungComponent()
-            );
-            
-            return attemptStateProgression(opponentContext, "Forced advancement: " + reason);
-            
-        } catch (Exception e) {
-            LOGGER.error("Error forcing opponent advancement: {}", e.getMessage());
-            return false;
-        }
+        LOGGER.info("Opponent team {} advancement should be coordinated by SessionRuntime - reason: {}", opponent.getTeamId(), reason);
+        
+        // Return false to indicate that opponent advancement should be handled 
+        // by the calling SessionRuntime, not by state objects
+        return false;
     }
     
     /**

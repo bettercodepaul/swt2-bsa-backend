@@ -148,7 +148,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
         // Delegate to state object
         try {
-            StateContext context = createStateContext(runtime.getSession());
+            StateContext context = createStateContext(runtime);
             State currentState = State.fromString(runtime.getCurrentState());
             
             if (input == null || input.getGemeldeteSchuetzen() == null) {
@@ -194,7 +194,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
         // Delegate to state object
         try {
-            StateContext context = createStateContext(runtime.getSession());
+            StateContext context = createStateContext(runtime);
             State currentState = State.fromString(runtime.getCurrentState());
             
             if (!currentState.validateOperation(context, "submitSatz", eingabe)) {
@@ -268,7 +268,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     private void enrichResponseByState(SessionRuntime runtime, TabletSchusszettelDO result) {
         try {
-            StateContext context = createStateContext(runtime.getSession());
+            StateContext context = createStateContext(runtime);
             State currentState = State.fromString(runtime.getCurrentState());
             
             Map<String, Object> stateData = currentState.prepareResponseData(context);
@@ -284,10 +284,10 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     /**
      * Creates StateContext for state object operations.
      */
-    private StateContext createStateContext(TabletSchusszettelEntity session) {
+    private StateContext createStateContext(SessionRuntime runtime) {
         return new StateContext(
-            session,
-            sessionDAO,
+            runtime.getSession(),
+            runtime,
             matchComponent,
             passeComponent,
             matchAnalysisService,

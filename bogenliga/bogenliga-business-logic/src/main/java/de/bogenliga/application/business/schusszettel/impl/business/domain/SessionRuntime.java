@@ -194,7 +194,7 @@ public class SessionRuntime {
         try {
             // Delegate to state object for complex WARTE logic
             State currentState = State.fromString(session.getStatus());
-            StateContext context = new StateContext(session, sessionDAO, matchComponent, passeComponent, matchAnalysisService, mannschaftsmitgliedComponent, dsbMitgliedComponent, wettkampfComponent, veranstaltungComponent);
+            StateContext context = new StateContext(session, this, matchComponent, passeComponent, matchAnalysisService, mannschaftsmitgliedComponent, dsbMitgliedComponent, wettkampfComponent, veranstaltungComponent);
             
             // Let the state object handle the complex opponent evaluation
             return currentState.handleWarteEvaluation(context, opponentSession);
@@ -204,10 +204,6 @@ public class SessionRuntime {
             return false;
         }
     }
-
-
-    
-    
     
     /**
      * Advance to the next match using tournament-aware progression logic.
@@ -416,6 +412,66 @@ public class SessionRuntime {
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
                 "Internal error updating session status: " + e.getMessage(), e);
         }
+    }
+    
+    /**
+     * Update session status - delegated from StateContext
+     */
+    public void updateSessionStatus(String newStatus) {
+        if (newStatus == null || newStatus.trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "New status cannot be null or empty");
+        }
+        
+        session.setStatus(newStatus);
+        persistSession();
+        LOGGER.debug("SessionRuntime updated session {} status to {}", session.getTeamId(), newStatus);
+    }
+    
+    /**
+     * Update passe number - delegated from StateContext
+     */
+    public void updatePasseNumber(int newPasseNumber) {
+        if (newPasseNumber < 1 || newPasseNumber > 5) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid passe number: " + newPasseNumber);
+        }
+        
+        session.setCurrentPasseNumber(newPasseNumber);
+        persistSession();
+        LOGGER.debug("SessionRuntime updated session {} passe to {}", session.getTeamId(), newPasseNumber);
+    }
+    
+    /**
+     * Advance to next match - delegated from StateContext
+     */
+    public void advanceToNextMatch(LigamatchBE nextMatch, long opponentId) {
+        if (nextMatch == null) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Next match cannot be null");
+        }
+        if (opponentId <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid opponent ID: " + opponentId);
+        }
+        
+        session.setCurrentMatchId(nextMatch.getMatchId());
+        session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
+        session.setCurrentPasseNumber(1);
+        session.setStatus(STATUS_SCHUETZENMELDUNG);
+        session.setGegnerTeamId(opponentId);
+        persistSession();
+        
+        LOGGER.info("SessionRuntime advanced team {} to match {} (opponent: {})",
+                   session.getTeamId(), nextMatch.getMatchId(), opponentId);
+    }
+    
+    /**
+     * Load opponent session - delegated from StateContext
+     */
+    public TabletSchusszettelEntity loadOpponentSessionByTeamId(long opponentTeamId) {
+        if (opponentTeamId <= 0) {
+            return null;
+        }
+        
+        return sessionDAO.findByWettkampfUndTeam(session.getWettkampfId(), opponentTeamId)
+                .orElse(null);
     }
     
     /**
