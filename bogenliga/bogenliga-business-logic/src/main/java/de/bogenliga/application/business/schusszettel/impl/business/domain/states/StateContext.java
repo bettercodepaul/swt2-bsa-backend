@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.schusszettel.impl.business.domain.states;
 
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
-import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
+import de.bogenliga.application.business.schusszettel.impl.business.domain.SessionRuntime;
 import de.bogenliga.application.business.schusszettel.impl.business.serviceAdapter.MatchAnalysisService;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -50,7 +50,7 @@ public class StateContext {
     private static final Logger LOGGER = LoggerFactory.getLogger(StateContext.class);
     
     private final TabletSchusszettelEntity session;
-    private final TabletSchusszettelDAO sessionDAO;
+    private final SessionRuntime sessionRuntime;
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MatchAnalysisService matchAnalysisService;
@@ -60,7 +60,7 @@ public class StateContext {
     private final VeranstaltungComponent veranstaltungComponent;
     
     public StateContext(TabletSchusszettelEntity session,
-                       TabletSchusszettelDAO sessionDAO,
+                       SessionRuntime sessionRuntime,
                        MatchComponent matchComponent,
                        PasseComponent passeComponent,
                        MatchAnalysisService matchAnalysisService,
@@ -69,7 +69,7 @@ public class StateContext {
                        WettkampfComponent wettkampfComponent,
                        VeranstaltungComponent veranstaltungComponent) {
         this.session = session;
-        this.sessionDAO = sessionDAO;
+        this.sessionRuntime = sessionRuntime;
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.matchAnalysisService = matchAnalysisService;
@@ -108,33 +108,9 @@ public class StateContext {
     // === CONTROLLED WRITE ACCESS ===
     
     public void updateSessionStatus(String newStatus) {
-        // Enhanced validation before update
-        if (newStatus == null || newStatus.trim().isEmpty()) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "New status cannot be null or empty");
-        }
-        
-        // Validate session state
-        ValidationResult sessionValidation = validateSessionState();
-        if (!sessionValidation.isValid()) {
-            LOGGER.warn("Session validation failed before status update: {}", sessionValidation.getErrorMessage());
-        }
-        
-        long startTime = System.currentTimeMillis();
-        try {
-            session.setStatus(newStatus);
-            sessionDAO.updateStatus(session, 0L);
-            
-            long duration = System.currentTimeMillis() - startTime;
-            if (duration > WARNING_THRESHOLD_MS) {
-                LOGGER.warn("Slow status update for team {}: {}ms", session.getTeamId(), duration);
-            } else {
-                LOGGER.debug("StateContext updated session {} status to {} in {}ms", session.getTeamId(), newStatus, duration);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to update session status for team {} after {}ms: {}", 
-                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
-            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error updating session status", e);
-        }
+        // Delegate to SessionRuntime for database operations
+        sessionRuntime.updateSessionStatus(newStatus);
+        LOGGER.debug("StateContext delegated status update to SessionRuntime for team {}", session.getTeamId());
     }
     
     // Performance threshold constants
@@ -142,70 +118,17 @@ public class StateContext {
     private static final long ERROR_THRESHOLD_MS = 200L;
     
     public void updatePasseNumber(int newPasseNumber) {
-        // Enhanced validation
-        if (newPasseNumber < 1 || newPasseNumber > MAX_SETS_PER_MATCH) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid passe number: " + newPasseNumber + 
-                                             ". Must be between 1 and " + MAX_SETS_PER_MATCH);
-        }
-        
-        long startTime = System.currentTimeMillis();
-        try {
-            session.setCurrentPasseNumber(newPasseNumber);
-            sessionDAO.updateStatus(session, 0L);
-            
-            long duration = System.currentTimeMillis() - startTime;
-            if (duration > WARNING_THRESHOLD_MS) {
-                LOGGER.warn("Slow passe update for team {}: {}ms", session.getTeamId(), duration);
-            } else {
-                LOGGER.debug("StateContext updated session {} passe to {} in {}ms", session.getTeamId(), newPasseNumber, duration);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to update passe number for team {} after {}ms: {}", 
-                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
-            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error updating passe number", e);
-        }
+        // Delegate to SessionRuntime for database operations
+        sessionRuntime.updatePasseNumber(newPasseNumber);
+        LOGGER.debug("StateContext delegated passe number update to SessionRuntime for team {}", session.getTeamId());
     }
     
     private static final int MAX_SETS_PER_MATCH = 5; // From official archery rules
     
     public void advanceToNextMatch(LigamatchBE nextMatch, long opponentId) {
-        // Enhanced validation
-        ValidationResult matchValidation = validateMatchProgression(nextMatch);
-        if (!matchValidation.isValid()) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid match progression: " + matchValidation.getErrorMessage());
-        }
-        
-        if (opponentId <= 0) {
-            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, "Invalid opponent ID: " + opponentId);
-        }
-        
-        long startTime = System.currentTimeMillis();
-        try {
-            // Store previous state for rollback if needed
-            Long previousMatchId = session.getCurrentMatchId();
-            String previousStatus = session.getStatus();
-            Integer previousPasse = session.getCurrentPasseNumber();
-            
-            session.setCurrentMatchId(nextMatch.getMatchId());
-            session.setCurrentMatchNumber(Math.toIntExact(nextMatch.getMatchNr()));
-            session.setCurrentPasseNumber(1);
-            session.setStatus(State.STATUS_SCHUETZENMELDUNG);
-            session.setGegnerTeamId(opponentId);
-            sessionDAO.updateStatus(session, 0L);
-            
-            long duration = System.currentTimeMillis() - startTime;
-            if (duration > WARNING_THRESHOLD_MS) {
-                LOGGER.warn("Slow match advancement for team {}: {}ms", session.getTeamId(), duration);
-            }
-            
-            LOGGER.info("StateContext advanced team {} from match {} to match {} (opponent: {}) in {}ms",
-                       session.getTeamId(), previousMatchId, nextMatch.getMatchId(), opponentId, duration);
-                       
-        } catch (Exception e) {
-            LOGGER.error("Failed to advance team {} to next match after {}ms: {}", 
-                        session.getTeamId(), System.currentTimeMillis() - startTime, e.getMessage());
-            throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Database error advancing to next match", e);
-        }
+        // Delegate to SessionRuntime for database operations
+        sessionRuntime.advanceToNextMatch(nextMatch, opponentId);
+        LOGGER.debug("StateContext delegated match advancement to SessionRuntime for team {}", session.getTeamId());
     }
     
     // === SERVICE ACCESS ===
@@ -222,9 +145,7 @@ public class StateContext {
         return passeComponent;
     }
     
-    public TabletSchusszettelDAO getSessionDAO() {
-        return sessionDAO;
-    }
+    // DAO access removed - now delegated to SessionRuntime
     
     // === CONVENIENCE METHODS ===
     
@@ -359,8 +280,8 @@ public class StateContext {
             return null;
         }
         
-        return sessionDAO.findByWettkampfUndTeam(session.getWettkampfId(), session.getGegnerTeamId())
-                .orElse(null);
+        // Delegate to SessionRuntime for database operations
+        return sessionRuntime.loadOpponentSessionByTeamId(session.getGegnerTeamId());
     }
     
     // === ENHANCED VALIDATION HELPERS ===
