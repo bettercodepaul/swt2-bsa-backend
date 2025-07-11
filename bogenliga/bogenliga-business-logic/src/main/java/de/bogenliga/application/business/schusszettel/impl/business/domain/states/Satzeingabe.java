@@ -188,34 +188,16 @@ public class Satzeingabe extends State {
     
     /**
      * Creates pass records with submitted scores.
+     * CRITICAL FIX: Uses team-specific passe calculation to avoid race conditions.
      */
     private void createPassesWithScores(StateContext context, SatzEingabeDO eingabe) {
         try {
             long matchId = context.getCurrentMatchId();
-            int currentPasse = context.getCurrentPasseNumber();
             long currentMatchNr = context.getMatchComponent().findById(matchId).getNr();
             long wettkampfId = context.getWettkampfId();
             
-            for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
-                LOGGER.debug("Creating pass on-demand: wettkampfId={}, matchNr={}, teamId={}, passeNr={}, schuetzeId={}",
-                            wettkampfId, currentMatchNr, context.getTeamId(), currentPasse, satz.getSchuetzenId());
-                
-                PasseDO passe = new PasseDO(
-                    null,                           // id (generated)
-                    context.getTeamId(),           // passeMannschaftId
-                    wettkampfId,                   // passeWettkampfId
-                    currentMatchNr,                // passeMatchNr
-                    matchId,                       // passeMatchId
-                    (long) currentPasse,           // passeLfdnr
-                    satz.getSchuetzenId(),         // passeDsbMitgliedId
-                    (ARROWS_PER_SHOOTER >= 1 ? satz.getSchuss1() : null),  // pfeil1
-                    (ARROWS_PER_SHOOTER >= 2 ? satz.getSchuss2() : null),  // pfeil2
-                    (ARROWS_PER_SHOOTER >= 3 ? satz.getSchuss3() : null),  // pfeil3
-                    null, null, null               // pfeil4-6 not used in tablet scoring
-                );
-                
-                context.getPasseComponent().create(passe, 0L);
-            }
+            // CRITICAL FIX: Use team-specific passe calculation instead of global/retry logic
+            createPassesWithTeamSpecificPasse(context, eingabe, wettkampfId, currentMatchNr, matchId);
             
         } catch (Exception e) {
             LOGGER.error("Error creating passes with scores: {}", e.getMessage());
@@ -225,25 +207,139 @@ public class Satzeingabe extends State {
     }
     
     /**
+     * Creates passes using team-specific passe calculation.
+     * CRITICAL FIX: Uses team-specific next passe instead of global calculation.
+     */
+    private void createPassesWithTeamSpecificPasse(StateContext context, SatzEingabeDO eingabe, 
+                                                  long wettkampfId, long currentMatchNr, long matchId) {
+        try {
+            // CRITICAL FIX: Get the next passe number for THIS specific team
+            int nextPasseForTeam = context.getMatchAnalysisService()
+                .getNextPasseNumberForTeam(matchId, context.getTeamId());
+            
+            LOGGER.debug("Creating passes for team {} at team-specific passe {} (wettkampf={}, match={})",
+                        context.getTeamId(), nextPasseForTeam, wettkampfId, matchId);
+            
+            // Check if passes already exist for this team at this specific passe
+            if (passesAlreadyExist(context, matchId, nextPasseForTeam)) {
+                LOGGER.warn("Passes already exist for team {} at passe {} - this indicates a logic error",
+                           context.getTeamId(), nextPasseForTeam);
+                updateExistingPasses(context, eingabe, matchId, nextPasseForTeam);
+                return;
+            }
+            
+            // Create new passes for this team's next passe
+            for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
+                PasseDO passe = new PasseDO(
+                    null,                           // id (generated)
+                    context.getTeamId(),           // passeMannschaftId
+                    wettkampfId,                   // passeWettkampfId
+                    currentMatchNr,                // passeMatchNr
+                    matchId,                       // passeMatchId
+                    (long) nextPasseForTeam,       // passeLfdnr - TEAM-SPECIFIC!
+                    satz.getSchuetzenId(),         // passeDsbMitgliedId
+                    (ARROWS_PER_SHOOTER >= 1 ? satz.getSchuss1() : null),  // pfeil1
+                    (ARROWS_PER_SHOOTER >= 2 ? satz.getSchuss2() : null),  // pfeil2
+                    (ARROWS_PER_SHOOTER >= 3 ? satz.getSchuss3() : null),  // pfeil3
+                    null, null, null               // pfeil4-6 not used in tablet scoring
+                );
+                
+                context.getPasseComponent().create(passe, 0L);
+                LOGGER.debug("Created pass for team {} shooter {} at passe {}", 
+                           context.getTeamId(), satz.getSchuetzenId(), nextPasseForTeam);
+            }
+            
+            LOGGER.info("Successfully created {} passes for team {} at team-specific passe {}",
+                       eingabe.getSatzeingabe().size(), context.getTeamId(), nextPasseForTeam);
+            
+        } catch (Exception e) {
+            LOGGER.error("Error creating passes with team-specific calculation for team {}: {}", 
+                        context.getTeamId(), e.getMessage());
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                "Failed to create passes: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Checks if passes already exist for this team and passe number.
+     */
+    private boolean passesAlreadyExist(StateContext context, long matchId, int passeNr) {
+        try {
+            List<PasseDO> existingPasses = context.getPasseComponent()
+                .findByMannschaftMatchId(context.getTeamId(), matchId).stream()
+                .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr().intValue() == passeNr)
+                .toList();
+            
+            return !existingPasses.isEmpty();
+        } catch (Exception e) {
+            LOGGER.warn("Error checking existing passes: {}", e.getMessage());
+            return false; // Assume they don't exist if we can't check
+        }
+    }
+    
+    /**
+     * Updates existing passes instead of creating new ones.
+     */
+    private void updateExistingPasses(StateContext context, SatzEingabeDO eingabe, 
+                                     long matchId, int passeNr) {
+        try {
+            Map<Long, PasseDO> existingPassesMap = context.getPasseComponent()
+                .findByMannschaftMatchId(context.getTeamId(), matchId).stream()
+                .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr().intValue() == passeNr)
+                .collect(Collectors.toMap(PasseDO::getPasseDsbMitgliedId, p -> p));
+            
+            for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
+                PasseDO existingPasse = existingPassesMap.get(satz.getSchuetzenId());
+                if (existingPasse != null) {
+                    // Update arrow scores
+                    if (ARROWS_PER_SHOOTER >= 1) existingPasse.setPfeil1(satz.getSchuss1());
+                    if (ARROWS_PER_SHOOTER >= 2) existingPasse.setPfeil2(satz.getSchuss2());
+                    if (ARROWS_PER_SHOOTER >= 3) existingPasse.setPfeil3(satz.getSchuss3());
+                    
+                    context.getPasseComponent().update(existingPasse, 0L);
+                    LOGGER.debug("Updated existing pass for shooter {} in passe {}", 
+                               satz.getSchuetzenId(), passeNr);
+                }
+            }
+            
+        } catch (Exception e) {
+            LOGGER.error("Error updating existing passes: {}", e.getMessage());
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                "Failed to update existing passes: " + e.getMessage());
+        }
+    }
+    
+    /**
      * Updates match scores in database for consistency with LigamatchBE.
+     * CRITICAL FIX: Uses team-specific passe calculation for score updates.
      */
     private void updateMatchScoresAfterSetCompletion(StateContext context) {
         try {
-            int completedPasseNr = context.getCurrentPasseNumber();
+            // CRITICAL FIX: Get the actual passe number this team just completed
             long matchId = context.getCurrentMatchId();
             long teamId = context.getTeamId();
             long opponentTeamId = context.getOpponentTeamId();
             
-            LOGGER.debug("Updating match scores for team {} after completing passe {}", teamId, completedPasseNr);
+            // Get the passe number this team just completed (highest complete passe)
+            int teamCompletedPasse = context.getMatchAnalysisService()
+                .getNextPasseNumberForTeam(matchId, teamId) - 1;
+            
+            LOGGER.debug("Updating match scores for team {} after completing passe {}", teamId, teamCompletedPasse);
+            
+            // Only process if this team actually completed a passe
+            if (teamCompletedPasse <= 0) {
+                LOGGER.debug("Team {} has not completed any passes yet - skipping score update", teamId);
+                return;
+            }
             
             // Get passes for completed set from both teams
             List<PasseDO> teamPasses = context.getAllMatchPasses().stream()
-                .filter(p -> p.getPasseLfdnr() == completedPasseNr)
+                .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
                 .toList();
                 
             List<PasseDO> oppPasses = context.getPasseComponent()
                 .findByMannschaftMatchId(opponentTeamId, matchId).stream()
-                .filter(p -> p.getPasseLfdnr() == completedPasseNr)
+                .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
                 .toList();
             
             // Only update if both teams have completed the set (3 shooters each)
@@ -271,7 +367,7 @@ public class Satzeingabe extends State {
                 updateTeamMatchScores(context, matchId, opponentTeamId, oppSatzpunkte);
                 
                 LOGGER.info("Updated match scores: Team {} (+{} Satzpunkte), Opponent {} (+{} Satzpunkte) for set {}",
-                           teamId, teamSatzpunkte, opponentTeamId, oppSatzpunkte, completedPasseNr);
+                           teamId, teamSatzpunkte, opponentTeamId, oppSatzpunkte, teamCompletedPasse);
             }
             
         } catch (Exception e) {

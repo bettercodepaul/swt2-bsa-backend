@@ -27,6 +27,7 @@ public abstract class State {
     public static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
     public static final String STATUS_SATZEINGABE = "SATZEINGABE";
     public static final String STATUS_WARTE = "WARTE";
+    public static final String STATUS_MATCH_ENDE = "MATCH_ENDE";
     public static final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
     
     /**
@@ -43,6 +44,7 @@ public abstract class State {
             case STATUS_SCHUETZENMELDUNG -> new Schuetzenmeldung();
             case STATUS_SATZEINGABE -> new Satzeingabe();
             case STATUS_WARTE -> new Warte();
+            case STATUS_MATCH_ENDE -> new MatchEnde();
             case STATUS_WETTKAMPF_ENDE -> new WettkampfEnde();
             default -> {
                 LOGGER.warn("Unknown status '{}' provided to state factory, defaulting to Schuetzenmeldung", status);

@@ -82,6 +82,7 @@ public class SessionRuntime {
     public static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
     public static final String STATUS_SATZEINGABE = "SATZEINGABE";
     public static final String STATUS_WARTE = "WARTE";
+    public static final String STATUS_MATCH_ENDE = "MATCH_ENDE";
     public static final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
     
     private final TabletSchusszettelEntity session;
@@ -163,6 +164,11 @@ public class SessionRuntime {
                     LOGGER.debug("WARTE state for team {} requires opponent evaluation", session.getTeamId());
                     break;
                     
+                case STATUS_MATCH_ENDE:
+                    // This state requires evaluation for next match progression, not simple nudging
+                    LOGGER.debug("MATCH_ENDE state for team {} requires evaluation for next match progression", session.getTeamId());
+                    break;
+                    
                 case STATUS_WETTKAMPF_ENDE:
                     // Final state - no transitions
                     LOGGER.debug("Team {} already in final state WETTKAMPF_ENDE", session.getTeamId());
@@ -182,14 +188,15 @@ public class SessionRuntime {
     }
     
     /**
-     * WARTE state evaluation with opponent synchronization via state pattern delegation.
+     * State evaluation with opponent synchronization via state pattern delegation.
+     * Handles both WARTE and MATCH_ENDE states that require evaluation.
      * 
      * @param opponentSession The opponent's session (may be null)
      * @return true if state was changed
      */
     public boolean evaluateWithOpponentWAITstate(TabletSchusszettelEntity opponentSession) {
-        // Only process if we're in WARTE
-        if (!STATUS_WARTE.equals(session.getStatus())) {
+        // Only process if we're in a state that requires evaluation
+        if (!STATUS_WARTE.equals(session.getStatus()) && !STATUS_MATCH_ENDE.equals(session.getStatus())) {
             return false;
         }
         
@@ -528,23 +535,24 @@ public class SessionRuntime {
     
     /**
      * Session self-correction based on external database changes.
+     * CRITICAL FIX: Removed problematic passe number correction that forced teams backwards.
+     * Teams should progress independently based on their own passe completion.
      */
     public boolean checkAgainstDatabase() {
         try {
-            // Use MatchAnalysisService to get current state from big database
-            int actualCurrentPasse = matchAnalysisService.getCurrentPasseNumber(
-                session.getCurrentMatchId(), session.getTeamId(), session.getGegnerTeamId());
+            // REMOVED: Problematic session self-correction that forced teams backwards
+            // Old logic: 
+            // - Used global passe calculation which returned first incomplete passe globally
+            // - Caused teams to be forced back to previous passes
+            // - Created "0 available for scoring" scenarios
             
-            // Update passe number if it has changed externally
-            if (session.getCurrentPasseNumber() != actualCurrentPasse) {
-                LOGGER.info("Session self-correction: Team {} passe {} → {} based on database state", 
-                           session.getTeamId(), session.getCurrentPasseNumber(), actualCurrentPasse);
-                session.setCurrentPasseNumber(actualCurrentPasse);
-                sessionDAO.updateStatus(session, 0L);
-                return true;
-            }
+            // New approach: Teams maintain their own progression
+            // - Each team progresses based on their own completed passes
+            // - No interference from opponent team state
+            // - Eliminates race conditions in passe progression
             
-            return false;
+            LOGGER.debug("Session check skipped - teams now progress independently for team {}", session.getTeamId());
+            return false; // No changes made - teams progress independently
             
         } catch (Exception e) {
             LOGGER.warn("Error during session self-check for team {}: {}", session.getTeamId(), e.getMessage());
