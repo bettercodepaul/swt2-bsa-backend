@@ -147,12 +147,14 @@ public class SessionRuntime {
                 case STATUS_SCHUETZENMELDUNG:
                     // After shooter registration → SATZEINGABE
                     session.setStatus(STATUS_SATZEINGABE);
+                    persistSession(); // DATABASE PERSISTENCE CRITICAL!
                     LOGGER.debug("Team {} advanced: SCHUETZENMELDUNG → SATZEINGABE", session.getTeamId());
                     break;
                     
                 case STATUS_SATZEINGABE:
                     // After score submission → WARTE
                     session.setStatus(STATUS_WARTE);
+                    persistSession(); // DATABASE PERSISTENCE CRITICAL!
                     LOGGER.debug("Team {} advanced: SATZEINGABE → WARTE", session.getTeamId());
                     break;
                     
@@ -238,6 +240,7 @@ public class SessionRuntime {
                 // No next match available - tournament complete for this team
                 session.setCurrentPasseNumber(5);
                 session.setStatus(STATUS_WETTKAMPF_ENDE);
+                persistSession(); // DATABASE PERSISTENCE CRITICAL!
                 LOGGER.info("Team {} completed all matches - setting to WETTKAMPF_ENDE using tournament progression", teamId);
             }
             
@@ -246,7 +249,7 @@ public class SessionRuntime {
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to advance to next match");
         }
     }
-    
+
     /**
      * Static factory method to create SessionRuntime from database using token
      */
@@ -284,7 +287,7 @@ public class SessionRuntime {
                                            VeranstaltungComponent veranstaltungComponent) {
         return new SessionRuntime(session, sessionDAO, matchComponent, passeComponent, matchAnalysisService, mannschaftsmitgliedComponent, dsbMitgliedComponent, wettkampfComponent, veranstaltungComponent);
     }
-    
+
     /**
      * Load opponent session for this session
      */
@@ -400,7 +403,7 @@ public class SessionRuntime {
                (passe.getPfeil2() != null && passe.getPfeil2() > 0) ||
                (passe.getPfeil3() != null && passe.getPfeil3() > 0);
     }
-    
+
     /**
      * Update session in database with enhanced error handling
      */
@@ -517,6 +520,13 @@ public class SessionRuntime {
     }
     
     /**
+     * Get session DAO for state pattern access
+     */
+    public TabletSchusszettelDAO getSessionDAO() {
+        return sessionDAO;
+    }
+    
+    /**
      * Session self-correction based on external database changes.
      */
     public boolean checkAgainstDatabase() {
@@ -541,8 +551,7 @@ public class SessionRuntime {
             return false;
         }
     }
-    
-    
+
     /**
      * Check if this session's match is complete using MatchAnalysisService.
      */
@@ -559,14 +568,16 @@ public class SessionRuntime {
     }
     
     /**
-     * Check if this session has more matches available using MatchAnalysisService.
+     * Check if this session has more matches available using Setzliste-aware tournament progression.
      */
     public boolean hasMoreMatches() {
         try {
-            LigamatchBE currentMatch = matchComponent.getLigamatchById(session.getCurrentMatchId());
-            return currentMatch != null && currentMatch.getNaechsteMatchId() != null;
+            // CRITICAL FIX: Use proper Setzliste-aware tournament progression
+            // instead of flawed naechsteMatchId calculation
+            LigamatchBE nextMatch = matchAnalysisService.findCorrectNextMatch(session.getCurrentMatchId(), session.getTeamId());
+            return nextMatch != null;
         } catch (Exception e) {
-            LOGGER.error("Error checking for more matches for session {}: {}", session.getTeamId(), e.getMessage());
+            LOGGER.error("Error checking for more matches using Setzliste-aware logic for session {}: {}", session.getTeamId(), e.getMessage());
             return false;
         }
     }

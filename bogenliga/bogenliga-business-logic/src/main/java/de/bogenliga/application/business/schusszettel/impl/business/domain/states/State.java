@@ -1,8 +1,11 @@
 package de.bogenliga.application.business.schusszettel.impl.business.domain.states;
 
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Abstract base class for schusszettel state objects implementing state pattern.
@@ -36,19 +39,16 @@ public abstract class State {
             return new Schuetzenmeldung();
         }
         
-        switch (status) {
-            case STATUS_SCHUETZENMELDUNG:
-                return new Schuetzenmeldung();
-            case STATUS_SATZEINGABE:
-                return new Satzeingabe();
-            case STATUS_WARTE:
-                return new Warte();
-            case STATUS_WETTKAMPF_ENDE:
-                return new WettkampfEnde();
-            default:
+        return switch (status) {
+            case STATUS_SCHUETZENMELDUNG -> new Schuetzenmeldung();
+            case STATUS_SATZEINGABE -> new Satzeingabe();
+            case STATUS_WARTE -> new Warte();
+            case STATUS_WETTKAMPF_ENDE -> new WettkampfEnde();
+            default -> {
                 LOGGER.warn("Unknown status '{}' provided to state factory, defaulting to Schuetzenmeldung", status);
-                return new Schuetzenmeldung();
-        }
+                yield new Schuetzenmeldung();
+            }
+        };
     }
     
     /**
@@ -85,11 +85,11 @@ public abstract class State {
     }
     
     /**
-     * Synchronize this state with current database state.
-     * Default implementation returns false (no changes made).
+     * Validate state-specific business rules.
+     * Default implementation returns true.
      */
-    public boolean synchronizeWithDatabase(StateContext context) {
-        return false;
+    public boolean isValidState(StateContext context) {
+        return true;
     }
     
     /**
@@ -126,28 +126,20 @@ public abstract class State {
     }
     
     /**
-     * Get the string representation of this state for database persistence.
-     * Default implementation uses class name.
+     * Calculates total arrow points for a set of passes.
+     * This is a shared utility method used by multiple states.
+     * 
+     * @param passes List of PasseDO objects for a single set
+     * @return Total arrow points for the set
      */
-    public String getStateName() {
-        return getClass().getSimpleName().toUpperCase();
-    }
-    
-    /**
-     * Validate state-specific business rules.
-     * Default implementation returns true.
-     */
-    public boolean isValidState(StateContext context) {
-        return true;
-    }
-    
-    /**
-     * Handle state-specific errors.
-     * Default implementation logs error and returns false.
-     */
-    public boolean handleError(StateContext context, Exception error, String operation) {
-        LOGGER.error("Error in state {} during operation {}: {}", 
-                    getStateName(), operation, error.getMessage());
-        return false;
+    protected int calculateSetPoints(List<PasseDO> passes) {
+        return passes.stream()
+            .mapToInt(p -> {
+                int a = p.getPfeil1() != null ? p.getPfeil1() : 0;
+                int b = p.getPfeil2() != null ? p.getPfeil2() : 0;
+                int c = p.getPfeil3() != null ? p.getPfeil3() : 0;
+                return a + b + c;
+            })
+            .sum();
     }
 }

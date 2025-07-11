@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.schusszettel.api.types.*;
 import de.bogenliga.application.business.schusszettel.api.types.inside.*;
@@ -123,7 +124,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         }
 
         // Build response using state objects
-        TabletSchusszettelDO result = buildBaseResponse(wettkampfId, teamId, runtime);
+        TabletSchusszettelDO result = buildBaseResponse(teamId, runtime);
         enrichResponseByState(runtime, result);
 
         return result;
@@ -134,14 +135,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     @Override
     public void submitSchuetzen(long wettkampfId, long teamId, String token, SchuetzenMeldungDO input) {
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Token argument is empty");
-        }
-
-        SessionRuntime runtime = SessionRuntime.loadFromDatabase(
-                wettkampfId, teamId, token,
-                sessionDAO, matchComponent, passeComponent, matchAnalysisService, mmComponent, mitgliedComponent, wettkampfComponent, veranstaltungComponent);
-
+        SessionRuntime runtime = validateTokenAndLoadSession(wettkampfId, teamId, token);
         if (runtime == null) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Invalid or expired token");
         }
@@ -180,14 +174,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     @Override
     public void submitSatz(long wettkampfId, long teamId, String token, SatzEingabeDO eingabe) {
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Token argument is empty");
-        }
-
-        SessionRuntime runtime = SessionRuntime.loadFromDatabase(
-                wettkampfId, teamId, token,
-                sessionDAO, matchComponent, passeComponent, matchAnalysisService, mmComponent, mitgliedComponent, wettkampfComponent, veranstaltungComponent);
-
+        SessionRuntime runtime = validateTokenAndLoadSession(wettkampfId, teamId, token);
         if (runtime == null) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Invalid or expired token");
         }
@@ -204,6 +191,9 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             if (!currentState.handlePostOperation(context, "submitSatz", eingabe)) {
                 throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to process score submission");
             }
+            
+            // CRITICAL: Update match scores after set completion
+            updateMatchScoresAfterSetCompletion(runtime.getCurrentMatchId(), teamId, runtime.getOpponentTeamId());
             
             // Handle opponent synchronization
             handleOpponentSynchronization(wettkampfId, teamId, runtime);
@@ -222,6 +212,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
     /**
      * Validates token and loads session runtime.
+     * 
+     * @param wettkampfId Competition ID
+     * @param teamId Team ID
+     * @param token Authentication token
+     * @return SessionRuntime instance or null if invalid
      */
     private SessionRuntime validateTokenAndLoadSession(long wettkampfId, long teamId, String token) {
         if (token == null || token.isEmpty()) {
@@ -232,8 +227,12 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
     /**
      * Builds base response with core match data.
+     * 
+     * @param teamId Team ID
+     * @param runtime Session runtime instance
+     * @return Base response with core match data
      */
-    private TabletSchusszettelDO buildBaseResponse(long wettkampfId, long teamId, SessionRuntime runtime) {
+    private TabletSchusszettelDO buildBaseResponse(long teamId, SessionRuntime runtime) {
         TabletSchusszettelDO.TabletSchusszettelStatus statusEnum = convertSessionStatus(runtime.getCurrentState());
         
         TabletSchusszettelDO result = new TabletSchusszettelDO();
@@ -279,6 +278,128 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             result.setSchuetzeStammDaten(Collections.emptyList());
             result.setVerfuegbareSchuetzen(Collections.emptyList());
         }
+    }
+
+    /**
+     * Updates match scores after set completion.
+     * Without this, PasseDO records are updated but match.satzpunkte stays stale,
+     * causing LigamatchBE to show incorrect scores and state machine to use wrong completion data.
+     * 
+     * @param matchId Current match ID
+     * @param teamId Team that just completed the set
+     * @param opponentTeamId Opponent team ID
+     */
+    private void updateMatchScoresAfterSetCompletion(long matchId, long teamId, long opponentTeamId) {
+        try {
+            LOGGER.debug("Updating match scores after set completion for match {} team {}", matchId, teamId);
+            
+            // 1. Calculate set winner using existing business logic
+            // Get all passe records for current match to determine set results
+            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+            List<PasseDO> opponentPasses = passeComponent.findByMannschaftMatchId(opponentTeamId, matchId);
+            
+            // Calculate satzpunkte for each completed set
+            int teamSatzpunkte = 0;
+            int opponentSatzpunkte = 0;
+            
+            // Group passes by passe number (set number) - using proper DO methods
+            Map<Integer, List<PasseDO>> teamPassesBySet = teamPasses.stream()
+                .collect(Collectors.groupingBy(p -> p.getPasseLfdnr().intValue()));
+            Map<Integer, List<PasseDO>> opponentPassesBySet = opponentPasses.stream()
+                .collect(Collectors.groupingBy(p -> p.getPasseLfdnr().intValue()));
+            
+            // Calculate score for each completed set (max 5 sets)
+            for (int setNumber = 1; setNumber <= 5; setNumber++) {
+                List<PasseDO> teamSetPasses = teamPassesBySet.get(setNumber);
+                List<PasseDO> opponentSetPasses = opponentPassesBySet.get(setNumber);
+                
+                if (teamSetPasses != null && opponentSetPasses != null && 
+                    teamSetPasses.size() >= 3 && opponentSetPasses.size() >= 3) {
+                    
+                    // Calculate total score for this set
+                    int teamSetScore = calculateSetScore(teamSetPasses);
+                    int opponentSetScore = calculateSetScore(opponentSetPasses);
+                    
+                    // Award satzpunkte according to archery rules
+                    if (teamSetScore > opponentSetScore) {
+                        teamSatzpunkte += 2; // Winner gets 2 points
+                    } else if (opponentSetScore > teamSetScore) {
+                        opponentSatzpunkte += 2; // Winner gets 2 points
+                    } else {
+                        // Tie - each team gets 1 point
+                        teamSatzpunkte += 1;
+                        opponentSatzpunkte += 1;
+                    }
+                }
+            }
+            
+            // 2. Update match.satzpunkte via MatchComponent.update()
+            // Get current match data
+            MatchDO teamMatch = matchComponent.findById(matchId);
+            if (teamMatch != null) {
+                // Update satzpunkte using proper DO methods
+                teamMatch.setSatzpunkte((long) teamSatzpunkte);
+                
+                // 3. Set Matchpunkte when team reaches 6+ Satzpunkte (match win condition)
+                if (teamSatzpunkte >= 6) {
+                    teamMatch.setMatchpunkte(2L); // Winner gets 2 match points
+                    LOGGER.info("Team {} won match {} with {} satzpunkte", teamId, matchId, teamSatzpunkte);
+                } else if (opponentSatzpunkte >= 6) {
+                    teamMatch.setMatchpunkte(0L); // Loser gets 0 match points
+                    LOGGER.info("Team {} lost match {} with {} satzpunkte (opponent: {})", 
+                               teamId, matchId, teamSatzpunkte, opponentSatzpunkte);
+                }
+                
+                // Update the match in database
+                matchComponent.update(teamMatch, -1L);
+                
+                // Also update opponent's match record
+                if (opponentTeamId > 0) {
+                    // Find opponent's match record using proper DO methods
+                    List<MatchDO> opponentMatches = matchComponent.findByWettkampfId(teamMatch.getWettkampfId()).stream()
+                        .filter(m -> m.getMannschaftId().equals(opponentTeamId) && 
+                                    m.getNr().equals(teamMatch.getNr()))
+                        .toList();
+                    
+                    if (!opponentMatches.isEmpty()) {
+                        MatchDO opponentMatch = opponentMatches.get(0);
+                        opponentMatch.setSatzpunkte((long) opponentSatzpunkte);
+                        
+                        if (opponentSatzpunkte >= 6) {
+                            opponentMatch.setMatchpunkte(2L); // Winner gets 2 match points
+                        } else if (teamSatzpunkte >= 6) {
+                            opponentMatch.setMatchpunkte(0L); // Loser gets 0 match points
+                        }
+                        
+                        matchComponent.update(opponentMatch, -1L);
+                    }
+                }
+            }
+            
+            // 4. LigamatchBE view will now reflect correct scores
+            LOGGER.info("Match scores updated: Team {} = {} satzpunkte, Opponent {} = {} satzpunkte", 
+                       teamId, teamSatzpunkte, opponentTeamId, opponentSatzpunkte);
+            
+        } catch (Exception e) {
+            LOGGER.error("Error updating match scores after set completion for match {}: {}", matchId, e.getMessage());
+            // Don't throw exception here - score update failure shouldn't break the workflow
+        }
+    }
+    
+    /**
+     * Calculate total score for a set (3 shooters, 2-3 arrows each).
+     * Uses proper PasseDO methods for accessing arrow scores.
+     */
+    private int calculateSetScore(List<PasseDO> setPasses) {
+        return setPasses.stream()
+            .mapToInt(p -> {
+                int score = 0;
+                if (p.getPfeil1() != null) score += p.getPfeil1();
+                if (p.getPfeil2() != null) score += p.getPfeil2();
+                if (p.getPfeil3() != null) score += p.getPfeil3();
+                return score;
+            })
+            .sum();
     }
 
     /**

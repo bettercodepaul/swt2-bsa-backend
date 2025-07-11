@@ -28,11 +28,6 @@ public class WettkampfEnde extends State {
     private static final int MAX_SETS = 5;
     
     @Override
-    public String getStateName() {
-        return STATUS_WETTKAMPF_ENDE;
-    }
-    
-    @Override
     public boolean isValidState(StateContext context) {
         // WettkampfEnde is always valid - final state
         return true;
@@ -112,7 +107,7 @@ public class WettkampfEnde extends State {
             // Get all matches for this team in the wettkampf
             List<MatchDO> teamMatches = context.getMatchComponent().findByWettkampfId(wettkampfId).stream()
                 .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
-                .collect(Collectors.toList());
+                .toList();
             
             LOGGER.debug("Processing {} matches for team {} in wettkampf {}", 
                         teamMatches.size(), teamId, wettkampfId);
@@ -214,19 +209,6 @@ public class WettkampfEnde extends State {
         return results;
     }
     
-    /**
-     * Calculates total arrow points for a set using established pattern.
-     */
-    private int calculateSetPoints(List<PasseDO> passes) {
-        return passes.stream()
-            .mapToInt(p -> {
-                int a = p.getPfeil1() != null ? p.getPfeil1() : 0;
-                int b = p.getPfeil2() != null ? p.getPfeil2() : 0;
-                int c = p.getPfeil3() != null ? p.getPfeil3() : 0;
-                return a + b + c;
-            })
-            .sum();
-    }
     
     /**
      * Builds team match info from set results using established pattern.
@@ -261,8 +243,8 @@ public class WettkampfEnde extends State {
         
         // Create team match info entries
         List<TeamMatchInfoDO> matchInfo = new ArrayList<>();
-        matchInfo.add(new TeamMatchInfoDO(teamId, getTeamName(teamId, context), teamMatchPoints));
-        matchInfo.add(new TeamMatchInfoDO(oppTeamId, getTeamName(oppTeamId, context), oppMatchPoints));
+        matchInfo.add(new TeamMatchInfoDO(teamId, getTeamName(teamId), teamMatchPoints));
+        matchInfo.add(new TeamMatchInfoDO(oppTeamId, getTeamName(oppTeamId), oppMatchPoints));
         
         return matchInfo;
     }
@@ -270,10 +252,10 @@ public class WettkampfEnde extends State {
     /**
      * Gets team name using established pattern.
      */
-    private String getTeamName(long teamId, StateContext context) {
+    private String getTeamName(long teamId) {
         try {
-            // Simple fallback approach using MatchAnalysisService
-            // In a real implementation, you'd access these components directly
+            // Simple fallback approach - return standardized team name
+            // In a real implementation, you'd access team components directly
             return "Team " + teamId; // Simplified for now
             
         } catch (Exception e) {

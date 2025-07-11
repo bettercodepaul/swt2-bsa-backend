@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.schusszettel.impl.business.domain.states;
 
+import de.bogenliga.application.business.schusszettel.impl.business.domain.SessionRuntime;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -31,11 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Warte extends State {
     private static final Logger LOGGER = LoggerFactory.getLogger(Warte.class);
-    
-    @Override
-    public String getStateName() {
-        return STATUS_WARTE;
-    }
     
     @Override
     public boolean canNudgeAlong() {
@@ -160,9 +156,7 @@ public class Warte extends State {
     
     /**
      * Force advancement of opponent team when synchronized.
-     * 
-     * NOTE: This method is simplified to avoid creating StateContext for opponent.
-     * Complex opponent manipulation should be handled by SessionRuntime coordination.
+     * This creates a SessionRuntime for the opponent and advances them properly.
      */
     private boolean forceOpponentAdvancement(StateContext context, TabletSchusszettelEntity opponent, String reason) {
         // Check if opponent is actually in WARTE state
@@ -172,11 +166,55 @@ public class Warte extends State {
             return false;
         }
 
-        LOGGER.info("Opponent team {} advancement should be coordinated by SessionRuntime - reason: {}", opponent.getTeamId(), reason);
-        
-        // Return false to indicate that opponent advancement should be handled 
-        // by the calling SessionRuntime, not by state objects
-        return false;
+        try {
+            // Load fresh opponent session from database to ensure we have the latest state
+            TabletSchusszettelEntity freshOpponent = context.getSessionDAO()
+                .findByWettkampfUndTeam(opponent.getWettkampfId(), opponent.getTeamId())
+                .orElse(null);
+            
+            if (freshOpponent == null) {
+                LOGGER.error("Cannot load fresh opponent session for team {} - session not found", opponent.getTeamId());
+                return false;
+            }
+            
+            // Create SessionRuntime for opponent to handle their advancement
+            SessionRuntime opponentRuntime = new SessionRuntime(
+                freshOpponent, 
+                context.getSessionDAO(), 
+                context.getMatchComponent(), 
+                context.getPasseComponent(), 
+                context.getMatchAnalysisService(),
+                context.getMannschaftsmitgliedComponent(),
+                context.getDsbMitgliedComponent(),
+                context.getWettkampfComponent(),
+                context.getVeranstaltungComponent()
+            );
+            
+            // Create StateContext for opponent
+            StateContext opponentContext = new StateContext(
+                freshOpponent, 
+                opponentRuntime, 
+                context.getMatchComponent(), 
+                context.getPasseComponent(), 
+                context.getMatchAnalysisService(),
+                context.getMannschaftsmitgliedComponent(),
+                context.getDsbMitgliedComponent(),
+                context.getWettkampfComponent(),
+                context.getVeranstaltungComponent()
+            );
+            
+            // Advance opponent using the same logic as current team
+            boolean opponentProgressed = attemptStateProgression(opponentContext, reason);
+            
+            LOGGER.info("Opponent team {} advancement result: {} - reason: {}", 
+                       freshOpponent.getTeamId(), opponentProgressed, reason);
+            
+            return opponentProgressed;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error advancing opponent team {}: {}", opponent.getTeamId(), e.getMessage());
+            return false;
+        }
     }
     
     /**

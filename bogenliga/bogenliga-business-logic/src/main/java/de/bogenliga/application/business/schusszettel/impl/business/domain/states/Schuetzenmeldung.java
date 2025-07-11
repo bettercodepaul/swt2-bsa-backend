@@ -32,12 +32,13 @@ public class Schuetzenmeldung extends State {
     private static final int SHOOTERS_PER_TEAM = 3;
     
     @Override
-    public String getStateName() {
-        return STATUS_SCHUETZENMELDUNG;
-    }
-    
-    @Override
     public boolean isValidState(StateContext context) {
+        // Validate basic session state first
+        StateContext.ValidationResult sessionValidation = context.validateSessionState();
+        if (!sessionValidation.isValid()) {
+            LOGGER.warn("Session state validation failed: {}", sessionValidation.getErrorMessage());
+            return false;
+        }
         // Schuetzenmeldung is always a valid state to be in
         return true;
     }
@@ -120,7 +121,7 @@ public class Schuetzenmeldung extends State {
         List<Long> shooterIds = (List<Long>) data;
         
         try {
-            validateSchützenmeldungTeamRoster(context, shooterIds);
+            validateSchuetzenmeldungTeamRoster(context, shooterIds);
             return true;
         } catch (BusinessException e) {
             LOGGER.warn("Shooter registration validation failed: {}", e.getMessage());
@@ -157,7 +158,7 @@ public class Schuetzenmeldung extends State {
     /**
      * Validates team roster for shooter registration.
      */
-    private void validateSchützenmeldungTeamRoster(StateContext context, List<Long> registeredShooterIds) {
+    private void validateSchuetzenmeldungTeamRoster(StateContext context, List<Long> registeredShooterIds) {
         // Get all team members with deployment status >= 1
         List<MannschaftsmitgliedDO> teamMembers = context.getDeployedTeamMembers();
         
@@ -183,6 +184,11 @@ public class Schuetzenmeldung extends State {
             if (!validMemberIds.contains(shooterId)) {
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                     "Shooter " + shooterId + " is not a valid deployed member of team " + context.getTeamId());
+            }
+            // Use StateContext helper for deployment validation
+            if (!context.isShooterDeployed(shooterId)) {
+                throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Shooter " + shooterId + " is not deployed for team " + context.getTeamId());
             }
         }
     }

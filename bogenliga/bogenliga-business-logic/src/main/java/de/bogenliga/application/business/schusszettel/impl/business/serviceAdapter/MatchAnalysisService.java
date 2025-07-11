@@ -3,7 +3,6 @@ package de.bogenliga.application.business.schusszettel.impl.business.serviceAdap
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -60,14 +59,11 @@ public class MatchAnalysisService {
     // WA Official archery rules constants
     public static final int MATCH_POINTS_TO_WIN = 6;
     public static final int MAX_SETS_PER_MATCH = 5;
-    
+
     // Performance monitoring constants
-    private static final long SLOW_QUERY_THRESHOLD_MS = 100L;
-    private static final long WARNING_THRESHOLD_MS = 50L;
-    
+
     // Query caching considerations (not implemented, but tracked)
-    private static final int CACHE_SIZE_THRESHOLD = 100;
-    private static final long CACHE_TTL_MS = 30000L; // 30 seconds
+    // 30 seconds
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -76,18 +72,6 @@ public class MatchAnalysisService {
     public MatchAnalysisService(MatchComponent matchComponent, PasseComponent passeComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
-    }
-    
-    /**
-     * Performance monitoring for match analysis operations.
-     */
-    private void logPerformanceMetrics(String operation, long startTime, long matchId, Object result) {
-        long duration = System.currentTimeMillis() - startTime;
-        if (duration > 50) { // Log operations taking more than 50ms
-            LOGGER.warn("Performance warning: {} for matchId {} took {}ms", operation, matchId, duration);
-        } else {
-            LOGGER.debug("Performance: {} for matchId {} took {}ms", operation, matchId, duration);
-        }
     }
     
     /**
@@ -241,7 +225,7 @@ public class MatchAnalysisService {
     /**
      * Calculate current passe using existing infrastructure.
      * Delegates to established PasseComponent methods and existing patterns.
-     * 
+     * <p>
      * Find first incomplete passe instead of highest passe number.
      * This prevents confusion from pre-created empty passes.
      */
@@ -394,15 +378,18 @@ public class MatchAnalysisService {
     }
     
     /**
-     * Find current incomplete match for a team by following naechsteMatchId chain.
-     * Uses LigamatchBE.naechsteMatchId as single source of truth for match progression.
+     * Find current incomplete match for a team using Setzliste-aware tournament progression.
+     * CRITICAL FIX: Replaced flawed naechsteMatchId logic with proper tournament bracket calculation.
      * Returns null if all matches are complete.
      */
     public LigamatchBE findCurrentIncompleteMatch(long wettkampfId, long teamId) {
         try {
-            // Get all matches for this team to find the starting point
+            LOGGER.debug("Finding current incomplete match for team {} using Setzliste-aware logic", teamId);
+            
+            // Get all matches for this team sorted by match number (tournament progression order)
             List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
                     .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
+                    .sorted(Comparator.comparing(LigamatchBE::getMatchNr))
                     .toList();
             
             if (teamMatches.isEmpty()) {
@@ -410,60 +397,37 @@ public class MatchAnalysisService {
                     "No matches found for team " + teamId + " in wettkampf " + wettkampfId);
             }
             
-            // Find the first match (match with no previous match pointing to it)
-            LigamatchBE firstMatch = findFirstMatchForTeam(teamMatches);
-            
-            // Follow the naechsteMatchId chain with cycle detection
-            LigamatchBE currentMatch = firstMatch;
-            Set<Long> visitedMatches = new HashSet<>();
-            
-            while (currentMatch != null) {
-                // Cycle detection - prevent infinite loops
-                if (visitedMatches.contains(currentMatch.getMatchId())) {
-                    LOGGER.error("Detected cycle in naechsteMatchId chain for team {} at match {}", 
-                               teamId, currentMatch.getMatchId());
-                    throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
-                        "Cycle detected in match progression chain");
-                }
-                visitedMatches.add(currentMatch.getMatchId());
-                
-                // Check if this match is complete
+            // Check each match in chronological order (by match number)
+            for (LigamatchBE match : teamMatches) {
                 try {
-                    long opponentId = findOpponentTeamId(currentMatch.getMatchId(), teamId);
-                    boolean isComplete = isMatchComplete(currentMatch.getMatchId(), teamId, opponentId);
+                    // Check if this match is complete
+                    long opponentId = findOpponentTeamId(match.getMatchId(), teamId);
+                    boolean isComplete = isMatchComplete(match.getMatchId(), teamId, opponentId);
                     
                     if (!isComplete) {
                         // Found incomplete match - this is where the team should be
-                        LOGGER.debug("Found incomplete match {} for team {} (following naechsteMatchId chain)", 
-                                   currentMatch.getMatchId(), teamId);
-                        return currentMatch;
+                        LOGGER.debug("Found incomplete match {} (nr={}) for team {} using Setzliste-aware logic", 
+                                   match.getMatchId(), match.getMatchNr(), teamId);
+                        return match;
                     }
                     
-                    // This match is complete, follow the chain to the next match
-                    LOGGER.debug("Match {} complete for team {}, following naechsteMatchId to next match", 
-                               currentMatch.getMatchId(), teamId);
-                    
-                    if (currentMatch.getNaechsteMatchId() != null) {
-                        currentMatch = matchComponent.getLigamatchById(currentMatch.getNaechsteMatchId());
-                    } else {
-                        // No more matches in the chain
-                        currentMatch = null;
-                    }
+                    LOGGER.debug("Match {} (nr={}) complete for team {}, checking next match in tournament order", 
+                               match.getMatchId(), match.getMatchNr(), teamId);
                     
                 } catch (Exception e) {
                     LOGGER.warn("Error checking match {} completion for team {}: {}", 
-                               currentMatch.getMatchId(), teamId, e.getMessage());
+                               match.getMatchId(), teamId, e.getMessage());
                     
                     // For initialization, we should be more tolerant of missing opponents
                     // Return this match as incomplete if we can't determine completion
                     LOGGER.info("Returning match {} as incomplete for team {} due to completion check error", 
-                               currentMatch.getMatchId(), teamId);
-                    return currentMatch;
+                               match.getMatchId(), teamId);
+                    return match;
                 }
             }
             
-            // All matches in the chain are complete
-            LOGGER.info("All matches complete for team {} in wettkampf {} (followed naechsteMatchId chain)", 
+            // All matches are complete
+            LOGGER.info("All matches complete for team {} in wettkampf {} using Setzliste-aware logic", 
                        teamId, wettkampfId);
             return null;
             
@@ -474,28 +438,6 @@ public class MatchAnalysisService {
         }
     }
     
-    /**
-     * Find the first match for a team (match with no previous match pointing to it).
-     */
-    private LigamatchBE findFirstMatchForTeam(List<LigamatchBE> teamMatches) {
-        // Find match that is not referenced by any other match's naechsteMatchId
-        Set<Long> referencedMatches = teamMatches.stream()
-                .map(LigamatchBE::getNaechsteMatchId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-        
-        for (LigamatchBE match : teamMatches) {
-            if (!referencedMatches.contains(match.getMatchId())) {
-                LOGGER.debug("Found first match {} for team {}", match.getMatchId(), match.getMannschaftId());
-                return match;
-            }
-        }
-        
-        // Fallback: if no clear first match, use the one with lowest matchNr
-        return teamMatches.stream()
-                .min(Comparator.comparing(LigamatchBE::getMatchNr))
-                .orElse(teamMatches.get(0));
-    }
     
     /**
      * Find last match for a team (for completed tournaments).
@@ -504,7 +446,7 @@ public class MatchAnalysisService {
         try {
             List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
                     .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
-                    .sorted((m1, m2) -> Long.compare(m1.getMatchNr(), m2.getMatchNr()))
+                    .sorted(Comparator.comparingLong(LigamatchBE::getMatchNr))
                     .toList();
             
             if (teamMatches.isEmpty()) {
@@ -640,15 +582,14 @@ public class MatchAnalysisService {
                 .collect(Collectors.toSet());
         
         int teamCount = uniqueTeams.size();
-        
-        switch (teamCount) {
-            case 8: return TournamentStructure.TOURNAMENT_8_TEAM;
-            case 6: return TournamentStructure.TOURNAMENT_6_TEAM;
-            case 4: return TournamentStructure.TOURNAMENT_4_TEAM;
-            default:
-                throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, 
+
+        return switch (teamCount) {
+            case 8 -> TournamentStructure.TOURNAMENT_8_TEAM;
+            case 6 -> TournamentStructure.TOURNAMENT_6_TEAM;
+            case 4 -> TournamentStructure.TOURNAMENT_4_TEAM;
+            default -> throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                     "Unsupported tournament size: " + teamCount + " teams");
-        }
+        };
     }
 
     /**

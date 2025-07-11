@@ -23,9 +23,7 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
@@ -259,28 +257,31 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
 
 
     /**
-     * Build wettkampf information from wettkampf and veranstaltung data
+     * Build wettkampf information using StateContext helper method.
      */
     private WettkampfInfoDO buildWettkampfInfo(long wettkampfId) {
         try {
-            WettkampfDO wettkampf = wettkampfComponent.findById(wettkampfId);
-            VeranstaltungDO veranstaltung = veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId());
-
-            return new WettkampfInfoDO(
-                    wettkampf.getId(),
-                    wettkampf.getWettkampfTag(),
-                    wettkampf.getWettkampfDatum(),
-                    wettkampf.getWettkampfBeginn(),
-                    wettkampf.getWettkampfOrtsname(),
-                    wettkampf.getWettkampfOrtsinfo(),
-                    wettkampf.getWettkampfStrasse(),
-                    wettkampf.getWettkampfPlz(),
-                    veranstaltung.getVeranstaltungID(),
-                    veranstaltung.getVeranstaltungName(),
-                    veranstaltung.getVeranstaltungSportJahr(),
-                    veranstaltung.getVeranstaltungLigaName(),
-                    veranstaltung.getVeranstaltungWettkampftypName()
-            );
+            // Create a minimal StateContext for the helper method
+            // This avoids code duplication while maintaining clean architecture
+            de.bogenliga.application.business.schusszettel.impl.business.domain.states.StateContext context = 
+                new de.bogenliga.application.business.schusszettel.impl.business.domain.states.StateContext(
+                    null, // session not needed for this helper
+                    null, // runtime not needed for this helper
+                    matchComponent,
+                    passeComponent,
+                    matchAnalysisService,
+                    mannschaftsmitgliedComponent,
+                    dsbMitgliedComponent,
+                    wettkampfComponent,
+                    veranstaltungComponent
+                ) {
+                    @Override
+                    public long getWettkampfId() {
+                        return wettkampfId;
+                    }
+                };
+            
+            return context.buildWettkampfInfo();
         } catch (Exception e) {
             LOGGER.warn("Could not build wettkampf info for wettkampfId {}: {}", wettkampfId, e.getMessage());
             return null;
@@ -366,7 +367,7 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
 
     /**
      * Smart cleanup and renumbering for pre-created empty passes.
-     * 
+     * <p>
      * Handles data migration from systems that pre-created empty passes:
      * 1. Detects matches with null pass entries
      * 2. Extracts passes with actual scores
