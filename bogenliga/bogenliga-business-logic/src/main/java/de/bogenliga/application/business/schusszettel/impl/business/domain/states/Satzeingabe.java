@@ -38,12 +38,13 @@ public class Satzeingabe extends State {
     private static final int MATCH_POINTS_TO_WIN = 6;
     
     @Override
-    public String getStateName() {
-        return STATUS_SATZEINGABE;
-    }
-    
-    @Override
     public boolean isValidState(StateContext context) {
+        // Validate basic session state first
+        StateContext.ValidationResult sessionValidation = context.validateSessionState();
+        if (!sessionValidation.isValid()) {
+            LOGGER.warn("Session state validation failed: {}", sessionValidation.getErrorMessage());
+            return false;
+        }
         // Satzeingabe requires match to not be complete
         return !context.isMatchComplete();
     }
@@ -127,12 +128,10 @@ public class Satzeingabe extends State {
             return false; // Only supports score submission
         }
         
-        if (!(data instanceof SatzEingabeDO)) {
+        if (!(data instanceof SatzEingabeDO eingabe)) {
             LOGGER.warn("Invalid data type for score submission: {}", data.getClass());
             return false;
         }
-        
-        SatzEingabeDO eingabe = (SatzEingabeDO) data;
         
         try {
             // Validate payload structure
@@ -149,7 +148,7 @@ public class Satzeingabe extends State {
             
             // Validate each shooter's data
             for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
-                validateArrowValues(satz);
+                validateArrowValues(context, satz);
                 validateShooterRegistration(context, satz.getSchuetzenId());
             }
             
@@ -163,11 +162,9 @@ public class Satzeingabe extends State {
     
     @Override
     public boolean handlePostOperation(StateContext context, String operation, Object data) {
-        if (!"submitSatz".equals(operation) || !(data instanceof SatzEingabeDO)) {
+        if (!"submitSatz".equals(operation) || !(data instanceof SatzEingabeDO eingabe)) {
             return false;
         }
-        
-        SatzEingabeDO eingabe = (SatzEingabeDO) data;
         
         try {
             // Create passes with scores
@@ -240,8 +237,7 @@ public class Satzeingabe extends State {
             LOGGER.debug("Updating match scores for team {} after completing passe {}", teamId, completedPasseNr);
             
             // Get passes for completed set from both teams
-            List<PasseDO> teamPasses = context.getPasseComponent()
-                .findByMannschaftMatchId(teamId, matchId).stream()
+            List<PasseDO> teamPasses = context.getAllMatchPasses().stream()
                 .filter(p -> p.getPasseLfdnr() == completedPasseNr)
                 .toList();
                 
@@ -256,8 +252,8 @@ public class Satzeingabe extends State {
                 int oppSetPoints = calculateSetPoints(oppPasses);
                 
                 // Calculate Satzpunkte using official archery rules
-                int teamSatzpunkte = 0;
-                int oppSatzpunkte = 0;
+                int teamSatzpunkte;
+                int oppSatzpunkte;
                 
                 if (teamSetPoints > oppSetPoints) {
                     teamSatzpunkte = 2; // Winner gets 2 Satzpunkte
@@ -284,19 +280,6 @@ public class Satzeingabe extends State {
         }
     }
     
-    /**
-     * Calculates total arrow points for a set.
-     */
-    private int calculateSetPoints(List<PasseDO> passes) {
-        return passes.stream()
-            .mapToInt(p -> {
-                int a = p.getPfeil1() != null ? p.getPfeil1() : 0;
-                int b = p.getPfeil2() != null ? p.getPfeil2() : 0;
-                int c = p.getPfeil3() != null ? p.getPfeil3() : 0;
-                return a + b + c;
-            })
-            .sum();
-    }
     
     /**
      * Updates a team's match record with additional Satzpunkte.
@@ -334,27 +317,28 @@ public class Satzeingabe extends State {
     /**
      * Validates arrow values are within valid range (0-10).
      */
-    private void validateArrowValues(SchuetzenSatzDO satz) {
+    private void validateArrowValues(StateContext context, SchuetzenSatzDO satz) {
         if (satz == null) {
             throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                 "Satzeingabe cannot be null");
         }
         
-        validateSingleArrowValue(satz.getSchuss1(), "Schuss 1");
-        validateSingleArrowValue(satz.getSchuss2(), "Schuss 2");
+        validateSingleArrowValue(context, satz.getSchuss1(), "Schuss 1");
+        validateSingleArrowValue(context, satz.getSchuss2(), "Schuss 2");
         
         if (ARROWS_PER_SHOOTER >= 3) {
-            validateSingleArrowValue(satz.getSchuss3(), "Schuss 3");
+            validateSingleArrowValue(context, satz.getSchuss3(), "Schuss 3");
         }
     }
     
     /**
-     * Validates a single arrow value.
+     * Validates a single arrow value using StateContext helper.
      */
-    private void validateSingleArrowValue(Integer arrowValue, String arrowName) {
-        if (arrowValue != null && (arrowValue < 0 || arrowValue > 10)) {
+    private void validateSingleArrowValue(StateContext context, Integer arrowValue, String arrowName) {
+        StateContext.ValidationResult result = context.validateArrowValue(arrowValue);
+        if (!result.isValid()) {
             throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
-                arrowName + " value " + arrowValue + " is invalid. Must be between 0 and 10.");
+                arrowName + ": " + result.getErrorMessage());
         }
     }
     

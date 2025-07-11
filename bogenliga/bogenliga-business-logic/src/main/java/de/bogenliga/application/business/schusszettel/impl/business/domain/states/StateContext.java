@@ -9,20 +9,12 @@ import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -113,9 +105,6 @@ public class StateContext {
         LOGGER.debug("StateContext delegated status update to SessionRuntime for team {}", session.getTeamId());
     }
     
-    // Performance threshold constants
-    private static final long WARNING_THRESHOLD_MS = 50L;
-    private static final long ERROR_THRESHOLD_MS = 200L;
     
     public void updatePasseNumber(int newPasseNumber) {
         // Delegate to SessionRuntime for database operations
@@ -145,7 +134,10 @@ public class StateContext {
         return passeComponent;
     }
     
-    // DAO access removed - now delegated to SessionRuntime
+    // Access to DAO through SessionRuntime
+    public de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO getSessionDAO() {
+        return sessionRuntime.getSessionDAO();
+    }
     
     // === CONVENIENCE METHODS ===
     
@@ -163,23 +155,23 @@ public class StateContext {
     
     public boolean hasMoreMatches() {
         try {
-            LigamatchBE currentMatch = matchComponent.getLigamatchById(session.getCurrentMatchId());
-            return currentMatch != null && currentMatch.getNaechsteMatchId() != null;
+            // CRITICAL FIX: Use proper Setzliste-aware tournament progression
+            // instead of flawed naechsteMatchId calculation
+            LigamatchBE nextMatch = matchAnalysisService.findCorrectNextMatch(session.getCurrentMatchId(), session.getTeamId());
+            return nextMatch != null;
         } catch (Exception e) {
-            LOGGER.error("Error checking for more matches in StateContext: {}", e.getMessage());
+            LOGGER.error("Error checking for more matches using Setzliste-aware logic: {}", e.getMessage());
             return false;
         }
     }
     
     public LigamatchBE getNextMatch() {
         try {
-            LigamatchBE currentMatch = matchComponent.getLigamatchById(session.getCurrentMatchId());
-            if (currentMatch != null && currentMatch.getNaechsteMatchId() != null) {
-                return matchComponent.getLigamatchById(currentMatch.getNaechsteMatchId());
-            }
-            return null;
+            // CRITICAL FIX: Use proper Setzliste-aware tournament progression
+            // instead of flawed naechsteMatchId calculation
+            return matchAnalysisService.findCorrectNextMatch(session.getCurrentMatchId(), session.getTeamId());
         } catch (Exception e) {
-            LOGGER.error("Error getting next match in StateContext: {}", e.getMessage());
+            LOGGER.error("Error getting next match using Setzliste-aware logic: {}", e.getMessage());
             return null;
         }
     }
@@ -276,7 +268,7 @@ public class StateContext {
     }
     
     public TabletSchusszettelEntity loadOpponentSession() {
-        if (session.getGegnerTeamId() == null || session.getGegnerTeamId() == 0L) {
+        if (session.getGegnerTeamId() == null || session.getGegnerTeamId().equals(0L)) {
             return null;
         }
         
@@ -339,7 +331,7 @@ public class StateContext {
         if (session.getCurrentMatchId() == null || session.getCurrentMatchId() <= 0) {
             return ValidationResult.invalid("Invalid current match ID: " + session.getCurrentMatchId());
         }
-        if (session.getCurrentPasseNumber() == null || session.getCurrentPasseNumber() < 1 || session.getCurrentPasseNumber() > 5) {
+        if (session.getCurrentPasseNumber() == null || session.getCurrentPasseNumber() < 1 || session.getCurrentPasseNumber() > MAX_SETS_PER_MATCH) {
             return ValidationResult.invalid("Invalid passe number: " + session.getCurrentPasseNumber());
         }
         if (session.getStatus() == null || session.getStatus().trim().isEmpty()) {
@@ -348,22 +340,6 @@ public class StateContext {
         return ValidationResult.valid();
     }
     
-    /**
-     * Validate match progression constraints.
-     */
-    public ValidationResult validateMatchProgression(LigamatchBE nextMatch) {
-        if (nextMatch == null) {
-            return ValidationResult.invalid("Next match cannot be null");
-        }
-        if (nextMatch.getMatchId() == null || nextMatch.getMatchId() <= 0) {
-            return ValidationResult.invalid("Invalid next match ID: " + nextMatch.getMatchId());
-        }
-        if (nextMatch.getWettkampfId() != session.getWettkampfId()) {
-            return ValidationResult.invalid("Match wettkampf mismatch: expected " + session.getWettkampfId() + 
-                                           ", got " + nextMatch.getWettkampfId());
-        }
-        return ValidationResult.valid();
-    }
     
     public boolean isShooterRegistered(long shooterId, int passeNumber) {
         try {
