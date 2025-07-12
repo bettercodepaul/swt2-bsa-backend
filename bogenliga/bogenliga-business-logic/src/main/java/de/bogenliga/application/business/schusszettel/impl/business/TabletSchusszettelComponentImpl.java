@@ -123,8 +123,11 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             }
         } else if (State.STATUS_MATCH_ENDE.equals(runtime.getCurrentState())) {
             // Handle MATCH_ENDE progression - advance to next match or tournament end
+            LOGGER.debug("Processing MATCH_ENDE state for team {} - attempting progression", teamId);
             if (runtime.evaluateWithOpponentWAITstate(null)) {
-                LOGGER.info("GET request triggered state advancement for team {} from MATCH_ENDE", teamId);
+                LOGGER.info("GET request triggered state advancement for team {} from MATCH_ENDE to next match", teamId);
+            } else {
+                LOGGER.debug("Team {} remains in MATCH_ENDE state - no advancement triggered", teamId);
             }
         }
 

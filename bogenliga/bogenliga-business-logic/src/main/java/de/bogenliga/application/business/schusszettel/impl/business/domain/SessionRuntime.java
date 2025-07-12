@@ -334,11 +334,15 @@ public class SessionRuntime {
         
         // Use MatchAnalysisService to determine initial state
         try {
+            LOGGER.info("INITIALIZING SESSION for team {} in wettkampf {}", teamId, wettkampfId);
+            
             // Find current incomplete match for team - this is the single source of truth
             LigamatchBE currentMatch = matchAnalysisService.findCurrentIncompleteMatch(wettkampfId, teamId);
             
             if (currentMatch == null) {
                 // All matches complete - set to WETTKAMPF_ENDE
+                LOGGER.info("TOURNAMENT COMPLETE for team {} - setting to WETTKAMPF_ENDE", teamId);
+                
                 LigamatchBE lastMatch = matchAnalysisService.findLastMatchForTeam(wettkampfId, teamId);
                 session.setCurrentMatchId(lastMatch.getMatchId());
                 session.setCurrentMatchNumber(Math.toIntExact(lastMatch.getMatchNr()));
@@ -348,9 +352,13 @@ public class SessionRuntime {
                 long opponentId = matchAnalysisService.findOpponentTeamId(lastMatch.getMatchId(), teamId);
                 session.setGegnerTeamId(opponentId);
                 
-                LOGGER.info("Team {} completed all matches - setting to WETTKAMPF_ENDE", teamId);
+                LOGGER.info("Team {} WETTKAMPF_ENDE initialization: match {} (nr={}), opponent {}, passe 5", 
+                           teamId, lastMatch.getMatchId(), lastMatch.getMatchNr(), opponentId);
             } else {
                 // Found incomplete match - set up session for this match
+                LOGGER.info("ACTIVE MATCH found for team {} - match {} (nr={})", 
+                           teamId, currentMatch.getMatchId(), currentMatch.getMatchNr());
+                
                 long opponentId = matchAnalysisService.findOpponentTeamId(currentMatch.getMatchId(), teamId);
                 int currentPasseNumber = matchAnalysisService.getCurrentPasseNumber(currentMatch.getMatchId(), teamId, opponentId);
                 
@@ -363,8 +371,8 @@ public class SessionRuntime {
                 session.setStatus(initialStatus);
                 session.setGegnerTeamId(opponentId);
                 
-                LOGGER.info("Initialized team {} for match {} (match #{}) with status {} at passe {}", 
-                           teamId, currentMatch.getMatchId(), currentMatch.getMatchNr(), initialStatus, currentPasseNumber);
+                LOGGER.info("Team {} ACTIVE initialization: match {} (nr={}), opponent {}, status {}, passe {}", 
+                           teamId, currentMatch.getMatchId(), currentMatch.getMatchNr(), opponentId, initialStatus, currentPasseNumber);
             }
             
             // Save to database
@@ -417,6 +425,9 @@ public class SessionRuntime {
     public void persistSession() {
         try {
             sessionDAO.updateStatus(session, 0L);
+            LOGGER.debug("Successfully persisted session for team {} - Status: {} Match: {} Passe: {} Opponent: {}",
+                        session.getTeamId(), session.getStatus(), session.getCurrentMatchId(), 
+                        session.getCurrentPasseNumber(), session.getGegnerTeamId());
         } catch (Exception e) {
             LOGGER.error("Unexpected error updating session status for team {}: {}", session.getTeamId(), e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, 
@@ -468,8 +479,8 @@ public class SessionRuntime {
         session.setGegnerTeamId(opponentId);
         persistSession();
         
-        LOGGER.info("SessionRuntime advanced team {} to match {} (opponent: {})",
-                   session.getTeamId(), nextMatch.getMatchId(), opponentId);
+        LOGGER.info("SessionRuntime advanced team {} to match {} (opponent: {}) - Status: {} Passe: {}",
+                   session.getTeamId(), nextMatch.getMatchId(), opponentId, session.getStatus(), session.getCurrentPasseNumber());
     }
     
     /**
