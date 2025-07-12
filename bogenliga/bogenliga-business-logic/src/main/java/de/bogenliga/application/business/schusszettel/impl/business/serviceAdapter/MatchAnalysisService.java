@@ -456,14 +456,134 @@ public class MatchAnalysisService {
     }
     
     /**
+     * Check if the entire tournament (wettkampf) is complete.
+     * This provides a high-level tournament completion check before examining individual matches.
+     * Uses pass-based completion logic that doesn't rely on potentially stale Satzpunkte data.
+     * 
+     * @param wettkampfId The tournament ID to check
+     * @return true if all matches in the tournament are complete
+     */
+    public boolean isWettkampfCompleteOverall(long wettkampfId) {
+        try {
+            LOGGER.debug("Checking overall tournament completion for wettkampf {}", wettkampfId);
+            
+            // Get all matches in the tournament
+            List<LigamatchBE> allMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId);
+            if (allMatches.isEmpty()) {
+                LOGGER.warn("No matches found for wettkampf {}", wettkampfId);
+                return false;
+            }
+            
+            // Check if all matches have completion indicators using pass data
+            int completedMatches = 0;
+            int totalMatches = allMatches.size();
+            
+            for (LigamatchBE match : allMatches) {
+                try {
+                    // Use pass-based completion check instead of relying on potentially stale Satzpunkte
+                    // This approach checks if actual pass data exists and is complete
+                    long teamId = match.getMannschaftId();
+                    long matchId = match.getMatchId();
+                    
+                    // Get pass data for this team/match combination
+                    List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+                    
+                    // A match is complete if the team has completed sufficient passes
+                    // Either: 5 full sets completed OR team has achieved match win condition
+                    boolean hasCompletedPasses = hasTeamCompletedMatch(teamPasses);
+                    
+                    if (hasCompletedPasses) {
+                        completedMatches++;
+                        LOGGER.debug("Match {} for team {} is complete based on pass data ({} passes found)", 
+                                   matchId, teamId, teamPasses.size());
+                    } else {
+                        LOGGER.debug("Match {} for team {} appears incomplete based on pass data ({} passes found)", 
+                                   matchId, teamId, teamPasses.size());
+                    }
+                    
+                } catch (Exception e) {
+                    LOGGER.debug("Error checking completion for match {} team {}: {} - assuming incomplete", 
+                               match.getMatchId(), match.getMannschaftId(), e.getMessage());
+                    // If we can't determine completion, assume incomplete
+                }
+            }
+            
+            // Tournament is complete if all matches have been completed based on pass data
+            boolean isComplete = completedMatches == totalMatches;
+            
+            LOGGER.info("Tournament completion check: wettkampf {} has {}/{} matches complete - tournament complete: {}", 
+                       wettkampfId, completedMatches, totalMatches, isComplete);
+            
+            return isComplete;
+            
+        } catch (Exception e) {
+            LOGGER.error("Error checking overall tournament completion for wettkampf {}: {}", wettkampfId, e.getMessage());
+            return false; // Conservative approach - assume incomplete on error
+        }
+    }
+
+    /**
+     * Check if a team has completed their match based on pass data.
+     * A match is complete if the team has completed enough sets to determine a winner.
+     * Teams can win in as few as 3 sets if they reach 6+ Satzpunkte.
+     */
+    private boolean hasTeamCompletedMatch(List<PasseDO> teamPasses) {
+        if (teamPasses == null || teamPasses.isEmpty()) {
+            return false;
+        }
+        
+        // Group passes by set number to calculate set results
+        var passesBySet = teamPasses.stream()
+            .filter(this::hasActualScores) // Only count passes with real scores
+            .collect(Collectors.groupingBy(p -> p.getPasseLfdnr().intValue()));
+        
+        // Calculate Satzpunkte by examining completed sets
+        int teamSatzpunkte = 0;
+        int completedSets = 0;
+        
+        for (int setNumber = 1; setNumber <= MAX_SETS_PER_MATCH; setNumber++) {
+            List<PasseDO> setData = passesBySet.get(setNumber);
+            
+            if (setData != null && setData.size() >= 3) {
+                // Set is complete (3 shooters have scored)
+                completedSets++;
+                
+                // For completion check, we assume this team won the set
+                // (We can't easily calculate opponent scores here, but for completion
+                // detection we just need to know if enough sets are done)
+                teamSatzpunkte += 2; // Assume this team won each completed set
+            } else {
+                // If this set is incomplete, no point checking higher sets
+                break;
+            }
+        }
+        
+        // Match is complete if:
+        // 1. Team has completed at least 3 sets (minimum for 6 Satzpunkte) OR
+        // 2. All 5 sets are completed (maximum possible)
+        boolean hasMinimumSets = completedSets >= 3; // Can win with 3 sets (6 Satzpunkte)
+        boolean hasAllSets = completedSets >= MAX_SETS_PER_MATCH; // All sets done
+        
+        return hasMinimumSets || hasAllSets;
+    }
+
+    /**
      * Find current incomplete match for a team using Setzliste-aware tournament progression.
      * CRITICAL FIX: Replaced flawed naechsteMatchId logic with proper tournament bracket calculation.
      * Returns null if all matches are complete.
      */
     public LigamatchBE findCurrentIncompleteMatch(long wettkampfId, long teamId) {
         try {
-            LOGGER.debug("Finding current incomplete match for team {} using Setzliste-aware logic", teamId);
+            LOGGER.debug("Finding current incomplete match for team {} using enhanced tournament logic", teamId);
             
+            // STEP 1: Check if the entire tournament is complete first
+            // This provides a definitive answer without needing individual match checks
+            if (isWettkampfCompleteOverall(wettkampfId)) {
+                LOGGER.info("Tournament {} is complete overall - all teams finished", wettkampfId);
+                return null; // Definitive: tournament is complete
+            }
+            
+            // STEP 2: Tournament has incomplete matches - find this team's current match
             // Get all matches for this team sorted by match number (tournament progression order)
             List<LigamatchBE> teamMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId).stream()
                     .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
@@ -475,37 +595,37 @@ public class MatchAnalysisService {
                     "No matches found for team " + teamId + " in wettkampf " + wettkampfId);
             }
             
-            // Check each match in chronological order (by match number)
+            // STEP 3: Check each match in chronological order (by match number)
             for (LigamatchBE match : teamMatches) {
                 try {
-                    // Check if this match is complete
-                    long opponentId = findOpponentTeamId(match.getMatchId(), teamId);
-                    boolean isComplete = isMatchComplete(match.getMatchId(), teamId, opponentId);
+                    // Simple completion check using database-calculated scores
+                    // A match is complete if it has non-null Satzpunkte > 0
+                    Long satzpunkte = match.getSatzpunkte();
+                    boolean isComplete = (satzpunkte != null && satzpunkte > 0);
                     
                     if (!isComplete) {
                         // Found incomplete match - this is where the team should be
-                        LOGGER.debug("Found incomplete match {} (nr={}) for team {} using Setzliste-aware logic", 
+                        LOGGER.debug("Found incomplete match {} (nr={}) for team {} - no Satzpunkte recorded", 
                                    match.getMatchId(), match.getMatchNr(), teamId);
                         return match;
                     }
                     
-                    LOGGER.debug("Match {} (nr={}) complete for team {}, checking next match in tournament order", 
-                               match.getMatchId(), match.getMatchNr(), teamId);
+                    LOGGER.debug("Match {} (nr={}) complete for team {} with {} Satzpunkte", 
+                               match.getMatchId(), match.getMatchNr(), teamId, satzpunkte);
                     
                 } catch (Exception e) {
                     LOGGER.warn("Error checking match {} completion for team {}: {}", 
                                match.getMatchId(), teamId, e.getMessage());
                     
-                    // For initialization, we should be more tolerant of missing opponents
-                    // Return this match as incomplete if we can't determine completion
+                    // If we can't determine completion, assume incomplete and return this match
                     LOGGER.info("Returning match {} as incomplete for team {} due to completion check error", 
                                match.getMatchId(), teamId);
                     return match;
                 }
             }
             
-            // All matches are complete
-            LOGGER.info("All matches complete for team {} in wettkampf {} using Setzliste-aware logic", 
+            // All matches are complete for this team
+            LOGGER.info("All matches complete for team {} in wettkampf {} using enhanced tournament logic", 
                        teamId, wettkampfId);
             return null;
             
