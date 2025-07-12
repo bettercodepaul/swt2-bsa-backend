@@ -55,6 +55,10 @@ public class Schuetzenmeldung extends State {
             return false;
         }
         
+        if (context == null) {
+            return false;
+        }
+        
         // Check that exactly 3 shooters are deployed for current match
         try {
             List<MannschaftsmitgliedDO> deployedMembers = getDeployedMembersForCurrentMatch(context);
