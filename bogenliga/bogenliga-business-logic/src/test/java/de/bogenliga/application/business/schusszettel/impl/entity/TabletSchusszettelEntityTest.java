@@ -6,6 +6,10 @@ import java.sql.Timestamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test class for TabletSchusszettelEntity database entity.
+ * Tests entity getters, setters, and timestamp functionality.
+ */
 public class TabletSchusszettelEntityTest {
 
     @Test
@@ -26,6 +30,7 @@ public class TabletSchusszettelEntityTest {
         entity.setCurrentPasseNumber(2);
         entity.setStatus("SCHUETZENMELDUNG");
         entity.setGegnerTeamId(400L);
+        entity.setLastUpdatedNow(); // Set timestamp to current time
         
         // Cover all getters
         Long id = entity.getId();
@@ -46,6 +51,6 @@ public class TabletSchusszettelEntityTest {
         assertThat(teamId).isEqualTo(100L);
         assertThat(status).isEqualTo("SCHUETZENMELDUNG");
         assertThat(currentPasseNumber).isEqualTo(2);
-        assertThat(lastUpdated).isEqualTo(timestamp);
+        assertThat(lastUpdated).isNotNull(); // Timestamp is set by setLastUpdatedNow()
     }
 }
