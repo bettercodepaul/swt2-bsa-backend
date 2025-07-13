@@ -219,7 +219,7 @@ public class SessionRuntime {
      * This bypasses the flawed database naechsteMatchId calculation and uses 
      * tournament bracket structure for correct advancement.
      */
-    private void advanceToNextMatch() {
+    void advanceToNextMatch() {
         try {
             long currentMatchId = session.getCurrentMatchId();
             long teamId = session.getTeamId();
