@@ -78,6 +78,7 @@ public class TabletSchusszettelDTO {
         SATZEINGABE,          // Aktive Eingabe einer Passe
         SCHUETZENMELDUNG,     // Eingabe der Rückennummern
         WARTE,                // Team wartet auf gegnerisches Team
+        MATCH_ENDE,           // Match beendet, Ergebnisse anzeigen vor nächstem Match
         NOT_ALLOWED,          // Token ungültig oder Team-Zuordnung falsch
         WETTKAMPF_ENDE        // Alle Durchgänge abgeschlossen
     }
