@@ -164,8 +164,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Failed to process shooter registration");
             }
             
-            LOGGER.info("Successfully processed shooter registration for team {} via state object", teamId);
-            
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {

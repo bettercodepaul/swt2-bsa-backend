@@ -212,9 +212,7 @@ public class Schuetzenmeldung extends State {
                         .findByMemberAndTeamId(context.getTeamId(), shooterId);
                     member.setDsbMitgliedEingesetzt(Math.toIntExact(currentMatchNr));
                     context.getMannschaftsmitgliedComponent().update(member, 0L);
-                    
-                    LOGGER.debug("Marked shooter {} as deployed for match {} (team {})",
-                               shooterId, currentMatchNr, context.getTeamId());
+
                 } catch (Exception e) {
                     LOGGER.warn("Could not update deployment status for shooter {} in team {}: {}",
                               shooterId, context.getTeamId(), e.getMessage());

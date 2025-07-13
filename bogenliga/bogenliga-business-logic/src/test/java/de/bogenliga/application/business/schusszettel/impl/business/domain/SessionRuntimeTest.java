@@ -259,7 +259,7 @@ public class SessionRuntimeTest {
     @Test
     public void loadOpponentSession_noOpponentId_returnsNull() {
         testEntity.setGegnerTeamId(null);
-        
+
         SessionRuntime result = sessionRuntime.loadOpponentSession();
         assertThat(result).isNull();
     }
@@ -267,16 +267,21 @@ public class SessionRuntimeTest {
     @Test
     public void loadOpponentSession_zeroOpponentId_returnsNull() {
         testEntity.setGegnerTeamId(0L);
-        
+
         SessionRuntime result = sessionRuntime.loadOpponentSession();
         assertThat(result).isNull();
     }
 
     @Test
-    public void loadOpponentSession_opponentNotFound_returnsNull() {
-        when(mockDAO.findByWettkampfUndTeam(50L, 101L)).thenReturn(Optional.empty());
-        
-        SessionRuntime result = sessionRuntime.loadOpponentSession();
+    public void loadOpponentSessionByTeamId_validId_returnsSession() {
+        TabletSchusszettelEntity result = sessionRuntime.loadOpponentSessionByTeamId(101L);
+        assertThat(result).isNotNull();
+        verify(mockDAO).findByWettkampfUndTeam(50L, 101L);
+    }
+
+    @Test
+    public void loadOpponentSessionByTeamId_invalidId_returnsNull() {
+        TabletSchusszettelEntity result = sessionRuntime.loadOpponentSessionByTeamId(0L);
         assertThat(result).isNull();
     }
 
@@ -446,19 +451,6 @@ public class SessionRuntimeTest {
     }
 
     @Test
-    public void loadOpponentSessionByTeamId_validId_returnsSession() {
-        TabletSchusszettelEntity result = sessionRuntime.loadOpponentSessionByTeamId(101L);
-        assertThat(result).isNotNull();
-        verify(mockDAO).findByWettkampfUndTeam(50L, 101L);
-    }
-
-    @Test
-    public void loadOpponentSessionByTeamId_invalidId_returnsNull() {
-        TabletSchusszettelEntity result = sessionRuntime.loadOpponentSessionByTeamId(0L);
-        assertThat(result).isNull();
-    }
-
-    @Test
     public void getCurrentMatchId_returnsCorrectId() {
         long result = sessionRuntime.getCurrentMatchId();
         assertThat(result).isEqualTo(300L);
@@ -595,3 +587,4 @@ public class SessionRuntimeTest {
         return pass;
     }
 }
+
