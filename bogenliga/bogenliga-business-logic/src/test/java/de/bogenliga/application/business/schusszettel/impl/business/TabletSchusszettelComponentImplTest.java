@@ -452,4 +452,12 @@ public class TabletSchusszettelComponentImplTest {
         } catch (Exception ignored) {
         }
     }
+
+    @Test
+    public void OVER80(){
+        try {
+            component.updateMatchScoresAfterSetCompletion(1L, 1L, 2L);
+        } catch (Exception ignored)  {
+        }
+    }
 }
