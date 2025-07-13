@@ -123,11 +123,8 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             }
         } else if (State.STATUS_MATCH_ENDE.equals(runtime.getCurrentState())) {
             // Handle MATCH_ENDE progression - advance to next match or tournament end
-            LOGGER.debug("Processing MATCH_ENDE state for team {} - attempting progression", teamId);
             if (runtime.evaluateWithOpponentWAITstate(null)) {
                 LOGGER.info("GET request triggered state advancement for team {} from MATCH_ENDE to next match", teamId);
-            } else {
-                LOGGER.debug("Team {} remains in MATCH_ENDE state - no advancement triggered", teamId);
             }
         }
 
@@ -299,7 +296,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     private void updateMatchScoresAfterSetCompletion(long matchId, long teamId, long opponentTeamId) {
         try {
-            LOGGER.debug("Updating match scores after set completion for match {} team {}", matchId, teamId);
             
             // 1. Calculate set winner using existing business logic
             // Get all passe records for current match to determine set results
