@@ -302,4 +302,148 @@ public class TabletSchusszettelDAOTest {
         verify(basicDAO).insertEntity(any(), eq(testEntity));
         verify(basicDAO).updateEntity(any(), eq(testEntity), eq("id"));
     }
+
+    // Additional comprehensive tests from backup
+    @Test
+    public void setCurrentPasseNumber_entityVersion_updatesEntity() {
+        TabletSchusszettelEntity input = testEntity;
+        
+        TabletSchusszettelEntity result = dao.setCurrentPasseNumber(input, 100L);
+        
+        verify(basicDAO).setModificationAttributes(input, 100L);
+        verify(basicDAO).updateEntity(any(), eq(input), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void deleteByWettkampfId_existingEntities_deletesAll() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L))).thenReturn(Arrays.asList(testEntity));
+        
+        dao.deleteByWettkampfId(50L);
+        
+        verify(basicDAO).selectEntityList(any(), anyString(), eq(50L));
+        verify(basicDAO).deleteEntity(any(), eq(testEntity), eq("id"));
+    }
+
+    @Test
+    public void existsByWettkampfId_entitiesExist_returnsTrue() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L))).thenReturn(Arrays.asList(testEntity));
+        
+        boolean result = dao.existsByWettkampfId(50L);
+        
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void existsByWettkampfId_noEntities_returnsFalse() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L))).thenReturn(Collections.emptyList());
+        
+        boolean result = dao.existsByWettkampfId(50L);
+        
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void existsByWettkampfIdAndTeamId_entityExists_returnsTrue() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        boolean result = dao.existsByWettkampfIdAndTeamId(50L, 100L);
+        
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void existsByWettkampfIdAndTeamId_noEntity_returnsFalse() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Collections.emptyList());
+        
+        boolean result = dao.existsByWettkampfIdAndTeamId(50L, 100L);
+        
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void setToken_existingEntity_updatesToken() {
+        String newToken = "new-token-456";
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setToken(50L, 100L, newToken, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void setToken_entityNotFound_throwsException() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Collections.emptyList());
+        
+        assertThatThrownBy(() -> dao.setToken(50L, 100L, "new-token", 100L))
+            .isInstanceOf(BusinessException.class)
+            .hasMessageContaining("Keine Tablet-Session");
+    }
+
+    @Test
+    public void setGegnerTeamId_existingEntity_updatesGegnerTeamId() {
+        Long newGegnerTeamId = 12L;
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setGegnerTeamId(50L, 100L, newGegnerTeamId, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void setCurrentMatchId_idsVersion_updatesMatchId() {
+        Long newMatchId = 31L;
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setCurrentMatchId(50L, 100L, newMatchId, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void setCurrentMatchNumber_idsVersion_updatesMatchNumber() {
+        Integer newMatchNumber = 2;
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setCurrentMatchNumber(50L, 100L, newMatchNumber, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void setCurrentPasseNumber_idsVersion_updatesPasseNumber() {
+        Integer newPasseNumber = 2;
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setCurrentPasseNumber(50L, 100L, newPasseNumber, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void setStatus_idsVersion_updatesStatus() {
+        String newStatus = "COMPLETED";
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.setStatus(50L, 100L, newStatus, 100L);
+        
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
+
+    @Test
+    public void updateLastUpdated_existingEntity_updatesTimestamp() {
+        when(basicDAO.selectEntityList(any(), anyString(), eq(50L), eq(100L))).thenReturn(Arrays.asList(testEntity));
+        
+        TabletSchusszettelEntity result = dao.updateLastUpdated(50L, 100L, 100L);
+        
+        verify(basicDAO).setModificationAttributes(any(), eq(100L));
+        verify(basicDAO).updateEntity(any(), any(), eq("id"));
+        assertThat(result).isEqualTo(testEntity);
+    }
 }
