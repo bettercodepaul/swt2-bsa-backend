@@ -169,8 +169,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                                teamId, runtime.getCurrentState());
                                
                 } catch (Exception e) {
-                    LOGGER.error("Failed to initialize session for team {} in wettkampf {}: {}", 
-                                teamId, wettkampfId, e.getMessage());
                     throw e;
                 }
             }
@@ -283,7 +281,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
             
             return context.buildWettkampfInfo();
         } catch (Exception e) {
-            LOGGER.warn("Could not build wettkampf info for wettkampfId {}: {}", wettkampfId, e.getMessage());
             return null;
         }
     }
@@ -341,7 +338,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                             final VereinDO vOpp = vereinComponent.findById(opp.getVereinId());
                             opponentName = vOpp.getName();
                         } catch (Exception ex) {
-                            LOGGER.warn("Failed to get opponent name for team {}: {}", e.getGegnerTeamId(), ex.getMessage());
                             opponentName = "Unknown Opponent";
                         }
                     }
@@ -434,7 +430,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
             }
             
         } catch (Exception e) {
-            LOGGER.error("Error during smart legacy pass cleanup for wettkampf {}: {}", wettkampfId, e.getMessage());
             // Non-fatal - continue with normal session loading
         }
     }
@@ -506,7 +501,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
             return recreatedCount;
             
         } catch (Exception e) {
-            LOGGER.error("Error renumbering passes: {}", e.getMessage());
             return 0;
         }
     }
@@ -549,7 +543,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                         sessionDAO.updateStatus(session, -1L);
                     }
                 } catch (Exception e) {
-                    LOGGER.warn("Could not resync session for team {} after cleanup: {}", session.getTeamId(), e.getMessage());
                     // Continue with other sessions
                 }
             }
@@ -557,7 +550,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
             LOGGER.debug("Session resync completed for all sessions in wettkampf {}", wettkampfId);
             
         } catch (Exception e) {
-            LOGGER.error("Error during session resync after cleanup: {}", e.getMessage());
         }
     }
 }
