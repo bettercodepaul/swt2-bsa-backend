@@ -370,29 +370,4 @@ public class TabletSchusszettelDAO implements DataAccessObject {
         
         return results;
     }
-
-    /**
-     * Batch creation of tablet sessions for performance optimization.
-     * Creates multiple sessions in a single transaction for better performance.
-     */
-    public List<TabletSchusszettelEntity> createSessionsBatch(List<TabletSchusszettelEntity> entities, Long currentUserId) {
-        if (entities == null || entities.isEmpty()) {
-            return List.of();
-        }
-
-        long startTime = System.currentTimeMillis();
-        List<TabletSchusszettelEntity> results = new ArrayList<>();
-
-        for (TabletSchusszettelEntity entity : entities) {
-            basicDao.setCreationAttributes(entity, currentUserId);
-            TabletSchusszettelEntity created = basicDao.insertEntity(TABLE_CONFIG, entity);
-            results.add(created);
-        }
-
-        long batchTime = System.currentTimeMillis() - startTime;
-        LOGGER.debug("Batch created {} sessions in {}ms (avg: {}ms per session)",
-                    entities.size(), batchTime, batchTime / entities.size());
-
-        return results;
-    }
 }

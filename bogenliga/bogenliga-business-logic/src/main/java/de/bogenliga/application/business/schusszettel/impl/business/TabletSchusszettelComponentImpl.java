@@ -463,7 +463,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     /**
      * Handles opponent synchronization after score submission.
      */
-    private void handleOpponentSynchronization(long wettkampfId, long teamId, SessionRuntime runtime) {
+    public void handleOpponentSynchronization(long wettkampfId, long teamId, SessionRuntime runtime) {
         try {
             TabletSchusszettelEntity session = runtime.getSession();
             
