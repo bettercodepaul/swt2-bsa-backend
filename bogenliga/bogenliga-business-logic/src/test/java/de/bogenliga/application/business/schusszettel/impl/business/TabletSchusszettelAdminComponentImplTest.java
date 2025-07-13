@@ -108,29 +108,18 @@ public class TabletSchusszettelAdminComponentImplTest {
     }
     
     private void setupMockBehavior() {
-        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
-        when(mockSessionDAO.findByWettkampfUndTeam(50L, 100L)).thenReturn(Optional.of(testEntity));
-        when(mockSessionDAO.existsByWettkampfId(50L)).thenReturn(true);
-        
-        when(mockMatchComponent.getLigamatchesByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch));
-        
-        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
-        when(mockMannschaftComponent.findById(101L)).thenReturn(testTeam); // Also mock opponent team
-        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
-        
-        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
-        
-        // Mock MatchAnalysisService methods needed for session initialization
-        // For now, we'll leave these methods returning null to match the current behavior
-        // The tests expect initialization to fail when findLastMatchForTeam returns null
-        when(mockMatchAnalysisService.findCurrentIncompleteMatch(anyLong(), anyLong())).thenReturn(null);
-        when(mockMatchAnalysisService.findLastMatchForTeam(anyLong(), anyLong())).thenReturn(null);
-        when(mockMatchAnalysisService.findOpponentTeamId(anyLong(), anyLong())).thenReturn(101L);
+        // Only set up the most commonly used mocks here
+        // Specific tests will add their own mocks as needed
     }
 
     // initializeForWettkampf tests
     @Test
     public void initializeForWettkampf_tournamentComplete_createsSessionInWettkampfEnde() {
+        // Setup mocks for this specific test
+        when(mockMatchComponent.getLigamatchesByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch));
+        when(mockMatchAnalysisService.findCurrentIncompleteMatch(anyLong(), anyLong())).thenReturn(null);
+        when(mockMatchAnalysisService.findLastMatchForTeam(anyLong(), anyLong())).thenReturn(null);
+        
         // This test expects the initialization to fail because 
         // findCurrentIncompleteMatch returns null (tournament complete) 
         // and findLastMatchForTeam also returns null (no match data)
@@ -146,8 +135,10 @@ public class TabletSchusszettelAdminComponentImplTest {
     @Test
     public void initializeForWettkampf_withCurrentMatch_initializesSuccessfully() {
         // Set up successful initialization where tournament is not complete
+        when(mockMatchComponent.getLigamatchesByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch));
         when(mockMatchAnalysisService.findCurrentIncompleteMatch(50L, 100L)).thenReturn(testMatch);
         when(mockMatchAnalysisService.getCurrentPasseNumber(300L, 100L, 101L)).thenReturn(1);
+        when(mockMatchAnalysisService.findOpponentTeamId(anyLong(), anyLong())).thenReturn(101L);
         
         adminComponent.initializeForWettkampf(50L);
         
@@ -159,8 +150,10 @@ public class TabletSchusszettelAdminComponentImplTest {
     @Test
     public void initializeForWettkampf_tournamentCompleteWithLastMatch_initializesToWettkampfEnde() {
         // Set up successful initialization where tournament IS complete
+        when(mockMatchComponent.getLigamatchesByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch));
         when(mockMatchAnalysisService.findCurrentIncompleteMatch(50L, 100L)).thenReturn(null);
         when(mockMatchAnalysisService.findLastMatchForTeam(50L, 100L)).thenReturn(testMatch);
+        when(mockMatchAnalysisService.findOpponentTeamId(anyLong(), anyLong())).thenReturn(101L);
         
         adminComponent.initializeForWettkampf(50L);
         
@@ -229,6 +222,8 @@ public class TabletSchusszettelAdminComponentImplTest {
     // existsForWettkampf tests
     @Test
     public void existsForWettkampf_existingSessions_returnsTrue() {
+        when(mockSessionDAO.existsByWettkampfId(50L)).thenReturn(true);
+        
         boolean result = adminComponent.existsForWettkampf(50L);
         
         assertThat(result).isTrue();
@@ -266,6 +261,8 @@ public class TabletSchusszettelAdminComponentImplTest {
     // reTokenize tests
     @Test
     public void reTokenize_validSessionExists_regeneratesToken() {
+        when(mockSessionDAO.findByWettkampfUndTeam(50L, 100L)).thenReturn(Optional.of(testEntity));
+        
         adminComponent.reTokenize(50L, 100L);
         
         verify(mockSessionDAO).findByWettkampfUndTeam(50L, 100L);
@@ -303,6 +300,11 @@ public class TabletSchusszettelAdminComponentImplTest {
     // generateSchusszettelSessions tests
     @Test
     public void generateSchusszettelSessions_validWettkampf_returnsSessionInfo() {
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
+        
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
         assertThat(result).isNotNull();
@@ -351,8 +353,11 @@ public class TabletSchusszettelAdminComponentImplTest {
         opponentVerein.setName("Opponent Verein");
         
         when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(sessionWithOpponent));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockMannschaftComponent.findById(101L)).thenReturn(opponentTeam);
         when(mockVereinComponent.findById(201L)).thenReturn(opponentVerein);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -363,7 +368,11 @@ public class TabletSchusszettelAdminComponentImplTest {
     @Test
     public void generateSchusszettelSessions_opponentLookupFails_usesUnknownOpponent() {
         testEntity.setGegnerTeamId(999L); // Non-existent opponent
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockMannschaftComponent.findById(999L)).thenThrow(new RuntimeException("Team not found"));
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -381,7 +390,11 @@ public class TabletSchusszettelAdminComponentImplTest {
         opponentEntity.setWettkampfId(50L);
         opponentEntity.setStatus("WARTE");
         
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockSessionDAO.findByWettkampfUndTeam(50L, 101L)).thenReturn(Optional.of(opponentEntity));
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -394,7 +407,11 @@ public class TabletSchusszettelAdminComponentImplTest {
         testEntity.setStatus("WARTE");
         testEntity.setGegnerTeamId(101L);
         
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockSessionDAO.findByWettkampfUndTeam(50L, 101L)).thenReturn(Optional.empty());
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -413,6 +430,9 @@ public class TabletSchusszettelAdminComponentImplTest {
         legacyPass.setPfeil2(null);
         legacyPass.setPfeil3(null);
         
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(legacyPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
@@ -441,6 +461,9 @@ public class TabletSchusszettelAdminComponentImplTest {
         validPass.setPfeil2(9);
         validPass.setPfeil3(8);
         
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(legacyPass, validPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
@@ -454,6 +477,9 @@ public class TabletSchusszettelAdminComponentImplTest {
     
     @Test
     public void generateSchusszettelSessions_cleanupError_continuesGracefully() {
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockPasseComponent.findByWettkampfId(50L)).thenThrow(new RuntimeException("Cleanup error"));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
@@ -465,6 +491,8 @@ public class TabletSchusszettelAdminComponentImplTest {
     // Token generation tests
     @Test
     public void tokenGeneration_generatesUniqueTokens() {
+        when(mockSessionDAO.findByWettkampfUndTeam(50L, 100L)).thenReturn(Optional.of(testEntity));
+        
         // Generate multiple tokens and verify uniqueness
         for (int i = 0; i < 100; i++) {
             adminComponent.reTokenize(50L, 100L);
@@ -478,6 +506,11 @@ public class TabletSchusszettelAdminComponentImplTest {
     @Test
     public void buildWettkampfInfo_validWettkampf_buildsCorrectly() {
         // Setup mocks for wettkampf info building
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
+        
         de.bogenliga.application.business.wettkampf.api.types.WettkampfDO mockWettkampf = mock(de.bogenliga.application.business.wettkampf.api.types.WettkampfDO.class);
         when(mockWettkampf.getWettkampfVeranstaltungsId()).thenReturn(10L);
         when(mockWettkampfComponent.findById(50L)).thenReturn(mockWettkampf);
@@ -499,6 +532,10 @@ public class TabletSchusszettelAdminComponentImplTest {
     @Test
     public void generateSchusszettelSessions_nullOpponentId_handledGracefully() {
         testEntity.setGegnerTeamId(null);
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -529,7 +566,10 @@ public class TabletSchusszettelAdminComponentImplTest {
     
     @Test
     public void sessionResync_afterCleanup_updatesCorrectly() {
-        when(mockMatchAnalysisService.getCurrentPasseNumber(300L, 100L, 0L)).thenReturn(2);
+        when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         
@@ -554,8 +594,11 @@ public class TabletSchusszettelAdminComponentImplTest {
         verein2.setName("Team 2 Verein");
         
         when(mockSessionDAO.findByWettkampfId(50L)).thenReturn(Arrays.asList(testEntity, team2Entity));
+        when(mockMannschaftComponent.findById(100L)).thenReturn(testTeam);
+        when(mockVereinComponent.findById(200L)).thenReturn(testVerein);
         when(mockMannschaftComponent.findById(102L)).thenReturn(team2);
         when(mockVereinComponent.findById(202L)).thenReturn(verein2);
+        when(mockPasseComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testPass));
         
         TabletSessionInfoDO result = adminComponent.generateSchusszettelSessions(50L);
         

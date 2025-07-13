@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
  * Test class for Schuetzenmeldung state implementation.
  * Tests shooter registration state behavior, transitions, and validation rules.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SchuetzenmeldungTest {
 
     @Mock private StateContext mockContext;
