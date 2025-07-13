@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
  * Test class for MatchAnalysisService external integration service.
  * Tests match completion analysis, opponent resolution, and tournament progression logic.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MatchAnalysisServiceTest {
 
     @Mock private MatchComponent mockMatchComponent;

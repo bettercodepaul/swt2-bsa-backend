@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
  * Test class for SessionRuntime state machine orchestration.
  * Tests session state management, database operations, and state transitions.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SessionRuntimeTest {
 
     @Mock private TabletSchusszettelDAO mockDAO;

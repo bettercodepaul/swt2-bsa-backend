@@ -290,7 +290,7 @@ public class TabletSchusszettelDAOTest {
         
         // Verify each method call with its specific arguments
         verify(basicDAO).selectEntityList(any(), anyString(), eq(50L)); // findByWettkampfId
-        verify(basicDAO).selectEntityList(any(), anyString(), eq(50L), eq(100L)); // findByWettkampfUndTeam called once
+        verify(basicDAO, times(1)).selectEntityList(any(), anyString(), eq(50L), eq(100L)); // findByWettkampfUndTeam called once
         verify(basicDAO).selectEntityList(any(), anyString(), eq("token"), eq(50L), eq(100L)); // findByTokenWettkampfUndTeam
     }
 

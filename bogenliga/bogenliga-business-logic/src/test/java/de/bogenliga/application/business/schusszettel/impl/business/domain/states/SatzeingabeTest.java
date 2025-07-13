@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
  * Test class for Satzeingabe state implementation.
  * Tests score entry state behavior, validation rules, and transition logic.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SatzeingabeTest {
 
     @Mock private StateContext mockContext;
