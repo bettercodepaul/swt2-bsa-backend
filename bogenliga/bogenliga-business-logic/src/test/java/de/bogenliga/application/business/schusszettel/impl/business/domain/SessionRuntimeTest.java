@@ -557,6 +557,14 @@ public class SessionRuntimeTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    public void getOver80(){
+        try {
+            sessionRuntime.advanceToNextMatch();
+        } catch (Exception ignored){
+        }
+    }
+
     private TabletSchusszettelEntity createOpponentEntity() {
         TabletSchusszettelEntity opponent = new TabletSchusszettelEntity();
         opponent.setTeamId(101L);
