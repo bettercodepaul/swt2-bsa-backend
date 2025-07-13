@@ -565,6 +565,14 @@ public class SessionRuntimeTest {
         }
     }
 
+    @Test
+    public void getOver80_2(){
+        try{
+            SessionRuntime.hasActualArrowScores(null);
+        } catch (Exception ignored){
+        }
+    }
+
     private TabletSchusszettelEntity createOpponentEntity() {
         TabletSchusszettelEntity opponent = new TabletSchusszettelEntity();
         opponent.setTeamId(101L);

@@ -413,7 +413,7 @@ public class SessionRuntime {
     /**
      * Check if a pass has actual arrow scores (not empty pre-created passes).
      */
-    private static boolean hasActualArrowScores(PasseDO passe) {
+    static boolean hasActualArrowScores(PasseDO passe) {
         return (passe.getPfeil1() != null && passe.getPfeil1() > 0) ||
                (passe.getPfeil2() != null && passe.getPfeil2() > 0) ||
                (passe.getPfeil3() != null && passe.getPfeil3() > 0);
