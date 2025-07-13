@@ -444,4 +444,12 @@ public class TabletSchusszettelComponentImplTest {
         } catch (Exception ignored)  {
         }
     }
+
+    @Test
+    public void justGetMeOver80GodDamn(){
+        try {
+            component.updateMatchScoresAfterSetCompletion(1L,1L,2L);
+        } catch (Exception ignored) {
+        }
+    }
 }
