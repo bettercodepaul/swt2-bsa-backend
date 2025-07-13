@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,44 +17,79 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.schusszettel.impl.business.serviceAdapter.MatchAnalysisService;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
-import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.schusszettel.api.types.TabletSessionInfoDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.TabletSessionSingDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.WettkampfInfoDO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
 import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
+import de.bogenliga.application.business.schusszettel.impl.business.domain.SessionRuntime;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
- * Admin‐side component for managing tablet‐sessions (no shooter/passe logic).
- * <p>
- * Responsibilities:
+ * Administrative component for tablet schusszettel session lifecycle management.
+ * 
+ * <h2>CURRENT RESPONSIBILITIES</h2>
  * <ul>
- *   <li>Initialize / delete / re‐tokenize sessions</li>
- *   <li>List all sessions for a competition, including team names and next opponent names</li>
+ *   <li>Session initialization and deletion for competitions</li>
+ *   <li>Token management and regeneration</li>
+ *   <li>Admin UI session overview with team names</li>
+ *   <li>Legacy pass data cleanup and migration</li>
  * </ul>
- * </p>
- * @author Marty Lauterbach
+ * 
+ * <h2>CLEAN ARCHITECTURE DESIGN</h2>
+ * This component serves as the admin interface layer that delegates session creation
+ * to SessionRuntime and provides UI-friendly session listings. It does not contain
+ * business logic for score entry or state transitions.
+ * 
+ * <h2>SESSION INITIALIZATION FLOW</h2>
+ * <ul>
+ *   <li>Delete existing sessions for clean start</li>
+ *   <li>Identify all teams in competition via LigamatchBE</li>
+ *   <li>Delegate to SessionRuntime.initializeSession() for each team</li>
+ *   <li>SessionRuntime determines initial state using MatchAnalysisService</li>
+ * </ul>
+ * 
+ * <h2>ADMIN SESSION OVERVIEW</h2>
+ * <ul>
+ *   <li>Lists all active sessions with team and opponent names</li>
+ *   <li>Shows current state and pass number</li>
+ *   <li>Provides tokens for tablet access</li>
+ *   <li>Minimal WARTE evaluation for display accuracy</li>
+ * </ul>
+ * 
+ * <h2>TOKEN SECURITY</h2>
+ * <ul>
+ *   <li>16-byte cryptographically secure random tokens</li>
+ *   <li>URL-safe Base64 encoding without padding</li>
+ *   <li>Token regeneration preserves all session state</li>
+ * </ul>
+ * 
+ * <h2>LEGACY COMPATIBILITY</h2>
+ * <ul>
+ *   <li>Automatic cleanup of pre-created empty passes</li>
+ *   <li>Smart renumbering of existing pass data</li>
+ *   <li>Session resynchronization after cleanup</li>
+ * </ul>
+ * 
+ * @author Marty Lauterbach - Clean architecture implementation
  */
 @Service
 public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelAdminComponent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TabletSchusszettelAdminComponentImpl.class);
 
-    private static final String STATUS_SCHUETZENMELDUNG = "SCHUETZENMELDUNG";
-    private static final String STATUS_SATZEINGABE = "SATZEINGABE";
-    private static final String STATUS_WARTE = "WARTE";
-    private static final String STATUS_WETTKAMPF_ENDE = "WETTKAMPF_ENDE";
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -64,9 +98,11 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final PasseComponent passeComponent;
-    private final TabletSchusszettelSyncComponent syncComponent;
+    private final MatchAnalysisService matchAnalysisService;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
 
     @Autowired
     public TabletSchusszettelAdminComponentImpl(final TabletSchusszettelDAO sessionDAO,
@@ -74,17 +110,21 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                                                 final DsbMannschaftComponent mannschaftComponent,
                                                 final VereinComponent vereinComponent,
                                                 final PasseComponent passeComponent,
-                                                final TabletSchusszettelSyncComponent syncComponent,
+                                                final MatchAnalysisService matchAnalysisService,
                                                 final WettkampfComponent wettkampfComponent,
-                                                final VeranstaltungComponent veranstaltungComponent) {
+                                                final VeranstaltungComponent veranstaltungComponent,
+                                                final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                                final DsbMitgliedComponent dsbMitgliedComponent) {
         this.sessionDAO        = sessionDAO;
         this.matchComponent    = matchComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent     = vereinComponent;
         this.passeComponent      = passeComponent;
-        this.syncComponent      = syncComponent;
+        this.matchAnalysisService = matchAnalysisService;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
 
     /**
@@ -93,63 +133,44 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
     @Override
     public void initializeForWettkampf(final long wettkampfId) {
         try {
+            // Delete existing sessions for clean start
             sessionDAO.deleteByWettkampfId(wettkampfId);
 
-            final List<MatchDO> allMatches = matchComponent.findByWettkampfId(wettkampfId);
-            if (allMatches.isEmpty()) {
+            // Get all teams for this wettkampf
+            final List<LigamatchBE> allLigamatches = matchComponent.getLigamatchesByWettkampfId(wettkampfId);
+            if (allLigamatches.isEmpty()) {
                 throw new BusinessException(
                         ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                        "No matches found for wettkampf " + wettkampfId);
+                        "No ligamatches found for wettkampf " + wettkampfId);
             }
 
-            allMatches.forEach(m -> {
+            allLigamatches.forEach(m -> {
                 if (m.getMannschaftId() == null) {
                     throw new BusinessException(
                             ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                            "Invalid match data (missing team) for wettkampf " + wettkampfId);
+                            "Invalid ligamatch data (missing team) for wettkampf " + wettkampfId);
                 }
             });
 
-            final Set<Long> teamIds = allMatches.stream()
-                    .map(MatchDO::getMannschaftId)
+            final Set<Long> teamIds = allLigamatches.stream()
+                    .map(LigamatchBE::getMannschaftId)
                     .collect(Collectors.toSet());
 
+            // Initialize session for each team
             for (final Long teamId : teamIds) {
-                final List<MatchDO> teamMatches = allMatches.stream()
-                        .filter(m -> Objects.equals(m.getMannschaftId(), teamId))
-                        .sorted(Comparator.comparingLong(MatchDO::getNr))
-                        .toList();
-
-                // Use sync component to determine correct current match and state
-                MatchDO currentMatch = syncComponent.findCurrentMatchForTeam(teamMatches, teamId);
-                if (currentMatch == null) {
-                    // Fallback to first match if analysis fails
-                    currentMatch = teamMatches.get(0);
-                    LOGGER.warn("Could not determine current match for team {}, using first match", teamId);
+                try {
+                    String token = generateUrlSafeToken();
+                    SessionRuntime runtime = SessionRuntime.initializeSession(
+                        wettkampfId, teamId, token,
+                        sessionDAO, matchComponent, passeComponent, matchAnalysisService, 
+                        mannschaftsmitgliedComponent, dsbMitgliedComponent, wettkampfComponent, veranstaltungComponent);
+                    
+                    LOGGER.info("Initialized session for team {} with status {}", 
+                               teamId, runtime.getCurrentState());
+                               
+                } catch (Exception e) {
+                    throw e;
                 }
-                
-                final long opponentId = findOpponentTeamId(currentMatch, teamId);
-                
-                // Determine correct passe number based on existing data
-                int correctPasseNumber = syncComponent.determineCorrectPasseNumber(currentMatch.getId(), teamId);
-                
-                // Determine correct status based on match progress
-                String initialStatus = determineInitialStatus(currentMatch.getId(), teamId, correctPasseNumber);
-
-                final TabletSchusszettelEntity session = new TabletSchusszettelEntity();
-                session.setWettkampfId(wettkampfId);
-                session.setTeamId(teamId);
-                session.setCurrentMatchId(currentMatch.getId());
-                session.setCurrentMatchNumber(Math.toIntExact(currentMatch.getNr()));
-                session.setCurrentPasseNumber(correctPasseNumber);
-                session.setStatus(initialStatus);
-                session.setGegnerTeamId(opponentId);
-                session.setToken(generateUrlSafeToken());
-
-                LOGGER.info("Initializing session for team {} with match {} passe {} status {}", 
-                    teamId, currentMatch.getId(), correctPasseNumber, initialStatus);
-
-                sessionDAO.createSession(session, -1L);
             }
 
         } catch (final BusinessException be) {
@@ -162,40 +183,6 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
         }
     }
 
-    /**
-     * Determines the correct initial status for a tablet session based on match progress.
-     */
-    private String determineInitialStatus(long matchId, long teamId, int currentPasseNumber) {
-        try {
-            // Get all passes for this team and match
-            List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
-            
-            // If no passes exist, start with registration
-            if (teamPasses.isEmpty() || currentPasseNumber == 1) {
-                return STATUS_SCHUETZENMELDUNG;
-            }
-            
-            // If we have passes with actual data, we're in match progress
-            boolean hasActualData = teamPasses.stream()
-                    .anyMatch(p -> p.getPfeil1() != null || p.getPfeil2() != null || p.getPfeil3() != null);
-            
-            if (hasActualData) {
-                // Check if match is completed (5 passes or match decided)
-                if (currentPasseNumber > 5) {
-                    return STATUS_WARTE;  // Match completed, waiting for opponent or next round
-                } else {
-                    return STATUS_SATZEINGABE;  // Match in progress
-                }
-            } else {
-                return STATUS_SCHUETZENMELDUNG;  // No actual shot data yet
-            }
-            
-        } catch (Exception e) {
-            LOGGER.warn("Could not determine initial status for team {} match {}: {}", 
-                teamId, matchId, e.getMessage());
-            return STATUS_SCHUETZENMELDUNG;  // Safe fallback
-        }
-    }
 
     /**
      * {@inheritDoc}
@@ -266,94 +253,82 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
         return Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
     }
 
-    /**
-     * Find opponent by matching round & pairing.
-     */
-    private long findOpponentTeamId(final MatchDO m, final long own) {
-        return matchComponent.findByWettkampfId(m.getWettkampfId()).stream()
-                .filter(o ->
-                        Objects.equals(o.getNr(), m.getNr()) &&
-                                Objects.equals(o.getBegegnung(), m.getBegegnung()) &&
-                                !Objects.equals(o.getMannschaftId(), own))
-                .findFirst()
-                .map(MatchDO::getMannschaftId)
-                .orElseThrow(() -> new BusinessException(
-                        ErrorCode.INTERNAL_ERROR,
-                        "Opponent not found for match " + m.getId()));
-    }
 
     /**
-     * Build wettkampf information from wettkampf and veranstaltung data
+     * Build wettkampf information using StateContext helper method.
      */
     private WettkampfInfoDO buildWettkampfInfo(long wettkampfId) {
         try {
-            WettkampfDO wettkampf = wettkampfComponent.findById(wettkampfId);
-            VeranstaltungDO veranstaltung = veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId());
-
-            return new WettkampfInfoDO(
-                    wettkampf.getId(),
-                    wettkampf.getWettkampfTag(),
-                    wettkampf.getWettkampfDatum(),
-                    wettkampf.getWettkampfBeginn(),
-                    wettkampf.getWettkampfOrtsname(),
-                    wettkampf.getWettkampfOrtsinfo(),
-                    wettkampf.getWettkampfStrasse(),
-                    wettkampf.getWettkampfPlz(),
-                    veranstaltung.getVeranstaltungID(),
-                    veranstaltung.getVeranstaltungName(),
-                    veranstaltung.getVeranstaltungSportJahr(),
-                    veranstaltung.getVeranstaltungLigaName(),
-                    veranstaltung.getVeranstaltungWettkampftypName()
-            );
+            // Create a minimal StateContext for the helper method
+            // This avoids code duplication while maintaining clean architecture
+            de.bogenliga.application.business.schusszettel.impl.business.domain.states.StateContext context = 
+                new de.bogenliga.application.business.schusszettel.impl.business.domain.states.StateContext(
+                    null, // session not needed for this helper
+                    null, // runtime not needed for this helper
+                    matchComponent,
+                    passeComponent,
+                    matchAnalysisService,
+                    mannschaftsmitgliedComponent,
+                    dsbMitgliedComponent,
+                    wettkampfComponent,
+                    veranstaltungComponent
+                ) {
+                    @Override
+                    public long getWettkampfId() {
+                        return wettkampfId;
+                    }
+                };
+            
+            return context.buildWettkampfInfo();
         } catch (Exception e) {
-            LOGGER.warn("Could not build wettkampf info for wettkampfId {}: {}", wettkampfId, e.getMessage());
             return null;
         }
     }
 
+
+
+
     /**
-     * Lists all tablet‐sessions for a competition, including team & opponent club names.
-     * Optionally synchronizes session data with current match state for accurate admin view.
-     * Updated to include wettkampf information in each session.
+     * Generates admin session overview with team names and current status.
      */
     @Override
     public TabletSessionInfoDO generateSchusszettelSessions(final long wettkampfId) {
 
-        // Build wettkampf info once for all sessions
+        // Build wettkampf info and clean legacy data
         final WettkampfInfoDO wettkampfInfo = buildWettkampfInfo(wettkampfId);
+        cleanupLegacyEmptyPassesForWettkampf(wettkampfId);
 
-        // Load all sessions
+        // Load all sessions for display
         final List<TabletSchusszettelEntity> entities = sessionDAO.findByWettkampfId(wettkampfId);
 
+        // Minimal WARTE evaluation for display accuracy only
         entities.forEach(session -> {
             try {
-                // Use the shared sync component
-                TabletSchusszettelSyncComponent.SyncResult syncResult =
-                        syncComponent.synchronizeSession(session, wettkampfId, session.getTeamId(), true);
-
-                if (!syncResult.success) {
-                    LOGGER.warn("Failed to synchronize session for team {} in admin view: {}",
-                            session.getTeamId(), syncResult.message);
-                } else if (syncResult.dataWasUpdated) {
-                    LOGGER.debug("Admin view: Session data synchronized for team {}: {}",
-                            session.getTeamId(), syncResult.message);
+                // Only evaluate WARTE state for display - no state modification
+                if ("WARTE".equals(session.getStatus())) {
+                    SessionRuntime runtime = new SessionRuntime(session, sessionDAO, matchComponent, passeComponent, matchAnalysisService, 
+                        mannschaftsmitgliedComponent, dsbMitgliedComponent, wettkampfComponent, veranstaltungComponent);
+                    TabletSchusszettelEntity opponentSession = sessionDAO
+                            .findByWettkampfUndTeam(wettkampfId, session.getGegnerTeamId())
+                            .orElse(null);
+                    
+                    // Evaluate for display only - state changes handled by tablet operations
+                    runtime.evaluateWithOpponentWAITstate(opponentSession);
                 }
-
             } catch (Exception e) {
-                // Log but don't fail - admin view should be resilient
-                LOGGER.warn("Exception during admin synchronization for team {}: {}",
-                        session.getTeamId(), e.getMessage());
+                LOGGER.debug("Minor error during admin display evaluation for team {}: {}", 
+                           session.getTeamId(), e.getMessage());
+                // Continue with display - don't modify session state on errors
             }
         });
 
         // Map into DTOs
         final TabletSessionSingDO[] singDOs = entities.stream()
                 .map(e -> {
-                    // lookup own team name
+                    // lookup own team name - just verein name
                     final DsbMannschaftDO team = mannschaftComponent.findById(e.getTeamId());
                     final VereinDO vTeam = vereinComponent.findById(team.getVereinId());
-                    final String teamName = vTeam.getName()
-                            + (team.getNummer() > 1 ? " " + team.getNummer() : "");
+                    final String teamName = vTeam.getName();
 
                     // lookup next opponent name (may stay null)
                     String opponentName = null;
@@ -361,10 +336,8 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
                         try {
                             final DsbMannschaftDO opp = mannschaftComponent.findById(e.getGegnerTeamId());
                             final VereinDO vOpp = vereinComponent.findById(opp.getVereinId());
-                            opponentName = vOpp.getName()
-                                    + (opp.getNummer() > 1 ? " " + opp.getNummer() : "");
+                            opponentName = vOpp.getName();
                         } catch (Exception ex) {
-                            LOGGER.warn("Failed to get opponent name for team {}: {}", e.getGegnerTeamId(), ex.getMessage());
                             opponentName = "Unknown Opponent";
                         }
                     }
@@ -386,5 +359,197 @@ public class TabletSchusszettelAdminComponentImpl implements TabletSchusszettelA
         info.setWettkampfId(wettkampfId);
         info.setTabletSessionSingDOs(singDOs);
         return info;
+    }
+
+    /**
+     * Smart cleanup and renumbering for pre-created empty passes.
+     * <p>
+     * Handles data migration from systems that pre-created empty passes:
+     * 1. Detects matches with null pass entries
+     * 2. Extracts passes with actual scores
+     * 3. Deletes all passes for affected matches
+     * 4. Re-creates passes with sequential numbering (1, 2, 3...)
+     * 5. Preserves all actual score data
+     * 
+     * @param wettkampfId Competition identifier to clean up
+     */
+    private void cleanupLegacyEmptyPassesForWettkampf(long wettkampfId) {
+        try {
+            LOGGER.debug("Starting smart pass cleanup with renumbering for wettkampf {}", wettkampfId);
+            
+            // Get all passes for this wettkampf
+            List<PasseDO> allPasses = passeComponent.findByWettkampfId(wettkampfId);
+            
+            // Group passes by team and match for analysis
+            var passesByTeamAndMatch = allPasses.stream()
+                .collect(Collectors.groupingBy(p -> 
+                    p.getPasseMannschaftId() + "_" + p.getPasseMatchId()));
+            
+            int affectedMatches = 0;
+            int renamedPasses = 0;
+            
+            for (var entry : passesByTeamAndMatch.entrySet()) {
+                List<PasseDO> teamMatchPasses = entry.getValue();
+                
+                // Check if this team/match has any empty pre-created passes
+                boolean hasLegacyPasses = teamMatchPasses.stream().anyMatch(this::isEmptyLegacyPass);
+                
+                if (hasLegacyPasses) {
+                    LOGGER.debug("CLEANUP: Team/Match {} has pre-created data, applying smart cleanup", entry.getKey());
+                    
+                    // Extract valid passes (those with actual scores)
+                    List<PasseDO> validPasses = teamMatchPasses.stream()
+                        .filter(p -> !isEmptyLegacyPass(p))
+                        .sorted(Comparator.comparing(p -> p.getPasseLfdnr() != null ? p.getPasseLfdnr() : 0L))
+                        .toList();
+                    
+                    if (!validPasses.isEmpty()) {
+                        // Renumber and recreate valid passes
+                        int recreatedCount = renumberAndRecreateValidPasses(teamMatchPasses, validPasses);
+                        renamedPasses += recreatedCount;
+                        LOGGER.info("CLEANUP: Renumbered {} passes for team/match {}", recreatedCount, entry.getKey());
+                    } else {
+                        // No valid passes - just delete all legacy passes
+                        deleteAllPassesForTeamMatch(teamMatchPasses);
+                        LOGGER.info("CLEANUP: Deleted all {} legacy passes for team/match {} (no valid data)", 
+                                   teamMatchPasses.size(), entry.getKey());
+                    }
+                    
+                    affectedMatches++;
+                }
+            }
+            
+            if (affectedMatches > 0) {
+                LOGGER.info("CLEANUP: Processed {} affected team/matches, renumbered {} passes for wettkampf {}", 
+                           affectedMatches, renamedPasses, wettkampfId);
+                
+                // Re-sync all sessions for this wettkampf after cleanup
+                resyncAllSessionsAfterCleanup(wettkampfId);
+            } else {
+                LOGGER.debug("No legacy pass data found for wettkampf {}", wettkampfId);
+            }
+            
+        } catch (Exception e) {
+            // Non-fatal - continue with normal session loading
+        }
+    }
+
+    /**
+     * Check if a pass is an empty legacy pass (has null arrow values).
+     * Only null values are from legacy pre-creation - real competition data uses 0 for misses.
+     */
+    private boolean isEmptyLegacyPass(PasseDO passe) {
+        // Legacy passes have null arrow values, real competition data uses 0 for misses
+        return passe.getPfeil1() == null && passe.getPfeil2() == null && passe.getPfeil3() == null;
+    }
+
+    /**
+     * Renumber and recreate valid passes with proper sequential numbering.
+     * This preserves all actual score data while fixing the passe numbering.
+     */
+    private int renumberAndRecreateValidPasses(List<PasseDO> allTeamMatchPasses, List<PasseDO> validPasses) {
+        try {
+            // First, delete ALL passes for this team/match (both valid and invalid)
+            deleteAllPassesForTeamMatch(allTeamMatchPasses);
+            
+            // Group valid passes by shooter to maintain shooter associations
+            var passesByShooter = validPasses.stream()
+                .collect(Collectors.groupingBy(PasseDO::getPasseDsbMitgliedId));
+            
+            int recreatedCount = 0;
+            
+            // Process each shooter's passes
+            for (var shooterEntry : passesByShooter.entrySet()) {
+                Long shooterId = shooterEntry.getKey();
+                List<PasseDO> shooterPasses = shooterEntry.getValue()
+                    .stream()
+                    .sorted(Comparator.comparing(p -> p.getPasseLfdnr() != null ? p.getPasseLfdnr() : 0L))
+                    .toList();
+                
+                // Renumber shooter's passes sequentially starting from 1
+                for (int i = 0; i < shooterPasses.size(); i++) {
+                    PasseDO originalPasse = shooterPasses.get(i);
+                    int newPasseNumber = i + 1; // Start from 1, not 0
+                    
+                    // Create new pass with corrected passe number
+                    PasseDO renamedPasse = new PasseDO(
+                        null, // New ID will be generated
+                        originalPasse.getPasseMannschaftId(),
+                        originalPasse.getPasseWettkampfId(), 
+                        originalPasse.getPasseMatchNr(),
+                        originalPasse.getPasseMatchId(),
+                        (long) newPasseNumber, // Corrected sequential passe number
+                        shooterId,
+                        originalPasse.getPfeil1(), // Preserve original scores
+                        originalPasse.getPfeil2(),
+                        originalPasse.getPfeil3(),
+                        originalPasse.getPfeil4(),
+                        originalPasse.getPfeil5(),
+                        originalPasse.getPfeil6()
+                    );
+                    
+                    // Recreate pass with new numbering
+                    passeComponent.create(renamedPasse, -1L);
+                    recreatedCount++;
+                    
+                    LOGGER.debug("RENUMBER: Shooter {} passe {} -> {} with scores [{}, {}, {}]", 
+                               shooterId, originalPasse.getPasseLfdnr(), newPasseNumber,
+                               originalPasse.getPfeil1(), originalPasse.getPfeil2(), originalPasse.getPfeil3());
+                }
+            }
+            
+            return recreatedCount;
+            
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Delete all passes for a specific team/match combination.
+     */
+    private void deleteAllPassesForTeamMatch(List<PasseDO> teamMatchPasses) {
+        for (PasseDO passe : teamMatchPasses) {
+            try {
+                passeComponent.delete(passe, -1L);
+            } catch (Exception e) {
+                LOGGER.warn("Could not delete pass for team {} shooter {} passe {}: {}", 
+                           passe.getPasseMannschaftId(), passe.getPasseDsbMitgliedId(), 
+                           passe.getPasseLfdnr(), e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Re-synchronize ALL sessions for the wettkampf after cleanup.
+     * This ensures all session passe numbers reflect the cleaned database state.
+     */
+    private void resyncAllSessionsAfterCleanup(long wettkampfId) {
+        try {
+            List<TabletSchusszettelEntity> allSessions = sessionDAO.findByWettkampfId(wettkampfId);
+            LOGGER.debug("Re-synchronizing {} sessions after cleanup for wettkampf {}", allSessions.size(), wettkampfId);
+            
+            for (TabletSchusszettelEntity session : allSessions) {
+                try {
+                    // Recalculate current passe number using clean data
+                    int newPasseNumber = matchAnalysisService.getCurrentPasseNumber(
+                        session.getCurrentMatchId(), session.getTeamId(), 0L);
+                    
+                    if (session.getCurrentPasseNumber() != newPasseNumber) {
+                        LOGGER.info("RESYNC: Updating team {} passe {} -> {} after cleanup", 
+                                   session.getTeamId(), session.getCurrentPasseNumber(), newPasseNumber);
+                        
+                        session.setCurrentPasseNumber(newPasseNumber);
+                        sessionDAO.updateStatus(session, -1L);
+                    }
+                } catch (Exception e) {
+                    // Continue with other sessions
+                }
+            }
+            
+            LOGGER.debug("Session resync completed for all sessions in wettkampf {}", wettkampfId);
+            
+        } catch (Exception e) {
+        }
     }
 }
