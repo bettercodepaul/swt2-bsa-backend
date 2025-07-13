@@ -294,7 +294,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      * @param teamId Team that just completed the set
      * @param opponentTeamId Opponent team ID
      */
-    private void updateMatchScoresAfterSetCompletion(long matchId, long teamId, long opponentTeamId) {
+    void updateMatchScoresAfterSetCompletion(long matchId, long teamId, long opponentTeamId) {
         try {
             
             // 1. Calculate set winner using existing business logic
