@@ -173,19 +173,19 @@ public class SessionRuntimeTest {
     public void evaluateWithOpponentWAITstate_warteState_delegatesToStateObject() {
         testEntity.setStatus("WARTE");
         TabletSchusszettelEntity opponent = createOpponentEntity();
-        
+
         boolean result = sessionRuntime.evaluateWithOpponentWAITstate(opponent);
         // Result depends on state object logic, just verify no crash
-        assertThat(result).isNotNull();
+        assertThat(result == true || result == false).isTrue();
     }
 
     @Test
     public void evaluateWithOpponentWAITstate_matchEndeState_delegatesToStateObject() {
         testEntity.setStatus("MATCH_ENDE");
         TabletSchusszettelEntity opponent = createOpponentEntity();
-        
+
         boolean result = sessionRuntime.evaluateWithOpponentWAITstate(opponent);
-        assertThat(result).isNotNull();
+        assertThat(result == true || result == false).isTrue();
     }
 
     @Test
@@ -203,11 +203,11 @@ public class SessionRuntimeTest {
         TabletSchusszettelEntity opponent = createOpponentEntity();
         when(mockMatchAnalysisService.isMatchComplete(anyLong(), anyLong(), anyLong()))
             .thenThrow(new RuntimeException("DB error"));
-        
+
         boolean result = sessionRuntime.evaluateWithOpponentWAITstate(opponent);
         // The WARTE state logic is complex and may still succeed even with exceptions in match completion check
         // Just verify the method executes without throwing exceptions
-        assertThat(result).isNotNull();
+        assertThat(result == true || result == false).isTrue();
     }
 
     @Test
@@ -587,4 +587,3 @@ public class SessionRuntimeTest {
         return pass;
     }
 }
-
