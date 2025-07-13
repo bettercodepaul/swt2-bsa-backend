@@ -167,7 +167,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            LOGGER.error("Error in submitSchuetzen for team {}: {}", teamId, e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Internal error processing shooter registration: " + e.getMessage());
         }
     }
@@ -204,7 +203,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            LOGGER.error("Error in submitSatz for team {}: {}", teamId, e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "Internal error processing score submission: " + e.getMessage());
         }
     }
@@ -260,7 +258,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             final VereinDO verein = vereinComponent.findById(team.getVereinId());
             return verein.getName();
         } catch (Exception e) {
-            LOGGER.warn("Failed to get team name for team {}: {}", teamId, e.getMessage());
             return "Team " + teamId; // Fallback to technical name
         }
     }
@@ -277,7 +274,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             applyStateDataToResult(result, stateData);
             
         } catch (Exception e) {
-            LOGGER.error("Error enriching response with state data: {}", e.getMessage());
             result.setSchuetzeStammDaten(Collections.emptyList());
             result.setVerfuegbareSchuetzen(Collections.emptyList());
         }
@@ -383,7 +379,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                        teamId, teamSatzpunkte, opponentTeamId, opponentSatzpunkte);
             
         } catch (Exception e) {
-            LOGGER.error("Error updating match scores after set completion for match {}: {}", matchId, e.getMessage());
             // Don't throw exception here - score update failure shouldn't break the workflow
         }
     }
@@ -481,7 +476,6 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             }
             
         } catch (Exception e) {
-            LOGGER.warn("Error in opponent synchronization for team {}: {}", teamId, e.getMessage());
         }
     }
 
