@@ -3,7 +3,6 @@ package de.bogenliga.application.business.vereine.impl.business;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -45,7 +44,7 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public List<VereinDO> findAll() {
         final List<VereinBE> vereinBEList = vereinDAO.findAll();
-        List<VereinDO> vereinDOList = vereinBEList.stream().map(VereinMapper.toVereinDO).collect(Collectors.toList());
+        List<VereinDO> vereinDOList = List.copyOf(vereinBEList.stream().map(VereinMapper.toVereinDO).toList());
 
         return alterDoByRegionName(vereinDOList);
     }
@@ -53,7 +52,7 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public List<VereinDO> findBySearch(final String searchTerm) {
         final List<VereinBE> vereinBEList = vereinDAO.findBySearch(searchTerm);
-        List<VereinDO> vereinDOList = vereinBEList.stream().map(VereinMapper.toVereinDO).collect(Collectors.toList());
+        List<VereinDO> vereinDOList = List.copyOf(vereinBEList.stream().map(VereinMapper.toVereinDO).toList());
 
         return alterDoByRegionName(vereinDOList);
     }
