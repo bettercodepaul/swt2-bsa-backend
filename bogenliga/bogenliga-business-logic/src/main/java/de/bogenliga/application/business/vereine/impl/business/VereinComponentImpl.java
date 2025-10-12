@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,10 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public List<VereinDO> findAll() {
         final List<VereinBE> vereinBEList = vereinDAO.findAll();
-        List<VereinDO> vereinDOList = List.copyOf(vereinBEList.stream().map(VereinMapper.toVereinDO).toList());
+        List<VereinDO> vereinDOList = vereinBEList.stream().map(VereinMapper.toVereinDO).toList();
 
-        return alterDoByRegionName(vereinDOList);
+        List<VereinDO> alteredList = alterDoByRegionName(new ArrayList<>(vereinDOList));
+        return List.copyOf(alteredList);
     }
 
     @Override
