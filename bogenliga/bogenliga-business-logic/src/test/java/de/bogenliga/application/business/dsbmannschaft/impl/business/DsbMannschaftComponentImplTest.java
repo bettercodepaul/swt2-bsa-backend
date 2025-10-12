@@ -40,7 +40,6 @@ public class DsbMannschaftComponentImplTest {
 
     private static final long ID = 2222L;
     private static final long VEREIN_ID =101010L;
-    private static final long LAST_VEREIN_ID =102020L;
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
     private static final long VERANSTALTUNG_ID =1L;
@@ -115,17 +114,7 @@ public class DsbMannschaftComponentImplTest {
     }
 
 
-    public static DsbMannschaftDO getPlatzhalterDO() {
-        return new DsbMannschaftDO(
-                ID,
-                "Platzhalter",
-                PLATZHALTER_ID,
-                NUMMER,
-                BENUTZER_ID,
-                VERANSTALTUNG_ID,
-                SORTIERUNG,
-                SPORTJAHR);
-    }
+
 
     public static DsbMannschaftDO getSortierungsDO(){
         return new DsbMannschaftDO(
@@ -641,27 +630,6 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(vereinComponent);
     }
 
-   /* @Test
-    public void create_withoutNummer_shouldThrowException() {
-        // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
-        final Long l = null;
-        input.setId(ID);
-        input.setNummer(l);
-
-        // configure mocks
-
-        // call test method
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(input, USER))
-                .withMessageContaining("must not be null")
-                .withNoCause();
-
-        // assert result
-
-        // verify invocations
-        verifyZeroInteractions(dsbMannschaftDAO);
-    }*/
 
     @Test
     public void update() {
