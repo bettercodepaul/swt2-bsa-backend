@@ -73,7 +73,7 @@ public class RequiresPermissionAspect {
 
             requiredPermissionStrings = requiredPermissions.stream()
                     .map(UserPermission::name)
-                    .collect(Collectors.toList());
+                    .toList();
             joinedRequiredPermissions = String.join(", ", requiredPermissionStrings);
 
             LOG.trace("Verify required permissions: [{}]", joinedRequiredPermissions);
