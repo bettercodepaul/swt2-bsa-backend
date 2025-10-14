@@ -1,0 +1,27 @@
+Ticket #1824: Sonnar Cleanup entfernen unnötiger imports
+
+Ziel dieses Tickets war es, bestimmte im Ticket aufgeführte Imports im Backend auf Duplikate zu überprüfen.
+Damit sollte sichergestellt werden, dass keine unnötigen Imports im Code vorhanden sind.
+
+## Gesuchte Imports
+
+Es wurde gezielt nach folgenden Imports gesucht:
+```java
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.enity.DsbMitgliedBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.UserBE;
+```
+
+## Vorgehen
+
+Zunächst wurde gezielt nach den oben genannten Imports innerhalb des Backends gesucht.
+Da hierbei keine unnötigen oder doppelten Imports gefunden wurden, wurde die Suche auf eine projektweite Code-Analyse ausgeweitet.
+
+Im Rahmen dieser Analyse wurden zwar Duplikate von Imports festgestellt, jedoch handelte es sich dabei nicht um die im Ticket genannten Imports.
+
+## Ergebnis
+
+- Keine der im Ticket aufgeführten Imports waren unnötig oder doppelt vorhanden.
+- Projektweite Analyse hat keine relevanten unnötigen Imports gemäß Ticket ergeben.
+- Das Ticket kann daher als erledigt betrachtet werden.
