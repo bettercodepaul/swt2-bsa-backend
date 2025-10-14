@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 public class SchuetzenstatistikMatchDAOTest {
 
     // test data
-    private static final Long veranstaltungId = 1L;
-    private static final Long vereinId = 7L;
-    private static final Long tag = 1L;
-    private static final Long wettkampfId = 2L;
+    private static final Long VERANSTALTUNG_ID  = 1L;
+    private static final Long VEREIN_ID = 7L;
+    private static final Long TAG = 1L;
+    private static final Long WETTKAMPF_ID = 2L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -44,7 +44,7 @@ public class SchuetzenstatistikMatchDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchVeranstaltung(veranstaltungId, vereinId);
+        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchVeranstaltung(VERANSTALTUNG_ID, VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -77,7 +77,7 @@ public class SchuetzenstatistikMatchDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchWettkampf(wettkampfId, vereinId, tag);
+        final List<SchuetzenstatistikMatchBE> actual = underTest.getSchuetzenstatistikMatchWettkampf(WETTKAMPF_ID, VEREIN_ID, TAG);
 
         // assert result
         assertThat(actual)
