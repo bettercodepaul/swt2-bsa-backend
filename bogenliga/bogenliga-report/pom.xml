@@ -39,12 +39,7 @@
             <groupId>de.bogenliga</groupId>
             <artifactId>bogenliga-common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.bogenliga</groupId>
-            <artifactId>bogenliga-application</artifactId>
-            <version>${project.version}</version>
-        </dependency>        
+        </dependency>      
     </dependencies>
 
     <build>
