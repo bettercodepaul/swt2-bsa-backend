@@ -113,10 +113,6 @@ public class RequiresOnePermissionAspectTest {
         underTest.checkPermission(testJoinPoint);
     }
 
-    /* Test of static class. If someone knows how, please implement */
-//    @Test
-//    public void testCheckPermission() {}
-
 
     @Test
     public void testHasPermission_requestAttributesNull_returnFalse() {
