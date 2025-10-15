@@ -188,7 +188,7 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/findAllWithPages")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit,dateInterval);
             return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
         }
@@ -203,7 +203,7 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/findErrors")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllErrors(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit,
                     dateInterval);
             return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
@@ -213,7 +213,7 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/findInProgress")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllInProgress(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit,
                     dateInterval);
             return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
@@ -223,7 +223,7 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/findNews")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllNews(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
-        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
+        if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit,
                     dateInterval);
             return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
@@ -242,16 +242,16 @@ public class TriggerService implements ServiceFacade {
     @DeleteMapping("/deleteEntries")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public void deleteEntries(@RequestParam("status") String status,@RequestParam("dateInterval") String dateInterval) {
-        if(checkForMaliciousDeletionParams(status,dateInterval)) {
+        if(checkForMaliciousDeletionParams(status)) {
             triggerComponent.deleteEntries(status, dateInterval);
         }
     }
-    public boolean checkForMaliciousQueryParams(String offsetMuliplicator, String queryPageLimit, String dateInterval){
+    public boolean checkForMaliciousQueryParams(String offsetMuliplicator, String queryPageLimit){
         //returns true if Params are not malicious
         try{
             if(offsetMuliplicator != null && queryPageLimit != null){
-                int actualOffsetMuliplicator = Integer.parseInt(offsetMuliplicator);
-                int actualQueryPageLimit = Integer.parseInt(queryPageLimit);
+                Integer.parseInt(offsetMuliplicator);
+                Integer.parseInt(queryPageLimit);
             }
             else {
                 throw new IllegalArgumentException();
@@ -264,7 +264,7 @@ public class TriggerService implements ServiceFacade {
         return true;
     }
 
-    public boolean checkForMaliciousDeletionParams(String status, String dateInterval){
+    public boolean checkForMaliciousDeletionParams(String status){
         //returns true if Params are not malicious
         try {
             if(status == null){

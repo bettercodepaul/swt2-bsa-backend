@@ -10,5 +10,5 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @author Lars Bahnmüller, Lars_Herbert.Bahnmueller@Student.Reutlingen-University.DE
  */
 public class FeedbackClassDTO implements DataTransferObject {
-    private String feedBack;
+
 }
