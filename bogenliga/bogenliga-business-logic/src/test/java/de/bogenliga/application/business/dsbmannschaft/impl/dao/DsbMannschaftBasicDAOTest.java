@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 public class DsbMannschaftBasicDAOTest {
 
     private static final Long USER = 0L;
-    private static final Long VERSION = 0L;
 
     private static final long ID = 2222L;
     private static final long VEREIN_ID =101010;
