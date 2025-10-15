@@ -28,7 +28,7 @@ public class SchuetzenstatistikWettkampfDAOTest {
     private BasicDAO basicDao;
     @InjectMocks
     private SchuetzenstatistikWettkampfDAO underTest;
-    private static final Long wettkampfId = 2L;
+    private static final Long WETTKAMPF_ID = 2L;
     private static final Long vereinId = 7L;
     private static final Long veranstaltungId = 1L;
     private static final Long sportjahr = 0L;
@@ -72,7 +72,7 @@ public class SchuetzenstatistikWettkampfDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
+        final List<SchuetzenstatistikWettkampfBE> actual = underTest.getSchuetzenstatistikWettkampf(WETTKAMPF_ID, vereinId);
 
         // assert result
         assertThat(actual)
