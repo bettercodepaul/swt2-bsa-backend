@@ -8,10 +8,10 @@ import junit.framework.TestCase;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class TriggerCountDOTest extends TestCase {
-    private static final Long count = 40000L;
+    private static final Long COUNT = 40000L;
     private static final Long altCount =50000L;
     public TriggerCountDO getExpectedCountDO() {
-        return new TriggerCountDO(count);
+        return new TriggerCountDO(COUNT);
     }
 
     @Test
@@ -19,7 +19,7 @@ public class TriggerCountDOTest extends TestCase {
         TriggerCountDO actualDO = getExpectedCountDO();
         Long actualCount = actualDO.getCount();
 
-        assertEquals(count, actualCount);
+        assertEquals(COUNT, actualCount);
     }
 
     @Test
