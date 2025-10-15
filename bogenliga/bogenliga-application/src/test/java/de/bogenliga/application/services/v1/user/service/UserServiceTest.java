@@ -432,42 +432,6 @@ public class UserServiceTest {
 
     }
 
-
-    // tests for reset (password)
-    /*@Test
-    public void reset_success() {
-
-        // configure mocks
-        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
-        when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
-
-        //prepare test data ChangePWD
-        final UserDO loggedInUser = new UserDO();
-        loggedInUser.setEmail(USERNAME);
-        loggedInUser.setId(ID);
-        loggedInUser.setVersion(VERSION);
-
-        final UserDO selectedUser = new UserDO();
-        selectedUser.setEmail(EMAIL);
-        selectedUser.setId(492L);
-        selectedUser.setVersion(VERSION);
-
-        final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
-        userCredentialsDTO.setUsername(EMAIL);
-        userCredentialsDTO.setPassword(PASSWORD);
-
-        // configure mocks
-        when(userComponent.resetPassword(any(UserDO.class), anyString(), anyLong())).thenReturn(selectedUser);
-
-        // call test method
-        final UserDTO actual = underTest.resetPassword(requestWithHeader, userCredentialsDTO);
-
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isNotEqualTo(loggedInUser.getId());
-        assertThat(actual.getEmail()).isNotEqualTo(loggedInUser.getEmail());
-    }*/
-
     @Test
     public void reset_withoutCredentials_shouldThrowException() {
         // prepare test data
