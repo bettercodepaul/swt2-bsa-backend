@@ -70,7 +70,6 @@ public class RequiresOnePermissionAspectTest {
 
 
     private static final Long W_id = 5L;
-    private static final String W_name = "Liga_kummulativ";
 
     private static final Long W_VID = 243L;
     private static final Long W_TYP_ID = 0L;
