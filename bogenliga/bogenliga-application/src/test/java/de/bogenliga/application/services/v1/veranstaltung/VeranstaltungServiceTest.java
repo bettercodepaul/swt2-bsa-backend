@@ -51,8 +51,6 @@ public class VeranstaltungServiceTest {
 
     private static final String PHASE = "Geplant";
 
-    private static final VeranstaltungPhase.Phase PHASE_GEPLANT = VeranstaltungPhase.Phase.GEPLANT;
-
     private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
     private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
