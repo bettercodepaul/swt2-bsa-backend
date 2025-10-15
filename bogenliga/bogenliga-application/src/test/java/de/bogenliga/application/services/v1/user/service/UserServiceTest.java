@@ -59,7 +59,6 @@ public class UserServiceTest {
     private static final String PASSWORD = "CorrectPasswordV1";
     private static final String NEUESPASSWORD = "CorrectPasswordV2";
     private static final String EMAIL = "test@test.com";
-    private static final Boolean USING2FA = false;
     private static final String JWT = "jwt";
     private static final String ERROR_MESSAGE = "error";
     private static final List<String> PERMISSIONS = Arrays.asList(
