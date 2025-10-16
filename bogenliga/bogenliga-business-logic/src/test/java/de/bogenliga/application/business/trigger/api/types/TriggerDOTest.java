@@ -25,7 +25,7 @@ public class TriggerDOTest extends TestCase{
 
 
 	//Test data for setters
-	private static final Long newID = 8L;
+	private static final Long NEW_ID = 8L;
 	private static final String newKATEGORIE = "dumber";
 	private static final Long newALTSYSTEM_ID = 10L;
 	private static final TriggerChangeOperation newOPERATION = null;
@@ -50,10 +50,10 @@ public class TriggerDOTest extends TestCase{
 	@Test
 	public void testSetId(){
 		TriggerDO actual = getExpectedDTO();
-		actual.setId(newID);
+		actual.setId(NEW_ID);
 		Long actualId = actual.getId();
 
-		assertEquals(newID, actualId);
+		assertEquals(NEW_ID, actualId);
 	}
 
 	@Test

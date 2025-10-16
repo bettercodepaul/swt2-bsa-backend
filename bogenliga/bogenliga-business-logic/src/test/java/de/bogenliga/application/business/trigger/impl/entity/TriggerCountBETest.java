@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class TriggerCountBETest extends TestCase {
-    private static final Long count = 40000L;
+    private static final Long COUNT = 40000L;
     private static final Long altCount = 50000L;
     public TriggerCountBE getExpectedCountBE() {
         return new TriggerCountBE();
@@ -19,10 +19,10 @@ public class TriggerCountBETest extends TestCase {
     @Test
     public void testGetCount(){
         TriggerCountBE actualBE = getExpectedCountBE();
-        actualBE.setCount(count);
+        actualBE.setCount(COUNT);
         Long actualCount = actualBE.getCount();
 
-        assertEquals(count, actualCount);
+        assertEquals(COUNT, actualCount);
     }
 
     @Test
@@ -37,14 +37,14 @@ public class TriggerCountBETest extends TestCase {
     @Test
     public void testToString() {
         final TriggerCountBE actualBE = getExpectedCountBE();
-        actualBE.setCount(count);
+        actualBE.setCount(COUNT);
 
 
         final String actual = actualBE.toString();
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Long.toString(count));
+                .contains(Long.toString(COUNT));
     }
 
 }
