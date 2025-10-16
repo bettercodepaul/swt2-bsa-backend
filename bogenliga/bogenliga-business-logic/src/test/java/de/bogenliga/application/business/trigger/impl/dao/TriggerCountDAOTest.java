@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class TriggerCountDAOTest{
-    private static final Long count = 40000L;
+    private static final Long COUNT = 40000L;
     private static final Long altCount =50000L;
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -30,7 +30,7 @@ public class TriggerCountDAOTest{
     private TriggerCountDAO triggerCountDAO;
     public static TriggerCountBE getTriggerCountBE() {
         TriggerCountBE countBE = new TriggerCountBE();
-        countBE.setCount(count);
+        countBE.setCount(COUNT);
         
         return countBE;
     }
@@ -41,7 +41,7 @@ public class TriggerCountDAOTest{
     public void testFindAllCount() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -57,7 +57,7 @@ public class TriggerCountDAOTest{
     public void testFindInProgressCount() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -73,7 +73,7 @@ public class TriggerCountDAOTest{
     public void testFindUnprocessedCount() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -88,7 +88,7 @@ public class TriggerCountDAOTest{
     public void testCountAllEntriesByStatusAndDateInterval() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -103,7 +103,7 @@ public class TriggerCountDAOTest{
     public void testCountSuccessedEntriesByStatusAndDateInterval() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -118,7 +118,7 @@ public class TriggerCountDAOTest{
     public void testCountInProgressEntriesByStatusAndDateInterval() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -133,7 +133,7 @@ public class TriggerCountDAOTest{
     public void testCountNewEntriesByStatusAndDateInterval() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);
@@ -148,7 +148,7 @@ public class TriggerCountDAOTest{
     public void testCountFailedEntriesByStatusAndDateInterval() {
         // prepare test data
         final TriggerCountBE expectedCountBE = getTriggerCountBE();
-        expectedCountBE.setCount(count);
+        expectedCountBE.setCount(COUNT);
 
         // configure mocks
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedCountBE);

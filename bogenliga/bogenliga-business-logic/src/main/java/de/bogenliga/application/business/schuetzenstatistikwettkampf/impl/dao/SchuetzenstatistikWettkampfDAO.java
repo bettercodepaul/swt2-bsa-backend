@@ -37,7 +37,6 @@ public class SchuetzenstatistikWettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPFTAGESCHNITT_BE = "wettkampftageSchnitt";
 
     // for statistics for one archer in a season across ALL leagues
-    private static final String SCHNITT_WKT1_BE = "schnitt_wettkampftage1";
     private static final String SCHNITT_WKT2_BE = "schnitt_wettkampftage2";
     private static final String SCHNITT_WKT3_BE = "schnitt_wettkampftage3";
     private static final String SCHNITT_WKT4_BE = "schnitt_wettkampftage4";
