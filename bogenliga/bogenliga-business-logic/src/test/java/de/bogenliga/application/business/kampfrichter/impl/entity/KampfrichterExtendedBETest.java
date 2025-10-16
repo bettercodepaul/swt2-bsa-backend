@@ -25,7 +25,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     private static final String EMAIL = "max.mustermann@test.de";
 
     // Test data for setters
-    private static final Long nUSERID = 2L;
+    private static final Long N_USER_ID = 2L;
     private static final Long nWETTKAMPFID = 888L;
     private static final Boolean nLEITEND = true;
     private static final String nVORNAME = "Kaede";
@@ -67,8 +67,8 @@ public class KampfrichterExtendedBETest extends TestCase {
 
     @Test
     public void testSetKampfrichterExtendedUserID() {
-        Long expected = nUSERID;
-        underTest.setKampfrichterExtendedUserID(nUSERID);
+        Long expected = N_USER_ID;
+        underTest.setKampfrichterExtendedUserID(N_USER_ID);
         Long actual = underTest.getKampfrichterExtendedUserID();
 
         assertEquals(expected, actual);

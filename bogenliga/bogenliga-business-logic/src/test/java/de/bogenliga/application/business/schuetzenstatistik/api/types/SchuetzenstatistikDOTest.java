@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoRule;
 import static org.junit.Assert.*;
 
 public class SchuetzenstatistikDOTest {
-    private static final Long veranstaltungId = 1L;
+    private static final Long VERANSTALTUNG_ID = 1L;
     private static final String veranstaltungName = "Name_der_Veranstaltung";
     private static final Long wettkampfId = 2L;
     private static final int wettkampfTag = 3;
@@ -35,7 +35,7 @@ public class SchuetzenstatistikDOTest {
     //create a SchuetzenstatistikDO-Object for the test with values
     public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
         final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
-        expectedSchuetzenstatistikDO.setveranstaltungId(veranstaltungId);
+        expectedSchuetzenstatistikDO.setveranstaltungId(VERANSTALTUNG_ID);
         expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
         expectedSchuetzenstatistikDO.setwettkampfId(wettkampfId);
         expectedSchuetzenstatistikDO.setwettkampfTag(wettkampfTag);
