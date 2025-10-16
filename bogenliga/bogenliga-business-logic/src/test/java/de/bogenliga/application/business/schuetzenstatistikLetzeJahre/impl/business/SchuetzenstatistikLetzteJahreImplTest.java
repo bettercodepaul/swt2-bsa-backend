@@ -23,17 +23,17 @@ import static org.mockito.Mockito.*;
  * @author Alessa Hackh
  */
 public class SchuetzenstatistikLetzteJahreImplTest {
-    private static final long vereinId = (long) 7;
-    private static final long veranstaltungId = (long) 1;
-    private static final long sportjahr = (long) 2002;
+    private static final long VEREIN_ID = 7L;
+    private static final long VERANSTALTUNG_ID = 1L;
+    private static final long SPORTJAHR = 2002L;
 
-    private static final String schuetzenname = "Name Schütze";
-    private static final float sportjahr1 = (float) 8;
-    private static final float sportjahr2 = (float) 7;
-    private static final float sportjahr3 = (float) 6.5;
-    private static final float sportjahr4 = (float) 7.8;
-    private static final float sportjahr5 = (float) 8.2;
-    private static final float allejahre_schnitt = (float) 7.5;
+    private static final String SCHUETZENNAME= "Name Schütze";
+    private static final float SPORTJAHR_1 = 8f;
+    private static final float SPORTJAHR_2 = 7f;
+    private static final float SPORTJAHR_3 = 6.5f;
+    private static final float SPORTJAHR_4 = 7.8f;
+    private static final float SPORTJAHR_5 = 8.2f;
+    private static final float ALLEJAHRE_SCHNITT= 7.5f;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -49,13 +49,13 @@ public class SchuetzenstatistikLetzteJahreImplTest {
 
     public static SchuetzenstatistikLetzteJahreBE getSchuetzenstatistikLetzteJahreBE() {
         final SchuetzenstatistikLetzteJahreBE expectedSchuetzenstatistikLetzteJahreBE = new SchuetzenstatistikLetzteJahreBE();
-        expectedSchuetzenstatistikLetzteJahreBE.setSchuetzenname(schuetzenname);
-        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr1(sportjahr1);
-        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr2(sportjahr2);
-        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr3(sportjahr3);
-        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr4(sportjahr4);
-        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr5(sportjahr5);
-        expectedSchuetzenstatistikLetzteJahreBE.setAllejahre_schnitt(allejahre_schnitt);
+        expectedSchuetzenstatistikLetzteJahreBE.setSchuetzenname(SCHUETZENNAME);
+        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr1(SPORTJAHR_1);
+        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr2(SPORTJAHR_2);
+        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr3(SPORTJAHR_3);
+        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr4(SPORTJAHR_4);
+        expectedSchuetzenstatistikLetzteJahreBE.setSportjahr5(SPORTJAHR_5);
+        expectedSchuetzenstatistikLetzteJahreBE.setAllejahre_schnitt(ALLEJAHRE_SCHNITT);
 
         return expectedSchuetzenstatistikLetzteJahreBE;
     }
@@ -71,7 +71,7 @@ public class SchuetzenstatistikLetzteJahreImplTest {
         when(SchuetzenstatistikLetzteJahreDAO.getSchuetzenstatistikLetzteJahre(anyLong(), anyLong(), anyLong())).thenReturn(expectedBEList);
 
         // call test method
-        final List<SchuetzenstatistikLetzteJahreDO> actual = underTest.getSchuetzenstatistikLetzteJahre(sportjahr, veranstaltungId, vereinId);
+        final List<SchuetzenstatistikLetzteJahreDO> actual = underTest.getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNG_ID, VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -91,7 +91,7 @@ public class SchuetzenstatistikLetzteJahreImplTest {
 
         // verify invocations
         verify(SchuetzenstatistikLetzteJahreDAO)
-                .getSchuetzenstatistikLetzteJahre(sportjahr, veranstaltungId,vereinId);
+                .getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNG_ID,VEREIN_ID);
     }
 
     //Input ID null -> Exception
