@@ -7,9 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DsbMannschaftBETest {
 
-    private static final Long USER = 0L;
-    private static final Long VERSION = 0L;
-
     private static final long id = 2222L;
     private static final long vereinId=101010;
     private static final long nummer=111;
