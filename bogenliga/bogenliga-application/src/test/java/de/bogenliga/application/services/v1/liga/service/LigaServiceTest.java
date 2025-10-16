@@ -203,8 +203,6 @@ public class LigaServiceTest {
     public void findByLowest(){
         final LigaDO ligaDO = getLigaDO();
 
-        final List<LigaDO> ligaDOList = Collections.singletonList(ligaDO);
-
         // configure mocks
         when(ligaComponent.findByLowest(ID)).thenReturn(ligaDO);
 
