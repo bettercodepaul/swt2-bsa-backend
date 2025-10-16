@@ -74,11 +74,6 @@ public class KampfrichterDAO implements DataAccessObject {
                     + " FROM kampfrichter "
                     + " WHERE kampfrichter_benutzer_id = ?";
 
-    private static final String FIND_KAMPFRICHTER =
-            "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = Kampfrichter AND lizenz_dsb_mitglied_id = ?";
-
     private static final String FIND_KAMPFRICHTER_NOT_WETTKAMPID =
             "Select benutzer.benutzer_id, dsb_mitglied.dsb_mitglied_vorname, dsb_mitglied.dsb_mitglied_nachname, benutzer.benutzer_email " +
                     "from lizenz, benutzer, dsb_mitglied " +

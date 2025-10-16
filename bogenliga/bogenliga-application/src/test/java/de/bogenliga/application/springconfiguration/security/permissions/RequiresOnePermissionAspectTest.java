@@ -70,7 +70,6 @@ public class RequiresOnePermissionAspectTest {
 
 
     private static final Long W_id = 5L;
-    private static final String W_name = "Liga_kummulativ";
 
     private static final Long W_VID = 243L;
     private static final Long W_TYP_ID = 0L;
@@ -113,10 +112,6 @@ public class RequiresOnePermissionAspectTest {
         ProceedingJoinPoint testJoinPoint = mock(ProceedingJoinPoint.class);
         underTest.checkPermission(testJoinPoint);
     }
-
-    /* Test of static class. If someone knows how, please implement */
-//    @Test
-//    public void testCheckPermission() {}
 
 
     @Test
