@@ -29,7 +29,7 @@ public class TriggerBETest {
 	private static final Long CHANGE_STATUS_ID = null;
 
 	//Test data for setters
-	private static final Long newCHANGE_OPERATION_ID = 123L;
+	private static final Long NEW_CHANGE_OPERATION_ID = 123L;
 	private static final Long newCHANGE_STATUS_ID = 123L;
 
 
@@ -77,10 +77,10 @@ public class TriggerBETest {
 	@Test
 	public void testSetChangeOperationId(){
 		TriggerBE actual = getTriggerBE();
-		actual.setChangeOperationId(newCHANGE_OPERATION_ID);
+		actual.setChangeOperationId(NEW_CHANGE_OPERATION_ID);
 		Long actualChangeOperationId = actual.getChangeOperationId();
 
-		assertEquals(newCHANGE_OPERATION_ID, actualChangeOperationId);
+		assertEquals(NEW_CHANGE_OPERATION_ID, actualChangeOperationId);
 	}
 	@Test
 	public void testGetChangeStatusID(){
