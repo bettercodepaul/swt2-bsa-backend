@@ -175,7 +175,6 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             final Table mainTableFirstRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFifthRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
-            Table emptyTable = new Table(UnitValue.createPercentArray(1), true);
 
             // Fill first table in first row
             mainTableFirstRowFirstPartFirstRow
