@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 
 public class LizenzComponentImplTest {
 
-    private static final long lizenzId = 0;
+    private static final long LIZENZ_ID = 0;
     private static final String lizenznummer = "WT1234567";
     private static final long lizenzRegionId = 1;
     private static final long lizenzDsbMitgliedId = 1337L;
@@ -81,7 +81,7 @@ public class LizenzComponentImplTest {
 
     public static LizenzBE getLizenzBE() {
         final LizenzBE expectedBE = new LizenzBE();
-        expectedBE.setLizenzId(lizenzId);
+        expectedBE.setLizenzId(LIZENZ_ID);
         expectedBE.setLizenznummer(lizenznummer);
         expectedBE.setLizenzRegionId(lizenzRegionId);
         expectedBE.setLizenzDisziplinId(lizenzDisziplinId);
@@ -93,7 +93,7 @@ public class LizenzComponentImplTest {
 
 
     public static LizenzDO getLizenzDO() {
-        return new LizenzDO(lizenzId,
+        return new LizenzDO(LIZENZ_ID,
                 lizenznummer,
                 lizenzRegionId,
                 lizenzDsbMitgliedId,
@@ -217,7 +217,7 @@ public class LizenzComponentImplTest {
     public void create() {
         // prepare test data
         final LizenzDO input = new LizenzDO();
-        input.setLizenzId(lizenzId);
+        input.setLizenzId(LIZENZ_ID);
         input.setLizenztyp("Liga");
         input.setLizenznummer("WT012354");
         input.setLizenzRegionId(1L);
@@ -225,14 +225,14 @@ public class LizenzComponentImplTest {
         input.setLizenzDisziplinId(1L);
 
         final LizenzBE lizenzBE = new LizenzBE();
-        lizenzBE.setLizenzId(lizenzId);
+        lizenzBE.setLizenzId(LIZENZ_ID);
         lizenzBE.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
 
         // configure mocks
         when(lizenzDAO.create(any(LizenzBE.class), anyLong())).thenReturn(lizenzBE);
 
         // call test method
-        final LizenzDO actual = underTest.create(input, lizenzId);
+        final LizenzDO actual = underTest.create(input, LIZENZ_ID);
 
         // assert result
         Assertions.assertThat(actual).isNotNull();
@@ -251,7 +251,7 @@ public class LizenzComponentImplTest {
     public void update() {
         // prepare test data
         final LizenzDO input = new LizenzDO();
-        input.setLizenzId(lizenzId);
+        input.setLizenzId(LIZENZ_ID);
         input.setLizenztyp("Liga");
         input.setLizenznummer("WT012354");
         input.setLizenzRegionId(1L);
@@ -259,14 +259,14 @@ public class LizenzComponentImplTest {
         input.setLizenzDisziplinId(1L);
 
         final LizenzBE lizenzBE = new LizenzBE();
-        lizenzBE.setLizenzId(lizenzId);
+        lizenzBE.setLizenzId(LIZENZ_ID);
         lizenzBE.setLizenzDsbMitgliedId(lizenzDsbMitgliedId);
 
         // configure mocks
         when(lizenzDAO.update(any(LizenzBE.class), anyLong())).thenReturn(lizenzBE);
 
         // call test method
-        final LizenzDO actual = underTest.update(input, lizenzId);
+        final LizenzDO actual = underTest.update(input, LIZENZ_ID);
 
         // assert result
         Assertions.assertThat(actual).isNotNull();
