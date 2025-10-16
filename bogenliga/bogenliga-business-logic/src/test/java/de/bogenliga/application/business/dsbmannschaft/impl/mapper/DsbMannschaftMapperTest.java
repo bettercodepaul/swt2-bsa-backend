@@ -10,9 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DsbMannschaftMapperTest {
 
-    private static final Long USER = 0L;
-    private static final Long VERSION = 0L;
-
     private static final long ID = 2222L;
     private static final long VEREINID=101010;
     private static final long NUMMER=111;

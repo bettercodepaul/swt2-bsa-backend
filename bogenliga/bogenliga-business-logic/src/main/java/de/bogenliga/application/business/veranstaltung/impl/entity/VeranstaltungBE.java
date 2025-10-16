@@ -28,10 +28,29 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     public VeranstaltungBE() {
         // empty constructor
     }
+    /**
+     * Constructor for immediate definition of all fields
+     * **/
 
+    public VeranstaltungBE(Long veranstaltungId,
+                           Long veranstaltungLigaId,
+                           Long veranstaltungWettkampftypId,
+                           String veranstaltungName,
+                           Long veranstaltungSportjahr,
+                           Date veranstaltungMeldedeadline,
+                           Long veranstaltungLigaleiterId,
+                           Integer veranstaltungPhase, Integer veranstaltungGroesse) {
 
-    public VeranstaltungBE(Long veranstaltungId, Long veranstaltungLigaId, Long veranstaltungWettkampftypId, String veranstaltungName, Long veranstaltungSportjahr, Date veranstaltungMeldedeadline, Long veranstaltungLigaleiterId, Integer veranstaltungPhase, Integer veranstaltungGroesse) {
         super();
+        this.veranstaltungId = veranstaltungId;
+        this.veranstaltungLigaId = veranstaltungLigaId;
+        this.veranstaltungWettkampftypId = veranstaltungWettkampftypId;
+        this.veranstaltungName = veranstaltungName;
+        this.veranstaltungSportjahr = veranstaltungSportjahr;
+        this.veranstaltungMeldedeadline = veranstaltungMeldedeadline;
+        this.veranstaltungLigaleiterId = veranstaltungLigaleiterId;
+        this.veranstaltungPhase = veranstaltungPhase;
+        this.veranstaltungGroesse = veranstaltungGroesse;
     }
 
 

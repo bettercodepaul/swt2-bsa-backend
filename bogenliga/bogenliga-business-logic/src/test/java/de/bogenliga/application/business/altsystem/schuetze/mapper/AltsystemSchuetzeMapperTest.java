@@ -60,9 +60,9 @@ public class AltsystemSchuetzeMapperTest {
 
         when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
 
-        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(altsystemUebersetzung);
+        AltsystemSchuetzeMapper altsystemSchuetzeMapperUnderTest = new AltsystemSchuetzeMapper(altsystemUebersetzung);
         // call test method
-        DsbMitgliedDO actual = altsystemSchuetzeMapper.toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
+        DsbMitgliedDO actual = altsystemSchuetzeMapperUnderTest.toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
 
         assertThat(actual.getVorname()).isEqualTo(expectedDO.getVorname());
         assertThat(actual.getNachname()).isEqualTo(expectedDO.getNachname());
@@ -81,9 +81,9 @@ public class AltsystemSchuetzeMapperTest {
 
         when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
 
-        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(altsystemUebersetzung);
+        AltsystemSchuetzeMapper altsystemSchuetzeMapperUnderTest = new AltsystemSchuetzeMapper(altsystemUebersetzung);
         // call test method
-        String identifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
+        String identifier = altsystemSchuetzeMapperUnderTest.getIdentifier(altsystemSchuetzeDO);
 
         String expectedIdentifier = "MarcoBammert1";
 
@@ -100,9 +100,9 @@ public class AltsystemSchuetzeMapperTest {
         schuetze.setMannschaft_id(387);
         schuetze.setRuecknr(1);
 
-        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
+        AltsystemSchuetzeMapper altsystemSchuetzeMapperUnderTest = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
 
-        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String[] parsedName = altsystemSchuetzeMapperUnderTest.parseName(schuetze);
         String schuetzeVorname = parsedName[1];
         String schuetzeNachname = parsedName[0];
 
@@ -121,9 +121,9 @@ public class AltsystemSchuetzeMapperTest {
         schuetze.setMannschaft_id(387);
         schuetze.setRuecknr(1);
 
-        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
+        AltsystemSchuetzeMapper altsystemSchuetzeMapperUnderTest = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
 
-        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String[] parsedName = altsystemSchuetzeMapperUnderTest.parseName(schuetze);
         String schuetzeVorname = parsedName[1];
         String schuetzeNachname = parsedName[0];
 
@@ -142,9 +142,9 @@ public class AltsystemSchuetzeMapperTest {
         schuetze.setMannschaft_id(387);
         schuetze.setRuecknr(1);
 
-        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
+        AltsystemSchuetzeMapper altsystemSchuetzeMapperUnderTest = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
 
-        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String[] parsedName = altsystemSchuetzeMapperUnderTest.parseName(schuetze);
         String schuetzeVorname = parsedName[1];
         String schuetzeNachname = parsedName[0];
 

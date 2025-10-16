@@ -291,7 +291,6 @@ public class DsbMitgliedServiceTest {
     @Test
     public void insertUserId() {
         // prepare test data
-        final DsbMitgliedDTO input = getDsbMitgliedDTO();
         final DsbMitgliedDO expected = getDsbMitgliedDO();
         final DsbMitgliedDO expectedupdate = getDsbMitgliedDO();
         expectedupdate.setUserId(USERIDUPDATE);
@@ -353,7 +352,7 @@ public class DsbMitgliedServiceTest {
 
         // call test method
         try {
-            final DsbMitgliedDTO actual = underTest.update(input, principal);//,false);
+            final DsbMitgliedDTO actual = underTest.update(input, principal);
 
             // assert result
             assertThat(actual).isNotNull();
