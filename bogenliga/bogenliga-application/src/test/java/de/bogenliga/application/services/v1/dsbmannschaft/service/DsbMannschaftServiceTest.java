@@ -324,7 +324,6 @@ public class DsbMannschaftServiceTest {
     @Test
     public void findVeranstaltungAndWettkampfById() {
         // prepare test data
-        final String name = String.valueOf(ID);
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDOVERANDWETT();
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
