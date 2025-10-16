@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Alessa Hackh
  */
 public class SchuetzenstatistikLetzteJahreDOTest {
-    private static final String schuetzenname = "Name Schütze";
+    private static final String SCHUETZEN_NAME = "Name Schütze";
     private static final float sportjahr1 = (float) 8;
     private static final float sportjahr2 = (float) 7;
     private static final float sportjahr3 = (float) 6.5;
@@ -32,7 +32,7 @@ public class SchuetzenstatistikLetzteJahreDOTest {
     public static SchuetzenstatistikLetzteJahreDO getSchuetzenstatistikLetzteJahreDO() {
         final SchuetzenstatistikLetzteJahreDO expectedSchuetzenstatistikLetzteJahreDO = new SchuetzenstatistikLetzteJahreDO();
 
-        expectedSchuetzenstatistikLetzteJahreDO.setSchuetzenname(schuetzenname);
+        expectedSchuetzenstatistikLetzteJahreDO.setSchuetzenname(SCHUETZEN_NAME);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr1(sportjahr1);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr2(sportjahr2);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr3(sportjahr3);
