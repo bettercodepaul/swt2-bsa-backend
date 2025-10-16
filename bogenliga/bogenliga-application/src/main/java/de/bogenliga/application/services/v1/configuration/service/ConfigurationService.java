@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.configuration.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +88,7 @@ public class ConfigurationService implements ServiceFacade {
                 dto.setValue("<VALUE_IS_HIDDEN>");
             }
             return dto;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
 
