@@ -177,15 +177,6 @@ public class VeranstaltungDAO implements DataAccessObject{
     }
 
     /**
-     * Return all Veranstaltung entries from the database
-     */
-    /*public List<VeranstaltungBE> findAll()
-    {
-        return basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
-    }*/
-
-
-    /**
      * Return Veranstaltung entry with specific id
      *
      * @param id - selected ID of Veranstaltung you want to recieve
