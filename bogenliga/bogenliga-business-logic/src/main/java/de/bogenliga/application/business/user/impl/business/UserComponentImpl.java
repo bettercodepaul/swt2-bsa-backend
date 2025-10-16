@@ -16,7 +16,6 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.validation.Preconditions;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link UserComponent}
@@ -66,7 +65,7 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public List<UserDO> findAll() {
         final List<UserBE> userBEList = userDAO.findAll();
-        return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
+        return List.copyOf(userBEList.stream().map(UserMapper.toUserDO).toList());
     }
 
     /**

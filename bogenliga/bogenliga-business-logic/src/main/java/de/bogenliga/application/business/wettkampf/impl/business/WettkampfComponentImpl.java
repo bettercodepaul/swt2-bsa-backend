@@ -74,7 +74,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
-  
+
     private LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -169,7 +169,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(id);
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
 
@@ -178,7 +178,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
 
         final List<WettkampfBE> wettkampfBEList = this.wettkampfDAO.findAllByVeranstaltungId(veranstaltungId);
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
 
@@ -233,7 +233,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Override
     public List<WettkampfDO> findAll() {
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
