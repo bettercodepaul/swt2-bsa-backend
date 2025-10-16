@@ -4,15 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +24,15 @@ import de.bogenliga.application.business.user.impl.mapper.UserRoleMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Implementation of {@link UserComponent}
@@ -72,12 +72,10 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         this.einstellungenComponent = einstellungenComponent;
     }
 
-
-
     @Override
     public List<UserRoleDO> findAll() {
         final List<UserRoleExtBE> userRoleExtBEList = userRoleExtDAO.findAll();
-        return userRoleExtBEList.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
+        return List.copyOf(userRoleExtBEList.stream().map(UserRoleMapper.extToUserRoleDO).toList());
     }
 
     @Override
@@ -86,9 +84,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         final List<UserRoleExtBE> result = userRoleExtDAO.findBySearch(searchTerm);
 
-        return result.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
+        return List.copyOf(result.stream().map(UserRoleMapper.extToUserRoleDO).toList());
     }
-
 
     @Override
     public List<UserRoleDO> findById(final Long id) {
@@ -109,7 +106,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         return userRoleDOList;
     }
 
-
     /**
      * gets all users from findAll() and checks if they have the
      * special role with the given "roleId"
@@ -128,7 +124,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
                     String.format("No result found for roleID '%s'", roleId));
         }
 
-
         for (UserRoleExtBE i: allUsers) {
             if( i.getRoleId().equals(roleId)){
                 allUsersOfRole.add(UserRoleMapper.extToUserRoleDO.apply(i));
@@ -137,7 +132,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         return allUsersOfRole;
     }
-
 
     @Override
     public UserRoleDO findByEmail(final String email) {
@@ -153,7 +147,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         return UserRoleMapper.extToUserRoleDO.apply(result);
     }
 
-
     // create with default role
     public UserRoleDO create(final Long userId, final Long currentUserId) {
         Preconditions.checkNotNull(userId, PRECONDITION_MSG_USER_ID);
@@ -161,7 +154,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         // find the default role
         final RoleBE defaultRoleBE = roleDAO.findByName(USER_ROLE_DEFAULT);
-
 
         final UserRoleBE result = new UserRoleBE();
         result.setUserId(userId);
@@ -171,7 +163,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         return UserRoleMapper.toUserRoleDO.apply(persistedUserRoleBE);
     }
-
 
     // create with role and userid
     public UserRoleDO create(final Long userId, final Long roleId, final Long currentUserId) {
@@ -187,7 +178,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         return UserRoleMapper.toUserRoleDO.apply(persistedUserBE);
     }
-
 
     /**
      * Implementation for userRole update method
@@ -215,7 +205,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         final List<UserRoleBE> persistedUserRoleBE = userRoleExtDAO.createOrUpdate(userRoleBES, currentUserId);
 
-
         List<UserRoleDO> persistedUserRoleDO = new ArrayList<>();
         for (UserRoleBE userRoleBE : persistedUserRoleBE) {
             persistedUserRoleDO.add(UserRoleMapper.toUserRoleDO.apply(userRoleBE));
@@ -223,7 +212,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         return persistedUserRoleDO;
     }
-
 
     /**
      * Implementation sendFeedback method
@@ -265,7 +253,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
             } else if (tempKey.equals("SMTPPort")) {
                 smtpPort = einstellungen.get(i).getValue();
             }
-
         }
 
         LOGGER.debug("Found smtpHost {} and smtpPort {}", smtpHost, smtpPort);
@@ -312,7 +299,5 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         } catch (MessagingException messagingException) {
             LOGGER.debug(messagingException.getMessage());
         }
-
     }
-
 }
