@@ -51,8 +51,6 @@ public class VeranstaltungServiceTest {
 
     private static final String PHASE = "Geplant";
 
-    private static final VeranstaltungPhase.Phase PHASE_GEPLANT = VeranstaltungPhase.Phase.GEPLANT;
-
     private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
     private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
@@ -147,16 +145,6 @@ public class VeranstaltungServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
         assertThat(actualDTO.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
-        /*
-        assertThat(actualDTO.getWettkampfTypId()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypID());
-        assertThat(actualDTO.getSportjahr()).isEqualTo(VeranstaltungDO.getVeranstaltungSportJahr());
-        assertThat(actualDTO.getMeldeDeadline()).isEqualTo(VeranstaltungDO.getVeranstaltungMeldeDeadline());
-        assertThat(actualDTO.getLigaleiterID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterID());
-        assertThat(actualDTO.getLigaID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaID());
-        assertThat(actualDTO.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
-        assertThat(actualDTO.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());;
-        assertThat(actualDTO.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
-        */
 
         // verify invocations
         verify(VeranstaltungComponent).findAll(PHASELIST_GEPLANT_LAUFEND);
@@ -183,16 +171,6 @@ public class VeranstaltungServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
         assertThat(actualDTO.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
-        /*
-        assertThat(actualDTO.getWettkampfTypId()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypID());
-        assertThat(actualDTO.getSportjahr()).isEqualTo(VeranstaltungDO.getVeranstaltungSportJahr());
-        assertThat(actualDTO.getMeldeDeadline()).isEqualTo(VeranstaltungDO.getVeranstaltungMeldeDeadline());
-        assertThat(actualDTO.getLigaleiterID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterID());
-        assertThat(actualDTO.getLigaID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaID());
-        assertThat(actualDTO.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
-        assertThat(actualDTO.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());;
-        assertThat(actualDTO.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
-        */
 
         // verify invocations
         verify(VeranstaltungComponent).findAll(PHASELIST_LAUFEND_ABGESCHLOSSEN);
