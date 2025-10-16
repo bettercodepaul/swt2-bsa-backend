@@ -727,7 +727,6 @@ public class TriggerServiceTest {
 		String nullLimit = null;
 		String falseOffset = "HACKER";
 		String falseLimit = "HACKER";
-		String falseDateInterval = "HACKER";
 		String falseDateIntervalTwo = "1 HACKER";
 		String falseDateIntervalThree = "29 HACKER";
 		String workingOffset = "0";

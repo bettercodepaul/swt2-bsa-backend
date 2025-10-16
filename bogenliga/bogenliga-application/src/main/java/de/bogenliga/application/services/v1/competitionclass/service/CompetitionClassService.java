@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.competitionclass.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +59,7 @@ public class CompetitionClassService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
-        return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
+        return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).toList();
     }
 
 
@@ -75,7 +74,7 @@ public class CompetitionClassService implements ServiceFacade {
         Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
 
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findBySearch(searchTerm);
-        return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
+        return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).toList();
     }
 
 

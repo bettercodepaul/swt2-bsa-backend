@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.mannschaftsmitglied.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAll() {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAll();
-        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).toList();
     }
 
 
@@ -72,7 +71,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     public List<MannschaftsMitgliedDTO> findByTeamId(@PathVariable("teamId") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findByTeamId(
                 mannschaftsId);
-        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).toList();
     }
 
 
@@ -114,7 +113,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfId > 0, PRECONDITION_MSG_ID_NEGATIVE);
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findSchuetzenInUebergelegenerLiga(
                 mannschaftsId,wettkampfId);
-        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).toList();
     }
 
 
@@ -123,7 +122,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
                 mannschaftsId);
-        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).toList();
     }
 
 
@@ -135,7 +134,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         LOG.debug("Receive 'findByMemberId' request with ID '{}'", memberId);
 
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberId(memberId);
-        return mannschaftsmitgliedDO.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftsmitgliedDO.stream().map(MannschaftsMitgliedDTOMapper.toDTO).toList();
     }
 
 
