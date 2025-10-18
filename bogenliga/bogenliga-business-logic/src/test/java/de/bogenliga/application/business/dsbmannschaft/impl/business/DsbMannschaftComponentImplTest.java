@@ -40,7 +40,6 @@ public class DsbMannschaftComponentImplTest {
 
     private static final long ID = 2222L;
     private static final long VEREIN_ID =101010L;
-    private static final long LAST_VEREIN_ID =102020L;
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
     private static final long VERANSTALTUNG_ID =1L;
@@ -444,8 +443,6 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAOext).findVeranstaltungAndWettkampfById(VEREIN_ID);
     }
     private static final long VALID_ID = 1L;
-    private static final long INVALID_ID = -1L;
-    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative";
     private static final String EXCEPTION_NO_RESULTS = "ENTITY_NOT_FOUND_ERROR: No result for ID '1'";
 
     @Test
@@ -641,27 +638,6 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(vereinComponent);
     }
 
-   /* @Test
-    public void create_withoutNummer_shouldThrowException() {
-        // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
-        final Long l = null;
-        input.setId(ID);
-        input.setNummer(l);
-
-        // configure mocks
-
-        // call test method
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(input, USER))
-                .withMessageContaining("must not be null")
-                .withNoCause();
-
-        // assert result
-
-        // verify invocations
-        verifyZeroInteractions(dsbMannschaftDAO);
-    }*/
 
     @Test
     public void update() {
@@ -1013,8 +989,7 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
-        when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mitglieder);
-        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(null);
+        when(underTest.copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong())).thenReturn(mitglieder);
 
         //call test method
         final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
@@ -1030,8 +1005,34 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinComponent).findById(anyLong());
-        verify(mannschaftsmitgliedComponent).findByTeamId(anyLong());
-        verify(mannschaftsmitgliedComponent).create(any(), anyLong());
+        verify(underTest).copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong());
+    }
+    @Test
+    public void copyMannschaft_new(){
+        // prepare test data
+        DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
+
+        MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(1L);
+        final List<MannschaftsmitgliedDO> mitglieder = new ArrayList<>();
+        mitglieder.add(mannschaftsmitgliedDO);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findById(anyLong())).thenReturn(mannschaft1);
+        when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
+        when(underTest.copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong())).thenReturn(mitglieder);
+
+        //call test method
+        final DsbMannschaftDO actual = underTest.copyMannschaft(VERANSTALTUNG_ID, ID);
+
+        //asserting returns
+        assertThat(actual).isNotNull();
+         assertThat(actual.getVereinId()).isEqualTo(mannschaft1.getVereinId());
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findById(VERANSTALTUNG_ID);
+        verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinComponent).findById(anyLong());
+        verify(underTest).copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong());
     }
 
     @Test
