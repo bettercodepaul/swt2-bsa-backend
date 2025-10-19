@@ -223,7 +223,7 @@ public class PasseComponentImpl implements PasseComponent {
     public List<PasseDO> findByMatchId(Long matchId) {
         checkPreconditions(matchId, PRECONDITION_FIELD_MATCH_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMatchId(matchId);
-        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+        return passeBEList.stream().map(PasseMapper.toPasseDO).toList();
     }
 
     @Override
@@ -231,7 +231,7 @@ public class PasseComponentImpl implements PasseComponent {
         checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
         checkPreconditions(mitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
         final List<PasseBE> passeBEList = passeDAO.findByWettkampfIdAndMitgliedId(wettkampfId, mitgliedId);
-        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+        return passeBEList.stream().map(PasseMapper.toPasseDO).toList();
     }
 
 
