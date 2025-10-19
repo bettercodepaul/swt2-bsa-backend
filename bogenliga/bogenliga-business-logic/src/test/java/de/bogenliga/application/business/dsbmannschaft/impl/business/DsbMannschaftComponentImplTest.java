@@ -979,7 +979,6 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
-        when(underTest.copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong())).thenReturn(mitglieder);
 
         //call test method
         final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
@@ -1009,7 +1008,6 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(mannschaft1);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
-        when(underTest.copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong())).thenReturn(mitglieder);
 
         //call test method
         final DsbMannschaftDO actual = underTest.copyMannschaft(VERANSTALTUNG_ID, ID);
