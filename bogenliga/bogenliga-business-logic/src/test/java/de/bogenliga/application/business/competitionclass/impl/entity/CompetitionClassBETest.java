@@ -9,13 +9,9 @@ import static de.bogenliga.application.business.competitionclass.impl.business.C
  */
 public class CompetitionClassBETest {
 
-    private static final long USER = 0L;
-
     private static final long ID = 42L;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEJAHRGANGMIN = 10L;
-    private static final long KLASSEJAHRGANGMAX = 50L;
-    private static final long KLASSENR = 1337L;
+
 
 
     @Test

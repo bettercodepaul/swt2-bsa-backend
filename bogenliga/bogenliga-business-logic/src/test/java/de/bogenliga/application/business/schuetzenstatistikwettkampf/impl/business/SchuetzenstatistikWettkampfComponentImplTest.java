@@ -27,17 +27,17 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
-    private static final Long wettkampfId = 2L;
-    private static final Long vereinId = 7L;
-    private static final Long veranstaltungId = 1L;
-    private static final String dsbMitgliedName = "Mitglied_Name";
-    private static final int rueckenNummer = 5;
-    private static final float wettkampftag1 = (float) 8.5;
-    private static final float wettkampftag2 = (float) 9.46;
-    private static final float wettkampftag3 = (float) 6.3;
-    private static final float wettkampftag4 = (float) 8.2;
-    private static final float wettkampftageSchnitt = (float) 8.12;
-    private static final Long sportjahr = 4L;
+    private static final Long WETTKAMPF_ID  = 2L;
+    private static final Long VEREIN_ID  = 7L;
+    private static final Long VERANSTALTUNG_ID = 1L;
+    private static final String DSB_MITGLIED_NAME  = "Mitglied_Name";
+    private static final int RUECKEN_NUMMER  = 5;
+    private static final float WETTKAMPFTAG_1  = 8.5f;
+    private static final float WETTKAMPFTAG_2 = 9.46f;
+    private static final float WETTKAMPFTAG_3 = 6.3f;
+    private static final float WETTKAMPFTAG_4= 8.2f;
+    private static final float WETTKAMPFTAGE_SCHNITT  = 8.12f;
+    private static final Long SPORTJAHR  = 4L;
 
 
 
@@ -56,26 +56,26 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
 
     public static SchuetzenstatistikWettkampfBE getSchuetzenstatistikWettkampfBE() {
         final SchuetzenstatistikWettkampfBE expectedSchuetzenstatistikWettkampfBE = new SchuetzenstatistikWettkampfBE();
-        expectedSchuetzenstatistikWettkampfBE.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikWettkampfBE.setRueckenNummer(rueckenNummer);
-        expectedSchuetzenstatistikWettkampfBE.setWettkampftag1(wettkampftag1);
-        expectedSchuetzenstatistikWettkampfBE.setWettkampftag2(wettkampftag2);
-        expectedSchuetzenstatistikWettkampfBE.setWettkampftag3(wettkampftag3);
-        expectedSchuetzenstatistikWettkampfBE.setWettkampftag4(wettkampftag4);
-        expectedSchuetzenstatistikWettkampfBE.setWettkampftageSchnitt(wettkampftageSchnitt);
+        expectedSchuetzenstatistikWettkampfBE.setDsbMitgliedName(DSB_MITGLIED_NAME);
+        expectedSchuetzenstatistikWettkampfBE.setRueckenNummer(RUECKEN_NUMMER);
+        expectedSchuetzenstatistikWettkampfBE.setWettkampftag1(WETTKAMPFTAG_1);
+        expectedSchuetzenstatistikWettkampfBE.setWettkampftag2(WETTKAMPFTAG_2);
+        expectedSchuetzenstatistikWettkampfBE.setWettkampftag3(WETTKAMPFTAG_3);
+        expectedSchuetzenstatistikWettkampfBE.setWettkampftag4(WETTKAMPFTAG_4);
+        expectedSchuetzenstatistikWettkampfBE.setWettkampftageSchnitt(WETTKAMPFTAGE_SCHNITT);
         return expectedSchuetzenstatistikWettkampfBE;
     }
 
 
     public static SchuetzenstatistikWettkampftageDO getLigatabelleDO() {
         final SchuetzenstatistikWettkampftageDO expectedSchuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO();
-        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(rueckenNummer);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(wettkampftag1);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag2(wettkampftag2);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag3(wettkampftag3);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag4(wettkampftag4);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftageSchnitt(wettkampftageSchnitt);
+        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(DSB_MITGLIED_NAME);
+        expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(RUECKEN_NUMMER);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(WETTKAMPFTAG_1);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag2(WETTKAMPFTAG_2);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag3(WETTKAMPFTAG_3);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag4(WETTKAMPFTAG_4);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftageSchnitt(WETTKAMPFTAGE_SCHNITT);
 
 
         return expectedSchuetzenstatistikWettkampfDO;
@@ -93,7 +93,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
         when(SchuetzenstatistikWettkampfDAO.getSchuetzenstatistikWettkampfVeranstaltung(anyLong(), anyLong())).thenReturn(expectedBEList);
 
         // call test method
-        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikWettkampfVeranstaltung(veranstaltungId, vereinId);
+        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikWettkampfVeranstaltung(VERANSTALTUNG_ID, VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -114,7 +114,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
 
         // verify invocations
         verify(SchuetzenstatistikWettkampfDAO)
-                .getSchuetzenstatistikWettkampfVeranstaltung(veranstaltungId,vereinId);
+                .getSchuetzenstatistikWettkampfVeranstaltung(VERANSTALTUNG_ID,VEREIN_ID);
     }
 
     //Input ID null -> Exception
@@ -148,7 +148,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
 
 
         // call test method
-        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
+        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikWettkampf(WETTKAMPF_ID,VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -168,7 +168,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
         assertThat(actual.get(0).getWettkampftageSchnitt()).isEqualTo(expectedSchuetzenstatistikWettkampfBE.getWettkampftageSchnitt());
 
         // verify invocations
-        verify(SchuetzenstatistikWettkampfDAO).getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
+        verify(SchuetzenstatistikWettkampfDAO).getSchuetzenstatistikWettkampf(WETTKAMPF_ID, VEREIN_ID);
     }
 
     //Input ID null -> Exception
@@ -203,7 +203,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
         when(SchuetzenstatistikWettkampfDAO.getSchuetzenstatistikAlleLigen(anyLong(), anyLong())).thenReturn(expectedBEList);
 
         // call test method
-        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikAlleLigen(sportjahr, vereinId);
+        final List<SchuetzenstatistikWettkampftageDO> actual = underTest.getSchuetzenstatistikAlleLigen(SPORTJAHR, VEREIN_ID);
 
         // assert result
         assertThat(actual)
@@ -224,7 +224,7 @@ public class SchuetzenstatistikWettkampfComponentImplTest {
 
         // verify invocations
         verify(SchuetzenstatistikWettkampfDAO)
-                .getSchuetzenstatistikAlleLigen(sportjahr,vereinId);
+                .getSchuetzenstatistikAlleLigen(SPORTJAHR,VEREIN_ID);
     }
 
     @Test

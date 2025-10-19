@@ -447,8 +447,6 @@ public class MannschaftsmitgliedServiceTest {
 
     @Test
     public void delete() {
-        // prepare test data
-        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
@@ -519,8 +517,6 @@ public class MannschaftsmitgliedServiceTest {
 
     @Test
     public void deleteByTeamMemberNoPermission() {
-        // prepare test data
-        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
