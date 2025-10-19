@@ -20,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mockito.stubbing.OngoingStubbing;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -57,7 +56,6 @@ public class DsbMannschaftComponentImplTest {
 
     private static final String VEREIN_NAME = "Testverein";
     private static final String MA_NAME = VEREIN_NAME+" "+ NUMMER;
-    private static final long PLATZHALTER_ID = 0L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -750,7 +748,6 @@ public class DsbMannschaftComponentImplTest {
         // prepare test data
         final DsbMannschaftDO input = getDsbMannschaftDO();
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
 
@@ -973,8 +970,6 @@ public class DsbMannschaftComponentImplTest {
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
 
-        final long oldMannschaftId = 0;
-        final long newMannschaftId = 1;
         List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
         alteMitglieder.add(new MannschaftsmitgliedDO(1L));
         MannschaftsmitgliedDO neuesMitglied = new MannschaftsmitgliedDO(2L);
@@ -1010,8 +1005,6 @@ public class DsbMannschaftComponentImplTest {
     public void copyMannschaft_new(){
         // prepare test data
         DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
-        final long oldMannschaftId = 0;
-        final long newMannschaftId = 1;
         List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
         alteMitglieder.add(new MannschaftsmitgliedDO(1L));
         MannschaftsmitgliedDO neuesMitglied = new MannschaftsmitgliedDO(2L);
