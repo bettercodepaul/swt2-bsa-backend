@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 public class DownloadServiceTest {
 
     private static final int WETTKAMPF_ID = 30;
-    private static final String WERTE_EINZELSTATISTIK = "0,101,2018";
     private static final long VERANSTALTUNGS_ID = 0;
     private static final long MANSCHAFTS_ID = 101;
     private static final int JAHR = 2018;
