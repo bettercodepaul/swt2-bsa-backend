@@ -348,7 +348,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public DsbMannschaftDO copyMannschaft(long mannschaftId, long userId) {
 
         DsbMannschaftBE mannschaftToCheck = dsbMannschaftDAO.findById(mannschaftId);
+        //die Kopie wird ohne Zuordnung von Veranstaltung/Liga und SPortjahr angelegt
         mannschaftToCheck.setVeranstaltungId(null);
+        mannschaftToCheck.setSportjahr(null);
 
         DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(mannschaftToCheck, userId);
             // Copy Mannschaftsmitglieder for every Mannschaft
@@ -367,9 +369,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         MannschaftsmitgliedDO neuesMitglied;
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
             neuesMitglied = altesMitglied;
+            neuesMitglied.setId(null);
             neuesMitglied.setMannschaftId(newMannschaftsID);
-            mannschaftsmitgliedComponent.create(neuesMitglied, userId);
-            neueMitglieder.add(neuesMitglied);
+            neueMitglieder.add(mannschaftsmitgliedComponent.create(neuesMitglied, userId));
 
         }
         return neueMitglieder;
