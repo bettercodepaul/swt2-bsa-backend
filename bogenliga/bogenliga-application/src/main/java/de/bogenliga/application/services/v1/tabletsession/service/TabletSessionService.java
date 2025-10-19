@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.tabletsession.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class TabletSessionService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findAll() {
         List<TabletSessionDO> sessionDOs = tabletSessionComponent.findAll();
-        return sessionDOs.stream().map(TabletSessionDTOMapper.toDTO).collect(Collectors.toList());
+        return sessionDOs.stream().map(TabletSessionDTOMapper.toDTO).toList();
     }
 
 
@@ -85,7 +84,7 @@ public class TabletSessionService implements ServiceFacade {
 
         List<TabletSessionDTO> tsDTOs = tabDOs.stream()
                 .map(TabletSessionDTOMapper.toDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         for (TabletSessionDTO tsDTO : tsDTOs) {
             addMatchIds(tsDTO);

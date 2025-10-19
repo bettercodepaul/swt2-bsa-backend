@@ -13,45 +13,45 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SchuetzenstatistikMatchBETest {
 
-    private static final String dsbMitgliedName = "Max Mustermann";
-    private static final int rueckennummer = 5;
-    private static final float pfeilpunkteSchnitt = (float) 3.7;
-    private static final float match1 = 56f;
-    private static final float match2 = 543f;
+    private static final String DSB_MITGLIED_NAME  = "Max Mustermann";
+    private static final int RUECKENNUMMER  = 5;
+    private static final float PFEILPUNKTE_SCHNITT  = 3.7f;
+    private static final float MATCH_1  = 56f;
+    private static final float MATCH_2 = 543f;
 
 
     @Test
     public void assertToString() {
         final SchuetzenstatistikMatchBE underTest = getSchuetzenstatistikMatchBE();
 
-        underTest.setRueckennummer(rueckennummer);
-        underTest.setMatch1(match1);
-        underTest.setMatch2(match2);
-        underTest.setDsbMitgliedName(dsbMitgliedName);
+        underTest.setRueckennummer(RUECKENNUMMER);
+        underTest.setMatch1(MATCH_1);
+        underTest.setMatch2(MATCH_2);
+        underTest.setDsbMitgliedName(DSB_MITGLIED_NAME);
 
         final String actual = underTest.toString();
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Float.toString(pfeilpunkteSchnitt))
-                .contains(Integer.toString(rueckennummer))
-                .contains(Float.toString(match1))
-                .contains(Float.toString(match2))
-                .contains(dsbMitgliedName);
+                .contains(Float.toString(PFEILPUNKTE_SCHNITT))
+                .contains(Integer.toString(RUECKENNUMMER))
+                .contains(Float.toString(MATCH_1))
+                .contains(Float.toString(MATCH_2))
+                .contains(DSB_MITGLIED_NAME);
     }
 
 
     @Test
     public void assertToString_withoutName() {
         final SchuetzenstatistikMatchBE underTest = getSchuetzenstatistikMatchBE();
-        underTest.setRueckennummer(rueckennummer);
+        underTest.setRueckennummer(RUECKENNUMMER);
         underTest.setDsbMitgliedName(null);
 
         final String actual = underTest.toString();
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Integer.toString(rueckennummer))
+                .contains(Integer.toString(RUECKENNUMMER))
                 .contains("null");
     }
 
