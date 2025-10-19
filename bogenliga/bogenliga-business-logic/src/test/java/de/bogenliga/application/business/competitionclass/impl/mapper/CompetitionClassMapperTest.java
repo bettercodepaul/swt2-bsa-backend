@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CompetitionClassMapperTest {
 
-    private static final long USER = 0L;
 
     private static final long ID = 1337L;
     private static final String KLASSENAME = "Herren";

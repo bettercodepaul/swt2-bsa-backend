@@ -67,7 +67,7 @@ import static org.mockito.Mockito.*;
  */
 public class WettkampfComponentImplTest {
 
-    private static final long user_Id = 13;
+    private static final long USER_ID = 13;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
 
@@ -217,7 +217,7 @@ public class WettkampfComponentImplTest {
                 wettkampf_Disziplin_Id,
                 wettkampf_Wettkampftyp_Id,
                 created_At_Utc,
-                user_Id,
+                USER_ID,
                 version,
                 wettkampf_Ausrichter,
                 wettkampf_offlineToken
@@ -373,7 +373,7 @@ public class WettkampfComponentImplTest {
         when(wettkampfDAO.create(any(WettkampfBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampfDO actual = underTest.create(input, user_Id);
+        final WettkampfDO actual = underTest.create(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -412,7 +412,7 @@ public class WettkampfComponentImplTest {
         when(wettkampfDAO.update(any(WettkampfBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampfDO actual = underTest.update(input, user_Id);
+        final WettkampfDO actual = underTest.update(input, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -446,7 +446,7 @@ public class WettkampfComponentImplTest {
         final WettkampfBE expectedBE = getWettkampfBE();
 
         // call test method
-        underTest.delete(input, user_Id);
+        underTest.delete(input, USER_ID);
 
         // verify invocations
         verify(wettkampfDAO).delete(wettkampfBEArgumentCaptor.capture(), anyLong());
@@ -549,7 +549,7 @@ public class WettkampfComponentImplTest {
         when(wettkampfDAO.createWettkampftag0(anyLong(), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampfDO actual = underTest.createWT0(wettkampf_Veranstaltung_Id, user_Id);
+        final WettkampfDO actual = underTest.createWT0(wettkampf_Veranstaltung_Id, USER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -787,9 +787,9 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void generateOfflineToken() {
-            String token = underTest.generateOfflineToken(user_Id);
+            String token = underTest.generateOfflineToken(USER_ID);
             assertThat(token).isNotNull();
-            assertThat(token).contains(Long.toString(user_Id));
+            assertThat(token).contains(Long.toString(USER_ID));
     }
 
     @Test
@@ -820,7 +820,7 @@ public class WettkampfComponentImplTest {
 
         when(wettkampfDAO.update(any(),anyLong())).thenReturn(expected);
 
-        WettkampfDO actual = underTest.deleteOfflineToken(input, user_Id);
+        WettkampfDO actual = underTest.deleteOfflineToken(input, USER_ID);
 
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getOfflineToken()).isNull();

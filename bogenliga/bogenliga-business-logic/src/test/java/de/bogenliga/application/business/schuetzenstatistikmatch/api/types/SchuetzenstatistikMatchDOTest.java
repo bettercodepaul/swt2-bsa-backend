@@ -15,16 +15,16 @@ import static org.junit.Assert.*;
  */
 public class SchuetzenstatistikMatchDOTest {
 
-    private static final String dsbMitgliedName = "Mitglied_Name";
-    private static final int rueckennummer = 5;
-    private static final float pfeilpunkteSchnitt = (float) 3.7;
-    private static final float match1 = 2f;
-    private static final float match2 = 3f;
-    private static final float match3 = 4f;
-    private static final float match4 = 5f;
-    private static final float match5 = 6f;
-    private static final float match6 = 7f;
-    private static final float match7 = 8f;
+    private static final String DSB_MITGLIED_NAME = "Mitglied_Name";
+    private static final int RUECKENNUMMER = 5;
+    private static final float PFEILPUNKTE = 3.7f;
+    private static final float MATCH_1 = 2f;
+    private static final float MATCH_2 = 3f;
+    private static final float MATCH_3 = 4f;
+    private static final float MATCH_4 = 5f;
+    private static final float MATCH_5 = 6f;
+    private static final float MATCH_6 = 7f;
+    private static final float MATCH_7 = 8f;
 
 
     @Rule
@@ -35,16 +35,16 @@ public class SchuetzenstatistikMatchDOTest {
     //create a SchuetzenstatistikMatchDO-Object for the test with values
     public static SchuetzenstatistikMatchDO getSchuetzenstatistikMatchDO() {
         final SchuetzenstatistikMatchDO expectedSchuetzenstatistikMatchDO = new SchuetzenstatistikMatchDO();
-        expectedSchuetzenstatistikMatchDO.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikMatchDO.setRueckennummer(rueckennummer);
-        expectedSchuetzenstatistikMatchDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
-        expectedSchuetzenstatistikMatchDO.setMatch1(match1);
-        expectedSchuetzenstatistikMatchDO.setMatch2(match2);
-        expectedSchuetzenstatistikMatchDO.setMatch3(match3);
-        expectedSchuetzenstatistikMatchDO.setMatch4(match4);
-        expectedSchuetzenstatistikMatchDO.setMatch5(match5);
-        expectedSchuetzenstatistikMatchDO.setMatch6(match6);
-        expectedSchuetzenstatistikMatchDO.setMatch7(match7);
+        expectedSchuetzenstatistikMatchDO.setDsbMitgliedName(DSB_MITGLIED_NAME);
+        expectedSchuetzenstatistikMatchDO.setRueckennummer(RUECKENNUMMER);
+        expectedSchuetzenstatistikMatchDO.setPfeilpunkteSchnitt(PFEILPUNKTE);
+        expectedSchuetzenstatistikMatchDO.setMatch1(MATCH_1);
+        expectedSchuetzenstatistikMatchDO.setMatch2(MATCH_2);
+        expectedSchuetzenstatistikMatchDO.setMatch3(MATCH_3);
+        expectedSchuetzenstatistikMatchDO.setMatch4(MATCH_4);
+        expectedSchuetzenstatistikMatchDO.setMatch5(MATCH_5);
+        expectedSchuetzenstatistikMatchDO.setMatch6(MATCH_6);
+        expectedSchuetzenstatistikMatchDO.setMatch7(MATCH_7);
         return expectedSchuetzenstatistikMatchDO;
     }
 

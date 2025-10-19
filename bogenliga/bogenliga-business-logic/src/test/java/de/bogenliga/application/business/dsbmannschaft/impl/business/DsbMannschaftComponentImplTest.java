@@ -114,17 +114,7 @@ public class DsbMannschaftComponentImplTest {
     }
 
 
-    public static DsbMannschaftDO getPlatzhalterDO() {
-        return new DsbMannschaftDO(
-                ID,
-                "Platzhalter",
-                PLATZHALTER_ID,
-                NUMMER,
-                BENUTZER_ID,
-                VERANSTALTUNG_ID,
-                SORTIERUNG,
-                SPORTJAHR);
-    }
+
 
     public static DsbMannschaftDO getSortierungsDO(){
         return new DsbMannschaftDO(

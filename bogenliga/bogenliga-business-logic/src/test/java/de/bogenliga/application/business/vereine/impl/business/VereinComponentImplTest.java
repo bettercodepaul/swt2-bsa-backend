@@ -46,7 +46,7 @@ public class VereinComponentImplTest {
     private static final String REGION_KUERZEL = "tt";
     private static final String REGION_TYPE = "TE";
     private static final Long REGION_UEBERGEORDNET = 1L;
-    private static final String REGION_ÜBERGEORDNETASNAME ="Testübergeordnet";
+    private static final String REGION_UEBERGEORDNET_AS_NAME ="Testübergeordnet";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -89,7 +89,7 @@ public class VereinComponentImplTest {
     //Test-Data for regionComponent
     public static RegionenDO getRegionenDO() {
         RegionenDO regionenDO = new RegionenDO(REGION_ID, REGION_NAME, REGION_KUERZEL,REGION_TYPE,
-                                            REGION_UEBERGEORDNET, REGION_ÜBERGEORDNETASNAME);
+                                            REGION_UEBERGEORDNET, REGION_UEBERGEORDNET_AS_NAME);
         return regionenDO;
     }
 
