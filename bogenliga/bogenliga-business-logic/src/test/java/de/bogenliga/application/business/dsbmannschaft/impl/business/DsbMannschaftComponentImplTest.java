@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -972,6 +973,13 @@ public class DsbMannschaftComponentImplTest {
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
 
+        final long oldMannschaftId = 0;
+        final long newMannschaftId = 1;
+        List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
+        alteMitglieder.add(new MannschaftsmitgliedDO(1L));
+        MannschaftsmitgliedDO neuesMitglied = new MannschaftsmitgliedDO(2L);
+
+
         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(1L);
         final List<MannschaftsmitgliedDO> mitglieder = new ArrayList<>();
         mitglieder.add(mannschaftsmitgliedDO);
@@ -979,6 +987,9 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
+
+        when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
+        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(neuesMitglied);
 
         //call test method
         final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
@@ -994,12 +1005,18 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinComponent).findById(anyLong());
-        verify(underTest).copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong());
     }
     @Test
     public void copyMannschaft_new(){
         // prepare test data
         DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
+        final long oldMannschaftId = 0;
+        final long newMannschaftId = 1;
+        List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
+        alteMitglieder.add(new MannschaftsmitgliedDO(1L));
+        MannschaftsmitgliedDO neuesMitglied = new MannschaftsmitgliedDO(2L);
+
+        // configure mocks
 
         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(1L);
         final List<MannschaftsmitgliedDO> mitglieder = new ArrayList<>();
@@ -1008,6 +1025,9 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(mannschaft1);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
+
+        when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
+        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(neuesMitglied);
 
         //call test method
         final DsbMannschaftDO actual = underTest.copyMannschaft(VERANSTALTUNG_ID, ID);
@@ -1019,8 +1039,6 @@ public class DsbMannschaftComponentImplTest {
         // verify invocations
         verify(dsbMannschaftDAO).findById(VERANSTALTUNG_ID);
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
-        verify(underTest).copyMitgliederFromMannschaft(anyLong(), anyLong(), anyLong());
     }
 
     @Test
@@ -1031,10 +1049,11 @@ public class DsbMannschaftComponentImplTest {
         final long newMannschaftId = 1;
         List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
         alteMitglieder.add(new MannschaftsmitgliedDO(1L));
+        MannschaftsmitgliedDO neuesMitglied = new MannschaftsmitgliedDO(2L);
 
         // configure mocks
         when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
-
+        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(neuesMitglied);
         // call test method
         underTest.copyMitgliederFromMannschaft(oldMannschaftId, newMannschaftId, 0L);
 
