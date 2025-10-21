@@ -45,7 +45,6 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaft Veranstaltung ID must not be null";
 
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
@@ -93,11 +92,11 @@ public class DsbMannschaftService implements ServiceFacade {
 
     /**
      * I return all dsbMannschaft entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
+     * ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
      *
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmannschaft}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMannschaft angepasst werden
+     * <pre>{@code Response:
      * [
      *  {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -431,6 +430,24 @@ public class DsbMannschaftService implements ServiceFacade {
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", currentVeranstaltungsId);
         dsbMannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
+
+    }
+    /**
+     * I copy a single dsbMannschaft entries in the database, setting veranstaltung-id = null
+     * @param mannschaftId
+     * @param principal
+     */
+    @GetMapping(value = "copyMannschaftID/{mannschaftId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void copyMannschaft(@PathVariable("mannschaftId") final Long mannschaftId,
+                                                final Principal principal) {
+
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        LOG.debug("Receive 'copyMannschaft' request with ID '{}'", mannschaftId);
+        dsbMannschaftComponent.copyMannschaft(mannschaftId, userId);
 
     }
 

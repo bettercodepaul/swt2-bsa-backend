@@ -32,7 +32,6 @@ import static org.mockito.Mockito.*;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
- * TODO [AL] class documentation
  *
  * @author Philip dengler
  */
@@ -634,7 +633,14 @@ public class DsbMannschaftServiceTest {
         // verify invocations
         verify(dsbMannschaftComponent).copyMannschaftFromVeranstaltung(anyLong(), anyLong(), anyLong());
 
-        //assertThat(deletedDsbMannschaft).isNotNull();
+    }
+    @Test
+    public void copyMannschaft() {
+        // call test method
+        underTest.copyMannschaft(ID, principal);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).copyMannschaft(anyLong(), anyLong());
     }
 
 

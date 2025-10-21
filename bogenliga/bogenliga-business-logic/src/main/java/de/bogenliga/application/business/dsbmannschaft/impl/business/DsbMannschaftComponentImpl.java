@@ -337,29 +337,44 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, userId);
             // Copy Mannschaftsmitglieder for every Mannschaft
             // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
-            MannschaftsmitgliedDO addedMitglied;
-            List<MannschaftsmitgliedDO> mitglieder = mannschaftsmitgliedComponent.findByTeamId(mannschaftToCheck.getId());
-            for(MannschaftsmitgliedDO mitglied : mitglieder){
-                addedMitglied = mitglied;
-                addedMitglied.setMannschaftId(addedMannschaft.getId());
-                mannschaftsmitgliedComponent.create(addedMitglied, userId);
-            }
+            copyMitgliederFromMannschaft(mannschaftToCheck.getId(), addedMannschaft.getId(), userId);
+
         }
         return addedMannschaftenList;
     }
+// wir kopieren eine Mannschaft und alle Mannschaftmitlglieder mit den Bezug zur "null-Veransatltung" und können sie danach
+    // einer neuen Veranstaltung zuordnen
+    @Override
+    public DsbMannschaftDO copyMannschaft(long mannschaftId, long userId) {
 
+        DsbMannschaftBE mannschaftToCheck = dsbMannschaftDAO.findById(mannschaftId);
+        //die Kopie wird ohne Zuordnung von Veranstaltung/Liga und SPortjahr angelegt
+        mannschaftToCheck.setVeranstaltungId(null);
+        mannschaftToCheck.setSportjahr(null);
+
+        DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(mannschaftToCheck, userId);
+            // Copy Mannschaftsmitglieder for every Mannschaft
+            // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
+        copyMitgliederFromMannschaft(mannschaftToCheck.getId(), addedMannschaft.getId(), userId);
+
+        return DsbMannschaftMapper.toDsbMannschaftDO.apply(addedMannschaft);
+    }
 
     @Override
-    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
+    public List<MannschaftsmitgliedDO> copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
 
         List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId(oldMannschaftsID);
+        List<MannschaftsmitgliedDO> neueMitglieder = new ArrayList<>();
 
         MannschaftsmitgliedDO neuesMitglied;
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
             neuesMitglied = altesMitglied;
+            neuesMitglied.setId(null);
             neuesMitglied.setMannschaftId(newMannschaftsID);
-            mannschaftsmitgliedComponent.create(neuesMitglied, userId);
+            neueMitglieder.add(mannschaftsmitgliedComponent.create(neuesMitglied, userId));
+
         }
+        return neueMitglieder;
 
     }
 
