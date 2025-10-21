@@ -585,7 +585,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
-        final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
+        final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
@@ -596,7 +596,7 @@ public class DsbMannschaftService implements ServiceFacade {
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
-        if (dsbMannschaftDO.getVeranstaltungId() != null && veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
+        if (dsbMannschaftDO.getVeranstaltungId() != null && !veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
                 throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
