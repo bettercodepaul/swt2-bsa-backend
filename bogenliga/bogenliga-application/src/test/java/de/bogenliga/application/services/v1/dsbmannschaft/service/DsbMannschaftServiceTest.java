@@ -10,10 +10,7 @@ import org.assertj.core.api.Java6Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -547,6 +544,8 @@ public class DsbMannschaftServiceTest {
 
         // configure Mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(platzhalterDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
         try {
             when(allExistingPlatzhalterList.get(any()).getVeranstaltungId()).thenReturn(platzhalterDO.getVeranstaltungId());
         }catch (NullPointerException ignored) {}
@@ -652,6 +651,7 @@ public class DsbMannschaftServiceTest {
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
 
         // call test method
         try{
@@ -664,8 +664,26 @@ public class DsbMannschaftServiceTest {
 
         assertThat(deletedDsbMannschaft).isNotNull();
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
-        assertThat(deletedDsbMannschaft.getVereinId()).isNull();
+        assertThat(deletedDsbMannschaft.getVereinId()).isEqualTo(VEREIN_ID);
         }catch (NoPermissionException e) { }
+    }
+
+    @Test
+    public void delete_nicht_geplant_exception() {
+        // prepare test data
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Abgeschlossen");
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.delete(ID, principal));
     }
 
     @Test
