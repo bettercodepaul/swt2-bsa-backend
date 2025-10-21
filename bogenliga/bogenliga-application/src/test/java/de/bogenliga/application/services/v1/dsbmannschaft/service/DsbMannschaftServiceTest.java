@@ -652,6 +652,7 @@ public class DsbMannschaftServiceTest {
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
 
         // call test method
         try{
@@ -666,6 +667,24 @@ public class DsbMannschaftServiceTest {
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMannschaft.getVereinId()).isNull();
         }catch (NoPermissionException e) { }
+    }
+
+    @Test
+    public void delete_nicht_geplant_exception() {
+        // prepare test data
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Abgeschlossen");
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.delete(ID, principal));
     }
 
     @Test
