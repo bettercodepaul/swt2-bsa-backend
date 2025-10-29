@@ -58,37 +58,19 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      */
 
     @Autowired
-    public VeranstaltungComponentImpl() {
-
-    }
-
-    @Autowired
-    public void setVeranstaltungDAOext(final VeranstaltungDAOext veranstaltungDAOext){
+    public VeranstaltungComponentImpl(
+            final VeranstaltungDAOext veranstaltungDAOext,
+            final VeranstaltungDAO VeranstaltungDAO,
+            final WettkampfComponent wettkampfComponent,
+            final LigaComponent ligaComponent,
+            final WettkampfTypComponent wettkampfTypComponent,
+            final UserComponent userComponent
+    ) {
         this.veranstaltungDAOext = veranstaltungDAOext;
-    }
-
-    @Autowired
-    public void setVeranstaltungDAO(final VeranstaltungDAO VeranstaltungDAO){
         this.veranstaltungDAO = VeranstaltungDAO;
-    }
-
-    @Autowired
-    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
         this.wettkampfComponent = wettkampfComponent;
-    }
-
-    @Autowired
-    public void setLigaComponent(final LigaComponent ligaComponent){
         this.ligaComponent = ligaComponent;
-    }
-
-    @Autowired
-    public void setWettkampfTypComponent(final WettkampfTypComponent wettkampfTypComponent){
         this.wettkampfTypComponent = wettkampfTypComponent;
-    }
-
-    @Autowired
-    public void setUserComponent(final UserComponent userComponent){
         this.userComponent = userComponent;
     }
 
@@ -332,7 +314,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     private VeranstaltungDO completeNames(VeranstaltungBE veranstaltungBE) {
 
-        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
         LigaDO tempLigaDO = new LigaDO();
         WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
