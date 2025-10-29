@@ -67,8 +67,9 @@ public class VeranstaltungMapper implements ValueObjectMapper {
      * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
      */
     public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserDO userDO,
-                                                          WettkampfTypDO wettkamptypDO, LigaDO ligaDO,
-                                                          VeranstaltungDO tempVeranstaltungDO) {
+                                                          WettkampfTypDO wettkamptypDO, LigaDO ligaDO) {
+
+        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getLastModifiedAtUtc());
@@ -84,10 +85,11 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 userDO.getEmail(),
                 wettkamptypDO.getName(),
                 ligaDO.getName(),
-                tempVeranstaltungDO.getVeranstaltungPhase(),
-                //veranstaltungBE.getVeranstaltungPhase()
+                String.valueOf(veranstaltungBE.getVeranstaltungPhase()), //temporary setting with number  as string
                 veranstaltungBE.getVeranstaltungGroesse()
         );
+        veranstaltungDO.setVeranstaltungPhase(veranstaltungPhase.getPhaseAsString(veranstaltungBE.getVeranstaltungPhase()));
+
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
         return veranstaltungDO;
@@ -95,6 +97,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
     }
 
     public static VeranstaltungDO toVeranstaltungDOext(VeranstaltungBEext be) {
+
+        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
@@ -110,9 +114,10 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 be.getLigaLeiterEmail(),
                 be.getwettkampftypname(),
                 be.getLigaName(),
-                String.valueOf(be.getVeranstaltungPhase()),
+                String.valueOf(be.getVeranstaltungPhase()), //temporary setting with number  as string
                 be.getVeranstaltungGroesse()
         );
+        veranstaltungDO.setVeranstaltungPhase(veranstaltungPhase.getPhaseAsString(be.getVeranstaltungPhase()));
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
         return veranstaltungDO;

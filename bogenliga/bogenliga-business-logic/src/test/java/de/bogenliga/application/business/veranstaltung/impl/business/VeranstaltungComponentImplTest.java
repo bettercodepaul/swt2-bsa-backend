@@ -53,7 +53,7 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERANSTALTUNG_LIGA_ID = 1L;
 
     private static final Integer VERANSTALTUNG_PHASE = 1;
-    private static final String VERANSTALTUNG_PHASE_GEPLANT = "GEPLANT";
+    private static final String VERANSTALTUNG_PHASE_GEPLANT = "Geplant";
     private static final Integer VERANSTALTUNG_GROESSE = 8;
 
     private static final OffsetDateTime VERANSTALTUNG_CREATEDATUTC = OffsetDateTime.now();
@@ -235,7 +235,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaName())
                .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
-               .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
+               .isEqualTo(VERANSTALTUNG_PHASE_GEPLANT);
 
 
        // verify invocations
@@ -265,7 +265,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaName())
                .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
-               .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
+               .isEqualTo(VERANSTALTUNG_PHASE_GEPLANT);
 
 
 
@@ -296,7 +296,7 @@ public class VeranstaltungComponentImplTest {
        assertThat(actual.get(0).getVeranstaltungLigaName())
                .isEqualTo(expectedVeranstaltungBEext.getwettkampftypname());
        assertThat(actual.get(0).getVeranstaltungPhase())
-               .isEqualTo(String.valueOf(expectedVeranstaltungBEext.getVeranstaltungPhase()));
+               .isEqualTo(VERANSTALTUNG_PHASE_GEPLANT);
 
 
        // verify invocations
@@ -343,7 +343,7 @@ public class VeranstaltungComponentImplTest {
                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
        assertThat(actual.getVeranstaltungLigaName())
                .isEqualTo(expectedDO.getVeranstaltungLigaName());
-       assertThat(actual.getVeranstaltungPhase().toUpperCase())
+       assertThat(actual.getVeranstaltungPhase())
                .isEqualTo(expectedDO.getVeranstaltungPhase());
 
 
@@ -363,6 +363,7 @@ public class VeranstaltungComponentImplTest {
         // prepare test data
         final VeranstaltungBEext expectedBE = new VeranstaltungBEext();
         expectedBE.setVeranstaltungId(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
         // configure mocks
         when(veranstaltungDAOext.findById(VERANSTALTUNG_ID)).thenReturn(expectedBE);
@@ -417,7 +418,7 @@ public class VeranstaltungComponentImplTest {
               .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
               .isEqualTo(expectedDO.getVeranstaltungLigaName());
-      assertThat(actual.getVeranstaltungPhase().toUpperCase())
+      assertThat(actual.getVeranstaltungPhase())
               .isEqualTo(expectedDO.getVeranstaltungPhase());
 
         // verify invocations
@@ -522,7 +523,7 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
                 .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
                 .isEqualTo(expectedDO.getVeranstaltungLigaName());
-        assertThat(actual.getVeranstaltungPhase().toUpperCase())
+        assertThat(actual.getVeranstaltungPhase())
                 .isEqualTo(expectedDO.getVeranstaltungPhase());
 
         // verify invocations

@@ -7,6 +7,8 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -65,6 +67,8 @@ public class DsbMannschaftComponentImplTest {
     private DsbMannschaftDAO dsbMannschaftDAO ;
     @Mock
     private VereinComponent vereinComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
     @Mock
     private MannschaftsmitgliedComponentImpl mannschaftsmitgliedComponent;
     @InjectMocks
@@ -969,6 +973,8 @@ public class DsbMannschaftComponentImplTest {
         DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungSportJahr(1999L);
 
         List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
         alteMitglieder.add(new MannschaftsmitgliedDO(1L));
@@ -985,6 +991,8 @@ public class DsbMannschaftComponentImplTest {
 
         when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(neuesMitglied);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(new VeranstaltungDO());
+
 
         //call test method
         final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
