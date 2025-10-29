@@ -18,6 +18,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -60,7 +61,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
                                       final DsbMannschaftDAOext dsbMannschaftDAOext,
                                       final VereinComponent vereinComponent,
-                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, VeranstaltungComponent veranstaltungComponent) {
+                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                      @Lazy final VeranstaltungComponent veranstaltungComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
