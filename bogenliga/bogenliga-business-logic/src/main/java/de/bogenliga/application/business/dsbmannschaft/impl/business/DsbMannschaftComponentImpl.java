@@ -11,6 +11,7 @@ import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaft
 import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -45,6 +46,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
     private final VereinComponent vereinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
 
 
     /**
@@ -58,12 +60,13 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
                                       final DsbMannschaftDAOext dsbMannschaftDAOext,
                                       final VereinComponent vereinComponent,
-                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
+                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, VeranstaltungComponent veranstaltungComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
         this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -330,6 +333,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
 
             mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
+            mannschaftToCheck.setSportjahr(veranstaltungComponent.findById(currentVeranstaltungId).getVeranstaltungSportJahr());
             checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
 
             addedMannschaftenList.add(mannschaftToCheck);
