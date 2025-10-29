@@ -349,17 +349,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
         }
 
-        /* the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
-         *  The phase will convert from Integer to String, because the phase is stored in the database as Integer,
-         *  but in the dialogs of the frontend it should show the phase as text.
-         */
-        if (veranstaltungBE.getVeranstaltungPhase() instanceof Integer) {
-            tempVeranstaltungDO.setVeranstaltungPhase(
-                    veranstaltungPhase.getPhaseAsString(veranstaltungBE.getVeranstaltungPhase()));
-        }
 
-        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO,
-                tempVeranstaltungDO);
+        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
     }
 
 
