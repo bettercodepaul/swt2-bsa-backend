@@ -1,12 +1,15 @@
 package de.bogenliga.application.business.namemapping.impl.business;
 
 
+import de.bogenliga.application.business.disziplin.impl.dao.DisziplinDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import org.springframework.stereotype.Component;
 
@@ -52,11 +55,19 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     private final VereinDAO vereinDAO;
     private final DsbMitgliedDAO dsbMitgliedDAO;
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
+    private final DisziplinDAO disziplinDAO;
+    private final VeranstaltungDAO veranstaltungDAO;
 
-    public NameMappingComponentImpl(VereinDAO vereinDAO, DsbMitgliedDAO dsbMitgliedDAO, DsbMannschaftDAOext dsbMannschaftDAOext) {
+    public NameMappingComponentImpl(VereinDAO vereinDAO,
+                                    DsbMitgliedDAO dsbMitgliedDAO,
+                                    DsbMannschaftDAOext dsbMannschaftDAOext,
+                                    DisziplinDAO disziplinDAO,
+                                    VeranstaltungDAO veranstaltungDAO) {
+        this.veranstaltungDAO = veranstaltungDAO;
         this.vereinDAO = vereinDAO;
         this.dsbMitgliedDAO = dsbMitgliedDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
+        this.disziplinDAO = disziplinDAO;
     }
 
     @Override
@@ -71,6 +82,11 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     }
 
     @Override
+    public String getDisziplinNameForDisziplinId(Long disziplinId) {
+        return disziplinDAO.findById(disziplinId).getName();
+    }
+
+    @Override
     public String getVeranstaltungsNameForDsbMannschaftId(Long dsbMannschaftId) {
         // TODO Auto-generated method stub
         List<DsbMannschaftBEext> dsbMannschaftExtList = dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(dsbMannschaftId);
@@ -78,5 +94,14 @@ public class NameMappingComponentImpl implements NameMappingComponent {
             return null;
         }
         return dsbMannschaftExtList.get(0).getVeranstaltungName();
+    }
+    @Override
+    public String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr) {
+            return (vereinDAO.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
+    }
+
+    @Override
+    public String getVeranstaltungsNameForVeranstaltungsId(Long veranstaltungsId) {
+        return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungName());
     }
 }
