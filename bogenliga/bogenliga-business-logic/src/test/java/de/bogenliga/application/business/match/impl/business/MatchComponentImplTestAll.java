@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
-import de.bogenliga.application.business.namemapping.impl.business.NameMappingComponentImpl;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -39,7 +39,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Mock
     private DsbMannschaftComponent dsbMannschaftComponent;
     @Mock
-    private NameMappingComponentImpl nameMappingComponentImpl;
+    private NameMappingComponent nameMappingComponent;
     @Mock
     private VereinComponent vereinComponent;
 
@@ -63,7 +63,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, nameMappingComponentImpl, ligamatchDAO);
+        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, nameMappingComponent, ligamatchDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }

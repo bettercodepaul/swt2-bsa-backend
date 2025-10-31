@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.namemapping.impl.business.NameMappingComponentImpl;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LizenzComponentImpl.class);
-    private final NameMappingComponentImpl nameMappingComponentImpl;
+    private final NameMappingComponent nameMappingComponent;
 
 
     public void checkCurrentUserPreconditions(final Long id) {
@@ -103,14 +103,14 @@ public class LizenzComponentImpl implements LizenzComponent {
                                final DsbMitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
                                final VeranstaltungComponent veranstaltungComponent,
                                final WettkampfComponent wettkampfComponent,
-                               MannschaftsmitgliedComponent mannschaftsmitgliedComponent, NameMappingComponentImpl nameMappingComponentImpl) {
+                               MannschaftsmitgliedComponent mannschaftsmitgliedComponent, NameMappingComponent nameMappingComponent) {
         this.lizenzDAO = lizenzDAO;
         this.dsbMitgliedComponent = dsbMitglied;
         this.mannschaftComponent = mannschaftComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.nameMappingComponentImpl = nameMappingComponentImpl;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     @Override
@@ -194,12 +194,12 @@ public class LizenzComponentImpl implements LizenzComponent {
 
         HashMap<String, List<String>> lizenzenMapping = new HashMap<>();
 
-        String liganame = nameMappingComponentImpl.getVeranstaltungsNameForDsbMannschaftId(dsbMannschaftsId);
+        String liganame = nameMappingComponent.getVeranstaltungsNameForDsbMannschaftId(dsbMannschaftsId);
 
         for (MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
             DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
 
-            String verein = this.nameMappingComponentImpl.getVereinnameForVereinId(dsbMitgliedDO.getVereinsId()) ;
+            String verein = this.nameMappingComponent.getVereinnameForVereinId(dsbMitgliedDO.getVereinsId()) ;
             String schuetzenname =   dsbMitgliedDO.getNachname();
             String schuetzenvorname = dsbMitgliedDO.getVorname();
             LizenzBE lizenzen = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(dsbMitgliedDO.getId(),
@@ -238,7 +238,7 @@ public class LizenzComponentImpl implements LizenzComponent {
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
-            generateLizenzPage(doc, nameMappingComponentImpl.getVereinnameForVereinId(mitglied.getVereinsId()),
+            generateLizenzPage(doc, nameMappingComponent.getVereinnameForVereinId(mitglied.getVereinsId()),
                     lizenz.getLizenznummer(), mitglied.getNachname(), mitglied.getVorname(),
                     veranstaltung.getVeranstaltungName(),
                     veranstaltung.getVeranstaltungSportJahr().toString());

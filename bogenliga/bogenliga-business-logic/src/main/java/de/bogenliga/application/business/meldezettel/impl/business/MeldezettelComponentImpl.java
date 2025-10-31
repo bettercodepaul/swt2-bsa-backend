@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import de.bogenliga.application.business.namemapping.impl.business.NameMappingComponentImpl;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -67,17 +67,17 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final WettkampfComponent wettkampfComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final NameMappingComponentImpl nameMappingComponentImpl;
+    private final NameMappingComponent NameMappingComponent;
 
     @Autowired
     public MeldezettelComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
                                     final WettkampfComponent wettkampfComponent,
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                    final NameMappingComponentImpl nameMappingComponentImpl) {
+                                    final NameMappingComponent NameMappingComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.nameMappingComponentImpl = nameMappingComponentImpl;
+        this.NameMappingComponent = NameMappingComponent;
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
@@ -89,16 +89,16 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
 
         Long wettkampfTag = wettkampfDO.getWettkampfTag();
-        String veranstaltungsName = nameMappingComponentImpl.getVeranstaltungsNameForVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
-        String disziplinsName = nameMappingComponentImpl.getDisziplinNameForDisziplinId(wettkampfDO.getWettkampfDisziplinId());
+        String veranstaltungsName = NameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
+        String disziplinsName = NameMappingComponent.getDisziplinNameForDisziplinId(wettkampfDO.getWettkampfDisziplinId());
         Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
         for (DsbMannschaftDO mannschaft : dsbMannschaftComponent.findAllByVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId())) {
-            String teamName = nameMappingComponentImpl.getMannschaftsnameForVereinIDandMannschaftNr(mannschaft.getVereinId(), mannschaft.getNummer());
+            String teamName = NameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(mannschaft.getVereinId(), mannschaft.getNummer());
             List<String> NamenTeammitglieder = new ArrayList<>();
            for (MannschaftsmitgliedDO member : mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft.getId())) {
                 // in der Liste der Mannschaftsmitglieder auf der Meldekarte wird die Rückennummer und der Name ausgegeben
                // wir bauen diesen String schon hier zusammen, dann müssen wir nur den Text in GenDoc übergeben
-                NamenTeammitglieder.add((member.getRueckennummer().toString() + ". " + nameMappingComponentImpl.getDsbMitgliedFullNameForDsbMitgliedId(member.getDsbMitgliedId())));
+                NamenTeammitglieder.add((member.getRueckennummer().toString() + ". " + NameMappingComponent.getDsbMitgliedFullNameForDsbMitgliedId(member.getDsbMitgliedId())));
             }
            teamMemberMapping.put(teamName, NamenTeammitglieder);
         }

@@ -3,7 +3,7 @@ package de.bogenliga.application.business.match.impl.business;
 import java.util.Arrays;
 import java.util.List;
 
-import de.bogenliga.application.business.namemapping.impl.business.NameMappingComponentImpl;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -59,7 +59,7 @@ public class MatchComponentImpl implements MatchComponent {
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
     private final long platzhalterId = 99;
-    private final NameMappingComponentImpl nameMappingComponentImpl;
+    private final NameMappingComponent nameMappingComponent;
 
 
     /**
@@ -72,11 +72,11 @@ public class MatchComponentImpl implements MatchComponent {
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
-                              final NameMappingComponentImpl nameMappingComponentimpl,
+                              final NameMappingComponent nameMappingComponent,
                               final LigamatchDAO ligamatchDAO) {
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
-        this.nameMappingComponentImpl = nameMappingComponentimpl;
+        this.nameMappingComponent = nameMappingComponent;
         this.ligamatchDAO = ligamatchDAO;
     }
 
@@ -329,19 +329,6 @@ public class MatchComponentImpl implements MatchComponent {
 
         MatchBE matchBE = MatchMapper.toMatchBE.apply(matchDO);
         matchDAO.delete(matchBE, currentUserId);
-    }
-
-
-    public String getMannschaftsNameByID(long mannschaftID){
-        String mannschaftName;
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftID);
-
-        if (dsbMannschaftDO.getNummer() > 1) {
-            mannschaftName = nameMappingComponentImpl.getVereinnameForVereinId(dsbMannschaftDO.getVereinId()) + " " + dsbMannschaftDO.getNummer();
-        } else {
-            mannschaftName = nameMappingComponentImpl.getVereinnameForVereinId(dsbMannschaftDO.getVereinId());
-        }
-        return mannschaftName;
     }
 
     }

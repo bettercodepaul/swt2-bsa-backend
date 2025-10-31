@@ -381,18 +381,6 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
      */
 
-    @Test
-    public void getMannschaftsNameByID() {
-        DsbMannschaftDO expected = getDsbMannschaftDO();
-        VereinDO expectedVerein = getVereinDO();
-
-        when(mannschaftComponent.findById(anyLong())).thenReturn(expected);
-        when(vereinComponent.findById(anyLong())).thenReturn(expectedVerein);
-        String name = underTest.getMannschaftsNameByID(1L);
-
-        assertThat(name).isNotNull();
-        assertThat(name).contains(expectedVerein.getName());
-    }
 
     @Test
     public void createInitialMatchesWT0_NegativeVeranstalungsID(){
