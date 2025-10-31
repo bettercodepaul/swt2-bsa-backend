@@ -8,18 +8,13 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
-import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -52,7 +47,6 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     /**
      * Constructor
-     *
      * dependency injection with {@link Autowired}
      * @param dsbMannschaftDAO to access the database and return dsbmannschaft representations
      */
