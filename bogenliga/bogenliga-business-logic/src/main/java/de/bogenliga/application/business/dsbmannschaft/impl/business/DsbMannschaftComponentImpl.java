@@ -11,6 +11,7 @@ import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaft
 import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -45,9 +46,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
-    private final VereinComponent vereinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
+    private final NameMappingComponent nameMappingComponent;
 
 
     /**
@@ -60,15 +60,13 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
                                       final DsbMannschaftDAOext dsbMannschaftDAOext,
-                                      final VereinComponent vereinComponent,
                                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                      @Lazy final VeranstaltungComponent veranstaltungComponent) {
+                                      final NameMappingComponent nameMappingComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
-        this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -230,11 +228,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaft, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(mannschaft.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
 
-        VereinDO vereinDO = this.vereinComponent.findById(mannschaft.getVereinId());
-        if (vereinDO != null && vereinDO.getName() != null) {
-            mannschaft.setName(vereinDO.getName() + " " + mannschaft.getNummer());
-        }
+        mannschaft.setName(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(mannschaft.getVereinId(), mannschaft.getNummer()));
         return mannschaft;
+
     }
 
 
@@ -335,7 +331,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
 
             mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
-            mannschaftToCheck.setSportjahr(veranstaltungComponent.findById(currentVeranstaltungId).getVeranstaltungSportJahr());
+            mannschaftToCheck.setSportjahr(nameMappingComponent.getSportjahrForVeranstaltungsId(currentVeranstaltungId));
             checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
 
             addedMannschaftenList.add(mannschaftToCheck);

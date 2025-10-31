@@ -47,6 +47,7 @@ public interface NameMappingComponent extends ComponentFacade {
     String getDisziplinNameForDisziplinId(Long disziplinId);
     String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr);
     String getVeranstaltungsNameForVeranstaltungsId(Long veranstaltungsId);
+    Long getSportjahrForVeranstaltungsId(Long veranstaltungsId);
 
 
 

@@ -104,4 +104,8 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     public String getVeranstaltungsNameForVeranstaltungsId(Long veranstaltungsId) {
         return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungName());
     }
+    @Override
+    public Long getSportjahrForVeranstaltungsId(Long veranstaltungsId) {
+        return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungSportjahr());
+    }
 }
