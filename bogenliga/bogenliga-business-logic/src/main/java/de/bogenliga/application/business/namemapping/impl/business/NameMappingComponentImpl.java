@@ -76,9 +76,14 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     }
 
     @Override
+    public String getVereinnameForDsbMitgliedId(Long dsbMitgliedId) {
+        return(vereinDAO.findById(dsbMitgliedDAO.findById(dsbMitgliedId).getDsbMitgliedVereinsId()).getVereinName());
+    }
+
+    @Override
     public String getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId) {
         DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(dsbMitgliedId);
-        return dsbMitgliedBE.getDsbMitgliedVorname() + " " + dsbMitgliedBE.getDsbMitgliedNachname();
+        return (dsbMitgliedBE.getDsbMitgliedVorname() + " " + dsbMitgliedBE.getDsbMitgliedNachname());
     }
 
     @Override

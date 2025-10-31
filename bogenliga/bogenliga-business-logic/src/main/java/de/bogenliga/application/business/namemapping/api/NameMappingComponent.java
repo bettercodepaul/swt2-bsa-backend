@@ -42,6 +42,7 @@ public interface NameMappingComponent extends ComponentFacade {
      * empty String when Verein not found.
      */
     String  getVereinnameForVereinId(Long vereinId);
+    String  getVereinnameForDsbMitgliedId(Long dsbMitgliedId);
     String  getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId);
     String  getVeranstaltungsNameForDsbMannschaftId(Long dsbMannschaftId);
     String getDisziplinNameForDisziplinId(Long disziplinId);
