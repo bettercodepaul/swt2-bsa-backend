@@ -44,8 +44,6 @@ public class MatchComponentImplTest extends BaseMatchTest {
     @InjectMocks
     private MatchComponentImpl underTest;
 
-    @Mock
-    private VereinComponent vereinComponent;
 
     private void validateObjectList (List<MatchDO> actual) {
         assertThat(actual)

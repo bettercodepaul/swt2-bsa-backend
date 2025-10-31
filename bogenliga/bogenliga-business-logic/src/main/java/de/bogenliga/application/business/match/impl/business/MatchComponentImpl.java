@@ -17,8 +17,6 @@ import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchMapper;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
