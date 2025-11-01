@@ -7,7 +7,6 @@ import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaft
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
-import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
@@ -62,7 +61,6 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     private final LigaDAO ligaDAO;
     private final UserDAO userDAO;
     private final WettkampfTypDAO wettkampfTypDAO;
-    private final RegionenDAO regionenDAO;
 
     public NameMappingComponentImpl(VereinDAOext vereinDAOext,
                                     DsbMitgliedDAO dsbMitgliedDAO,
@@ -71,8 +69,7 @@ public class NameMappingComponentImpl implements NameMappingComponent {
                                     VeranstaltungDAO veranstaltungDAO,
                                     LigaDAO ligaDAO,
                                     UserDAO userDAO,
-                                    WettkampfTypDAO wettkampfTypDAO,
-                                    RegionenDAO regionenDAO) {
+                                    WettkampfTypDAO wettkampfTypDAO) {
         this.veranstaltungDAO = veranstaltungDAO;
         this.vereinDAOext = vereinDAOext;
         this.dsbMitgliedDAO = dsbMitgliedDAO;
@@ -81,7 +78,6 @@ public class NameMappingComponentImpl implements NameMappingComponent {
         this.ligaDAO = ligaDAO;
         this.userDAO = userDAO;
         this.wettkampfTypDAO = wettkampfTypDAO;
-        this.regionenDAO = regionenDAO;
     }
 
 
