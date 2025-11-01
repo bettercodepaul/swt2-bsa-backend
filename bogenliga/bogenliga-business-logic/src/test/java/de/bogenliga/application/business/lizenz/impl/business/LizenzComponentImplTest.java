@@ -13,6 +13,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -71,7 +72,7 @@ public class LizenzComponentImplTest {
     @Mock
     private WettkampfComponent wettkampfComponent;
     @Mock
-    private VereinComponent vereinComponent;
+    private NameMappingComponent nameMappingComponent;
 
     @InjectMocks
     private LizenzComponentImpl underTest;
@@ -313,7 +314,10 @@ public class LizenzComponentImplTest {
         when(mannschaftComponent.findById(teamId)).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
-        when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
+        when(nameMappingComponent.getVeranstaltungsNameForDsbMannschaftId(anyLong())).thenReturn("TestVeranstaltung");
+        when(nameMappingComponent.getVereinnameForVereinId(anyLong())).thenReturn("TestVerein");
+        when(nameMappingComponent.getSportjahrForVeranstaltungsId(anyLong())).thenReturn(2021L);
+
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
                 expectedMitglied.getId(),
                 expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());
@@ -414,7 +418,10 @@ public class LizenzComponentImplTest {
         when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
-        when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
+        when(nameMappingComponent.getVeranstaltungsNameForDsbMannschaftId(anyLong())).thenReturn("TestVeranstaltung");
+        when(nameMappingComponent.getVereinnameForVereinId(anyLong())).thenReturn("TestVerein");
+        when(nameMappingComponent.getSportjahrForVeranstaltungsId(anyLong())).thenReturn(2021L);
+
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
                 expectedMitglied.getId(),
                 expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());

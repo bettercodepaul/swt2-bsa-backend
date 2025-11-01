@@ -400,8 +400,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             LOGGER.error("Cannot find team for tablepos");
             return "ERROR";
         } else {
-            DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
-            return nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(dsbMannschaftDO.getVereinId(), dsbMannschaftDO.getNummer());
+            return nameMappingComponent.getMannschaftsnameForMannschaftId(teamID);
          }
     }
 }

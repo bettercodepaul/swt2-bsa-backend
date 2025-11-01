@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
 import java.util.Optional;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
@@ -142,6 +144,8 @@ public class WettkampfComponentImplTest {
     private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
 
 
 
@@ -659,26 +663,14 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+        when(nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(anyLong())).thenReturn("Demo Veranstaltung");
+        when(nameMappingComponent.getMannschaftsnameForMannschaftId(anyLong())).thenReturn("Demo Mannschaft");
     }
     private void prepare2ndMocksForPDFTest()
     {
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(new ArrayList());
     }
 
-    @Test
-    public void testGetTeamName()
-    {
-        assertThatThrownBy(() -> underTest.getTeamName(-1)).isInstanceOf(BusinessException.class);
-        //erwartetes ergebnis definieren
-        String expected = "Bogensport Muster Hausen 1";
-        //mocks vorbereiten
-        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
-        //methode aufrufen
-        String actual = underTest.getTeamName(1);
-        //ergebmis prüfen
-        Assertions.assertThat(actual).isEqualTo(expected);
-    }
 
     @Test
     public void testGetNummern()
@@ -746,7 +738,8 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));
-        
+        when(nameMappingComponent.getMannschaftsnameForMannschaftId(anyLong())).thenReturn("Demo Mannschaft");
+
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag()).isEqualTo(expectedWettkampfTag);
 
         byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag);

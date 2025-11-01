@@ -78,6 +78,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private LigatabelleComponent ligatabelleComponent;
     private NameMappingComponent nameMappingComponent;
 
+
     /**
      * Constructor
      * <p>
@@ -91,13 +92,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final PasseComponent passeComponent,
                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                   final DsbMitgliedComponent dsbMitgliedComponent,
-                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) {
+                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
+                                  final NameMappingComponent nameMappingComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     @Autowired

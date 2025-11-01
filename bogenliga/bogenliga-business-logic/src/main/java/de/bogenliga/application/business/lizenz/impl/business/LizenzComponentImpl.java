@@ -38,7 +38,6 @@ import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -66,7 +65,6 @@ public class LizenzComponentImpl implements LizenzComponent {
     private final LizenzDAO lizenzDAO;
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent mannschaftComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
     private final WettkampfComponent wettkampfComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
@@ -101,13 +99,12 @@ public class LizenzComponentImpl implements LizenzComponent {
     @Autowired
     public LizenzComponentImpl(final LizenzDAO lizenzDAO,
                                final DsbMitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
-                               final VeranstaltungComponent veranstaltungComponent,
                                final WettkampfComponent wettkampfComponent,
-                               MannschaftsmitgliedComponent mannschaftsmitgliedComponent, NameMappingComponent nameMappingComponent) {
+                               final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                               final NameMappingComponent nameMappingComponent) {
         this.lizenzDAO = lizenzDAO;
         this.dsbMitgliedComponent = dsbMitglied;
         this.mannschaftComponent = mannschaftComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.nameMappingComponent = nameMappingComponent;
@@ -167,13 +164,12 @@ public class LizenzComponentImpl implements LizenzComponent {
         byte[] result;
         DsbMitgliedDO mitgliedDO = dsbMitgliedComponent.findById(dsbMitgliedID);
         DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
         List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(
                 mannschaftDO.getVeranstaltungId());
         LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(),
                 wettkampfDOList.get(0).getWettkampfDisziplinId());
         LOGGER.info("Lizenz:\n {}", lizenz);
-        result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
+        result = generateDoc(mitgliedDO, lizenz, mannschaftDO.getVeranstaltungId()).toByteArray();
         return result;
     }
 
@@ -232,7 +228,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     }
 
 
-    ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
+    ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, Long veranstaltungId) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
@@ -240,8 +236,8 @@ public class LizenzComponentImpl implements LizenzComponent {
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
             generateLizenzPage(doc, nameMappingComponent.getVereinnameForVereinId(mitglied.getVereinsId()),
                     lizenz.getLizenznummer(), mitglied.getNachname(), mitglied.getVorname(),
-                    veranstaltung.getVeranstaltungName(),
-                    veranstaltung.getVeranstaltungSportJahr().toString());
+                    nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(veranstaltungId),
+                    nameMappingComponent.getSportjahrForVeranstaltungsId(veranstaltungId).toString());
             ret = result;
         } catch (final IOException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Dokument konnte nicht erstellt werden: " + e);

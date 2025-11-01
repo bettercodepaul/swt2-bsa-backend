@@ -263,15 +263,9 @@ public class VereinComponentImplTest {
 
     @Test
     public void equals(){
-         VereinDO underTest = new VereinDO(VEREIN_ID,
-                VEREIN_NAME,
-                VEREIN_DSB_IDENTIFIER,
-                VEREIN_REGION_ID,
-                VEREIN_WEBSITE,
-                VEREIN_DESCRIPTION,
-                VEREIN_ICON,
-                VEREIN_OFFSETDATETIME,
-                USER_ID,
+             VereinDO underTest = new VereinDO(VEREIN_ID, VEREIN_NAME, VEREIN_DSB_IDENTIFIER, VEREIN_REGION_ID,
+                REGION_NAME, VEREIN_WEBSITE, VEREIN_DESCRIPTION, VEREIN_ICON,
+                VEREIN_OFFSETDATETIME, USER_ID, VEREIN_OFFSETDATETIME, USER_ID,
                 VERSION);
          assertThat(underTest.getRegionName()).isEqualTo(getVereinDO().getRegionName());
          assertEquals(underTest,getVereinDO());

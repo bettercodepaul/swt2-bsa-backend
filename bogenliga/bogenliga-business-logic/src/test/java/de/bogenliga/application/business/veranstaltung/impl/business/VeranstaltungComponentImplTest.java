@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.ThrowableTypeAssert;
 import org.assertj.core.util.CheckReturnValue;
@@ -103,6 +105,10 @@ public class VeranstaltungComponentImplTest {
     private UserComponent userComponent;
     @Mock
     private VeranstaltungDAOext veranstaltungDAOext;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
+
+
     @InjectMocks
     private VeranstaltungComponentImpl underTest;
     @Captor
@@ -324,8 +330,12 @@ public class VeranstaltungComponentImplTest {
        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+       when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+       when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+       when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
-        // call test method
+
+       // call test method
         final VeranstaltungDO actual = underTest.create(input, USER);
 
         // assert result
@@ -399,6 +409,9 @@ public class VeranstaltungComponentImplTest {
         when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
         when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+        when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+        when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
         // call test method
         final VeranstaltungDO actual = underTest.update(input, USER);
@@ -504,6 +517,9 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
         when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
         when(veranstaltungDAOext.findById(anyLong())).thenReturn(expectedBEext);
+        when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+        when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
         // call test method
         final VeranstaltungDO actual = underTest.setPhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
