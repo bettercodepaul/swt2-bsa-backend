@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.slf4j.Logger;
@@ -21,8 +20,6 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
@@ -38,10 +35,6 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -76,11 +69,11 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final WettkampfDAO wettkampfDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
-    private LigaComponent ligaComponent;
+    private final LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private VeranstaltungComponent veranstaltungComponent;
-    private  DsbMitgliedComponent dsbMitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private LigatabelleComponent ligatabelleComponent;
     private NameMappingComponent nameMappingComponent;
@@ -756,7 +749,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     public String generateOfflineToken(long userId) {
-        return String.valueOf(userId) + Instant.now().toString();
+        return (userId) + Instant.now().toString();
     }
 
     /**

@@ -124,11 +124,6 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     }
 
     @Override
-    public String getRegionNameForRegionId(Long regionId) {
-        return (regionenDAO.findById(regionId).getRegionName());
-    }
-
-    @Override
     public Long getSportjahrForVeranstaltungsId(Long veranstaltungsId) {
         return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungSportjahr());
     }
