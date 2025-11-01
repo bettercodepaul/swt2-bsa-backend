@@ -51,11 +51,11 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Autowired
     public VeranstaltungComponentImpl(
             final VeranstaltungDAOext veranstaltungDAOext,
-            final VeranstaltungDAO VeranstaltungDAO,
+            final VeranstaltungDAO veranstaltungDAO,
             final WettkampfComponent wettkampfComponent,
             final NameMappingComponent nameMappingComponent) {
         this.veranstaltungDAOext = veranstaltungDAOext;
-        this.veranstaltungDAO = VeranstaltungDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
         this.wettkampfComponent = wettkampfComponent;
         this.nameMappingComponent = nameMappingComponent;
     }
