@@ -62,11 +62,20 @@ public interface NameMappingComponent extends ComponentFacade {
 
     /**
      * Return the Name of Mannschaft.
-     *
+     * Input VereinId and MannschaftNr
      * @return Mannschaftsname;
      * empty String when Mannschaft not found.
      */
     String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr);
+
+    /**
+     * Return the Name of Mannschaft.
+     * Input MannschaftId
+     * In case MannschaftId is null, empty String is returned.
+     * @return Mannschaftsname;
+     * empty String when Mannschaft not found.
+     */
+    String getMannschaftsnameForMannschaftId(Long mannschaftId);
 
     /**
      * Return the Name of Region.

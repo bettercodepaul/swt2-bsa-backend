@@ -104,7 +104,23 @@ public class NameMappingComponentImpl implements NameMappingComponent {
 
     @Override
     public String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr) {
-        return (vereinDAOext.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
+        //bei der "ersten" Mannschaft wird die Nummer in der Bezeichnung weggelassen
+        if (mannschaftNr >= 1L) {
+            return (vereinDAOext.findById(vereinId).getVereinName() + " " +mannschaftNr);
+        } else {
+            return (vereinDAOext.findById(vereinId).getVereinName());
+        }
+    }
+
+    @Override
+    public String getMannschaftsnameForMannschaftId(Long mannschaftId) {
+        DsbMannschaftBEext dsbMannschaftBEext = dsbMannschaftDAOext.findByIdwithName(mannschaftId);
+        //bei der "ersten" Mannschaft wird die Nummer in der Bezeichnung weggelassen
+        if (dsbMannschaftBEext.getNummer() >= 1L) {
+            return (dsbMannschaftBEext.getVereinName() + " " +dsbMannschaftBEext.getNummer().toString());
+        } else {
+            return (dsbMannschaftBEext.getVereinName());
+        }
     }
 
     @Override

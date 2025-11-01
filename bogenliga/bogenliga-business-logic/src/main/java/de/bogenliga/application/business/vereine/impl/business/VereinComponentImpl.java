@@ -3,7 +3,6 @@ package de.bogenliga.application.business.vereine.impl.business;
 
 import java.util.List;
 
-import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import org.springframework.beans.factory.annotation.Autowired;
