@@ -1,18 +1,11 @@
 package de.bogenliga.application.business.veranstaltung.impl.business;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
-import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
@@ -22,8 +15,6 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
