@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.vereine.impl.dao;
 
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;

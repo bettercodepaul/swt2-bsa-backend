@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
 
-import de.bogenliga.application.business.regionen.api.RegionenComponent;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
@@ -43,12 +41,7 @@ public class VereinComponentImplTest {
     private static final String VEREIN_ICON = "";
     private static final long USER_ID = 0;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
-    private static final Long REGION_ID = 0L;
     private static final String REGION_NAME = "Qualityland";
-    private static final String REGION_KUERZEL = "tt";
-    private static final String REGION_TYPE = "TE";
-    private static final Long REGION_UEBERGEORDNET = 1L;
-    private static final String REGION_UEBERGEORDNET_AS_NAME ="Testübergeordnet";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -56,8 +49,6 @@ public class VereinComponentImplTest {
     private VereinDAO vereinDAO;
     @Mock
     private VereinDAOext vereinDAOext;
-    @Mock
-    private RegionenComponent regionenComponent;
     @InjectMocks
     private VereinComponentImpl underTest;
     @Captor
@@ -68,7 +59,6 @@ public class VereinComponentImplTest {
         expectedBE.setVereinName(VEREIN_NAME);
         expectedBE.setVereinId(VEREIN_ID);
         expectedBE.setVereinRegionId(VEREIN_REGION_ID);
-        //expectedBE.setRegionName();
         expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
         expectedBE.setVereinWebsite(VEREIN_WEBSITE);
         expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
@@ -81,7 +71,6 @@ public class VereinComponentImplTest {
         expectedBE.setVereinName(VEREIN_NAME);
         expectedBE.setVereinId(VEREIN_ID);
         expectedBE.setVereinRegionId(VEREIN_REGION_ID);
-        //expectedBE.setRegionName();
         expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
         expectedBE.setVereinWebsite(VEREIN_WEBSITE);
         expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
@@ -255,9 +244,6 @@ public class VereinComponentImplTest {
     public void delete() {
         final VereinDO input = getVereinDO();
 
-        final VereinBE expectedBE = getVereinBE();
-
-        // configure mocks
 
         // call test method
         underTest.delete(input, USER);

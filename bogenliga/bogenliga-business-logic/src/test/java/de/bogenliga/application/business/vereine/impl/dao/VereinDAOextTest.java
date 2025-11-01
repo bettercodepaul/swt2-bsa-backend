@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.vereine.impl.dao;
 
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.*;
 
 public class VereinDAOextTest {
 
-    private static final long USER=0;
 
     private static long VEREIN_ID= 3;
     private static String VEREIN_NAME="TEST";

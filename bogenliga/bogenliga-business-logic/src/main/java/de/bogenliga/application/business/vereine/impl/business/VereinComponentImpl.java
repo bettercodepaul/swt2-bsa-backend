@@ -1,16 +1,13 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
@@ -37,15 +34,12 @@ public class VereinComponentImpl implements VereinComponent {
 
     private final VereinDAO vereinDAO;
     private final VereinDAOext vereinDAOext;
-    private final NameMappingComponent nameMappingComponent;
 
     @Autowired
     public VereinComponentImpl(VereinDAO vereinDAO,
-                               VereinDAOext vereinDAOext,
-                               NameMappingComponent nameMappingComponent) {
+                               VereinDAOext vereinDAOext) {
         this.vereinDAO = vereinDAO;
         this.vereinDAOext = vereinDAOext;
-        this.nameMappingComponent = nameMappingComponent;
     }
 
     @Override
@@ -76,8 +70,7 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public VereinDO findById(long vereinId) {
         final VereinBEext vereinBEext = vereinDAOext.findById(vereinId);
-        final VereinDO vereinDO = VereinMapper.exttoVereinDO.apply(vereinBEext);
-        return vereinDO;
+        return VereinMapper.exttoVereinDO.apply(vereinBEext);
     }
 
     @Override

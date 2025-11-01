@@ -63,7 +63,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
     /**
      * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
      */
-    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, String userEmail,
+    public static VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, String userEmail,
                                                           String wettkamptypName, String ligaName) {
 
         VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
