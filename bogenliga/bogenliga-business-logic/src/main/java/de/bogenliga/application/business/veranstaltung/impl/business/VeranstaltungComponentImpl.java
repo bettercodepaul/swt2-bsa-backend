@@ -134,7 +134,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
         return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
-                nameMappingComponent.getEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
                 nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
                 nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }
@@ -158,7 +158,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         // fehler: in der DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
 
         return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
-                nameMappingComponent.getEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
                 nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
                 nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }
@@ -296,7 +296,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
         return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
-                nameMappingComponent.getEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
                 nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
                 nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }

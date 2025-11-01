@@ -69,6 +69,14 @@ public interface NameMappingComponent extends ComponentFacade {
     String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr);
 
     /**
+     * Return the Name of Region.
+     *
+     * @return Name of Region;
+     * empty String when Region not found.
+     */
+    String getRegionNameForRegionId(Long ligaId);
+
+    /**
      * Return the Sportjahr (Long) of Veranstaltung.
      *
      * @return Sportjahr;
@@ -82,7 +90,7 @@ public interface NameMappingComponent extends ComponentFacade {
      * @return Email;
      * empty String when User not found.
      */
-    String getEmailForUserId(Long userId);
+    String getUserEmailForUserId(Long userId);
 
     /**
      * Return the Name of Verein.

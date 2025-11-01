@@ -7,10 +7,11 @@ import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaft
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
+import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,7 @@ import java.util.List;
 @Component
 public class NameMappingComponentImpl implements NameMappingComponent {
 
-    private final VereinDAO vereinDAO;
+    private final VereinDAOext vereinDAOext;
     private final DsbMitgliedDAO dsbMitgliedDAO;
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
     private final DisziplinDAO disziplinDAO;
@@ -61,23 +62,26 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     private final LigaDAO ligaDAO;
     private final UserDAO userDAO;
     private final WettkampfTypDAO wettkampfTypDAO;
+    private final RegionenDAO regionenDAO;
 
-    public NameMappingComponentImpl(VereinDAO vereinDAO,
+    public NameMappingComponentImpl(VereinDAOext vereinDAOext,
                                     DsbMitgliedDAO dsbMitgliedDAO,
                                     DsbMannschaftDAOext dsbMannschaftDAOext,
                                     DisziplinDAO disziplinDAO,
                                     VeranstaltungDAO veranstaltungDAO,
                                     LigaDAO ligaDAO,
                                     UserDAO userDAO,
-                                    WettkampfTypDAO wettkampfTypDAO) {
+                                    WettkampfTypDAO wettkampfTypDAO,
+                                    RegionenDAO regionenDAO) {
         this.veranstaltungDAO = veranstaltungDAO;
-        this.vereinDAO = vereinDAO;
+        this.vereinDAOext = vereinDAOext;
         this.dsbMitgliedDAO = dsbMitgliedDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
         this.disziplinDAO = disziplinDAO;
         this.ligaDAO = ligaDAO;
         this.userDAO = userDAO;
         this.wettkampfTypDAO = wettkampfTypDAO;
+        this.regionenDAO = regionenDAO;
     }
 
 
@@ -100,7 +104,12 @@ public class NameMappingComponentImpl implements NameMappingComponent {
 
     @Override
     public String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr) {
-        return (vereinDAO.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
+        return (vereinDAOext.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
+    }
+
+    @Override
+    public String getRegionNameForRegionId(Long regionId) {
+        return (regionenDAO.findById(regionId).getRegionName());
     }
 
     @Override
@@ -109,17 +118,17 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     }
 
     @Override
-    public String getEmailForUserId(Long userId) {
+    public String getUserEmailForUserId(Long userId) {
         return(userDAO.findById(userId).getUserEmail());
     }
     @Override
     public String getVereinnameForVereinId(Long vereinId) {
-        return vereinDAO.findById(vereinId).getVereinName();
+        return vereinDAOext.findById(vereinId).getVereinName();
     }
 
     @Override
     public String getVereinnameForDsbMitgliedId(Long dsbMitgliedId) {
-        return(vereinDAO.findById(dsbMitgliedDAO.findById(dsbMitgliedId).getDsbMitgliedVereinsId()).getVereinName());
+        return(vereinDAOext.findById(dsbMitgliedDAO.findById(dsbMitgliedId).getDsbMitgliedVereinsId()).getVereinName());
     }
 
   @Override
