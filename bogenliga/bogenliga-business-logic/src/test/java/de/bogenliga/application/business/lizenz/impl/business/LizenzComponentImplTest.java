@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.lizenz.impl.business;
 
 import java.io.ByteArrayOutputStream;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

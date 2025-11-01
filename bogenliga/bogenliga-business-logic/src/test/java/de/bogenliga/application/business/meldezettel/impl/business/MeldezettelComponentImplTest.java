@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
-import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,8 +25,6 @@ import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
 import static org.mockito.Mockito.*;
@@ -55,8 +51,6 @@ public class MeldezettelComponentImplTest {
     @Mock
     private DisziplinComponent disziplinComponent;
     @Mock
-    private VereinComponent vereinComponent;
-    @Mock
     private DsbMannschaftComponentImpl dsbMannschaftComponent;
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
@@ -64,8 +58,6 @@ public class MeldezettelComponentImplTest {
     private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
     private NameMappingComponent nameMappingComponent;
-    @Mock
-    private VereinDAOext vereinDAOext;
 
     @InjectMocks
     private MeldezettelComponentImpl underTest;

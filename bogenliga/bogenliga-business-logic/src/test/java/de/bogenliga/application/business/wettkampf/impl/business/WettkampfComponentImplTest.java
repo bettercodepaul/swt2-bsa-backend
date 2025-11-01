@@ -176,23 +176,23 @@ public class WettkampfComponentImplTest {
     }
     public static MatchDO getMatchDO()
     {
-        final MatchDO expectedDO = new MatchDO(0l,0l,
+        final MatchDO expectedDO = new MatchDO(0L,0L,
                 wettkampf_Id,
                 mannschaft_id,
                 match_Begegnung,
-                1l,
-                8l,
-                0l,
-                0l,
-                0l,
-                1l,
-                0l,
-                0l,
+                1L,
+                8L,
+                0L,
+                0L,
+                0L,
+                1L,
+                0L,
+                0L,
                 null,
-                0l,
+                0L,
                 null,
-                0l,
-                1l);
+                0L,
+                1L);
         return expectedDO;
     }
 
@@ -267,7 +267,7 @@ public class WettkampfComponentImplTest {
     public static DsbMannschaftDO getDsbMannschaftDO()
     {
         DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1L,"1.Manschaft Muster Hausen",1L,1L,
-                0l,wettkampf_Veranstaltung_Id,0l, 1L);
+                0L,wettkampf_Veranstaltung_Id,0L, 1L);
         return neueMannschaft;
     }
 
