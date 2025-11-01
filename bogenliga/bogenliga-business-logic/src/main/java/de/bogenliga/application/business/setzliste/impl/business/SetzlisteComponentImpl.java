@@ -23,13 +23,8 @@ import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -60,9 +55,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * Structure of setzliste for team size 8,6,4
      * dim 1, row: Match
      * dim 2: Teams (with Scheibe as columns)
-     *
      * Every two teams in each match form one Begegnung.
-     *
      * Constructor returns array from enum as matrix.
      */
 

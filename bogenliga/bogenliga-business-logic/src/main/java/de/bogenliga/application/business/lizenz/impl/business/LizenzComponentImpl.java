@@ -37,7 +37,6 @@ import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;

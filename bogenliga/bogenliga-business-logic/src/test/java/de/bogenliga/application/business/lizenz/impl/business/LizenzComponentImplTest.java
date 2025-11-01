@@ -12,7 +12,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.assertj.core.api.Assertions;
@@ -23,7 +22,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import com.itextpdf.layout.Document;
@@ -36,7 +34,6 @@ import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
@@ -51,9 +48,7 @@ public class LizenzComponentImplTest {
     private static final long lizenzDsbMitgliedId = 1337L;
     private static final String lizenztyp = "Liga";
     private static final long lizenzDisziplinId = 0;
-    private static final OffsetDateTime offsetDateTime = null;
-    private static final long USER = 1;
-    private static final long VERSION = 2;
+     private static final long USER = 1;
     private static final long RUECKENNUMMER = 7;
 
     @Rule
@@ -304,7 +299,6 @@ public class LizenzComponentImplTest {
         wettkampfDO.setId(654L);
         wettkampfDO.setWettkampfDisziplinId(546L);
         expectedWettkampfList.add(wettkampfDO);
-        VereinDO expectedvereinDO = getVereinDO();
 
 
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
@@ -369,7 +363,6 @@ public class LizenzComponentImplTest {
     public void delete() {
         // prepare test data
         final LizenzDO input = getLizenzDO();
-        final LizenzBE expectedBE = getLizenzBE();
 
         // call test method
         underTest.delete(input, USER);
@@ -405,7 +398,6 @@ public class LizenzComponentImplTest {
         wettkampfDO.setId(654L);
         wettkampfDO.setWettkampfDisziplinId(546L);
         expectedWettkampfList.add(wettkampfDO);
-        VereinDO expectedvereinDO = getVereinDO();
 
         final List<MannschaftsmitgliedDO> mannschaftsmitglieder = Collections.singletonList(getMannschaftsmitgliedDO(teamId, mitgliedId));
 

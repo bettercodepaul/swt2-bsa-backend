@@ -2,7 +2,6 @@ package de.bogenliga.application.business.meldezettel.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
@@ -12,10 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.disziplin.impl.business.DisziplinComponentImplTest;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
@@ -29,10 +26,8 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.business.Manns
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
@@ -88,7 +83,6 @@ public class MeldezettelComponentImplTest {
             ret.setNummer((long)(100+i));
             mannschaftDOList.add(ret);
         }
-        VereinBEext vereinBEext = VereinComponentImplTest.getVereinBEext();
 
         //configure Mocks
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
@@ -133,7 +127,6 @@ public class MeldezettelComponentImplTest {
             ret.setNummer((long)(100+i));
             mannschaftDOList.add(ret);
         }
-        VereinBEext vereinBEext = VereinComponentImplTest.getVereinBEext();
 
         //configure Mocks
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
@@ -178,7 +171,6 @@ public class MeldezettelComponentImplTest {
             ret.setNummer((long)(100+i));
             mannschaftDOList.add(ret);
         }
-        VereinBEext vereinBEext = VereinComponentImplTest.getVereinBEext();
 
         //configure Mocks
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());

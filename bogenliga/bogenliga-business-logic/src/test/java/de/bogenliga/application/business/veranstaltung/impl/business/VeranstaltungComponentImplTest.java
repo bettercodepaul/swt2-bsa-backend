@@ -3,7 +3,6 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
@@ -32,7 +31,6 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -44,12 +42,10 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 1L;
-    private static final Long LAST_VERANSTALTUNG_ID = 1L;
     private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "";
     private static final Long VERANSTALTUNG_SPORTJAHR = 2023L;
 
-    private static final Long LAST_VERANSTALTUNG_SPORTJAHR = 2017L;
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
     private static final Long VERANSTALTUNG_LIGA_ID = 1L;

@@ -1,9 +1,7 @@
 package de.bogenliga.application.business.setzliste.impl.business;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.Assertions;
