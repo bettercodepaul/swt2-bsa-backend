@@ -36,19 +36,81 @@ import de.bogenliga.application.common.component.ComponentFacade;
 public interface NameMappingComponent extends ComponentFacade {
 
     /**
+     * Return the Full Name of Disziplin.
+     *
+     * @return Name of Disziplin;
+     * empty String when Disziplin not found.
+     */
+
+    String getDisziplinNameForDisziplinId(Long disziplinId);
+
+    /**
+     * Return the Full Name of DSBMitglied.
+     *
+     * @return Fullname of DSBMitglied;
+     * empty String when Mitglied not found.
+     */
+    String getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId);
+
+    /**
+     * Return the Name of Liga.
+     *
+     * @return Fullname of Liga;
+     * empty String when Liga not found.
+     */
+    String getLigaNameForLigaId(Long ligaId);
+
+    /**
+     * Return the Name of Mannschaft.
+     *
+     * @return Mannschaftsname;
+     * empty String when Mannschaft not found.
+     */
+    String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr);
+
+    /**
+     * Return the Sportjahr (Long) of Veranstaltung.
+     *
+     * @return Sportjahr;
+     * empty String when Veranstaltung not found.
+     */
+    Long getSportjahrForVeranstaltungsId(Long veranstaltungsId);
+
+      /**
+     * Return the Email of User.
+     *
+     * @return Email;
+     * empty String when User not found.
+     */
+    String getEmailForUserId(Long userId);
+
+    /**
      * Return the Name of Verein.
      *
      * @return VereinName;
      * empty String when Verein not found.
      */
-    String  getVereinnameForVereinId(Long vereinId);
-    String  getVereinnameForDsbMitgliedId(Long dsbMitgliedId);
-    String  getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId);
-    String  getVeranstaltungsNameForDsbMannschaftId(Long dsbMannschaftId);
-    String getDisziplinNameForDisziplinId(Long disziplinId);
-    String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr);
+    String getVereinnameForVereinId(Long vereinId);
+    String getVereinnameForDsbMitgliedId(Long dsbMitgliedId);
+
+
+    /**
+     * Return the Name of Veranstaltung.
+     *
+     * @return VeranstaltungsName;
+     * empty String when Veranstaltung not found.
+     */
+    String getVeranstaltungsNameForDsbMannschaftId(Long dsbMannschaftId);
     String getVeranstaltungsNameForVeranstaltungsId(Long veranstaltungsId);
-    Long getSportjahrForVeranstaltungsId(Long veranstaltungsId);
+
+    /**
+     * Return the Name of Wettkmapftyp.
+     *
+     * @return Name of Wettkampftyp;
+     * empty String when Wettkmapftyp not found.
+     */
+    String getWettkampftypNameForWettkampftypId(Long wettkampftypId);
+
 
 
 

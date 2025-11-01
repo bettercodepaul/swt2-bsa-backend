@@ -4,13 +4,15 @@ package de.bogenliga.application.business.namemapping.impl.business;
 import de.bogenliga.application.business.disziplin.impl.dao.DisziplinDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
+import de.bogenliga.application.business.user.impl.dao.UserDAO;
+import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -57,19 +59,60 @@ public class NameMappingComponentImpl implements NameMappingComponent {
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
     private final DisziplinDAO disziplinDAO;
     private final VeranstaltungDAO veranstaltungDAO;
+    private final LigaDAO ligaDAO;
+    private final UserDAO userDAO;
+    private final WettkampfTypDAO wettkampfTypDAO;
 
     public NameMappingComponentImpl(VereinDAO vereinDAO,
                                     DsbMitgliedDAO dsbMitgliedDAO,
                                     DsbMannschaftDAOext dsbMannschaftDAOext,
                                     DisziplinDAO disziplinDAO,
-                                    VeranstaltungDAO veranstaltungDAO) {
+                                    VeranstaltungDAO veranstaltungDAO,
+                                    LigaDAO ligaDAO,
+                                    UserDAO userDAO,
+                                    WettkampfTypDAO wettkampfTypDAO) {
         this.veranstaltungDAO = veranstaltungDAO;
         this.vereinDAO = vereinDAO;
         this.dsbMitgliedDAO = dsbMitgliedDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
         this.disziplinDAO = disziplinDAO;
+        this.ligaDAO = ligaDAO;
+        this.userDAO = userDAO;
+        this.wettkampfTypDAO = wettkampfTypDAO;
     }
 
+
+    @Override
+    public String getDisziplinNameForDisziplinId(Long disziplinId) {
+        return disziplinDAO.findById(disziplinId).getName();
+    }
+
+
+    @Override
+    public String getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId) {
+        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(dsbMitgliedId);
+        return (dsbMitgliedBE.getDsbMitgliedVorname() + " " + dsbMitgliedBE.getDsbMitgliedNachname());
+    }
+
+    @Override
+    public String getLigaNameForLigaId(Long ligaId) {
+        return (ligaDAO.findById(ligaId).getLigaName());
+    }
+
+    @Override
+    public String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr) {
+        return (vereinDAO.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
+    }
+
+    @Override
+    public Long getSportjahrForVeranstaltungsId(Long veranstaltungsId) {
+        return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungSportjahr());
+    }
+
+    @Override
+    public String getEmailForUserId(Long userId) {
+        return(userDAO.findById(userId).getUserEmail());
+    }
     @Override
     public String getVereinnameForVereinId(Long vereinId) {
         return vereinDAO.findById(vereinId).getVereinName();
@@ -80,37 +123,22 @@ public class NameMappingComponentImpl implements NameMappingComponent {
         return(vereinDAO.findById(dsbMitgliedDAO.findById(dsbMitgliedId).getDsbMitgliedVereinsId()).getVereinName());
     }
 
-    @Override
-    public String getDsbMitgliedFullNameForDsbMitgliedId(Long dsbMitgliedId) {
-        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(dsbMitgliedId);
-        return (dsbMitgliedBE.getDsbMitgliedVorname() + " " + dsbMitgliedBE.getDsbMitgliedNachname());
-    }
-
-    @Override
-    public String getDisziplinNameForDisziplinId(Long disziplinId) {
-        return disziplinDAO.findById(disziplinId).getName();
-    }
-
-    @Override
+  @Override
     public String getVeranstaltungsNameForDsbMannschaftId(Long dsbMannschaftId) {
-        // TODO Auto-generated method stub
         List<DsbMannschaftBEext> dsbMannschaftExtList = dsbMannschaftDAOext.findVeranstaltungAndWettkampfById(dsbMannschaftId);
         if (dsbMannschaftExtList.isEmpty()) {
             return null;
         }
         return dsbMannschaftExtList.get(0).getVeranstaltungName();
     }
-    @Override
-    public String getMannschaftsnameForVereinIDandMannschaftNr(Long vereinId, Long mannschaftNr) {
-            return (vereinDAO.findById(vereinId).getVereinName() + " " +mannschaftNr.toString());
-    }
 
     @Override
     public String getVeranstaltungsNameForVeranstaltungsId(Long veranstaltungsId) {
         return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungName());
     }
+
     @Override
-    public Long getSportjahrForVeranstaltungsId(Long veranstaltungsId) {
-        return (veranstaltungDAO.findById(veranstaltungsId).getVeranstaltungSportjahr());
+    public String getWettkampftypNameForWettkampftypId(Long wettkampftypId) {
+        return (wettkampfTypDAO.findById(wettkampftypId).getwettkampftypname());
     }
 }

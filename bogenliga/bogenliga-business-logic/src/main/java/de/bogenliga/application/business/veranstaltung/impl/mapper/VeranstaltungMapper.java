@@ -66,8 +66,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
     /**
      * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
      */
-    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserDO userDO,
-                                                          WettkampfTypDO wettkamptypDO, LigaDO ligaDO) {
+    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, String userEmail,
+                                                          String wettkamptypName, String ligaName) {
 
         VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
@@ -82,9 +82,9 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 veranstaltungBE.getVeranstaltungMeldedeadline(),
                 veranstaltungBE.getVeranstaltungLigaleiterId(),
                 veranstaltungBE.getVeranstaltungLigaId(),
-                userDO.getEmail(),
-                wettkamptypDO.getName(),
-                ligaDO.getName(),
+                userEmail,
+                wettkamptypName,
+                ligaName,
                 String.valueOf(veranstaltungBE.getVeranstaltungPhase()), //temporary setting with number  as string
                 veranstaltungBE.getVeranstaltungGroesse()
         );
