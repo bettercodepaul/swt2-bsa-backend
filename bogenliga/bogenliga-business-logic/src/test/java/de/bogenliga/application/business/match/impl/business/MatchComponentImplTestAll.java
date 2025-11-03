@@ -6,8 +6,6 @@ import java.util.Collections;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
