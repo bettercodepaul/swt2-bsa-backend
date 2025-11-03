@@ -27,13 +27,6 @@ public interface MatchComponent {
     MatchDO findById(Long id);
 
     /**
-     * Return a Name for the Team by ID
-     *
-     * @return String Mannschaftsname
-     */
-    String getMannschaftsNameByID(long mannschaftID);
-
-    /**
      * Returns true/false wether the checked id is a Ligamatch or not
      *
      * @return Boolean

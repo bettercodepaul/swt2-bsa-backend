@@ -1,16 +1,11 @@
 package de.bogenliga.application.business.veranstaltung.impl.business;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
-import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
@@ -20,8 +15,6 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -45,13 +38,11 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_GROESSE = "veranstaltunggroesse must be not null";
+    private final NameMappingComponent nameMappingComponent;
 
     private  VeranstaltungDAOext veranstaltungDAOext;
     private  VeranstaltungDAO veranstaltungDAO;
     private  WettkampfComponent wettkampfComponent;
-    private  LigaComponent ligaComponent;
-    private  WettkampfTypComponent wettkampfTypComponent;
-    private  UserComponent userComponent;
 
     /**
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
@@ -60,18 +51,13 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Autowired
     public VeranstaltungComponentImpl(
             final VeranstaltungDAOext veranstaltungDAOext,
-            final VeranstaltungDAO VeranstaltungDAO,
+            final VeranstaltungDAO veranstaltungDAO,
             final WettkampfComponent wettkampfComponent,
-            final LigaComponent ligaComponent,
-            final WettkampfTypComponent wettkampfTypComponent,
-            final UserComponent userComponent
-    ) {
+            final NameMappingComponent nameMappingComponent) {
         this.veranstaltungDAOext = veranstaltungDAOext;
-        this.veranstaltungDAO = VeranstaltungDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
         this.wettkampfComponent = wettkampfComponent;
-        this.ligaComponent = ligaComponent;
-        this.wettkampfTypComponent = wettkampfTypComponent;
-        this.userComponent = userComponent;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     /**
@@ -147,8 +133,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
-
-        return completeNames(persistedVeranstaltungBE);
+        return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
+                nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }
 
 
@@ -169,7 +157,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
         // fehler: in der DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
 
-        return completeNames(persistedVeranstaltungBE);
+        return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
+                nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }
 
 
@@ -304,35 +295,14 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
-        return completeNames(persistedVeranstaltungBE);
+        return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
+                nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
+                nameMappingComponent.getWettkampftypNameForWettkampftypId(persistedVeranstaltungBE.getVeranstaltungWettkampftypId()),
+                nameMappingComponent.getLigaNameForLigaId(persistedVeranstaltungBE.getVeranstaltungLigaId()));
     }
 
 
 
-    // we will add all information required in VeranstaltungDO which are not stored in the entity
-    // especially names in addition to IDs
-
-    private VeranstaltungDO completeNames(VeranstaltungBE veranstaltungBE) {
-
-
-        LigaDO tempLigaDO = new LigaDO();
-        WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
-        UserDO tempUserDO = new UserDO();
-        VeranstaltungDO tempVeranstaltungDO = new VeranstaltungDO();
-
-        if (veranstaltungBE.getVeranstaltungLigaId() != null) {
-            tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltungLigaId());
-        }
-        if (veranstaltungBE.getVeranstaltungWettkampftypId() != null) {
-            tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltungWettkampftypId());
-        }
-        if (veranstaltungBE.getVeranstaltungLigaleiterId() != null) {
-            tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
-        }
-
-
-        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
-    }
 
 
 }

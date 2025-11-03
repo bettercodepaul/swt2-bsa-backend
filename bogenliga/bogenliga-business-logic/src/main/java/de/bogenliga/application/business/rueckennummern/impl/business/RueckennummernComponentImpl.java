@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,24 +49,15 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(RueckennummernComponentImpl.class);
 
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final VereinComponent vereinComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
+    private final NameMappingComponent nameMappingComponent;
 
 
     @Autowired
     public RueckennummernComponentImpl(MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                       VereinComponent vereinComponent,
-                                       DsbMitgliedComponent dsbMitgliedComponent,
-                                       DsbMannschaftComponent dsbMannschaftComponent,
-                                       VeranstaltungComponent veranstaltungComponent) {
+                                      NameMappingComponent nameMappingComponent) {
 
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.vereinComponent = vereinComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
 
@@ -75,17 +68,11 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         //Collect information
         MannschaftsmitgliedDO mannschaftsmitgliedDO = this.mannschaftsmitgliedComponent.findByMemberAndTeamId(dsbMannschaftsId, dsbMitgliedId);
 
-        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftsId);
-        VeranstaltungDO veranstaltungDO = this.veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
-
-        DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(dsbMitgliedId);
-        VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
-
         HashMap<String, List<String>> rueckennummerMapping = new HashMap<>();
 
-        String liganame = veranstaltungDO.getVeranstaltungName();
-        String verein = vereinDO.getName();
-        String schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
+        String liganame = nameMappingComponent.getVeranstaltungsNameForDsbMannschaftId(dsbMannschaftsId);
+        String verein = nameMappingComponent.getVereinnameForDsbMitgliedId(dsbMitgliedId);
+        String schuetzenname = nameMappingComponent.getDsbMitgliedFullNameForDsbMitgliedId(dsbMitgliedId);
         String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
         List<String> schuetzendaten = new ArrayList<>();
@@ -112,23 +99,15 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
     public byte[] getMannschaftsRueckennummernPDFasByteArray(long dsbMannschaftsId) {
 
-        //Collect information
-        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftsId);
-        VeranstaltungDO veranstaltungDO = this.veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
-
-
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(dsbMannschaftsId);
-
         HashMap<String, List<String>> rueckennummerMapping = new HashMap<>();
 
-        String liganame = veranstaltungDO.getVeranstaltungName();
+        String liganame = nameMappingComponent.getVeranstaltungsNameForDsbMannschaftId(dsbMannschaftsId);
 
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(dsbMannschaftsId);
+        String verein = nameMappingComponent.getVereinnameForDsbMitgliedId(mannschaftsmitgliedDOs.get(0).getDsbMitgliedId());
         for(MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
-            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
-            VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
-            String verein = vereinDO.getName();
-            String schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
+            String schuetzenname = nameMappingComponent.getDsbMitgliedFullNameForDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
             String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
             List<String> schuetzendaten = new ArrayList<>();
