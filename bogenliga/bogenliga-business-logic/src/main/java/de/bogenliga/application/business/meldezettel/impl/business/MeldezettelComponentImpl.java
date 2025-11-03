@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -23,19 +25,10 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
-import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.match.api.MatchComponent;
-import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -62,59 +55,43 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
     private static final String PLATZHALTER_NAME = "Platzhalter";
 
-    private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
-    private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
-    private final DisziplinComponent disziplinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final NameMappingComponent NameMappingComponent;
 
     @Autowired
-    public MeldezettelComponentImpl(final MatchComponent matchComponent,
-                                    final DsbMannschaftComponent dsbMannschaftComponent,
-                                    final VereinComponent vereinComponent,
+    public MeldezettelComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
                                     final WettkampfComponent wettkampfComponent,
-                                    final VeranstaltungComponent veranstaltungComponent,
-                                    final DisziplinComponent disziplinComponent,
-                                    final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                    final DsbMitgliedComponent dsbMitgliedComponent) {
-        this.matchComponent = matchComponent;
+                                     final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                    final NameMappingComponent NameMappingComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
-        this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
-        this.disziplinComponent = disziplinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.NameMappingComponent = NameMappingComponent;
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
+        HashMap<String, List<String>> teamMemberMapping = new HashMap<>();
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
 
         Long wettkampfTag = wettkampfDO.getWettkampfTag();
-        String veranstaltungsName = veranstaltungDO.getVeranstaltungName();
-        String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).getDisziplinName();
+        String veranstaltungsName = NameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
+        String disziplinsName = NameMappingComponent.getDisziplinNameForDisziplinId(wettkampfDO.getWettkampfDisziplinId());
         Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
-
-        for (int i = 1; i <= veranstaltungDO.getVeranstaltungGroesse(); i++) {
-            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
-            String teamName = getTeamName(matchDO.getMannschaftId());
-            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
-            List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-
-            for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
-                dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
+        for (DsbMannschaftDO mannschaft : dsbMannschaftComponent.findAllByVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId())) {
+            String teamName = NameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(mannschaft.getVereinId(), mannschaft.getNummer());
+            List<String> NamenTeammitglieder = new ArrayList<>();
+           for (MannschaftsmitgliedDO member : mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft.getId())) {
+                // in der Liste der Mannschaftsmitglieder auf der Meldekarte wird die Rückennummer und der Name ausgegeben
+               // wir bauen diesen String schon hier zusammen, dann müssen wir nur den Text in GenDoc übergeben
+                NamenTeammitglieder.add((member.getRueckennummer().toString() + ". " + NameMappingComponent.getDsbMitgliedFullNameForDsbMitgliedId(member.getDsbMitgliedId())));
             }
-
-            teamMemberMapping.put(teamName, dsbMitgliedDOList);
+           teamMemberMapping.put(teamName, NamenTeammitglieder);
         }
 
         
@@ -123,7 +100,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping, veranstaltungDO.getVeranstaltungGroesse());
+            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping, teamMemberMapping.size());
             doc.close();
 
             return result.toByteArray();
@@ -136,7 +113,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstaltungGroesse) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<String>> teamMemberMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
@@ -289,13 +266,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             final Table mitgliederTable = new Table(new float[]{150F, 150F});
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(
                     teamNameList[mannschaftCounter]).size() + 1; mitgliedCounter++) {
-                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[mannschaftCounter]).get(
-                        mitgliedCounter - 1);
                 mitgliederTable
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(new Paragraph(
-                                        mitgliedCounter + ". " + mitgliedDO.getNachname() + ", " + mitgliedDO.getVorname()).setFontSize(
-                                        8.0F))
+                                .add(new Paragraph(teamMemberMapping.get(teamNameList[mannschaftCounter]).get(mitgliedCounter - 1)).setFontSize(8.0F))
                         )
                 ;
             }
@@ -493,20 +466,4 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         }
     }
 
-    /**
-     * help function to get team name
-     *
-     * @param teamID ID of the team
-     * @return name of the team
-     */
-    private String getTeamName(long teamID) {
-        Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() > 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
-        } else {
-            return vereinDO.getName();
-        }
-    }
 }

@@ -3,7 +3,6 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.Array;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,10 +10,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
-import java.util.Optional;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.ThrowableAssert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.context.TestExecutionListeners;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -40,8 +37,6 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.Mannschaft
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
-import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -50,13 +45,10 @@ import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import static org.assertj.core.api.Java6Assertions.anyOf;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -137,11 +129,11 @@ public class WettkampfComponentImplTest {
     @Captor
     private ArgumentCaptor<WettkampfBE> wettkampfBEArgumentCaptor;
     @Mock
-    private MatchDO matchDO;
-    @Mock
     private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
 
 
 
@@ -184,23 +176,23 @@ public class WettkampfComponentImplTest {
     }
     public static MatchDO getMatchDO()
     {
-        final MatchDO expectedDO = new MatchDO(0l,0l,
+        final MatchDO expectedDO = new MatchDO(0L,0L,
                 wettkampf_Id,
                 mannschaft_id,
                 match_Begegnung,
-                1l,
-                8l,
-                0l,
-                0l,
-                0l,
-                1l,
-                0l,
-                0l,
+                1L,
+                8L,
+                0L,
+                0L,
+                0L,
+                1L,
+                0L,
+                0L,
                 null,
-                0l,
+                0L,
                 null,
-                0l,
-                1l);
+                0L,
+                1L);
         return expectedDO;
     }
 
@@ -226,10 +218,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, 1l,
+        PasseDO passe1 = new PasseDO(null,77L, null, 2L, null, 1L,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, 2l,
+        PasseDO passe2 = new PasseDO(null,77L, null, 1L, null, 2L,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -240,10 +232,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getEmptyPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
+        PasseDO passe1 = new PasseDO(null,null, null, 2L, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
+        PasseDO passe2 = new PasseDO(null,null, null, 1L, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -264,31 +256,31 @@ public class WettkampfComponentImplTest {
     public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE()
     {
         MannschaftsmitgliedExtendedBE newMittglied = new MannschaftsmitgliedExtendedBE();
-        newMittglied.setId(1l);
+        newMittglied.setId(1L);
         newMittglied.setDsbMitgliedVorname("Sascha");
         newMittglied.setDsbMitgliedNachname("DeTiris");
-        newMittglied.setDsbMitgliedId(2l);
+        newMittglied.setDsbMitgliedId(2L);
 
         return newMittglied;
     }
 
     public static DsbMannschaftDO getDsbMannschaftDO()
     {
-        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1l,"1.Manschaft Muster Hausen",1l,1l,
-                0l,wettkampf_Veranstaltung_Id,0l, 1L);
+        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1L,"1.Manschaft Muster Hausen",1L,1L,
+                0L,wettkampf_Veranstaltung_Id,0L, 1L);
         return neueMannschaft;
     }
 
     public static VereinDO getVereinDO()
     {
-        VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
-                "Test Verein","Test Icon", OffsetDateTime.now(), 0l, 0l);
+        VereinDO neuerVerein = new VereinDO(1L, "Bogensport Muster Hausen", "bmh",0L,"example.com",
+                "Test Verein","Test Icon", OffsetDateTime.now(), 0L, 0L);
         return neuerVerein;
     }
     public static LigatabelleDO getLigatabelleDO()
     {
-        LigatabelleDO ligaTabelle = new LigatabelleDO(wettkampf_Veranstaltung_Id,"Test Veranstaltung",1l,
-                (int)wettkampf_Tag,mannschaft_id,42,42l,"Bogensport Muster Hausen",1,2,
+        LigatabelleDO ligaTabelle = new LigatabelleDO(wettkampf_Veranstaltung_Id,"Test Veranstaltung",1L,
+                (int)wettkampf_Tag,mannschaft_id,42,42L,"Bogensport Muster Hausen",1,2,
                 3,4,5,1,1,0);
         return ligaTabelle;
     }
@@ -596,7 +588,7 @@ public class WettkampfComponentImplTest {
         //daten vorbereiten
         List<PasseDO> passen = getPassenDO();
         //Methode aufrufen
-        float actual = underTest.calcAverageEinzel(passen,1l);
+        float actual = underTest.calcAverageEinzel(passen,1L);
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(8.5f);
     }
@@ -659,26 +651,14 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+        when(nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(anyLong())).thenReturn("Demo Veranstaltung");
+        when(nameMappingComponent.getMannschaftsnameForMannschaftId(anyLong())).thenReturn("Demo Mannschaft");
     }
     private void prepare2ndMocksForPDFTest()
     {
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(new ArrayList());
     }
 
-    @Test
-    public void testGetTeamName()
-    {
-        assertThatThrownBy(() -> underTest.getTeamName(-1)).isInstanceOf(BusinessException.class);
-        //erwartetes ergebnis definieren
-        String expected = "Bogensport Muster Hausen 1";
-        //mocks vorbereiten
-        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
-        //methode aufrufen
-        String actual = underTest.getTeamName(1);
-        //ergebmis prüfen
-        Assertions.assertThat(actual).isEqualTo(expected);
-    }
 
     @Test
     public void testGetNummern()
@@ -687,9 +667,9 @@ public class WettkampfComponentImplTest {
         List<PasseDO> passen = getPassenDO();
         //erwartetes ergebnis
         List<Long> expected = new LinkedList<>();
-        expected.add(2l);
-        expected.add(1l);
-        expected.add(1l);
+        expected.add(2L);
+        expected.add(1L);
+        expected.add(1L);
         //Methode aufrufen
         List<Long> actual = underTest.getNummern(passen);
         expected.remove(2);
@@ -746,7 +726,8 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));
-        
+        when(nameMappingComponent.getMannschaftsnameForMannschaftId(anyLong())).thenReturn("Demo Mannschaft");
+
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag()).isEqualTo(expectedWettkampfTag);
 
         byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag);
@@ -768,8 +749,8 @@ public class WettkampfComponentImplTest {
         assertThat(underTest.addPassenVonSatz(Collections.EMPTY_LIST,-1,-1,-1)).isEqualTo(-1);
         List<PasseDO> passenList = getPassenDO();
         assertThat(underTest.addPassenVonSatz(passenList,0,0,0)).isEqualTo(-1);
-        assertThat(underTest.addPassenVonSatz(passenList,1l,2l,77)).isEqualTo(19);
-        assertThat(underTest.addPassenVonSatz(passenList,2l,1l,77)).isEqualTo(51);
+        assertThat(underTest.addPassenVonSatz(passenList,1L,2L,77)).isEqualTo(19);
+        assertThat(underTest.addPassenVonSatz(passenList,2L,1L,77)).isEqualTo(51);
     }
 
 
@@ -824,7 +805,7 @@ public class WettkampfComponentImplTest {
 
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getOfflineToken()).isNull();
-;    }
+    }
 
     @Test
     public void checkOfflineToken() {

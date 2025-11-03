@@ -1,9 +1,9 @@
 package de.bogenliga.application.business.setzliste.impl.business;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,6 +60,8 @@ public class SetzlisteComponentImplTest {
     private DsbMannschaftComponent dsbMannschaftComponent;
     @Mock
     private VereinComponent vereinComponent;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
 
 
     @InjectMocks
@@ -84,6 +86,7 @@ public class SetzlisteComponentImplTest {
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(anyLong())).thenReturn("Veranstaltungsname");
 
         //call test method
         final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
@@ -110,6 +113,7 @@ public class SetzlisteComponentImplTest {
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(anyLong())).thenReturn("Veranstaltungsname");
 
         //call test method
         final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
@@ -136,6 +140,7 @@ public class SetzlisteComponentImplTest {
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(anyLong())).thenReturn("Veranstaltungsname");
 
         //call test method
         final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);

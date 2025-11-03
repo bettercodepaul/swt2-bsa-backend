@@ -3,8 +3,9 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.ThrowableTypeAssert;
 import org.assertj.core.util.CheckReturnValue;
@@ -30,7 +31,6 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -42,12 +42,10 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 1L;
-    private static final Long LAST_VERANSTALTUNG_ID = 1L;
     private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "";
     private static final Long VERANSTALTUNG_SPORTJAHR = 2023L;
 
-    private static final Long LAST_VERANSTALTUNG_SPORTJAHR = 2017L;
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
     private static final Long VERANSTALTUNG_LIGA_ID = 1L;
@@ -103,6 +101,10 @@ public class VeranstaltungComponentImplTest {
     private UserComponent userComponent;
     @Mock
     private VeranstaltungDAOext veranstaltungDAOext;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
+
+
     @InjectMocks
     private VeranstaltungComponentImpl underTest;
     @Captor
@@ -324,8 +326,12 @@ public class VeranstaltungComponentImplTest {
        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+       when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+       when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+       when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
-        // call test method
+
+       // call test method
         final VeranstaltungDO actual = underTest.create(input, USER);
 
         // assert result
@@ -399,6 +405,9 @@ public class VeranstaltungComponentImplTest {
         when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
         when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+        when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+        when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
         // call test method
         final VeranstaltungDO actual = underTest.update(input, USER);
@@ -504,6 +513,9 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
         when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
         when(veranstaltungDAOext.findById(anyLong())).thenReturn(expectedBEext);
+        when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+        when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
 
         // call test method
         final VeranstaltungDO actual = underTest.setPhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
