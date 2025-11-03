@@ -8,23 +8,24 @@ import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.junit.Assert.*;
 
 import java.util.Collections;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class NameMappingComponentImplTest extends TestCase {
+public class NameMappingComponentImplTest extends BaseMatchTest {
 
     @Mock
     private VereinDAOext vereinDAOext;
