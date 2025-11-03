@@ -2,43 +2,25 @@ package de.bogenliga.application.business.namemapping.impl.business;
 
 import de.bogenliga.application.business.disziplin.impl.dao.DisziplinDAO;
 import de.bogenliga.application.business.disziplin.impl.entity.DisziplinBE;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.match.impl.dao.MatchDAO;
-import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.util.Collections;
-import de.bogenliga.application.business.disziplin.impl.dao.DisziplinDAO;
-import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAOext;
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
-import de.bogenliga.application.business.user.impl.dao.UserDAO;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
-import org.mockito.Mockito;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +45,7 @@ public class NameMappingComponentImplTest extends TestCase {
     @InjectMocks
     private NameMappingComponentImpl nameMappingComponent;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         vereinDAOext = mock(VereinDAOext.class);
         dsbMitgliedDAO = mock(DsbMitgliedDAO.class);
