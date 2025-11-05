@@ -98,7 +98,6 @@ public class SyncServiceTest {
 
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
-    //private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
 
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
@@ -149,13 +148,7 @@ public class SyncServiceTest {
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname = "Bar";
-    private static final Long MM_rueckennummer_1 = 5L;
-    private static final Long MM_rueckennummer_2 = 6L;
-    private static final Long MM_rueckennummer_3 = 7L;
 
-
-    private static final Long W_id = 5L;
-    private static final String W_name = "Liga_kummulativ";
 
     private static final Long W_vid = 243L;
     private static final Long W_typId = 0L;
