@@ -5,7 +5,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,6 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
@@ -36,10 +35,6 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -72,18 +67,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Can't save the given data, due to the invalidity of the current offline session.";
 
     private final WettkampfDAO wettkampfDAO;
-    private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
-  
-    private LigaComponent ligaComponent;
+
+    private final LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
-    private final VereinComponent vereinComponent;
     private VeranstaltungComponent veranstaltungComponent;
-    private  DsbMitgliedComponent dsbMitgliedComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private LigatabelleComponent ligatabelleComponent;
+    private NameMappingComponent nameMappingComponent;
+
 
     /**
      * Constructor
@@ -98,19 +92,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final PasseComponent passeComponent,
                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                   final DsbMitgliedComponent dsbMitgliedComponent,
-                                  final DsbMannschaftComponent dsbMannschaftComponent,
-                                  final VereinComponent vereinComponent,
                                   final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
-                                  final VeranstaltungDAO veranstaltungDAO) {
+                                  final NameMappingComponent nameMappingComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
-        this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
-        this.veranstaltungDAO = veranstaltungDAO;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     @Autowired
@@ -169,7 +159,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(id);
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
 
@@ -178,7 +168,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
 
         final List<WettkampfBE> wettkampfBEList = this.wettkampfDAO.findAllByVeranstaltungId(veranstaltungId);
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
 
@@ -233,7 +223,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Override
     public List<WettkampfDO> findAll() {
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
 
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
@@ -255,13 +245,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
         Preconditions.checkArgument(header.equals("Einzelstatistik") || header.equals("Gesamtstatistik"),"Invalid Header!");
-        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
 
         doc.setFontSize(20.0f);
         doc.add(new Paragraph(header).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltungName()));
-        doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
+        doc.add(new Paragraph("Veranstaltung: " + nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(veranstaltungsid)));
+        doc.add(new Paragraph("Mannschaft: " + nameMappingComponent.getMannschaftsnameForMannschaftId(mannschaftsid)));
         doc.add(new Paragraph("Jahr: " + jahr));
         doc.add(new Paragraph(""));
 
@@ -290,17 +279,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return passennummern;
     }
 
-    //ermitelt team name anhand id
-    public String getTeamName(long teamID) {
-        Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() >= 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
-        } else {
-            return vereinDO.getName();
-        }
-    }
 
     @Override
     public List<Long> getAllowedMitglieder(long wettkampfid, long mannschaft1Id, long mannschaft2Id){
@@ -549,11 +527,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
     {
-        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstatungsId);
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltungName()).setBold());
+        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(veranstatungsId)).setBold());
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
         doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
@@ -579,7 +556,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
             for(MatchDO match : matches)
             {
-                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(match.getMannschaftId()))));
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(nameMappingComponent.getMannschaftsnameForMannschaftId(match.getMannschaftId()))));
                 for(long i = 1 ; i<=5 ; i++)
                 {
                     table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle((long) addPassenVonSatz(passen ,i ,match.getNr() ,match.getMannschaftId())))));
@@ -698,7 +675,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         for(LigatabelleDO team : tabelle)
         {
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.gettabellenplatz()))));
-            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(team.getmannschaftId()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(nameMappingComponent.getMannschaftsnameForMannschaftId(team.getmannschaftId()))));
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getsatzpkt() + " : " + team.getSatzpktGegen())));
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getSatzpktDifferenz()))));
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getMatchpktGegen())));
@@ -775,7 +752,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     public String generateOfflineToken(long userId) {
-        return String.valueOf(userId) + Instant.now().toString();
+        return (userId) + Instant.now().toString();
     }
 
     /**
@@ -796,5 +773,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public boolean wettkampfIsOffline(long wettkampfId) {
         final WettkampfDO wettkampfDO = findById(wettkampfId);
         return wettkampfDO.getOfflineToken() != null;
+    }
+
+    @Autowired
+    public void setNameMappingComponent(NameMappingComponent nameMappingComponent) {
+        this.nameMappingComponent = nameMappingComponent;
     }
 }

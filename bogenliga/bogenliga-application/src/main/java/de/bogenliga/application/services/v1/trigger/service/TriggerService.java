@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 import org.slf4j.Logger;
@@ -150,13 +151,13 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAll() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllLimited();
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
     }
     @GetMapping("/findAllUnprocessed")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllUnprocessed() {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllUnprocessed();
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
     }
 
     //TODO GetMapping der Methoden testen und bei Bedarf anpassen
@@ -190,7 +191,7 @@ public class TriggerService implements ServiceFacade {
     public List<TriggerDTO> findAllWithPages(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
         if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllWithPages(offsetMultiplicator, queryPageLimit,dateInterval);
-            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
         }
         return Collections.emptyList();
     }
@@ -198,7 +199,7 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAllSuccessed(@RequestParam("offsetMultiplicator") String offsetMultiplicator,@RequestParam("queryPageLimit") String queryPageLimit,@RequestParam("dateInterval") String dateInterval) {
         final List<TriggerDO> triggerDOList = triggerComponent.findAllSuccessed(offsetMultiplicator, queryPageLimit,dateInterval);
-        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+        return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
     }
     @GetMapping("/findErrors")
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -206,7 +207,7 @@ public class TriggerService implements ServiceFacade {
         if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllErrors(offsetMultiplicator, queryPageLimit,
                     dateInterval);
-            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
         }
         return Collections.emptyList();
     }
@@ -216,7 +217,7 @@ public class TriggerService implements ServiceFacade {
         if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllInProgress(offsetMultiplicator, queryPageLimit,
                     dateInterval);
-            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
         }
         return Collections.emptyList();
     }
@@ -226,7 +227,7 @@ public class TriggerService implements ServiceFacade {
         if (checkForMaliciousQueryParams(offsetMultiplicator, queryPageLimit, dateInterval)) {
             final List<TriggerDO> triggerDOList = triggerComponent.findAllNews(offsetMultiplicator, queryPageLimit,
                     dateInterval);
-            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
+            return triggerDOList.stream().map(TriggerDTOMapper.toDTO).toList();
         }
         return Collections.emptyList();
     }

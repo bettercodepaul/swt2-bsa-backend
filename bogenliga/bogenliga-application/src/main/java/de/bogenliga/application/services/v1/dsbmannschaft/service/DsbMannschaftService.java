@@ -92,11 +92,11 @@ public class DsbMannschaftService implements ServiceFacade {
 
     /**
      * I return all dsbMannschaft entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
+     * ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
      *
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmannschaft}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMannschaft angepasst werden
+     * <pre>{@code Response:
      * [
      *  {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -432,6 +432,24 @@ public class DsbMannschaftService implements ServiceFacade {
         dsbMannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
 
     }
+    /**
+     * I copy a single dsbMannschaft entries in the database, setting veranstaltung-id = null
+     * @param mannschaftId
+     * @param principal
+     */
+    @GetMapping(value = "copyMannschaftID/{mannschaftId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void copyMannschaft(@PathVariable("mannschaftId") final Long mannschaftId,
+                                                final Principal principal) {
+
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        LOG.debug("Receive 'copyMannschaft' request with ID '{}'", mannschaftId);
+        dsbMannschaftComponent.copyMannschaft(mannschaftId, userId);
+
+    }
 
     /**
      * I assign the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
@@ -567,7 +585,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
-        final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
+        final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
@@ -578,7 +596,7 @@ public class DsbMannschaftService implements ServiceFacade {
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
-        if (dsbMannschaftDO.getVeranstaltungId() != null && veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
+        if (dsbMannschaftDO.getVeranstaltungId() != null && !veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
                 throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);

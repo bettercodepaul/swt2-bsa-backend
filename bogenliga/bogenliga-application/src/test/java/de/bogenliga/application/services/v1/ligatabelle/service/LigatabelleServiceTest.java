@@ -24,7 +24,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 public class LigatabelleServiceTest {
 
     private static final long USER = 4L;
-    private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "Name_der_Veranstaltung";
