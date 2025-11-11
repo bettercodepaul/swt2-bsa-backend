@@ -63,6 +63,33 @@ public class WettkampfBasicDAOTest {
 
     }
 
+    @Test
+    public void findFutureSix() {
+        // prepare test data
+        final WettkampfBE expectedBE = getWettkampfBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<WettkampfBE> actual = underTest.findFutureSix();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+
+
+    }
 
     @Test
     public void findById() {

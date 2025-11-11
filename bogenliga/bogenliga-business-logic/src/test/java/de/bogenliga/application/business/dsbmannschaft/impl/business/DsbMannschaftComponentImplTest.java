@@ -7,6 +7,9 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -66,7 +69,12 @@ public class DsbMannschaftComponentImplTest {
     @Mock
     private VereinComponent vereinComponent;
     @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
     private MannschaftsmitgliedComponentImpl mannschaftsmitgliedComponent;
+    @Mock
+    private NameMappingComponent nameMappingComponent;
+
     @InjectMocks
     private DsbMannschaftComponentImpl underTest;
     @Captor
@@ -499,6 +507,7 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(anyLong(), anyLong())).thenReturn("TestMannschaft");
 
         // call test method
         final DsbMannschaftDO actual = underTest.create(input, USER);
@@ -511,7 +520,6 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -565,7 +573,6 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -638,6 +645,7 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
+        when(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(anyLong(), anyLong())).thenReturn("TestMannschaft");
 
         // call test method
         final DsbMannschaftDO actual = underTest.update(input, USER);
@@ -652,7 +660,6 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -710,6 +717,7 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
         when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
+        when(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(anyLong(), anyLong())).thenReturn("TestMannschaft");
 
         // call test method
         final DsbMannschaftDO actual = underTest.update(input, USER);
@@ -729,7 +737,6 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -898,7 +905,7 @@ public class DsbMannschaftComponentImplTest {
         final List<DsbMannschaftDO> inputList = Collections.singletonList(inputMannschaft);
 
         // configure mocks
-        when(vereinComponent.findById(VEREIN_ID)).thenReturn(expectedVerein);
+         when(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(anyLong(), anyLong())).thenReturn("Testverein 1");
 
         // call test method
         final List<DsbMannschaftDO> result = underTest.fillAllNames(inputList);
@@ -915,7 +922,6 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo("Testverein 1");
 
         // verify invocations
-        verify(vereinComponent).findById(VEREIN_ID);
     }
     @Test
     public void findEverything(){
@@ -969,6 +975,8 @@ public class DsbMannschaftComponentImplTest {
         DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungSportJahr(1999L);
 
         List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
         alteMitglieder.add(new MannschaftsmitgliedDO(1L));
@@ -985,6 +993,10 @@ public class DsbMannschaftComponentImplTest {
 
         when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(neuesMitglied);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(new VeranstaltungDO());
+        when(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(anyLong(), anyLong())).thenReturn("Testverein 1");
+        when(nameMappingComponent.getSportjahrForVeranstaltungsId(anyLong())).thenReturn(1999L);
+
 
         //call test method
         final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
@@ -999,7 +1011,6 @@ public class DsbMannschaftComponentImplTest {
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-        verify(vereinComponent).findById(anyLong());
     }
     @Test
     public void copyMannschaft_new(){

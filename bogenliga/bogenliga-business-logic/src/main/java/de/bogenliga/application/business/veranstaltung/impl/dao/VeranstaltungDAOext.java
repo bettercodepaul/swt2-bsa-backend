@@ -40,6 +40,10 @@ public class VeranstaltungDAOext implements DataAccessObject {
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_PHASE = "veranstaltungPhase";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_GROESSE = "veranstaltungGroesse";
 
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGANAME = "ligaName";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_WETTKAMPFTYPNAME = "wettkampftypName";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITEREMAIL = "ligaLeiterEmail";
+
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
     private static final String VERANSTALTUNG_TABLE_NAME= "veranstaltung_name";
@@ -50,6 +54,11 @@ public class VeranstaltungDAOext implements DataAccessObject {
 
     private static final String VERANSTALTUNG_TABLE_PHASE = "veranstaltung_phase";
     private static final String VERANSTALTUNG_TABLE_GROESSE = "veranstaltung_groesse";
+
+    private static final String VERANSTALTUNG_TABLE_LIGANAME = "ligaName";
+    private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYPNAME = "wettkampftypName";
+    private static final String VERANSTALTUNG_TABLE_LIGALEITEREMAIL = "ligaleiter_email";
+
 
 
     // wrap all specific config parameters
@@ -99,7 +108,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
             "SELECT v.*,"
                         +" l.liga_name AS ligaName,"
                         +" w.wettkampftyp_name AS wettkampftypName, "
-                        +" b.benutzer_email AS ligaLeiterEmail "
+                        +" b.benutzer_email AS ligaleiter_email "
                     +" FROM "
                         +"veranstaltung v "
                     +"LEFT JOIN "
@@ -116,7 +125,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     "    v.*, " +
                     "    l.liga_name AS ligaName, " +
                     "    w.wettkampftyp_name AS wettkampftypName, " +
-                    "    b.benutzer_email AS ligaLeiterEmail " +
+                    "    b.benutzer_email AS ligaleiter_email " +
                     " FROM " +
                     "    veranstaltung v " +
                     "LEFT JOIN " +
@@ -133,7 +142,7 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     "    v.*, " +
                     "    l.liga_name AS ligaName, " +
                     "    w.wettkampftyp_name AS wettkampftypName, " +
-                    "    b.benutzer_email AS ligaLeiterEmail " +
+                    "    b.benutzer_email AS ligaleiter_email " +
                     " FROM " +
                     "    veranstaltung v " +
                     "LEFT JOIN "+
@@ -147,14 +156,11 @@ public class VeranstaltungDAOext implements DataAccessObject {
 
     private static final String FIND_BY_SPORTJAHR_SORTED_DISTINCT_LIGA =
             "SELECT " +
-                    "    v.veranstaltung_liga_id, " +
-                    "    v.veranstaltung_name, " +
-                    "    v.veranstaltung_id, " +
-                    "    v.veranstaltung_sportjahr, " +
-                    "    l.liga_name, " +
-                    "    w.wettkampftyp_name, " +
-                    "b.benutzer_email AS ligaLeiterEmail, " +
-                    "    MAX(m.last_modified_at_utc) AS last_modified_at " +
+                    "    v.*, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaleiter_email, " +
+                    "    MAX(m.last_modified_at_utc) AS match_last_modified_at_utc " +
                     " FROM " +
                     "    veranstaltung v " +
                     "LEFT JOIN " +
@@ -183,11 +189,12 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     "    v.veranstaltung_id";
 
     private static final String FIND_BY_LIGALEITER_ID =
-            "SELECT v.*,"
-                    +" l.liga_name AS ligaName,"
-                    +" w.wettkampftyp_name AS wettkampftypName,"
-                    +" b.benutzer_email AS ligaLeiterEmail "
-                    +" FROM "
+            "SELECT " +
+                    "    v.*, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaleiter_email " +
+                    " FROM "
                     +"veranstaltung v "
                     +"LEFT JOIN "
                     +"liga l ON v.veranstaltung_liga_id = l.liga_id "
@@ -198,11 +205,12 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     + " WHERE veranstaltung_ligaleiter_id = ?";
 
     private static final String FIND_BY_LIGAID =
-            "SELECT v.*,"
-                    +" l.liga_name AS ligaName,"
-                    +" w.wettkampftyp_name AS wettkampftypName,"
-                    +" b.benutzer_email AS ligaLeiterEmail "
-                    +"FROM "
+            "SELECT " +
+                    "    v.*, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaleiter_email " +
+                    "FROM "
                     +"veranstaltung v "
                     +"LEFT JOIN "
                     +"liga l ON v.veranstaltung_liga_id = l.liga_id "
@@ -213,11 +221,12 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     + "WHERE veranstaltung_liga_id = ?";
 
     private static final String FIND_BY_ID =
-            "SELECT v.*,"
-                    +" l.liga_name AS ligaName,"
-                    +" w.wettkampftyp_name AS wettkampftypName,"
-                    +" b.benutzer_email AS ligaLeiterEmail "
-                    +"FROM "
+            "SELECT " +
+                    "    v.*, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaleiter_email " +
+                    "FROM "
                     +"veranstaltung v "
                     +"LEFT JOIN "
                     +"liga l ON v.veranstaltung_liga_id = l.liga_id "
@@ -228,11 +237,12 @@ public class VeranstaltungDAOext implements DataAccessObject {
                     + " WHERE veranstaltung_id = ?";
 
     private static final String FIND_BY_LIGAID_AND_SPORTJAHR =
-            "SELECT v.*,"
-                    +" l.liga_name AS ligaName,"
-                    +" w.wettkampftyp_name AS wettkampftypName,"
-                    +" b.benutzer_email AS ligaLeiterEmail "
-                    +"FROM "
+            "SELECT " +
+                    "    v.*, " +
+                    "    l.liga_name AS ligaName, " +
+                    "    w.wettkampftyp_name AS wettkampftypName, " +
+                    "    b.benutzer_email AS ligaleiter_email " +
+                    "FROM "
                     +"veranstaltung v "
                     +"LEFT JOIN "
                     +"liga l ON v.veranstaltung_liga_id = l.liga_id "
@@ -276,6 +286,9 @@ public class VeranstaltungDAOext implements DataAccessObject {
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_PHASE, VERANSTALTUNG_BE_VERANSTALTUNG_PHASE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_GROESSE, VERANSTALTUNG_BE_VERANSTALTUNG_GROESSE);
+        columnsToFieldsMap.put(VERANSTALTUNG_BE_VERANSTALTUNG_LIGANAME, VERANSTALTUNG_BE_VERANSTALTUNG_LIGANAME);
+        columnsToFieldsMap.put(VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITEREMAIL, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITEREMAIL);
+        columnsToFieldsMap.put(VERANSTALTUNG_BE_VERANSTALTUNG_WETTKAMPFTYPNAME, VERANSTALTUNG_BE_VERANSTALTUNG_WETTKAMPFTYPNAME);
         columnsToFieldsMap.put("liga_name", "ligaName");
 
         // add technical columns

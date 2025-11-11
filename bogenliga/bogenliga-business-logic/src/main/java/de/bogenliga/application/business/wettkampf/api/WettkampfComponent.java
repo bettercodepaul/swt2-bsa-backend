@@ -17,6 +17,7 @@ public interface WettkampfComponent extends ComponentFacade {
      * empty list, if no wettkampf is found
      */
     List<WettkampfDO> findAll();
+    List<WettkampfDO> findFutureSix();
 
     List<WettkampfDO> findByAusrichter(long id);
     /**
