@@ -285,7 +285,7 @@ public class WettkampfComponentImplTest {
         return ligaTabelle;
     }
 
-        @Test
+    @Test
     public void findAll() {
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
@@ -317,6 +317,37 @@ public class WettkampfComponentImplTest {
         verify(wettkampfDAO).findAll();
     }
 
+    @Test
+    public void findFutureSix() {
+        // prepare test data
+        final WettkampfBE expectedBE = getWettkampfBE();
+        final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(wettkampfDAO.findFutureSix()).thenReturn(expectedBEList);
+
+        // call test method
+        final List<WettkampfDO> actual = underTest.findFutureSix();
+
+        // assert result
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+        assertThat(actual.get(0).getId()).isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getWettkampfVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(actual.get(0).getWettkampfDatum()).isEqualTo(expectedBE.getDatum());
+        assertThat(actual.get(0).getWettkampfStrasse()).isEqualTo(expectedBE.getWettkampfStrasse());
+        assertThat(actual.get(0).getWettkampfPlz()).isEqualTo(expectedBE.getWettkampfPlz());
+        assertThat(actual.get(0).getWettkampfOrtsname()).isEqualTo(expectedBE.getWettkampfOrtsname());
+        assertThat(actual.get(0).getWettkampfOrtsinfo()).isEqualTo(expectedBE.getWettkampfOrtsinfo());
+        assertThat(actual.get(0).getWettkampfTag()).isEqualTo(expectedBE.getWettkampfTag());
+        assertThat(actual.get(0).getWettkampfDisziplinId()).isEqualTo(expectedBE.getWettkampfDisziplinId());
+        assertThat(actual.get(0).getWettkampfTypId()).isEqualTo(expectedBE.getWettkampfTypId());
+        assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(expectedBE.getWettkampfAusrichter());
+        assertThat(actual.get(0).getOfflineToken()).isEqualTo(expectedBE.getOfflineToken());
+        // verify invocations
+        verify(wettkampfDAO).findFutureSix();
+    }
 
     @Test
     public void findById() {

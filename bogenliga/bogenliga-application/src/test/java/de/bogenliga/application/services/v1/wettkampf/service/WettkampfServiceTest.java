@@ -179,6 +179,33 @@ public class WettkampfServiceTest {
         verify(wettkampfComponent).findAll();
 
     }
+    @Test
+    public void findFutureSix() {
+
+        // prepare test data
+        final WettkampfDO wettkampfDO = getWettkampfDO();
+        final List<WettkampfDO> wettkampfDOList = Collections.singletonList(wettkampfDO);
+
+        // configure mocks
+        when(wettkampfComponent.findFutureSix()).thenReturn(wettkampfDOList);
+
+        // call test method
+        final List<WettkampfDTO> actual = underTest.findFutureSix();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final WettkampfDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(wettkampfDO.getId());
+
+        // verify invocations
+        verify(wettkampfComponent).findFutureSix();
+
+    }
 
 
     @Test
