@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public final class LigaSlugUtil {
     private LigaSlugUtil() {}
 
-    private static final Pattern SLUG = Pattern.compile("^[a-z0-9]++(?:-[a-z0-9]++)*$");
+    private static final Pattern SLUG = Pattern.compile("^[a-z0-9]++(?:-[a-z0-9]++)*+$");
 
     public static String toSlug(String name) {
         if (name == null || name.trim().isEmpty()) {
