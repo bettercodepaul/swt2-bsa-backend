@@ -20,7 +20,7 @@ public final class LigaSlugUtil {
         String lower = normalized.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("-{2,}", "-")
-                .replaceAll("(^-|-$)", "");
+                .replaceAll("((?:^-+)|(?:-+$))", "");
         return lower.isEmpty() ? "liga" : lower;
     }
 
