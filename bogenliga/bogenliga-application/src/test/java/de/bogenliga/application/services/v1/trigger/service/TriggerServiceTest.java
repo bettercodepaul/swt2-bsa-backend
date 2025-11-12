@@ -736,11 +736,11 @@ public class TriggerServiceTest {
 		String falseDateIntervalFour = "10 YEAR";
 
 		// Verify the behavior and the return values
-		assert !triggerServiceTest.checkForMaliciousQueryParams(nullOffset, workingLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, nullLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(falseOffset, workingLimit, workingDateInterval);
-		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, falseLimit, workingDateInterval);
-		assert triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit, workingDateInterval);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(nullOffset, workingLimit);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, nullLimit);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(falseOffset, workingLimit);
+		assert !triggerServiceTest.checkForMaliciousQueryParams(workingOffset, falseLimit);
+		assert triggerServiceTest.checkForMaliciousQueryParams(workingOffset, workingLimit);
 	}
 	@Test
 	public void testCheckForMaliciousDeletionParams(){
