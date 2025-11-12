@@ -2,9 +2,12 @@ package de.bogenliga.application.common.utils;
 
 import java.text.Normalizer;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public final class LigaSlugUtil {
     private LigaSlugUtil() {}
+
+    private static final Pattern SLUG = Pattern.compile("^[a-z0-9]++(?:-[a-z0-9]++)*$");
 
     public static String toSlug(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -25,6 +28,6 @@ public final class LigaSlugUtil {
     }
 
     public static boolean isValid(String slug) {
-        return slug != null && slug.matches("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+        return slug != null && SLUG.matcher(slug).matches();
     }
 }
