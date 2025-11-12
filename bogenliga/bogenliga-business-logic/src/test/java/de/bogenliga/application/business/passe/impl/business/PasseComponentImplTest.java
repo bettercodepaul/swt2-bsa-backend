@@ -25,9 +25,10 @@ import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import static org.aspectj.bridge.MessageUtil.fail;
+import static org.junit.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -195,4 +196,40 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
         assertThat(actual.get(0)).isNotNull();
     }
 
+    @Test
+    public void testFindByMatchId() {
+        final Long matchId = 1L;
+
+        // prepare DAO response
+        final PasseBE expectedPasseBE = new PasseBE();
+        final List<PasseBE> expectedBEList = Collections.singletonList(expectedPasseBE);
+        when(passeDAO.findByMatchId(matchId)).thenReturn(expectedBEList);
+
+        // call method under test
+        final List<PasseDO> actual = underTest.findByMatchId(matchId);
+        // assert result and interaction
+        assertNotNull("Result must not be null", actual);
+        assertEquals("Expect one element in the result list", 1, actual.size());
+    }
+
+
+    @Test
+    public void testFindByWettkampfIdAndMitgliedId() {
+        final Long wettkampfId = 1L;
+        final Long mitgliedId = 2L;
+
+        // prepare DAO response
+        final PasseBE expectedPasseBE = new PasseBE();
+        final List<PasseBE> expectedBEList = Collections.singletonList(expectedPasseBE);
+
+        // stub with concrete values for both args
+        when(passeDAO.findByWettkampfIdAndMitgliedId(wettkampfId, mitgliedId)).thenReturn(expectedBEList);
+
+        // call method under test
+        final List<PasseDO> actual = underTest.findByWettkampfIdAndMitgliedId(wettkampfId, mitgliedId);
+
+        // assert result and interaction
+        assertNotNull("Result must not be null", actual);
+        assertEquals("Expect one element in the result list", 1, actual.size());
+    }
 }

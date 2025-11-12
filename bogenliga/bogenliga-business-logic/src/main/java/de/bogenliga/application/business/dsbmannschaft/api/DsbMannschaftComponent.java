@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmannschaft.api;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 import java.util.List;
 
@@ -104,6 +105,14 @@ public interface DsbMannschaftComponent extends ComponentFacade {
     List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 
     /**
+     * Copies an existing Mannschaft - creates a new Mannschaft based on the existing one.
+     * All members are copied too.
+     * VeranstaltungsID of the new Mannschaft is set to null.
+     */
+
+    DsbMannschaftDO copyMannschaft(final long mannschaftId, final long userId);
+
+    /**
      * Return all dsbmannschaft entries that are currently in the waiting queue.
      * queue is defined by dsbmannschaft without veransatltungs_ID and a matching Sportjahr
      * @return all dsbmannschaft entries in the waiting queue.
@@ -128,5 +137,5 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @param newMannschaftsID
      * @param userId
      */
-    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId);
+    List<MannschaftsmitgliedDO> copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId);
 }

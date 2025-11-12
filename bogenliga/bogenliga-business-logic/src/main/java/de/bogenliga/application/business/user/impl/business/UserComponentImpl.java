@@ -16,7 +16,6 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.validation.Preconditions;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link UserComponent}
@@ -31,7 +30,6 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
     private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
-    private static final String USER_ROLE_DEFAULT = "USER";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
@@ -66,7 +64,7 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public List<UserDO> findAll() {
         final List<UserBE> userBEList = userDAO.findAll();
-        return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
+        return List.copyOf(userBEList.stream().map(UserMapper.toUserDO).toList());
     }
 
     /**

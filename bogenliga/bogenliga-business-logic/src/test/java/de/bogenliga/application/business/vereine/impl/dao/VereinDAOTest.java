@@ -13,8 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.util.Collections;
-import java.util.List;
 
 
 
@@ -24,8 +22,6 @@ public class VereinDAOTest {
 
     private static long VEREIN_ID= 3;
     private static String VEREIN_NAME="TEST";
-    private static String VEREIN_DSB_IDENTIFIER="2";
-    private static long VEREIN_REGION_ID= 1;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -34,100 +30,8 @@ public class VereinDAOTest {
     @InjectMocks
     private VereinDAO underTest;
 
-    public static VereinBE getVereinBE() {
-        final VereinBE expectedBE = new VereinBE();
 
-
-        expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
-        expectedBE.setVereinName(VEREIN_NAME);
-        expectedBE.setVereinId(VEREIN_ID);
-        expectedBE.setVereinRegionId(VEREIN_REGION_ID);
-
-        return expectedBE;
-    }
-
-    @Test
-    public void findAll() {
-        // prepare test data
-        final VereinBE expectedBE = getVereinBE();
-
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
-
-        // call test method
-        final List<VereinBE> actual = underTest.findAll();
-
-        // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-
-        assertThat(actual.get(0)).isNotNull();
-
-        assertThat(actual.get(0).getVereinId())
-                .isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.get(0).getVereinName())
-                .isEqualTo(expectedBE.getVereinName());
-
-        // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
-    }
-
-    @Test
-    public void findBySearch() {
-        // prepare test data
-        final VereinBE expectedBE = getVereinBE();
-
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
-
-        // call test method
-        final List<VereinBE> actual = underTest.findBySearch(expectedBE.getVereinName());
-
-        // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-
-        assertThat(actual.get(0)).isNotNull();
-
-        assertThat(actual.get(0).getVereinId())
-                .isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.get(0).getVereinName())
-                .isEqualTo(expectedBE.getVereinName());
-
-        // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
-    }
-
-    @Test
-    public void findById() {
-        // prepare test data
-        final VereinBE expectedBE = getVereinBE();
-        expectedBE.setVereinId(VEREIN_ID);
-        expectedBE.setVereinName(VEREIN_NAME);
-
-        // configure mocks
-        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
-
-        // call test method
-        final VereinBE actual = underTest.findById(VEREIN_ID);
-
-        // assert result
-        assertThat(actual).isNotNull();
-
-        assertThat(actual.getVereinId())
-                .isEqualTo(expectedBE.getVereinId());
-        assertThat(actual.getVereinName())
-                .isEqualTo(expectedBE.getVereinName());
-
-        // verify invocations
-        verify(basicDao).selectSingleEntity(any(), any(), any());
-    }
-
-    @Test
+       @Test
     public void create() {
         // prepare test data
         final VereinBE input = new VereinBE();

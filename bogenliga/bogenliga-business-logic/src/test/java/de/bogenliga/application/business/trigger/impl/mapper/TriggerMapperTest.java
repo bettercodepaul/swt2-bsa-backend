@@ -31,7 +31,7 @@ public class TriggerMapperTest {
 	private static final String NACHRICHT = "testmsg";
 	private static final Timestamp CREATED_AT_UTC = null;
 	private static final Timestamp RUN_AT_UTC = null;
-	private static final Long count = 40000L;
+	private static final Long COUNT = 40000L;
 	private static final Long altCount =50000L;
 
 
@@ -73,7 +73,7 @@ public class TriggerMapperTest {
 
 		final TriggerCountBE actual = TriggerMapper.toTriggerCountBE.apply(triggerCountDO);
 
-		assertThat(actual.getCount()).isEqualTo(count);
+		assertThat(actual.getCount()).isEqualTo(COUNT);
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class TriggerMapperTest {
 
 		final TriggerCountDO actual = TriggerMapper.toTriggerCountDO.apply(triggerCountBE);
 
-		assertThat(actual.getCount()).isEqualTo(count);
+		assertThat(actual.getCount()).isEqualTo(COUNT);
 	}
 
 }

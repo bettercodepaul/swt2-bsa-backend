@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.vereine.impl.dao;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,25 +46,6 @@ public class VereinDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<VereinBE> VEREIN = new BusinessEntityConfiguration<>(
             VereinBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    // SQL Queries
-    private static final String FIND_ALL =
-            "SELECT v.*, r.region_name "
-                    + " FROM verein v"
-                    + " JOIN region r on v.verein_region_id=r.region_id"
-                    + " ORDER BY verein_id";
-
-    private static final String FIND_BY_SEARCH =
-            "SELECT v.*, r.region_name "
-                    + " FROM verein v"
-                    + " JOIN region r on v.verein_region_id=r.region_id "
-                    + " WHERE CONCAT(LOWER(v.verein_name), ' ', "
-                    + " LOWER(r.region_name), ' ', "
-                    + " LOWER(v.verein_dsb_identifier)) LIKE LOWER(?) ";
-
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM verein v"
-                    + " WHERE v.verein_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -96,33 +76,6 @@ public class VereinDAO implements DataAccessObject {
     }
 
 
-    /**
-     * @return Returns all Vereine
-     */
-    public List<VereinBE> findAll() {
-        return basicDao.selectEntityList(VEREIN, FIND_ALL);
-    }
-
-    public List<VereinBE> findBySearch(final String searchTerm) {
-        return basicDao.selectEntityList(VEREIN, FIND_BY_SEARCH, new StringBuilder()
-                                                                     .append("%")
-                                                                     .append(searchTerm)
-                                                                     .append("%")
-                                                                     .toString()
-        );
-    }
-
-
-    /**
-     * Returns a "Verein" entry with a specific id
-     *
-     * @param vereinId Id of the verein that should be queried
-     *
-     * @return Returns the queried verein as Business Entity
-     */
-    public VereinBE findById(final long vereinId) {
-        return basicDao.selectSingleEntity(VEREIN, FIND_BY_ID, vereinId);
-    }
 
     /**
      * Creates a verein database entry

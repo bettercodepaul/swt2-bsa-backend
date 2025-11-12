@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.security.Principal;
 
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -100,7 +99,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid, final Principal principal) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
@@ -126,7 +125,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/schusszettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadSchusszettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
@@ -147,7 +146,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/schusszettel_matches/{matchId1}/{matchId2}",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadSchusszettelFilledPdf(@PathVariable("matchId1") Long matchId1,
                                                                       @PathVariable("matchId2") Long matchId2) {
 
@@ -170,7 +169,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/meldezettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadMeldezettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
@@ -193,7 +192,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/bogenkontrollliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadbogenkontrolllistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
@@ -217,7 +216,7 @@ public class DownloadService implements ServiceFacade {
                     path = "pdf/rueckennummern",
                     produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadRueckennummernPdf(@RequestParam("mannschaftid") final long mannschaftid) {
 
 
@@ -242,7 +241,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/rueckennummer",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadRueckennummerPdf(@RequestParam("mannschaftid") final long mannschaftid,
                                                                  @RequestParam("dsbmitgliedid") final long dsbmitgliedid) {
 
@@ -298,7 +297,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/lizenzen",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadLizenzenPdf(@RequestParam("mannschaftid") final long mannschaftid) {
 
 
@@ -323,7 +322,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/Einzelstatistik",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
     @RequestParam("manschaftsid") final long manschaftsid,
     @RequestParam("jahr") final int jahr)
@@ -351,7 +350,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/Gesamtstatistik",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadGesamtstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
                                                                    @RequestParam("manschaftsid") final long manschaftsid,
                                                                    @RequestParam("jahr") final int jahr)
@@ -367,7 +366,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/Uebersicht",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
+    public
     ResponseEntity<InputStreamResource> downloadUebersichtPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
                                                               @RequestParam("wettkampftag") final long wettkampftag)
     {

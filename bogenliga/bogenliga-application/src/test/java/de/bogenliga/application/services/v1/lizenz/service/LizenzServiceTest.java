@@ -29,8 +29,6 @@ import static org.mockito.Mockito.*;
 public class LizenzServiceTest {
 
     private static final long USER = 0;
-    private static final long ID = 0;
-    private static final long VERSION = 0;
 
 
 
@@ -40,8 +38,6 @@ public class LizenzServiceTest {
     private static final long LIZENZ_DSB_MITGLIED_ID = 3;
     private static final String LIZENZTYP = "Liga";
     private static final long LIZENZ_DISZIPLIN_ID = 0;
-    private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
-    private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 

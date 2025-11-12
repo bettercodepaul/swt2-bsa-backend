@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
+import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -63,5 +64,30 @@ public class VereinMapper implements ValueObjectMapper {
 
         return vereinBE;
     };
+
+    public static final Function<VereinBEext, VereinDO> exttoVereinDO = be -> {
+
+        final Long id = be.getVereinId();
+        final String name = be.getVereinName();
+        final String dsbIdentifier = be.getVereinDsbIdentifier();
+        final Long regionId = be.getVereinRegionId();
+        final String website = be.getVereinWebsite();
+        final String description = be.getVereinDescription();
+        final String icon = be.getVereinIcon();
+        final String vereinRegionName = be.getVereinRegionName();
+
+        // technical params
+        final Long createdByUserId = be.getCreatedByUserId();
+        final Long lastModifiedByUserId = be.getLastModifiedByUserId();
+        final Long version = be.getVersion();
+
+        final OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
+        final OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
+
+        return new VereinDO(id, name, dsbIdentifier, regionId, vereinRegionName,
+                website, description, icon, createdAtUtc, createdByUserId,
+                lastModifiedAtUtc, lastModifiedByUserId, version);
+    };
+
 
 }

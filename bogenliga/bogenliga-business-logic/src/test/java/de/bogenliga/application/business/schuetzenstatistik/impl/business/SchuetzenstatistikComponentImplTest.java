@@ -26,7 +26,7 @@ public class SchuetzenstatistikComponentImplTest {
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
-    private static final Long veranstaltungId = 1L;
+    private static final Long VERANSTALTUNG_ID = 1L;
     private static final String veranstaltungName = "Name_der_Veranstaltung";
     private static final Long wettkampfId = 2L;
     private static final int wettkampfTag = 3;
@@ -60,7 +60,7 @@ public class SchuetzenstatistikComponentImplTest {
 
     public static SchuetzenstatistikBE getSchuetzenstatistikBE() {
         final SchuetzenstatistikBE expectedSchuetzenstatistikBE = new SchuetzenstatistikBE();
-        expectedSchuetzenstatistikBE.setVeranstaltungId(veranstaltungId);
+        expectedSchuetzenstatistikBE.setVeranstaltungId(VERANSTALTUNG_ID);
         expectedSchuetzenstatistikBE.setVeranstaltungName(veranstaltungName);
         expectedSchuetzenstatistikBE.setWettkampfId(wettkampfId);
         expectedSchuetzenstatistikBE.setWettkampfTag(wettkampfTag);
@@ -85,7 +85,7 @@ public class SchuetzenstatistikComponentImplTest {
 
     public static SchuetzenstatistikDO getLigatabelleDO() {
         final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
-        expectedSchuetzenstatistikDO.setveranstaltungId(veranstaltungId);
+        expectedSchuetzenstatistikDO.setveranstaltungId(VERANSTALTUNG_ID);
         expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
         expectedSchuetzenstatistikDO.setwettkampfId(wettkampfId);
         expectedSchuetzenstatistikDO.setwettkampfTag(wettkampfTag);

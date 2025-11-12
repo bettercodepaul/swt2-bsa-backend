@@ -8,11 +8,9 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBEext;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
-import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -43,13 +41,12 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
     private final DsbMannschaftDAOext dsbMannschaftDAOext;
-    private final VereinComponent vereinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final NameMappingComponent nameMappingComponent;
 
 
     /**
      * Constructor
-     *
      * dependency injection with {@link Autowired}
      * @param dsbMannschaftDAO to access the database and return dsbmannschaft representations
      */
@@ -57,13 +54,13 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
                                       final DsbMannschaftDAOext dsbMannschaftDAOext,
-                                      final VereinComponent vereinComponent,
-                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
+                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                      final NameMappingComponent nameMappingComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
         this.dsbMannschaftDAOext = dsbMannschaftDAOext;
-        this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -225,11 +222,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaft, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(mannschaft.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
 
-        VereinDO vereinDO = this.vereinComponent.findById(mannschaft.getVereinId());
-        if (vereinDO != null && vereinDO.getName() != null) {
-            mannschaft.setName(vereinDO.getName() + " " + mannschaft.getNummer());
-        }
+        mannschaft.setName(nameMappingComponent.getMannschaftsnameForVereinIDandMannschaftNr(mannschaft.getVereinId(), mannschaft.getNummer()));
         return mannschaft;
+
     }
 
 
@@ -330,6 +325,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
 
             mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
+            mannschaftToCheck.setSportjahr(nameMappingComponent.getSportjahrForVeranstaltungsId(currentVeranstaltungId));
             checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
 
             addedMannschaftenList.add(mannschaftToCheck);
@@ -337,29 +333,44 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, userId);
             // Copy Mannschaftsmitglieder for every Mannschaft
             // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
-            MannschaftsmitgliedDO addedMitglied;
-            List<MannschaftsmitgliedDO> mitglieder = mannschaftsmitgliedComponent.findByTeamId(mannschaftToCheck.getId());
-            for(MannschaftsmitgliedDO mitglied : mitglieder){
-                addedMitglied = mitglied;
-                addedMitglied.setMannschaftId(addedMannschaft.getId());
-                mannschaftsmitgliedComponent.create(addedMitglied, userId);
-            }
+            copyMitgliederFromMannschaft(mannschaftToCheck.getId(), addedMannschaft.getId(), userId);
+
         }
         return addedMannschaftenList;
     }
+// wir kopieren eine Mannschaft und alle Mannschaftmitlglieder mit den Bezug zur "null-Veransatltung" und können sie danach
+    // einer neuen Veranstaltung zuordnen
+    @Override
+    public DsbMannschaftDO copyMannschaft(long mannschaftId, long userId) {
 
+        DsbMannschaftBE mannschaftToCheck = dsbMannschaftDAO.findById(mannschaftId);
+        //die Kopie wird ohne Zuordnung von Veranstaltung/Liga und SPortjahr angelegt
+        mannschaftToCheck.setVeranstaltungId(null);
+        mannschaftToCheck.setSportjahr(null);
+
+        DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(mannschaftToCheck, userId);
+            // Copy Mannschaftsmitglieder for every Mannschaft
+            // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
+        copyMitgliederFromMannschaft(mannschaftToCheck.getId(), addedMannschaft.getId(), userId);
+
+        return DsbMannschaftMapper.toDsbMannschaftDO.apply(addedMannschaft);
+    }
 
     @Override
-    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
+    public List<MannschaftsmitgliedDO> copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID, long userId) {
 
         List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId(oldMannschaftsID);
+        List<MannschaftsmitgliedDO> neueMitglieder = new ArrayList<>();
 
         MannschaftsmitgliedDO neuesMitglied;
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
             neuesMitglied = altesMitglied;
+            neuesMitglied.setId(null);
             neuesMitglied.setMannschaftId(newMannschaftsID);
-            mannschaftsmitgliedComponent.create(neuesMitglied, userId);
+            neueMitglieder.add(mannschaftsmitgliedComponent.create(neuesMitglied, userId));
+
         }
+        return neueMitglieder;
 
     }
 

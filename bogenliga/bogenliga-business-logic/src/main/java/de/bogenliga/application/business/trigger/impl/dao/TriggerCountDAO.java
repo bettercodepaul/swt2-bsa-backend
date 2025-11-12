@@ -17,7 +17,7 @@ public class TriggerCountDAO implements DataAccessObject {
             de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO.class);
     private final BasicDAO basicDAO;
     private static final String TABLE = "altsystem_aenderung";
-    private static final String TRIGGER_BE_ID = "Id";
+
 
     private static final String TRIGGER_COUNT_BE = "COUNT";
     private static final String TRIGGER_COUNT = "COUNT";
