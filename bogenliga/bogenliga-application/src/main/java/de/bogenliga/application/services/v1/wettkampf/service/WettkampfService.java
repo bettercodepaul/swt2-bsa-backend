@@ -79,6 +79,13 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
+    @GetMapping(value = "futureSix", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<WettkampfDTO> findFutureSix() {
+        final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findFutureSix();
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
+    }
+
 
     /**
      * findByID-Method gives back a specific Wettkampf according to a single Wettkampf_ID
