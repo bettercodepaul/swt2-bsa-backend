@@ -225,6 +225,11 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
         return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
     }
+    @Override
+    public List<WettkampfDO> findFutureSix() {
+        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findFutureSix();
+        return List.copyOf(wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).toList());
+    }
 
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
