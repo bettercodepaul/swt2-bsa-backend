@@ -20,6 +20,7 @@ public final class LigaSlugUtil {
                 .replace("ß", "ss");
         String normalized = Normalizer.normalize(umlaut, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        @SuppressWarnings("java:S5852")
         String lower = normalized.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("-{2,}", "-")
