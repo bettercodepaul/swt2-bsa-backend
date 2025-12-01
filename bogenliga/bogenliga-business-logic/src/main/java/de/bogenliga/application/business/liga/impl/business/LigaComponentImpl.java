@@ -69,7 +69,7 @@ public class LigaComponentImpl implements LigaComponent {
         final LigaBE result = ligaDAO.findById(id);
 
         if (result == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+            throw new BusinessException(ErrorCode.LIGA_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
 
