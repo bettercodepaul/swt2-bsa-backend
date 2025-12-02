@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,8 @@ import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -51,17 +48,14 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private final SetzlisteDAO setzlisteDAO;
     private final MatchComponent matchComponent;
     private final WettkampfComponent wettkampfComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
-    private final VereinComponent vereinComponent;
+    private final NameMappingComponent nameMappingComponent;
 
     /**
      * Structure of setzliste for team size 8,6,4
      * dim 1, row: Match
      * dim 2: Teams (with Scheibe as columns)
-     *
      * Every two teams in each match form one Begegnung.
-     *
      * Constructor returns array from enum as matrix.
      */
 
@@ -104,15 +98,16 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteDAO to access the database and return setzliste representations
      */
     @Autowired
-    public SetzlisteComponentImpl(SetzlisteDAO setzlisteDAO, MatchComponent matchComponent,
-                                  WettkampfComponent wettkampfComponent, VeranstaltungComponent veranstaltungComponent,
-                                  DsbMannschaftComponent dsbMannschaftComponent, VereinComponent vereinComponent) {
+    public SetzlisteComponentImpl(SetzlisteDAO setzlisteDAO,
+                                  MatchComponent matchComponent,
+                                  WettkampfComponent wettkampfComponent,
+                                  DsbMannschaftComponent dsbMannschaftComponent,
+                                  NameMappingComponent nameMappingComponent) {
         this.setzlisteDAO = setzlisteDAO;
         this.matchComponent = matchComponent;
         this.wettkampfComponent = wettkampfComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
-        this.vereinComponent = vereinComponent;
+        this.nameMappingComponent = nameMappingComponent;
     }
 
 
@@ -199,10 +194,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID());
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
+        String veranstaltungName = nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
         String dateFormatted = sdF2.format(wettkampfDO.getWettkampfDatum());
         doc.add(new Paragraph("Setzliste " +
-                wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungDO.getVeranstaltungName()));
+                wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungName));
         doc.add(new Paragraph("am " + dateFormatted + " in"));
         doc.add(new Paragraph(wettkampfDO.getWettkampfStrasse() + ", " +  wettkampfDO.getWettkampfPlz() + " " + wettkampfDO.getWettkampfOrtsname() + ", " + wettkampfDO.getWettkampfBeginn() + " Uhr"));
 
@@ -398,13 +393,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             LOGGER.error("Cannot find team for tablepos");
             return "ERROR";
         } else {
-            DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
-            VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-            if (dsbMannschaftDO.getNummer() > 1) {
-                return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
-            } else {
-                return vereinDO.getName();
-            }
-        }
+            return nameMappingComponent.getMannschaftsnameForMannschaftId(teamID);
+         }
     }
 }

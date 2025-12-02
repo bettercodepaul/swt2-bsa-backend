@@ -31,6 +31,7 @@ public class LigaDAO implements DataAccessObject {
     //business entity parameter names
     private static final String LIGA_BE_ID = "ligaId";
     private static final String LIGA_BE_NAME = "ligaName";
+    private static final String LIGA_BE_SLUG = "ligaSlug";
     private static final String LIGA_BE_DISZIPLIN_ID = "ligaDisziplinId";
     private static final String LIGA_BE_REGION_ID = "ligaRegionId";
     private static final String LIGA_BE_UEBERGEORDNET_ID = "ligaUebergeordnetId";
@@ -87,6 +88,12 @@ public class LigaDAO implements DataAccessObject {
                     + "                      FROM liga"
                     + "                      WHERE liga_uebergeordnet IS NOT NULL)"
                     + "AND liga_id = ?";
+
+    private static final String FIND_BY_LIGASLUG =
+            "SELECT * " +
+                    "FROM liga " +
+                    "WHERE LOWER(slug) = ?";
+
 
     private final BasicDAO basicDao;
 
@@ -164,6 +171,9 @@ public class LigaDAO implements DataAccessObject {
         );
     }
 
+    public LigaBE findByLigaSlug(final String slug) {
+        return basicDao.selectSingleEntity(LIGA, FIND_BY_LIGASLUG, slug.toLowerCase());
+    }
 
     /**
      * @param ligaBE

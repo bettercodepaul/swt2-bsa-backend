@@ -79,6 +79,13 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
+    @GetMapping(value = "futureSix", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<WettkampfDTO> findFutureSix() {
+        final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findFutureSix();
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
+    }
+
 
     /**
      * findByID-Method gives back a specific Wettkampf according to a single Wettkampf_ID
@@ -148,7 +155,7 @@ public class WettkampfService implements ServiceFacade {
         final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
 
         // call TabletSchusszettelComponent to initialize the schusszettel sessions
-        tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId());
+        // tabletSchusszettelComponent.initializeForWettkampf(savedWettkampfDO.getId());
 
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
@@ -175,7 +182,7 @@ public class WettkampfService implements ServiceFacade {
         wettkampfComponent.delete(wettkampfDO, userId);
 
         // delete all tablet schusszettel session associated with the wettkampf
-        tabletSchusszettelComponent.deleteForWettkampf(wettkampfDO.getId());
+        //tabletSchusszettelComponent.deleteForWettkampf(wettkampfDO.getId());
     }
 
 
@@ -217,8 +224,8 @@ public class WettkampfService implements ServiceFacade {
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
 
         // delete and then recreate the schusszettel sessions
-        tabletSchusszettelComponent.deleteForWettkampf(updatedWettkampfDO.getId());
-        tabletSchusszettelComponent.initializeForWettkampf(updatedWettkampfDO.getId());
+   //     tabletSchusszettelComponent.deleteForWettkampf(updatedWettkampfDO.getId());
+   //     tabletSchusszettelComponent.initializeForWettkampf(updatedWettkampfDO.getId());
 
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
     }

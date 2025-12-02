@@ -17,6 +17,7 @@ public class LigaDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String name;
+    private String slug;
     private Long disziplinId;
     private Long regionId;
     private String regionName;
@@ -255,6 +256,13 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.ligaFileType = ligaFileType;
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
     public void setLigaVerantwortlichMail(String ligaVerantwortlichMail) {
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
