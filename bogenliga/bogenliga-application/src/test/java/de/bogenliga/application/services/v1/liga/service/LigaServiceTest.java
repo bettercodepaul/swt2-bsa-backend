@@ -4,6 +4,7 @@ import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
 import de.bogenliga.application.services.v1.liga.model.LigaDTO;
+import de.bogenliga.application.common.utils.LigaSlugUtil;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -203,8 +204,6 @@ public class LigaServiceTest {
     public void findByLowest(){
         final LigaDO ligaDO = getLigaDO();
 
-        final List<LigaDO> ligaDOList = Collections.singletonList(ligaDO);
-
         // configure mocks
         when(ligaComponent.findByLowest(ID)).thenReturn(ligaDO);
 
@@ -358,5 +357,30 @@ public class LigaServiceTest {
         assertThat(deletedDsbMitglied).isNotNull();
         assertThat(deletedDsbMitglied.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMitglied.getName()).isNullOrEmpty();
+    }
+
+    @Test
+    public void testFindBySlug() {
+
+        // prepare test data
+        final LigaDO ligaDO = getLigaDO();
+        final String slug = LigaSlugUtil.toSlug(ligaDO.getName());
+
+        // configure mocks
+        when(ligaComponent.findAll()).thenReturn(Collections.singletonList(ligaDO));
+
+        // call test method
+        final LigaDTO actual = underTest.findBySlug(slug);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(ligaDO.getId());
+        assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDoFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDoFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDoFileType());
+
+        // verify invocations
+        verify(ligaComponent).findAll();
     }
 }

@@ -26,9 +26,9 @@ public class SchuetzenstatistikLetzteJahreDAOTest {
     private BasicDAO basicDao;
     @InjectMocks
     private SchuetzenstatistikLetzteJahreDAO underTest;
-    private static final long vereinId = (long) 7;
-    private static final long veranstaltungId = (long) 1;
-    private static final long sportjahr = (long) 2002;
+    private static final long VEREIN_ID = 7L;
+    private static final long VERANSTALTUNG_ID = 1L;
+    private static final long SPORTJAHR = 2002L ;
 
     @Test
     public void getSchuetzenstatistikLetzteJahre_oktest() {
@@ -38,7 +38,7 @@ public class SchuetzenstatistikLetzteJahreDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<SchuetzenstatistikLetzteJahreBE> actual = underTest.getSchuetzenstatistikLetzteJahre(sportjahr, veranstaltungId, vereinId);
+        final List<SchuetzenstatistikLetzteJahreBE> actual = underTest.getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNG_ID, VEREIN_ID);
 
         // assert result
         assertThat(actual)

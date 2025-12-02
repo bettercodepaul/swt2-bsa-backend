@@ -110,11 +110,9 @@ public class ConfigurationServiceTest {
         configurationDO.setHidden(HIDDEN);
 
         // configure mocks
-        //when(configurationComponent.findByKey(any())).thenReturn(configurationDO);
         when(configurationComponent.findById(anyLong())).thenReturn(configurationDO);
 
         // call test method
-        //final ConfigurationDTO actual = underTest.findByKey(KEY);
         final ConfigurationDTO actual = underTest.findById(ID);
 
         // assert result
@@ -125,7 +123,6 @@ public class ConfigurationServiceTest {
         assertThat(actual.isHidden()).isEqualTo(configurationDO.isHidden());
 
         // verify invocations
-        //verify(configurationComponent).findByKey(KEY);
         verify(configurationComponent).findById(ID);
     }
 

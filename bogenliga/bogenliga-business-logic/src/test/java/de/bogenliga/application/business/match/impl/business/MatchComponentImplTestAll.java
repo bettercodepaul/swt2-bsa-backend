@@ -5,9 +5,7 @@ import java.util.Collections;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
+import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,7 +20,6 @@ import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,10 +35,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Mock
     private DsbMannschaftComponent dsbMannschaftComponent;
     @Mock
-    private VereinComponent vereinComponent;
-
-    @Mock
-    private WettkampfComponent wettkampfComponent;
+    private NameMappingComponent nameMappingComponent;
 
     @InjectMocks
     private MatchDAO matchDAO;
@@ -60,7 +54,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, vereinComponent, ligamatchDAO);
+        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, nameMappingComponent, ligamatchDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }

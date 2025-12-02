@@ -44,7 +44,7 @@ public class RoleComponentImpl implements RoleComponent {
     @Override
     public List<RoleDO> findAll() {
         final List<RoleBE> roleBEList = roleDAO.findAll();
-        return roleBEList.stream().map(RoleMapper.toRoleDO).collect(Collectors.toList());
+        return roleBEList.stream().map(RoleMapper.toRoleDO).toList();
     }
 
 

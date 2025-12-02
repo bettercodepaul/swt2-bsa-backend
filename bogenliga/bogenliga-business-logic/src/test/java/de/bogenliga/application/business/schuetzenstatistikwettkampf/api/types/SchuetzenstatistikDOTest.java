@@ -13,13 +13,13 @@ import static org.junit.Assert.*;
  */
 public class SchuetzenstatistikDOTest {
 
-    private static final String dsbMitgliedName = "Mitglied_Name";
-    private static final int rueckenNummer = 5;
-    private static final float wettkampftag1 = (float) 8.5;
-    private static final float wettkampftag2 = (float) 7.6;
-    private static final float wettkampftag3 = (float) 9.1;
-    private static final float wettkampftag4 = (float) 4.2;
-    private static final float wettkampftageSchnitt = (float) 8.6;
+    private static final String DSB_MITGLIED_NAME  = "Mitglied_Name";
+    private static final int RUECKEN_NUMMER  = 5;
+    private static final float WETTKAMPFTAG_1  = 8.5f;
+    private static final float WETTKAMPFTAG_2  = 7.6f;
+    private static final float WETTKAMPFTAG_3 =  9.1f;
+    private static final float WETTKAMPFTAG_4 = 4.2f;
+    private static final float WETTKAMPFTAGE_SCHNITT  = 8.6f;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -30,13 +30,13 @@ public class SchuetzenstatistikDOTest {
     public static SchuetzenstatistikWettkampftageDO getSchuetzenstatistikWettkampfDO() {
         final SchuetzenstatistikWettkampftageDO expectedSchuetzenstatistikWettkampfDO = new SchuetzenstatistikWettkampftageDO();
 
-        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(rueckenNummer);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(wettkampftag1);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag2(wettkampftag2);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag3(wettkampftag3);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftag4(wettkampftag4);
-        expectedSchuetzenstatistikWettkampfDO.setWettkampftageSchnitt(wettkampftageSchnitt);
+        expectedSchuetzenstatistikWettkampfDO.setDsbMitgliedName(DSB_MITGLIED_NAME );
+        expectedSchuetzenstatistikWettkampfDO.setRueckenNummer(RUECKEN_NUMMER);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag1(WETTKAMPFTAG_1);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag2(WETTKAMPFTAG_2);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag3(WETTKAMPFTAG_3);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftag4(WETTKAMPFTAG_4);
+        expectedSchuetzenstatistikWettkampfDO.setWettkampftageSchnitt(WETTKAMPFTAGE_SCHNITT);
 
         return expectedSchuetzenstatistikWettkampfDO;
     }
