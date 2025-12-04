@@ -45,7 +45,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                                                                   final WebRequest request) {
         final HttpStatus errorStatus;
         switch (ex.getErrorCode()) {
-            case ENTITY_NOT_FOUND_ERROR:
+            case LIGA_NOT_FOUND_ERROR, ENTITY_NOT_FOUND_ERROR:
                 errorStatus = HttpStatus.NOT_FOUND;
                 break;
             case ENTITY_CONFLICT_ERROR:
