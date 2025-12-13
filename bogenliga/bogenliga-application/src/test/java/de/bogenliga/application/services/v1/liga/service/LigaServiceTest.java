@@ -53,8 +53,8 @@ public class LigaServiceTest {
     @Mock
     private Principal principal;
 
-    @InjectMocks
-    private LigaService underTest;
+    //@InjectMocks
+    //private LigaService underTest;
 
     @Captor
     private ArgumentCaptor<LigaDO> ligaVOArgumentCaptor;
