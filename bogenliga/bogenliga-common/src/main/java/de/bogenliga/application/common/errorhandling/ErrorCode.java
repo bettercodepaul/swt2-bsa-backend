@@ -2,7 +2,7 @@ package de.bogenliga.application.common.errorhandling;
 
 /**
  * I represent the defined error codes.
- *
+ * <p>
  * Errors are handled and mapped to an error code.
  *
  * @author Andre Lehnert, BettercallPaul gmbh
@@ -27,6 +27,7 @@ public enum ErrorCode {
      */
     // precondition checks
     INVALID_ARGUMENT_ERROR(ErrorCategory.BUSINESS, "INVALID_ARGUMENT_ERROR"),
+    MATCH_INKONSISTENTE_SCHUETZEN(ErrorCategory.BUSINESS, "MATCH_INKONSISTENTE_SCHUETZEN"),
     // database
     ENTITY_NOT_FOUND_ERROR(ErrorCategory.BUSINESS, "ENTITY_NOT_FOUND_ERROR"),
     ENTITY_CONFLICT_ERROR(ErrorCategory.BUSINESS, "ENTITY_CONFLICT_ERROR"),
