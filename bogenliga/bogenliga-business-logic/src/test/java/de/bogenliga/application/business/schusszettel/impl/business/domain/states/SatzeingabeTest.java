@@ -34,13 +34,19 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class SatzeingabeTest {
 
-    @Mock private StateContext mockContext;
-    @Mock private MatchAnalysisService mockMatchAnalysisService;
-    @Mock private MatchComponent mockMatchComponent;
-    @Mock private PasseComponent mockPasseComponent;
-    @Mock private MannschaftsmitgliedComponent mockMannschaftsmitgliedComponent;
-    @Mock private DsbMitgliedComponent mockDsbMitgliedComponent;
-    
+    @Mock
+    private StateContext mockContext;
+    @Mock
+    private MatchAnalysisService mockMatchAnalysisService;
+    @Mock
+    private MatchComponent mockMatchComponent;
+    @Mock
+    private PasseComponent mockPasseComponent;
+    @Mock
+    private MannschaftsmitgliedComponent mockMannschaftsmitgliedComponent;
+    @Mock
+    private DsbMitgliedComponent mockDsbMitgliedComponent;
+
     private Satzeingabe state;
     private SatzEingabeDO validSatzEingabe;
     private SatzEingabeDO invalidSatzEingabe;
@@ -55,7 +61,7 @@ public class SatzeingabeTest {
         setupTestData();
         setupMockBehavior();
     }
-    
+
     private void setupTestData() {
         testMatch = new MatchDO();
         testMatch.setId(300L);
@@ -63,25 +69,25 @@ public class SatzeingabeTest {
         testMatch.setMannschaftId(100L);
         testMatch.setSatzpunkte(2L);
         testMatch.setMatchpunkte(0L);
-        
+
         testTeamMembers = Arrays.asList(
-            createTeamMember(1L, 101L, 1),
-            createTeamMember(2L, 102L, 1),
-            createTeamMember(3L, 103L, 1)
+                createTeamMember(1L, 101L, 1),
+                createTeamMember(2L, 102L, 1),
+                createTeamMember(3L, 103L, 1)
         );
-        
+
         testMembers = Arrays.asList(
-            createMember(101L, "Max", "Mustermann"),
-            createMember(102L, "Anna", "Schmidt"),
-            createMember(103L, "Peter", "Mueller")
+                createMember(101L, "Max", "Mustermann"),
+                createMember(102L, "Anna", "Schmidt"),
+                createMember(103L, "Peter", "Mueller")
         );
-        
+
         testPasses = Arrays.asList(
-            createPass(1L, 100L, 300L, 1, 101L, 10, 9, 8),
-            createPass(2L, 100L, 300L, 1, 102L, 9, 8, 7),
-            createPass(3L, 100L, 300L, 1, 103L, 8, 7, 6)
+                createPass(1L, 100L, 300L, 1, 101L, 10, 9, 8),
+                createPass(2L, 100L, 300L, 1, 102L, 9, 8, 7),
+                createPass(3L, 100L, 300L, 1, 103L, 8, 7, 6)
         );
-        
+
         validSatzEingabe = createValidSatzEingabe();
         invalidSatzEingabe = createInvalidSatzEingabe();
     }
@@ -89,7 +95,7 @@ public class SatzeingabeTest {
     private void setupMockBehavior() {
         StateContext.ValidationResult validResult = StateContext.ValidationResult.valid();
         StateContext.ValidationResult invalidResult = StateContext.ValidationResult.invalid("Invalid");
-        
+
         when(mockContext.validateSessionState()).thenReturn(validResult);
         when(mockContext.getTeamId()).thenReturn(100L);
         when(mockContext.getCurrentMatchId()).thenReturn(300L);
@@ -100,27 +106,27 @@ public class SatzeingabeTest {
         when(mockContext.isCurrentPasseComplete()).thenReturn(true);
         when(mockContext.getCurrentPasseData()).thenReturn(testPasses);
         when(mockContext.getAllMatchPasses()).thenReturn(testPasses);
-        
+
         when(mockContext.getMatchAnalysisService()).thenReturn(mockMatchAnalysisService);
         when(mockContext.getMatchComponent()).thenReturn(mockMatchComponent);
         when(mockContext.getPasseComponent()).thenReturn(mockPasseComponent);
         when(mockContext.getMannschaftsmitgliedComponent()).thenReturn(mockMannschaftsmitgliedComponent);
         when(mockContext.getDsbMitgliedComponent()).thenReturn(mockDsbMitgliedComponent);
-        
+
         when(mockMatchComponent.findById(300L)).thenReturn(testMatch);
         when(mockMannschaftsmitgliedComponent.findByTeamId(100L)).thenReturn(testTeamMembers);
         when(mockPasseComponent.findByMannschaftMatchId(anyLong(), anyLong())).thenReturn(testPasses);
         when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L)).thenReturn(2);
-        
+
         for (DsbMitgliedDO member : testMembers) {
             when(mockDsbMitgliedComponent.findById(member.getId())).thenReturn(member);
         }
-        
+
         for (MannschaftsmitgliedDO teamMember : testTeamMembers) {
             when(mockMannschaftsmitgliedComponent.findByMemberAndTeamId(100L, teamMember.getDsbMitgliedId()))
-                .thenReturn(teamMember);
+                    .thenReturn(teamMember);
         }
-        
+
         when(mockContext.validateArrowValue(anyInt())).thenReturn(validResult);
         when(mockContext.validateArrowValue(null)).thenReturn(invalidResult);
     }
@@ -135,7 +141,7 @@ public class SatzeingabeTest {
     @Test
     public void isValidState_matchComplete_returnsFalse() {
         when(mockContext.isMatchComplete()).thenReturn(true);
-        
+
         boolean result = state.isValidState(mockContext);
         assertThat(result).isFalse();
     }
@@ -143,7 +149,7 @@ public class SatzeingabeTest {
     @Test
     public void isValidState_invalidSession_returnsFalse() {
         when(mockContext.validateSessionState()).thenReturn(StateContext.ValidationResult.invalid("Error"));
-        
+
         boolean result = state.isValidState(mockContext);
         assertThat(result).isFalse();
     }
@@ -176,7 +182,7 @@ public class SatzeingabeTest {
     @Test
     public void isDatabaseReadyForTransition_exceptionInCheck_returnsFalse() {
         when(mockContext.isCurrentPasseComplete()).thenThrow(new RuntimeException("DB error"));
-        
+
         boolean result = state.isDatabaseReadyForTransition(mockContext, State.STATUS_WARTE);
         assertThat(result).isFalse();
     }
@@ -184,15 +190,15 @@ public class SatzeingabeTest {
     @Test
     public void prepareResponseData_validContext_returnsCorrectData() {
         Map<String, Object> result = state.prepareResponseData(mockContext);
-        
+
         assertThat(result).isNotNull();
         assertThat(result).containsKey("schuetzeStammDaten");
         assertThat(result).containsKey("verfuegbareSchuetzen");
-        
+
         @SuppressWarnings("unchecked")
         List<SchuetzeStammdatenDO> stammdaten = (List<SchuetzeStammdatenDO>) result.get("schuetzeStammDaten");
         assertThat(stammdaten).hasSize(3);
-        
+
         @SuppressWarnings("unchecked")
         List<VerfuegbarerSchuetzeDO> available = (List<VerfuegbarerSchuetzeDO>) result.get("verfuegbareSchuetzen");
         assertThat(available).isEmpty(); // All shooters already have scores
@@ -201,10 +207,10 @@ public class SatzeingabeTest {
     @Test
     public void prepareResponseData_exceptionInDataPreparation_returnsEmptyLists() {
         when(mockMannschaftsmitgliedComponent.findByTeamId(100L))
-            .thenThrow(new RuntimeException("DB error"));
-        
+                .thenThrow(new RuntimeException("DB error"));
+
         Map<String, Object> result = state.prepareResponseData(mockContext);
-        
+
         assertThat(result).isNotNull();
         assertThat(result.get("schuetzeStammDaten")).isEqualTo(Collections.emptyList());
         assertThat(result.get("verfuegbareSchuetzen")).isEqualTo(Collections.emptyList());
@@ -241,34 +247,31 @@ public class SatzeingabeTest {
         }
     }
 
-    @Test
-    public void validateOperation_wrongNumberOfShooters_returnsFalse() {
-        boolean result = state.validateOperation(mockContext, "submitSatz", invalidSatzEingabe);
-        assertThat(result).isFalse();
+    @Test(expected = BusinessException.class)
+    public void validateOperation_wrongNumberOfShooters_throwsBusinessException() {
+        state.validateOperation(mockContext, "submitSatz", invalidSatzEingabe);
     }
 
-    @Test
-    public void validateOperation_matchComplete_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateOperation_matchComplete_throwsBusinessException() {
         when(mockContext.isMatchComplete()).thenReturn(true);
-        
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
-    @Test
-    public void validateOperation_invalidArrowValue_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateOperation_invalidArrowValue_throwsException() {
         when(mockContext.validateArrowValue(anyInt()))
-            .thenReturn(StateContext.ValidationResult.invalid("Invalid arrow"));
-        
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+                .thenReturn(StateContext.ValidationResult.invalid("Invalid arrow"));
+
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
     @Test
     public void handlePostOperation_validSubmission_succeeds() {
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
+
         verify(mockContext).updateSessionStatus(State.STATUS_WARTE);
         verify(mockPasseComponent, times(3)).create(any(PasseDO.class), eq(0L));
     }
@@ -288,7 +291,7 @@ public class SatzeingabeTest {
     @Test
     public void handlePostOperation_exceptionInProcessing_returnsFalse() {
         doThrow(new RuntimeException("DB error")).when(mockContext).updateSessionStatus(anyString());
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isFalse();
     }
@@ -296,47 +299,47 @@ public class SatzeingabeTest {
     @Test
     public void createPassesWithScores_newPasses_createsSuccessfully() {
         when(mockPasseComponent.findByMannschaftMatchId(100L, 300L)).thenReturn(Collections.emptyList());
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
+
         verify(mockPasseComponent, times(3)).create(any(PasseDO.class), eq(0L));
     }
 
     @Test
     public void createPassesWithScores_existingPasses_updatesSuccessfully() {
         List<PasseDO> existingPasses = Arrays.asList(
-            createPass(1L, 100L, 300L, 2, 101L, 0, 0, 0),
-            createPass(2L, 100L, 300L, 2, 102L, 0, 0, 0),
-            createPass(3L, 100L, 300L, 2, 103L, 0, 0, 0)
+                createPass(1L, 100L, 300L, 2, 101L, 0, 0, 0),
+                createPass(2L, 100L, 300L, 2, 102L, 0, 0, 0),
+                createPass(3L, 100L, 300L, 2, 103L, 0, 0, 0)
         );
         when(mockPasseComponent.findByMannschaftMatchId(100L, 300L)).thenReturn(existingPasses);
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
+
         verify(mockPasseComponent, times(3)).update(any(PasseDO.class), eq(0L));
     }
 
     @Test
     public void updateMatchScoresAfterSetCompletion_bothTeamsComplete_updatesScores() {
         List<PasseDO> opponentPasses = Arrays.asList(
-            createPass(4L, 101L, 301L, 1, 104L, 8, 7, 6),
-            createPass(5L, 101L, 301L, 1, 105L, 7, 6, 5),
-            createPass(6L, 101L, 301L, 1, 106L, 6, 5, 4)
+                createPass(4L, 101L, 301L, 1, 104L, 8, 7, 6),
+                createPass(5L, 101L, 301L, 1, 105L, 7, 6, 5),
+                createPass(6L, 101L, 301L, 1, 106L, 6, 5, 4)
         );
         when(mockPasseComponent.findByMannschaftMatchId(101L, 300L)).thenReturn(opponentPasses);
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
+
         verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(0L));
     }
 
     @Test
     public void updateMatchScoresAfterSetCompletion_teamCompletedNoPasses_skipsUpdate() {
         when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L)).thenReturn(1);
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
     }
@@ -344,7 +347,7 @@ public class SatzeingabeTest {
     @Test
     public void updateMatchScoresAfterSetCompletion_exceptionInUpdate_continuesGracefully() {
         when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L))
-            .thenThrow(new RuntimeException("DB error"));
+                .thenThrow(new RuntimeException("DB error"));
 
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         // The method may return false due to exceptions in the complex logic
@@ -358,13 +361,12 @@ public class SatzeingabeTest {
         assertThat(result).isTrue();
     }
 
-    @Test
-    public void validateArrowValues_nullSatz_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateArrowValues_nullSatz_throwsBusinessException() {
         SatzEingabeDO nullSatzEingabe = new SatzEingabeDO();
         nullSatzEingabe.setSatzeingabe(Arrays.asList((SchuetzenSatzDO) null));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", nullSatzEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", nullSatzEingabe);
     }
 
     @Test
@@ -373,30 +375,28 @@ public class SatzeingabeTest {
         assertThat(result).isTrue();
     }
 
-    @Test
-    public void validateShooterRegistration_unregisteredShooter_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateShooterRegistration_unregisteredShooter_throwsBusinessException() {
         MannschaftsmitgliedDO unregisteredMember = createTeamMember(4L, 104L, 0);
         when(mockMannschaftsmitgliedComponent.findByMemberAndTeamId(100L, 104L))
-            .thenReturn(unregisteredMember);
+                .thenReturn(unregisteredMember);
 
         SatzEingabeDO invalidEingabe = new SatzEingabeDO();
         invalidEingabe.setSatzeingabe(Arrays.asList(
-            createSchuetzenSatz(101L, 5, 6),
-            createSchuetzenSatz(102L, 7, 8),
-            createSchuetzenSatz(104L, 9, 10) // Unregistered
+                createSchuetzenSatz(101L, 5, 6),
+                createSchuetzenSatz(102L, 7, 8),
+                createSchuetzenSatz(104L, 9, 10) // Unregistered
         ));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", invalidEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", invalidEingabe);
     }
 
-    @Test
-    public void validateShooterRegistration_exceptionInCheck_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateShooterRegistration_exceptionInCheck_throwsBusinessException() {
         when(mockMannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong()))
-            .thenThrow(new RuntimeException("DB error"));
+                .thenThrow(new RuntimeException("DB error"));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
     @Test
@@ -412,7 +412,7 @@ public class SatzeingabeTest {
     @Test
     public void getRegisteredShootersForCurrentMatch_exceptionInQuery_returnsEmpty() {
         when(mockMannschaftsmitgliedComponent.findByTeamId(100L))
-            .thenThrow(new RuntimeException("DB error"));
+                .thenThrow(new RuntimeException("DB error"));
 
         Map<String, Object> result = state.prepareResponseData(mockContext);
         assertThat(result.get("schuetzeStammDaten")).isEqualTo(Collections.emptyList());
@@ -448,7 +448,7 @@ public class SatzeingabeTest {
     public void updateTeamMatchScores_validMatch_updatesSuccessfully() {
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
+
         verify(mockMatchComponent, atLeastOnce()).findById(300L);
     }
 
@@ -465,7 +465,7 @@ public class SatzeingabeTest {
     @Test
     public void updateTeamMatchScores_exceptionInUpdate_continuesGracefully() {
         doThrow(new RuntimeException("DB error")).when(mockMatchComponent).update(any(MatchDO.class), anyLong());
-        
+
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
     }
@@ -473,9 +473,9 @@ public class SatzeingabeTest {
     private SatzEingabeDO createValidSatzEingabe() {
         SatzEingabeDO satzEingabe = new SatzEingabeDO();
         List<SchuetzenSatzDO> schuetzenSaetze = Arrays.asList(
-            createSchuetzenSatz(101L, 5, 6),
-            createSchuetzenSatz(102L, 7, 8),
-            createSchuetzenSatz(103L, 9, 10)
+                createSchuetzenSatz(101L, 5, 6),
+                createSchuetzenSatz(102L, 7, 8),
+                createSchuetzenSatz(103L, 9, 10)
         );
         satzEingabe.setSatzeingabe(schuetzenSaetze);
         return satzEingabe;
@@ -484,7 +484,7 @@ public class SatzeingabeTest {
     private SatzEingabeDO createInvalidSatzEingabe() {
         SatzEingabeDO satzEingabe = new SatzEingabeDO();
         List<SchuetzenSatzDO> schuetzenSaetze = Arrays.asList(
-            createSchuetzenSatz(101L, 5, 6)
+                createSchuetzenSatz(101L, 5, 6)
         ); // Only 1 shooter instead of 3
         satzEingabe.setSatzeingabe(schuetzenSaetze);
         return satzEingabe;
