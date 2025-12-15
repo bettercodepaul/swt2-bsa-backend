@@ -303,20 +303,22 @@ public class MatchAnalysisServiceTest {
         boolean result = service.isMatchComplete(300L, 100L, 101L);
         assertThat(result).isTrue();
     }
-    
+
     @Test
     public void isMatchComplete_maxPassesBased_returnsTrue() {
         testMatch.setSatzpunkte(2L);
         testOpponentMatch.setSatzpunkte(2L);
-        
+
         List<PasseDO> allPasses = new ArrayList<>();
         for (int passe = 1; passe <= 5; passe++) {
             for (int shooter = 1; shooter <= 3; shooter++) {
-                allPasses.add(createPass((long)(passe * 10 + shooter), 100L, 300L, passe, 10, 9, 8));
+                allPasses.add(createPass((long) (passe * 10 + shooter), 100L, 300L, passe, 10, 9, 8));
             }
         }
         when(mockPasseComponent.findByMannschaftMatchId(100L, 300L)).thenReturn(allPasses);
-        
+        when(mockPasseComponent.findByMannschaftMatchId(101L, 300L))
+                .thenReturn(allPasses);
+
         boolean result = service.isMatchComplete(300L, 100L, 101L);
         assertThat(result).isTrue();
     }

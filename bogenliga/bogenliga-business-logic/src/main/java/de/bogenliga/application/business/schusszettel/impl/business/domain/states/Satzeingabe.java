@@ -121,43 +121,44 @@ public class Satzeingabe extends State {
         
         return data;
     }
-    
+
     @Override
     public boolean validateOperation(StateContext context, String operation, Object data) {
         if (!"submitSatz".equals(operation)) {
             return false; // Only supports score submission
         }
-        
+
         if (!(data instanceof SatzEingabeDO eingabe)) {
             LOGGER.warn("Invalid data type for score submission: {}", data.getClass());
             return false;
         }
-        
-        try {
-            // Validate payload structure
-            if (eingabe.getSatzeingabe() == null || eingabe.getSatzeingabe().size() != SHOOTERS_PER_TEAM) {
-                throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
-                    "Exactly " + SHOOTERS_PER_TEAM + " shooters' scores required");
-            }
-            
-            // Validate match is not complete
-            if (context.isMatchComplete()) {
-                throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
-                    "Cannot enter scores - match is already complete");
-            }
-            
-            // Validate each shooter's data
-            for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
-                validateArrowValues(context, satz);
-                validateShooterRegistration(context, satz.getSchuetzenId());
-            }
-            
-            return true;
-            
-        } catch (BusinessException e) {
-            LOGGER.warn("Score submission validation failed: {}", e.getMessage());
-            return false;
+
+        validateNoInconsistentShooters(context);
+
+        // Validate payload structure
+        if (eingabe.getSatzeingabe() == null
+                || eingabe.getSatzeingabe().size() != SHOOTERS_PER_TEAM) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Exactly " + SHOOTERS_PER_TEAM + " shooters' scores required"
+            );
         }
+
+        // Validate match is not complete
+        if (context.isMatchComplete()) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_ARGUMENT_ERROR,
+                    "Cannot enter scores - match is already complete"
+            );
+        }
+
+        // Validate each shooter's data
+        for (SchuetzenSatzDO satz : eingabe.getSatzeingabe()) {
+            validateArrowValues(context, satz);
+            validateShooterRegistration(context, satz.getSchuetzenId());
+        }
+
+        return true;
     }
     
     @Override
@@ -482,4 +483,36 @@ public class Satzeingabe extends State {
             return Collections.emptyList();
         }
     }
+
+    /**
+     * Validates that all existing passes in the current match belong to exactly
+     * {@value #SHOOTERS_PER_TEAM} distinct shooters.
+     *
+     * <p>If passes already exist and more than the allowed number of different
+     * shooters is detected, the match is considered inconsistent and a
+     * {@link BusinessException} is thrown.</p>
+     *
+     * @param context the current state context containing match data
+     * @throws BusinessException if the match contains inconsistent shooter assignments
+     */
+    private void validateNoInconsistentShooters(StateContext context) {
+
+        // Alle bisherigen Passen dieses Matches laden
+        Set<Long> distinctShootersInMatch =
+                context.getAllMatchPasses().stream()
+                        .map(PasseDO::getPasseDsbMitgliedId)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+
+        // Wenn es bereits Wertungen gibt und mehr als 3 verschiedene Schützen existieren → Fehler
+        if (!distinctShootersInMatch.isEmpty()
+                && distinctShootersInMatch.size() != SHOOTERS_PER_TEAM) {
+
+            throw new BusinessException(
+                    ErrorCode.MATCH_INKONSISTENTE_SCHUETZEN,
+                    "Match enthält Wertungen mit mehr als drei unterschiedlichen Schützen"
+            );
+        }
+    }
+
 }
