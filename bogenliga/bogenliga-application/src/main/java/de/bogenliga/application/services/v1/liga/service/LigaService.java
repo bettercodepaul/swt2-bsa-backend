@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.liga.service;
 import java.security.Principal;
 import java.util.List;
 
+import de.bogenliga.application.common.utils.LigaSlugUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -225,5 +226,23 @@ public class LigaService implements ServiceFacade {
             Preconditions.checkArgument(ligaDTO.getLigaVerantwortlichId() >= 0,
                     PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG);
         }
+    }
+
+    // NEU: Liga per Slug
+    @GetMapping(value = "/slug/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO findBySlug(@PathVariable("slug") final String slug) {
+        Preconditions.checkArgument(slug != null && !slug.isBlank(), "Slug must not be empty.");
+        // Variante A (persistenter Slug):
+        /*
+        final LigaDO ligaDO = ligaComponent.findBySlug(slug); // implementiere findBySlug in ligaComponent/Repository
+        return LigaDTOMapper.toDTO.apply(ligaDO);*/
+
+        // Variante B (on-the-fly Fallback) — falls kein persistenter Slug:
+        final LigaDO ligaDO = ligaComponent.findAll().stream()
+            .filter(l -> LigaSlugUtil.toSlug(l.getName()).equals(slug))
+           .findFirst()
+           .orElse(new LigaDO());
+         return LigaDTOMapper.toDTO.apply(ligaDO);
     }
 }
