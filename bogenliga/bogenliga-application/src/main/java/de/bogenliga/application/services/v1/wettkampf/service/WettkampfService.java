@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import java.security.Principal;
@@ -21,7 +22,9 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
-
+import de.bogenliga.application.services.v1.wettkampf.model.VeranstaltungWettkampfDTO;
+import de.bogenliga.application.services.v1.wettkampf.mapper. VeranstaltungWettkampfDTOMapper;
+import de.bogenliga.application.business.wettkampf.api. types.VeranstaltungWettkampfDO;
 
 /**
  * I'm a REST resource and handle Wettkampf CRUD requests over the HTTP protocol
@@ -48,6 +51,7 @@ public class WettkampfService implements ServiceFacade {
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
     private TabletSchusszettelAdminComponent tabletSchusszettelComponent;
+    private final ConfigurationComponent configurationComponent;
 
     /**
      * Constructor with dependency injection
@@ -59,10 +63,11 @@ public class WettkampfService implements ServiceFacade {
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
                             RequiresOnePermissionAspect requiresOnePermissionAspect,
-                            final TabletSchusszettelAdminComponent tabletSchusszettelComponent) {
+                            final TabletSchusszettelAdminComponent tabletSchusszettelComponent, ConfigurationComponent configurationComponent) {
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.tabletSchusszettelComponent = tabletSchusszettelComponent;
+        this.configurationComponent = configurationComponent;
     }
 
 
@@ -84,6 +89,28 @@ public class WettkampfService implements ServiceFacade {
     public List<WettkampfDTO> findFutureSix() {
         final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findFutureSix();
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
+    }
+
+    @GetMapping(value = "byLigaIdWithVeranstaltung/{ligaId}/sportjahr/{sportjahr}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungWettkampfDTO> findWettkaempfeWithVeranstaltungByLigaId(
+            @PathVariable("ligaId") final long ligaId,
+            @PathVariable("sportjahr") final long sportjahr) {
+
+        Preconditions.checkArgument(ligaId >= 0, "Liga ID must not be negative.");
+        Preconditions.checkArgument(sportjahr >= 0, "Sportjahr must not be negative.");
+
+        LOG.debug("GET request for findWettkaempfeWithVeranstaltungByLigaId with ligaId '{}' and sportjahr '{}'",
+                ligaId, sportjahr);
+        final long sportjahr2 = Long.valueOf(configurationComponent.findByKey("aktives-Sportjahr").getValue());
+        // Component gibt DOs zurück, Service mappt zu DTOs
+        final List<VeranstaltungWettkampfDO> veranstaltungWettkampfDOList =
+                wettkampfComponent.findWettkaempfeWithVeranstaltungByLigaId(ligaId, sportjahr2);
+
+        return veranstaltungWettkampfDOList.stream()
+                .map(VeranstaltungWettkampfDTOMapper.toDTO)
+                .toList();
     }
 
 

@@ -44,6 +44,12 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application. business.wettkampf.api.types.VeranstaltungWettkampfDO;
+import de.bogenliga.application.business.veranstaltung.api. VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types. VeranstaltungDO;
+import java.util.stream.Collectors;
+import java.util. Comparator;
+import java.util.Optional;
 
 /**
  * Implementation of {@link WettkampfComponent}
@@ -783,5 +789,110 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Autowired
     public void setNameMappingComponent(NameMappingComponent nameMappingComponent) {
         this.nameMappingComponent = nameMappingComponent;
+    }
+    @Override
+    public List<VeranstaltungWettkampfDO> findWettkaempfeWithVeranstaltungByLigaId(
+            long ligaId, long currentSportjahr) {
+
+        Preconditions.checkArgument(ligaId >= 0, "Liga ID must not be negative");
+        Preconditions.checkArgument(currentSportjahr >= 0, "Sportjahr must not be negative");
+
+        // 1. Hole alle Veranstaltungen für die Liga
+        List<VeranstaltungDO> alleVeranstaltungen = veranstaltungComponent.findByLigaID(ligaId);
+
+        if (alleVeranstaltungen. isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 2. Finde das beste verfügbare Sportjahr
+        Long bestSportjahr = findBestAvailableSportjahr(alleVeranstaltungen, currentSportjahr);
+
+        if (bestSportjahr == null) {
+            return new ArrayList<>();
+        }
+
+        // 3. Finde die Veranstaltung für dieses Jahr (sollte genau eine sein)
+        VeranstaltungDO selectedVeranstaltung = alleVeranstaltungen.stream()
+                .filter(v -> v.getVeranstaltungSportJahr().equals(bestSportjahr))
+                .findFirst()
+                .orElse(null);
+
+        if (selectedVeranstaltung == null) {
+            return new ArrayList<>();
+        }
+
+        // 4. Hole alle Wettkämpfe für diese Veranstaltung
+        List<WettkampfDO> wettkampfDOList = this.findAllByVeranstaltungId(selectedVeranstaltung.getVeranstaltungID());
+
+        // 5. Konvertiere zu VeranstaltungWettkampfDO (nicht DTO!)
+        return wettkampfDOList.stream()
+                .map(wettkampf -> new VeranstaltungWettkampfDO(
+                        wettkampf.getId(),
+                        wettkampf. getWettkampfDatum() != null ? wettkampf. getWettkampfDatum().toString() : null,
+                        wettkampf. getWettkampfTag(),
+                        wettkampf.getWettkampfStrasse(),         // NEU
+                        wettkampf.getWettkampfPlz(),             // NEU
+                        wettkampf.getWettkampfOrtsname(),        // NEU
+                        wettkampf.getWettkampfOrtsinfo(),        // NEU
+                        wettkampf.getWettkampfBeginn(),
+                        wettkampf.getWettkampfDisziplinId(),     // NEU
+                        wettkampf.getWettkampfTypId(),           // NEU
+                        wettkampf.getWettkampfAusrichter(),      // NEU
+                        selectedVeranstaltung.getVeranstaltungID(),
+                        selectedVeranstaltung. getVeranstaltungName(),
+                        selectedVeranstaltung.getVeranstaltungSportJahr(),
+                        selectedVeranstaltung.getVeranstaltungLigaID()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Findet das beste verfügbare Sportjahr mit Wettkämpfen
+     * Reihenfolge: aktuelles Jahr -> nächstes Jahr -> vergangene Jahre (neueste zuerst)
+     */
+    private Long findBestAvailableSportjahr(List<VeranstaltungDO> alleVeranstaltungen, long currentSportjahr) {
+        // 1. Prüfe aktuelles Jahr
+        if (hasWettkaempfeForYear(alleVeranstaltungen, currentSportjahr)) {
+            return currentSportjahr;
+        }
+
+        // 2. Prüfe nächstes Jahr
+        if (hasWettkaempfeForYear(alleVeranstaltungen, currentSportjahr + 1)) {
+            return currentSportjahr + 1;
+        }
+
+        // 3. Vergangene Jahre (neueste zuerst)
+        List<Long> pastYears = alleVeranstaltungen.stream()
+                .map(VeranstaltungDO::getVeranstaltungSportJahr)
+                .filter(jahr -> jahr < currentSportjahr)
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+
+        for (Long year : pastYears) {
+            if (hasWettkaempfeForYear(alleVeranstaltungen, year)) {
+                return year;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Prüft ob es für ein bestimmtes Jahr Wettkämpfe gibt
+     */
+    private boolean hasWettkaempfeForYear(List<VeranstaltungDO> alleVeranstaltungen, long sportjahr) {
+        // Finde Veranstaltung für dieses Jahr
+        Optional<VeranstaltungDO> veranstaltung = alleVeranstaltungen.stream()
+                .filter(v -> v.getVeranstaltungSportJahr().equals(sportjahr))
+                .findFirst();
+
+        if (!veranstaltung.isPresent()) {
+            return false;
+        }
+
+        // Prüfe ob es Wettkämpfe für diese Veranstaltung gibt (bereits existierende Methode!)
+        List<WettkampfDO> wettkaempfe = this.findAllByVeranstaltungId(veranstaltung.get().getVeranstaltungID());
+        return ! wettkaempfe.isEmpty();
     }
 }
