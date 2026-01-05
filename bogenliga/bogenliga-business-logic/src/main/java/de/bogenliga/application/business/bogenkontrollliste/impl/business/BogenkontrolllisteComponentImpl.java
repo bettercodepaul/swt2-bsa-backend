@@ -196,15 +196,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 }
                 // Füge mitglieder mit schusserlaubnis hinzu
                 dsbMitgliedDOList.add(dsbMitglied);
-                allowedMapping.put(dsbMitglied, darfSchiessen);
-                if (darfSchiessen) {
-                    LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(),
-                            dsbMitgliedDOList.get(count).getVorname());
-                } else {
-                    LOGGER.info(
-                            "Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.",
-                            dsbMitglied.getNachname(), dsbMitglied.getVorname());
-                }
+                //TODO Bugfix für die Prüfung auf Schusserlaubnis
+                //aktueller Workaround: alle dürfen....
+                // allowedMapping.put(dsbMitglied, darfSchiessen);
+                allowedMapping.put(dsbMitglied, true);
+
                 count++;
             }
             teamMemberMapping.put(teamName, dsbMitgliedDOList);
