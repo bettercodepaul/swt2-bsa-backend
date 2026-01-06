@@ -122,7 +122,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
             List<MannschaftsmitgliedDO> mannschaftsmitgliedList = new ArrayList<>();
 
-            int count = 0;
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
                 DsbMitgliedDO dsbMitglied = dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
                 long thisLiga = this.veranstaltungComponent.findById(this.wettkampfComponent.findById(
@@ -201,7 +200,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 // allowedMapping.put(dsbMitglied, darfSchiessen);
                 allowedMapping.put(mannschaftsmitglied, true);
 
-                count++;
             }
             teamMemberMapping.put(teamName, mannschaftsmitgliedList);
 
@@ -358,9 +356,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 ;
 
                 //Add content to player columns
-                if (allowedMapping.get(teamMemberMapping.get(
-                        teamNameList[manschaftCounter]).get(
-                        mitgliedCounter - 1))) {
+                if (allowedMapping.get(teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1))) {
                     tableBodyFirstPart
                             .addCell(new Cell().setBorder(Border.NO_BORDER)
                                     .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
