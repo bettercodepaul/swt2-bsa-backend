@@ -41,6 +41,8 @@ public class DatabaseMigration{
     @Value("${spring.flyway.locations}")
     private String[] locations;
 
+    @Value("${flyway.migration.skip:false}")
+    private boolean skipFlyWayMigration;
 
     /**
      * I will be automatically called at spring startup to start the database migration.
@@ -49,6 +51,12 @@ public class DatabaseMigration{
      */
     @PostConstruct
     public void startDBMigration(){
+
+        if(skipFlyWayMigration) {
+            LOG.info("Skipping Database Migration as flyway.migration is disabled.");
+            return;
+        }
+
         LOG.info("Starting Database Migration: ");
         try {
             //Set Logger for Output while Migation is running.
