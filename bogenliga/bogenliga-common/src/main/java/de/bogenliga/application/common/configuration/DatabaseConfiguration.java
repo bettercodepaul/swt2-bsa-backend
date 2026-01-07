@@ -16,6 +16,7 @@ public class DatabaseConfiguration {
     private String databaseName;
     private String user;
     private String password;
+    private String schema= "public";
 
 
     /**
@@ -115,5 +116,22 @@ public class DatabaseConfiguration {
      */
     public void setPassword(final String password) {
         this.password = password;
+    }
+
+    /**
+     * Setter
+     *
+     * @return schema
+     */
+    public String getSchema() {
+        return schema;
+    }
+
+    /**
+     * Setter
+     *
+     * @param schema
+     */    public void setSchema(final String schema) {
+        this.schema = schema;
     }
 }
