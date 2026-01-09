@@ -153,15 +153,17 @@ public class PostgresqlTransactionManager implements TransactionManager {
     public DataSource getDataSource() {
         if (ds == null) {
             try {
-                LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
+                LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}' and schema '{}'",
                         databaseConfiguration.getHost(), databaseConfiguration.getPort(),
                         databaseConfiguration.getDatabaseName(), databaseConfiguration.getUser(),
-                        databaseConfiguration.getPassword().length());
+                        databaseConfiguration.getPassword().length(), databaseConfiguration.getSchema());
 
                 PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
                 // The value `localhost` means the Postgres cluster running locally on the same machine.
                 postgresqlDatasource.setServerName(databaseConfiguration.getHost());
                 postgresqlDatasource.setPortNumber(databaseConfiguration.getPort());
+
+                postgresqlDatasource.setCurrentSchema(databaseConfiguration.getSchema());
                 // A connection to Postgres must be made to a specific database rather than to the server as a whole.
                 // You likely have an initial database created named `public`.
                 postgresqlDatasource.setDatabaseName(databaseConfiguration.getDatabaseName());

@@ -112,7 +112,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
                     DSB_MITGLIED_TABLE_MITGLIED_ID)
             .whereGteRaw(MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, "1")
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
-            .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
+            .orderBy(MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER)
             .compose().toString();
 
     //hier suchen wir  alle Teammtiglieder, die potentiell eingesetzt werden könnten
@@ -124,7 +124,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
                     DSB_MITGLIED_TABLE_MITGLIED_ID)
             .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
-            .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
+            .orderBy(MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER)
             .compose().toString();
 
 

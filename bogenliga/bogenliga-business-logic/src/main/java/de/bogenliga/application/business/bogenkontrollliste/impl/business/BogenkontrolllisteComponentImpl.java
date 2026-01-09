@@ -102,8 +102,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         // Initialisierung Dsb Mitglied Hashmap und DsbMitglied, boolean Hashmap.
-        HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
-        HashMap<DsbMitgliedDO, Boolean> allowedMapping = new HashMap<>();
+        HashMap<String, List<MannschaftsmitgliedDO>> teamMemberMapping = new HashMap<>();
+        HashMap<MannschaftsmitgliedDO, Boolean>  allowedMapping = new HashMap<>();
 
         // Informationen sammeln Wettkampf und zugehoerige Veranstaltung
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
@@ -120,9 +120,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(
                     matchDO.getMannschaftId());
 
-            List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedList = new ArrayList<>();
 
-            int count = 0;
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
                 DsbMitgliedDO dsbMitglied = dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
                 long thisLiga = this.veranstaltungComponent.findById(this.wettkampfComponent.findById(
@@ -195,19 +194,14 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     }
                 }
                 // Füge mitglieder mit schusserlaubnis hinzu
-                dsbMitgliedDOList.add(dsbMitglied);
-                allowedMapping.put(dsbMitglied, darfSchiessen);
-                if (darfSchiessen) {
-                    LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(),
-                            dsbMitgliedDOList.get(count).getVorname());
-                } else {
-                    LOGGER.info(
-                            "Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.",
-                            dsbMitglied.getNachname(), dsbMitglied.getVorname());
-                }
-                count++;
+                mannschaftsmitgliedList.add(mannschaftsmitglied);
+                //TODO Bugfix für die Prüfung auf Schusserlaubnis
+                //aktueller Workaround: alle dürfen....
+                // allowedMapping.put(dsbMitglied, darfSchiessen);
+                allowedMapping.put(mannschaftsmitglied, true);
+
             }
-            teamMemberMapping.put(teamName, dsbMitgliedDOList);
+            teamMemberMapping.put(teamName, mannschaftsmitgliedList);
 
 
         }
@@ -249,9 +243,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      * @param teamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
     private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO,
-                                               HashMap<String, List<DsbMitgliedDO>> teamMemberMapping,
+                                               HashMap<String, List<MannschaftsmitgliedDO>> teamMemberMapping,
                                                String veranstaltungsName,
-                                               HashMap<DsbMitgliedDO, Boolean> allowedMapping, int veranstaltungGroesse) {
+                                               HashMap<MannschaftsmitgliedDO, Boolean> allowedMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
@@ -362,32 +356,22 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 ;
 
                 //Add content to player columns
-                if (allowedMapping.get(teamMemberMapping.get(
-                        teamNameList[manschaftCounter]).get(
-                        mitgliedCounter - 1))) {
-
+                if (allowedMapping.get(teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1))) {
                     tableBodyFirstPart
                             .addCell(new Cell().setBorder(Border.NO_BORDER)
                                     .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                    .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
-                                            teamNameList[manschaftCounter]).get(
-                                            mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
-                                            teamNameList[manschaftCounter]).get(
-                                            mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
-                    ;
+                                    .add(new Paragraph(teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getRueckennummer() + " " +
+                                            teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getDsbMitgliedNachname() + ", " +
+                                            teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getDsbMitgliedVorname()).setBold().setFontSize(10.0F)));
                 } else {
                     tableBodyFirstPart
                             .addCell(new Cell().setBorder(Border.NO_BORDER)
                                     .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                    .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
-                                            teamNameList[manschaftCounter]).get(
-                                            mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
-                                            teamNameList[manschaftCounter]).get(
-                                            mitgliedCounter - 1).getVorname()).setBold().setLineThrough().setFontSize(
-                                            10.0F)))
-                    ;
+                                    .add(new Paragraph(teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getRueckennummer() + " " +
+                                            teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getDsbMitgliedNachname() + ", " +
+                                            teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getDsbMitgliedVorname()).setBold().setLineThrough().setFontSize(10.0F)));
                 }
 
                 for (int match = 0; match < numberOfMatches; match++) {
