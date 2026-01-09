@@ -1154,7 +1154,7 @@ public class WettkampfComponentImplTest {
                 2021L,
                 new Date(2020, 5,10),
                 2L,
-                1002L,
+                1003L,
                 OffsetDateTime.now().minusDays(100),
                 13L,
                 OffsetDateTime.now().minusDays(100),
@@ -1171,7 +1171,7 @@ public class WettkampfComponentImplTest {
 
         when(veranstaltungComponent.findByLigaID(anyLong())).thenReturn(new ArrayList<>());
         when(veranstaltungComponent.findByLigaID(eq(1002L))).thenReturn(veranstaltungDOList.stream().filter(v -> v.getVeranstaltungLigaID().equals(1002L)).toList());
-
+        when(veranstaltungComponent.findByLigaID(eq(1003L))).thenReturn(veranstaltungDOList.stream().filter(v -> v.getVeranstaltungLigaID().equals(1003L)).toList());
         when(wettkampfDAO.findAllByVeranstaltungId(0L)).thenReturn((wettkampfDOList.stream().filter(w -> w.getVeranstaltungsId().equals(0L)).toList()));
         when(wettkampfDAO.findAllByVeranstaltungId(10L)).thenReturn((wettkampfDOList.stream().filter(w -> w.getVeranstaltungsId().equals(10L)).toList()));
         underTest.setVeranstaltungComponent(veranstaltungComponent);
@@ -1181,10 +1181,15 @@ public class WettkampfComponentImplTest {
         actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2026L);
         assertThat(actual).isNotNull();
         assertThat(actual.isEmpty()).isFalse();
-
-        //Veranstaltung_1.setVeranstaltungSportJahr();
-
-
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1003L,2026L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isTrue();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2020L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isFalse();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2019L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isFalse();
         // test invalid parameters
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(-1L,2026L));
