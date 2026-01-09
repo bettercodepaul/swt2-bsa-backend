@@ -1,7 +1,9 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.VeranstaltungWettkampfDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -25,13 +27,12 @@ import java.util.List;
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
-
+import de.bogenliga.application.services.v1.wettkampf.model.VeranstaltungWettkampfDTO;
 
 /**
  * Test class for Wettkampf Service
@@ -80,6 +81,9 @@ public class WettkampfServiceTest {
 
     @Mock
     private TabletSchusszettelAdminComponent tabletSchusszettelComponent;
+
+    @Mock
+    private ConfigurationComponent configurationComponent;
 
     /***
      * Utility methods for creating business entities/data objects.
@@ -413,4 +417,34 @@ public class WettkampfServiceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-}
+    @Test
+    public void testFindWettkaempfeWithVeranstaltungByLigaId() {
+        List<VeranstaltungWettkampfDO> expected = new ArrayList<VeranstaltungWettkampfDO>();
+
+        expected.add(new VeranstaltungWettkampfDO(
+                1L,
+                "2026-07-15",
+                1L,
+                "String wettkampfStrasse",
+                "String wettkampfPlz",
+                "String wettkampfOrtsname",
+                "String wettkampfOrtsinfo",
+                "String wettkampfBeginn",
+                2000L,
+                1999L,
+                42L,
+                69L,
+                "String veranstaltungName",
+                2026L,
+                1002L
+        ));
+        ConfigurationDO configDO = new ConfigurationDO(0L, "aktives-Sportjahr", "2026", "dddd",false);
+        when(configurationComponent.findByKey(anyString())).thenReturn(configDO);
+        when(wettkampfComponent.findWettkaempfeWithVeranstaltungByLigaId(anyLong(),anyLong())).thenReturn(expected);
+        List<VeranstaltungWettkampfDTO> actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(10L);
+        assertThat(actual.get(0).getWettkampfId()).isEqualTo(1L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getWettkampfTag()).isEqualTo(1L);
+        assertThat(actual.get(0).getWettkampfPlz()).isEqualTo("String wettkampfPlz");
+        assertThat(actual.get(0).getVeranstaltungId()).isEqualTo(69L);
+}}
