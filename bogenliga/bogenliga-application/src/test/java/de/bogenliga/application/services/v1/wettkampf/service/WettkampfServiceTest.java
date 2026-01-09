@@ -6,6 +6,7 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.VeranstaltungWettkampfDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -439,12 +440,23 @@ public class WettkampfServiceTest {
                 1002L
         ));
         ConfigurationDO configDO = new ConfigurationDO(0L, "aktives-Sportjahr", "2026", "dddd",false);
+        ConfigurationDO configDOerror = new ConfigurationDO(1L, "aktives-Sportjahr", "-2026", "dddd",false);
         when(configurationComponent.findByKey(anyString())).thenReturn(configDO);
         when(wettkampfComponent.findWettkaempfeWithVeranstaltungByLigaId(anyLong(),anyLong())).thenReturn(expected);
         List<VeranstaltungWettkampfDTO> actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(10L);
         assertThat(actual.get(0).getWettkampfId()).isEqualTo(1L);
         assertThat(actual).isNotNull();
+
         assertThat(actual.get(0).getWettkampfTag()).isEqualTo(1L);
         assertThat(actual.get(0).getWettkampfPlz()).isEqualTo("String wettkampfPlz");
         assertThat(actual.get(0).getVeranstaltungId()).isEqualTo(69L);
+        // verify that calling with a negative liga id throws a BusinessException
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(-10L));
+        // verify that calling with an invalid sportyear configuration throws a BusinessException
+        when(configurationComponent.findByKey(anyString())).thenReturn(configDOerror);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(10L));
+
+
 }}
