@@ -450,6 +450,14 @@ public class WettkampfServiceTest {
         assertThat(actual.get(0).getWettkampfTag()).isEqualTo(1L);
         assertThat(actual.get(0).getWettkampfPlz()).isEqualTo("String wettkampfPlz");
         assertThat(actual.get(0).getVeranstaltungId()).isEqualTo(69L);
+        assertThat(actual.get(0).getVeranstaltungSportjahr()).isEqualTo(2026L);
+        assertThat(actual.get(0).getVeranstaltungLigaId()).isEqualTo(1002L);
+        assertThat(actual.get(0).getWettkampfDisziplinId()).isEqualTo(2000L);
+        assertThat(actual.get(0).getWettkampfDatum()).isEqualTo("2026-07-15");
+        assertThat(actual.get(0).getWettkampfOrtsinfo()).isEqualTo("String wettkampfOrtsinfo");
+        assertThat(actual.get(0).getWettkampfStrasse()).isEqualTo("String wettkampfStrasse");
+        assertThat(actual.get(0).getWettkampfBeginn()).isEqualTo("String wettkampfBeginn");
+        assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(42L);
         // verify that calling with a negative liga id throws a BusinessException
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(-10L));
