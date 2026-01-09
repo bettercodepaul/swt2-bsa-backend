@@ -91,22 +91,21 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
-    @GetMapping(value = "byLigaIdWithVeranstaltung/{ligaId}/sportjahr/{sportjahr}",
+    @GetMapping(value = "byLigaIdWithVeranstaltung/{ligaId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungWettkampfDTO> findWettkaempfeWithVeranstaltungByLigaId(
-            @PathVariable("ligaId") final long ligaId,
-            @PathVariable("sportjahr") final long sportjahr) {
-
+            @PathVariable("ligaId") final long ligaId) {
+        final long sportjahr = Long.valueOf(configurationComponent.findByKey("aktives-Sportjahr").getValue());
         Preconditions.checkArgument(ligaId >= 0, "Liga ID must not be negative.");
         Preconditions.checkArgument(sportjahr >= 0, "Sportjahr must not be negative.");
 
         LOG.debug("GET request for findWettkaempfeWithVeranstaltungByLigaId with ligaId '{}' and sportjahr '{}'",
-                ligaId, sportjahr);
-        final long sportjahr2 = Long.valueOf(configurationComponent.findByKey("aktives-Sportjahr").getValue());
+                ligaId, sportjahr );
+
         // Component gibt DOs zurück, Service mappt zu DTOs
         final List<VeranstaltungWettkampfDO> veranstaltungWettkampfDOList =
-                wettkampfComponent.findWettkaempfeWithVeranstaltungByLigaId(ligaId, sportjahr2);
+                wettkampfComponent.findWettkaempfeWithVeranstaltungByLigaId(ligaId, sportjahr);
 
         return veranstaltungWettkampfDOList.stream()
                 .map(VeranstaltungWettkampfDTOMapper.toDTO)
