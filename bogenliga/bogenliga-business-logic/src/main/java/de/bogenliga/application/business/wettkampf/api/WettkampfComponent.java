@@ -4,6 +4,8 @@ package de.bogenliga.application.business.wettkampf.api;
 import java.util.List;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.component.ComponentFacade;
+import de.bogenliga.application. business.wettkampf.api.types.VeranstaltungWettkampfDO;
+
 /**
  * Responsible for the wettkampf database requests.
  * @Autor Marvin Holm, Daniel Schott
@@ -18,6 +20,17 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     List<WettkampfDO> findAll();
     List<WettkampfDO> findFutureSix();
+
+
+    /**
+     * Findet Wettkämpfe mit Veranstaltungsdaten für eine Liga und das beste verfügbare Sportjahr
+     *
+     * @param ligaId ID der Liga
+     * @param currentSportjahr aktuelles Sportjahr
+     * @return Liste von Wettkämpfen mit Veranstaltungsinformationen als DOs
+     */
+    List<VeranstaltungWettkampfDO> findWettkaempfeWithVeranstaltungByLigaId(long ligaId, long currentSportjahr);
+
 
     List<WettkampfDO> findByAusrichter(long id);
     /**
