@@ -74,6 +74,37 @@ public class LigaService implements ServiceFacade {
     }
 
     /**
+     * Returns children of a parent liga with pagination support for lazy loading.
+     *
+     * @param parentId ID of the parent liga
+     * @param limit Maximum number of results (default: 50)
+     * @param offset Number of results to skip (default: 0)
+     * @return list of child LigaDTO entries
+     */
+    @GetMapping(value = "/{parentId}/children", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaDTO> findChildrenOf(
+            @PathVariable("parentId") final long parentId,
+            @RequestParam(value = "limit", defaultValue = "50") final int limit,
+            @RequestParam(value = "offset", defaultValue = "0") final int offset) {
+
+        Preconditions.checkArgument(parentId >= 0, PRECONDITION_MSG_LIGA_ID);
+        Preconditions.checkArgument(limit > 0 && limit <= 100, "Limit must be between 1 and 100");
+        Preconditions.checkArgument(offset >= 0, "Offset must not be negative");
+
+        // Filter all ligas by parentId and apply pagination
+        final List<LigaDO> allChildren = ligaComponent.findAll().stream()
+                .filter(liga -> liga.getLigaUebergeordnetId() != null 
+                             && liga.getLigaUebergeordnetId().equals(parentId))
+                .skip(offset)
+                .limit(limit)
+                .toList();
+
+        return allChildren.stream().map(LigaDTOMapper.toDTO).toList();
+    }
+
+
+    /**
      * Returns the Lowest Liga
      *
      * @Return the lowestLiga with specific id if id not in lowest Liga retun empty liga
