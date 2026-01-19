@@ -3,6 +3,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.sql.Date;
 
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
+import de.bogenliga.application.business.wettkampf.api.types.VeranstaltungWettkampfDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,6 +51,8 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -134,7 +138,6 @@ public class WettkampfComponentImplTest {
     private VeranstaltungComponent veranstaltungComponent;
     @Mock
     private NameMappingComponent nameMappingComponent;
-
 
 
     /***
@@ -1106,6 +1109,92 @@ public class WettkampfComponentImplTest {
         assertEquals(4, allowedList.size());
     }
 
+    @Test
+    public void testFindWettkaempfeWithVeranstaltungByLigaId() {
+        List<VeranstaltungDO> veranstaltungDOList = new ArrayList<>();
+        List<WettkampfBE> wettkampfDOList = new ArrayList<>();
 
+        WettkampfBE Tag1 = new WettkampfBE();
+        Tag1.setVeranstaltungsId(0L);
+        WettkampfBE Tag2 = new WettkampfBE();
+        Tag2.setVeranstaltungsId(0L);
+        WettkampfBE Tag3 = new WettkampfBE();
+        Tag3.setVeranstaltungsId(11L);
+        WettkampfBE Tag4 = new WettkampfBE();
+        Tag4.setVeranstaltungsId(0L);
+
+        wettkampfDOList.add(Tag1);
+        wettkampfDOList.add(Tag2);
+        wettkampfDOList.add(Tag3);
+        wettkampfDOList.add(Tag4);
+
+        VeranstaltungDO Veranstaltung_1 = new VeranstaltungDO(
+        0L,
+        1L,
+        "Veranstaltung 1",
+        2020L,
+        new Date(2020, 5,10),
+        2L,
+        1002L,
+        OffsetDateTime.now().minusDays(100),
+        3L,
+        OffsetDateTime.now().minusDays(100),
+        4L,
+        0L,
+        "Ligaleiter@email.com",
+        "wettkampftypName",
+        "ligaName",
+        "phase",
+        4);
+
+        VeranstaltungDO VeranstaltungEmpty = new VeranstaltungDO(
+                10L,
+                11L,
+                "Veranstaltung 1",
+                2021L,
+                new Date(2020, 5,10),
+                2L,
+                1003L,
+                OffsetDateTime.now().minusDays(100),
+                13L,
+                OffsetDateTime.now().minusDays(100),
+                14L,
+                0L,
+                "Ligaleiter@email.com",
+                "wettkampftypName",
+                "ligaName",
+                "phase",
+                4);
+        veranstaltungDOList.add(Veranstaltung_1);
+        veranstaltungDOList.add(VeranstaltungEmpty);
+
+
+        when(veranstaltungComponent.findByLigaID(anyLong())).thenReturn(new ArrayList<>());
+        when(veranstaltungComponent.findByLigaID(eq(1002L))).thenReturn(veranstaltungDOList.stream().filter(v -> v.getVeranstaltungLigaID().equals(1002L)).toList());
+        when(veranstaltungComponent.findByLigaID(eq(1003L))).thenReturn(veranstaltungDOList.stream().filter(v -> v.getVeranstaltungLigaID().equals(1003L)).toList());
+        when(wettkampfDAO.findAllByVeranstaltungId(0L)).thenReturn((wettkampfDOList.stream().filter(w -> w.getVeranstaltungsId().equals(0L)).toList()));
+        when(wettkampfDAO.findAllByVeranstaltungId(10L)).thenReturn((wettkampfDOList.stream().filter(w -> w.getVeranstaltungsId().equals(10L)).toList()));
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+        List<VeranstaltungWettkampfDO> actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(10L,2026L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isTrue();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2026L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isFalse();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1003L,2026L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isTrue();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2020L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isFalse();
+        actual = underTest.findWettkaempfeWithVeranstaltungByLigaId(1002L,2019L);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isEmpty()).isFalse();
+        // test invalid parameters
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(-1L,2026L));
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(1L,-2026L));
+    }
 }
 
