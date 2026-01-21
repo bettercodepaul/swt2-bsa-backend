@@ -47,7 +47,8 @@ public class VeranstaltungWettkampfDTO implements DataTransferObject {
             Long veranstaltungId,
             String veranstaltungName,
             Long veranstaltungSportjahr,
-            Long veranstaltungLigaId) {
+            Long veranstaltungLigaId,
+            String veranstaltungLigaName) {
         this.wettkampfId = wettkampfId;
         this.wettkampfDatum = wettkampfDatum;
         this.wettkampfTag = wettkampfTag;
