@@ -100,7 +100,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.dsbMitgliedVorname = dsbMitgliedVorname;
         this.dsbMitgliedNachname = dsbMitgliedNachname;
         this.rueckennummer = rueckennummer;
-        this.version = -1L;
+        this.version = 0L;
 
     }
 
@@ -200,12 +200,12 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
             return false;
         }
         final MannschaftsmitgliedDO that = (MannschaftsmitgliedDO) o;
-        return version.equals(that.version) &&
-                mannschaftId.equals(that.mannschaftId) &&
-                dsbMitgliedId.equals(that.dsbMitgliedId) &&
-                dsbMitgliedEingesetzt.equals(that.dsbMitgliedEingesetzt) &&
-                dsbMitgliedVorname.equals(that.dsbMitgliedVorname) &&
-                dsbMitgliedNachname.equals(that.dsbMitgliedNachname) &&
-                rueckennummer.equals(that.rueckennummer);
+        return Objects.equals(version, that.version) &&
+                Objects.equals(mannschaftId, that.mannschaftId) &&
+                Objects.equals(dsbMitgliedId, that.dsbMitgliedId) &&
+                Objects.equals(dsbMitgliedEingesetzt, that.dsbMitgliedEingesetzt) &&
+                Objects.equals(dsbMitgliedVorname, that.dsbMitgliedVorname) &&
+                Objects.equals(dsbMitgliedNachname, that.dsbMitgliedNachname) &&
+                Objects.equals(rueckennummer, that.rueckennummer);
     }
 }

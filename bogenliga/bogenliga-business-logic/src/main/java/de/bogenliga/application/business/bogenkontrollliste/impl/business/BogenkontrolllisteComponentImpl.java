@@ -157,6 +157,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                         dsbMitglied.getId());
 
                 // Finde alle Wettkämpfe einer Mannschaft
+                //aktueller Workaround: alle dürfen....
+                //TODO Bugfix für die Prüfung auf Schusserlaubnis
+                /*
                 for (MannschaftsmitgliedDO mitglied : mitgliedIn) {
                     List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(
                             mitglied.getMannschaftId());
@@ -193,11 +196,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                         }
                     }
                 }
+
+                 */
                 // Füge mitglieder mit schusserlaubnis hinzu
                 mannschaftsmitgliedList.add(mannschaftsmitglied);
-                //TODO Bugfix für die Prüfung auf Schusserlaubnis
                 //aktueller Workaround: alle dürfen....
-                // allowedMapping.put(dsbMitglied, darfSchiessen);
+                //TODO Bugfix für die Prüfung auf Schusserlaubnis
+                //allowedMapping.put(dsbMitglied, darfSchiessen);
                 allowedMapping.put(mannschaftsmitglied, true);
 
             }
