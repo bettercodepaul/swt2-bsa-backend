@@ -841,7 +841,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                         selectedVeranstaltung.getVeranstaltungID(),
                         selectedVeranstaltung. getVeranstaltungName(),
                         selectedVeranstaltung.getVeranstaltungSportJahr(),
-                        selectedVeranstaltung.getVeranstaltungLigaID()
+                        selectedVeranstaltung.getVeranstaltungLigaID(),
+                        selectedVeranstaltung.getVeranstaltungLigaName()
                 ))
                 .collect(Collectors.toList());
     }
