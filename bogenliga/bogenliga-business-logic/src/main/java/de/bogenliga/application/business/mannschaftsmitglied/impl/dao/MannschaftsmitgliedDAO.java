@@ -39,6 +39,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String MANNSCHAFTSMITGLIED_BE_INSERT = "dsbMitgliedEingesetzt";
     private static final String MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER = "rueckennummer";
 
+    private static final String MANNSCHAFTMITGLIED_BE_VERSION = "version";
+    private static final String MANNSCHAFTMITGLIED_BE_CREATED_AT = "createdAtUtc";
+    private static final String MANNSCHAFTSMITGLIED_BE_CREATED_BY = "createdByUserId";
+    private static final String MANNSCHAFTSMITGLIED_BE_LAST_MODIFIED_AT = "lastModifiedAtUtc";
+    private static final String MANNSCHAFTSMITGLIED_BE_LAST_MODIFIED_BY = "lastModifiedByUserId";
+
     // new: important for the join with dsb_mitglied
     private static final String DSBMITGLIED_BE_FORENAME = "dsbMitgliedVorname";
     private static final String DSBMITGLIED_BE_SURNAME = "dsbMitgliedNachname";
@@ -53,9 +59,17 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
     private static final String MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER = "mannschaftsmitglied_rueckennummer";
 
+    private static final String MANNSCHAFTMITGLIED_TABLE_VERSION = "m.version";
+    private static final String MANNSCHAFTMITGLIED_TABLE_CREATED_AT = "m.created_at_utc";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_CREATED_BY = "m.created_by";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_AT = "m.last_modified_at_utc";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_BY = "m.last_modified_by";
+
     private static final String[] selectedFields = {
             MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID,
-            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER
+            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER,
+            MANNSCHAFTMITGLIED_TABLE_VERSION, MANNSCHAFTMITGLIED_TABLE_CREATED_AT, MANNSCHAFTSMITGLIED_TABLE_CREATED_BY,
+            MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_AT, MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_BY
     };
 
     private static final String FIND_ALL = new QueryBuilder()
