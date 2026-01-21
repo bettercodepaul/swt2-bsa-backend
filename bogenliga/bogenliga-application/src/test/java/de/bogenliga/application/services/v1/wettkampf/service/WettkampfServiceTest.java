@@ -469,4 +469,7 @@ public class WettkampfServiceTest {
                 .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(10L));
 
 
-}}
+}
+
+
+}
