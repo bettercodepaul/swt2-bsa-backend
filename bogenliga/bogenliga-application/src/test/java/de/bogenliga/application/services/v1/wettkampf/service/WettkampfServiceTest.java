@@ -437,7 +437,8 @@ public class WettkampfServiceTest {
                 69L,
                 "String veranstaltungName",
                 2026L,
-                1002L
+                1002L,
+                "ln"
         ));
         ConfigurationDO configDO = new ConfigurationDO(0L, "aktives-Sportjahr", "2026", "dddd",false);
         ConfigurationDO configDOerror = new ConfigurationDO(1L, "aktives-Sportjahr", "-2026", "dddd",false);
@@ -458,6 +459,7 @@ public class WettkampfServiceTest {
         assertThat(actual.get(0).getWettkampfStrasse()).isEqualTo("String wettkampfStrasse");
         assertThat(actual.get(0).getWettkampfBeginn()).isEqualTo("String wettkampfBeginn");
         assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(42L);
+        assertThat(actual.get(0).getVeranstaltungLigaName()).isEqualTo("ln");
         // verify that calling with a negative liga id throws a BusinessException
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(-10L));
@@ -467,4 +469,7 @@ public class WettkampfServiceTest {
                 .isThrownBy(() -> underTest.findWettkaempfeWithVeranstaltungByLigaId(10L));
 
 
-}}
+}
+
+
+}

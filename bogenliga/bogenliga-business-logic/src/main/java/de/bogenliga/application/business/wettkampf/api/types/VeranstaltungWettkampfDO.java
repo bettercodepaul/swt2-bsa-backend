@@ -26,6 +26,7 @@ public class VeranstaltungWettkampfDO extends CommonDataObject implements DataOb
     private String veranstaltungName;
     private Long veranstaltungSportjahr;
     private Long veranstaltungLigaId;
+    private String veranstaltungLigaName;
 
     // Konstruktoren
     public VeranstaltungWettkampfDO() {
@@ -47,7 +48,8 @@ public class VeranstaltungWettkampfDO extends CommonDataObject implements DataOb
             Long veranstaltungId,
             String veranstaltungName,
             Long veranstaltungSportjahr,
-            Long veranstaltungLigaId) {
+            Long veranstaltungLigaId,
+            String veranstaltungLigaName) {
         this.wettkampfId = wettkampfId;
         this.wettkampfDatum = wettkampfDatum;
         this.wettkampfTag = wettkampfTag;
@@ -63,6 +65,7 @@ public class VeranstaltungWettkampfDO extends CommonDataObject implements DataOb
         this.veranstaltungName = veranstaltungName;
         this.veranstaltungSportjahr = veranstaltungSportjahr;
         this.veranstaltungLigaId = veranstaltungLigaId;
+        this.veranstaltungLigaName = veranstaltungLigaName;
     }
 
     // Getter und Setter
@@ -110,4 +113,7 @@ public class VeranstaltungWettkampfDO extends CommonDataObject implements DataOb
 
     public Long getVeranstaltungLigaId() { return veranstaltungLigaId; }
     public void setVeranstaltungLigaId(Long veranstaltungLigaId) { this.veranstaltungLigaId = veranstaltungLigaId; }
+
+    public String getVeranstaltungLigaName() { return veranstaltungLigaName; }
+    public void setVeranstaltungLigaName(String veranstaltungLigaName) { this.veranstaltungLigaName = veranstaltungLigaName; }
 }
