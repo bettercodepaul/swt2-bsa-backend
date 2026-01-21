@@ -37,6 +37,7 @@ public class VeranstaltungWettkampfDTOMapper implements DataTransferObjectMapper
                 dto.setVeranstaltungName(veranstaltungWettkampfDO.getVeranstaltungName());
                 dto.setVeranstaltungSportjahr(veranstaltungWettkampfDO.getVeranstaltungSportjahr());
                 dto.setVeranstaltungLigaId(veranstaltungWettkampfDO.getVeranstaltungLigaId());
+                dto.setVeranstaltungLigaName(veranstaltungWettkampfDO.getVeranstaltungLigaName());
 
                 return dto;
             };

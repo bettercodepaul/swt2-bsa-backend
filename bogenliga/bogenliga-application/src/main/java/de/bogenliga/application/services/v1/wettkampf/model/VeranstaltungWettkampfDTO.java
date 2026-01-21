@@ -25,6 +25,7 @@ public class VeranstaltungWettkampfDTO implements DataTransferObject {
     private String veranstaltungName;
     private Long veranstaltungSportjahr;
     private Long veranstaltungLigaId;
+    private String veranstaltungLigaName;
 
     // Konstruktoren
     public VeranstaltungWettkampfDTO() {
@@ -62,6 +63,7 @@ public class VeranstaltungWettkampfDTO implements DataTransferObject {
         this. veranstaltungName = veranstaltungName;
         this.veranstaltungSportjahr = veranstaltungSportjahr;
         this.veranstaltungLigaId = veranstaltungLigaId;
+        this.veranstaltungLigaName = veranstaltungLigaName;
     }
 
     // Getter und Setter
@@ -109,4 +111,7 @@ public class VeranstaltungWettkampfDTO implements DataTransferObject {
 
     public Long getVeranstaltungLigaId() { return veranstaltungLigaId; }
     public void setVeranstaltungLigaId(Long veranstaltungLigaId) { this.veranstaltungLigaId = veranstaltungLigaId; }
+
+    public String getVeranstaltungLigaName() { return veranstaltungLigaName; }
+    public void setVeranstaltungLigaName(String veranstaltungLigaName) { this.veranstaltungLigaName = veranstaltungLigaName; }
 }
