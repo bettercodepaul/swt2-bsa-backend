@@ -48,6 +48,13 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID = "mannschaftsmitglied_dsb_mitglied_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_EMPLOYED = "mannschaftsmitglied_dsb_mitglied_eingesetzt";
 
+    private static final String MANNSCHAFTMITGLIED_TABLE_VERSION = "m.version";
+    private static final String MANNSCHAFTMITGLIED_TABLE_CREATED_AT = "m.created_at_utc";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_CREATED_BY = "m.created_by";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_AT = "m.last_modified_at_utc";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_BY = "m.last_modified_by";
+
+
     // new: important for the join with dsb_mitglied
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
     private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
@@ -55,7 +62,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     private static final String[] selectedFields = {
             MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID,
-            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER
+            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER,
+            MANNSCHAFTMITGLIED_TABLE_VERSION, MANNSCHAFTMITGLIED_TABLE_CREATED_AT, MANNSCHAFTSMITGLIED_TABLE_CREATED_BY,
+            MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_AT, MANNSCHAFTSMITGLIED_TABLE_LAST_MODIFIED_BY
     };
 
     private static final String FIND_ALL = new QueryBuilder()
