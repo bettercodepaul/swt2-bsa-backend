@@ -100,7 +100,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.dsbMitgliedVorname = dsbMitgliedVorname;
         this.dsbMitgliedNachname = dsbMitgliedNachname;
         this.rueckennummer = rueckennummer;
-        this.version = -1L;
+        this.version = 0L;
 
     }
 
@@ -198,6 +198,10 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
+        }
+        if (this.version == null) {
+            //Fallback for uninitialized "selected ext-BE " without technical fields
+            this.version = 0L;
         }
         final MannschaftsmitgliedDO that = (MannschaftsmitgliedDO) o;
         return version.equals(that.version) &&
