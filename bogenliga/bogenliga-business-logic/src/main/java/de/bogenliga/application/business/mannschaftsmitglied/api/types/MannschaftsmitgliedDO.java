@@ -199,17 +199,13 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (this.version == null) {
-            //Fallback for uninitialized "selected ext-BE " without technical fields
-            this.version = 0L;
-        }
         final MannschaftsmitgliedDO that = (MannschaftsmitgliedDO) o;
         return Objects.equals(version, that.version) &&
-                mannschaftId.equals(that.mannschaftId) &&
-                dsbMitgliedId.equals(that.dsbMitgliedId) &&
-                dsbMitgliedEingesetzt.equals(that.dsbMitgliedEingesetzt) &&
-                dsbMitgliedVorname.equals(that.dsbMitgliedVorname) &&
-                dsbMitgliedNachname.equals(that.dsbMitgliedNachname) &&
-                rueckennummer.equals(that.rueckennummer);
+                Objects.equals(mannschaftId, that.mannschaftId) &&
+                Objects.equals(dsbMitgliedId, that.dsbMitgliedId) &&
+                Objects.equals(dsbMitgliedEingesetzt, that.dsbMitgliedEingesetzt) &&
+                Objects.equals(dsbMitgliedVorname, that.dsbMitgliedVorname) &&
+                Objects.equals(dsbMitgliedNachname, that.dsbMitgliedNachname) &&
+                Objects.equals(rueckennummer, that.rueckennummer);
     }
 }
