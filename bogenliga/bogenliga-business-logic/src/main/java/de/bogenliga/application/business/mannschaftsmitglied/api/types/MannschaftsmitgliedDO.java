@@ -204,7 +204,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
             this.version = 0L;
         }
         final MannschaftsmitgliedDO that = (MannschaftsmitgliedDO) o;
-        return version.equals(that.version) &&
+        return Objects.equals(version, that.version) &&
                 mannschaftId.equals(that.mannschaftId) &&
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 dsbMitgliedEingesetzt.equals(that.dsbMitgliedEingesetzt) &&
