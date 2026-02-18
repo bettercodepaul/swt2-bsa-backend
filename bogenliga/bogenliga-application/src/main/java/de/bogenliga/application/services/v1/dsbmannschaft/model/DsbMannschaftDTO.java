@@ -22,6 +22,7 @@ public class DsbMannschaftDTO implements DataTransferObject {
     private Long sortierung;
     private Long sportjahr;
     private String veranstaltungName;
+    private Long ligaId;
     private String wettkampfTag;
     private String wettkampfOrtsname;
     private String vereinName;
@@ -101,6 +102,8 @@ public class DsbMannschaftDTO implements DataTransferObject {
     }
     public String getVeranstaltungName(){return this.veranstaltungName;}
     public void setVeranstaltungName(final String veranstaltungName){this.veranstaltungName = veranstaltungName;}
+    public Long getLigaId(){return this.ligaId;}
+    public void setLigaId(final Long ligaId){this.ligaId = ligaId;}
     public String getWettkampfTag(){return this.wettkampfTag;}
     public void setWettkampfTag(final String wettkampfTag){this.wettkampfTag = wettkampfTag;}
     public String getVereinName() {
