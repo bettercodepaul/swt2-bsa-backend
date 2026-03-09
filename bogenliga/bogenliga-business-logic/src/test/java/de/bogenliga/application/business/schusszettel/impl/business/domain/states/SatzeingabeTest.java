@@ -241,27 +241,24 @@ public class SatzeingabeTest {
         }
     }
 
-    @Test
-    public void validateOperation_wrongNumberOfShooters_returnsFalse() {
-        boolean result = state.validateOperation(mockContext, "submitSatz", invalidSatzEingabe);
-        assertThat(result).isFalse();
+    @Test(expected = BusinessException.class)
+    public void validateOperation_wrongNumberOfShooters_throwsBusinessException() {
+        state.validateOperation(mockContext, "submitSatz", invalidSatzEingabe);
     }
 
-    @Test
-    public void validateOperation_matchComplete_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateOperation_matchComplete_throwsBusinessException() {
         when(mockContext.isMatchComplete()).thenReturn(true);
-        
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
-    @Test
-    public void validateOperation_invalidArrowValue_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateOperation_invalidArrowValue_throwsException() {
         when(mockContext.validateArrowValue(anyInt()))
-            .thenReturn(StateContext.ValidationResult.invalid("Invalid arrow"));
-        
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+                .thenReturn(StateContext.ValidationResult.invalid("Invalid arrow"));
+
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
     @Test
@@ -358,13 +355,12 @@ public class SatzeingabeTest {
         assertThat(result).isTrue();
     }
 
-    @Test
-    public void validateArrowValues_nullSatz_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateArrowValues_nullSatz_throwsBusinessException() {
         SatzEingabeDO nullSatzEingabe = new SatzEingabeDO();
         nullSatzEingabe.setSatzeingabe(Arrays.asList((SchuetzenSatzDO) null));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", nullSatzEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", nullSatzEingabe);
     }
 
     @Test
@@ -373,30 +369,28 @@ public class SatzeingabeTest {
         assertThat(result).isTrue();
     }
 
-    @Test
-    public void validateShooterRegistration_unregisteredShooter_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateShooterRegistration_unregisteredShooter_throwsBusinessException() {
         MannschaftsmitgliedDO unregisteredMember = createTeamMember(4L, 104L, 0);
         when(mockMannschaftsmitgliedComponent.findByMemberAndTeamId(100L, 104L))
-            .thenReturn(unregisteredMember);
+                .thenReturn(unregisteredMember);
 
         SatzEingabeDO invalidEingabe = new SatzEingabeDO();
         invalidEingabe.setSatzeingabe(Arrays.asList(
-            createSchuetzenSatz(101L, 5, 6),
-            createSchuetzenSatz(102L, 7, 8),
-            createSchuetzenSatz(104L, 9, 10) // Unregistered
+                createSchuetzenSatz(101L, 5, 6),
+                createSchuetzenSatz(102L, 7, 8),
+                createSchuetzenSatz(104L, 9, 10) // Unregistered
         ));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", invalidEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", invalidEingabe);
     }
 
-    @Test
-    public void validateShooterRegistration_exceptionInCheck_returnsFalse() {
+    @Test(expected = BusinessException.class)
+    public void validateShooterRegistration_exceptionInCheck_throwsBusinessException() {
         when(mockMannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong()))
-            .thenThrow(new RuntimeException("DB error"));
+                .thenThrow(new RuntimeException("DB error"));
 
-        boolean result = state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isFalse();
+        state.validateOperation(mockContext, "submitSatz", validSatzEingabe);
     }
 
     @Test

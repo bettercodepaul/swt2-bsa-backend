@@ -83,6 +83,15 @@ public class WettkampfDAO implements DataAccessObject {
                     + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0"
                     + " ORDER BY wettkampf_id";
 
+    private static final String FIND_FUTURESIX =
+            SELECT
+                    + " FROM wettkampf"
+                    + " WHERE wettkampf_tag >= 0"
+                    + " AND wettkampf_datum > now()"
+                    + " ORDER BY wettkampf_datum ASC"
+                    + " LIMIT 6";
+
+
     private static final String FIND_BY_ID =
             SELECT
                     + " FROM wettkampf "
@@ -160,6 +169,12 @@ public class WettkampfDAO implements DataAccessObject {
         return basicDao.selectEntityList(WETTKAMPF, FIND_ALL);
     }
 
+    /**
+     * Return all Wettkampf entries
+     */
+    public List<WettkampfBE> findFutureSix() {
+        return basicDao.selectEntityList(WETTKAMPF, FIND_FUTURESIX);
+    }
 
     /**
      * Return Wettkampf entry with specific id

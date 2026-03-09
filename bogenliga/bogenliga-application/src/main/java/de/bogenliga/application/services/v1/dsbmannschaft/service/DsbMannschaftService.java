@@ -149,7 +149,18 @@ public class DsbMannschaftService implements ServiceFacade {
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
-        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
+        return dsbMannschaftDOList.stream().map(dsbMannschaftDO -> {
+            DsbMannschaftDTO dto = DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
+            // Fetch and set veranstaltung name and liga ID if veranstaltungId is present
+            if (dsbMannschaftDO.getVeranstaltungId() != null) {
+                VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
+                if (veranstaltungDO != null) {
+                    dto.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
+                    dto.setLigaId(veranstaltungDO.getVeranstaltungLigaID());
+                }
+            }
+            return dto;
+        }).toList();
     }
 
 

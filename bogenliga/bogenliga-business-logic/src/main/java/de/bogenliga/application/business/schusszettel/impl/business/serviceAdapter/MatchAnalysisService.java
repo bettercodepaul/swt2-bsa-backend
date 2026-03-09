@@ -419,7 +419,7 @@ public class MatchAnalysisService {
                 int team2NextPasse = getNextPasseNumberForTeam(matchId, team2Id);
                 
                 // If either team's next passe would be > MAX_SETS_PER_MATCH, that team completed all passes
-                completeByMaxPasses = (team1NextPasse > MAX_SETS_PER_MATCH) || (team2NextPasse > MAX_SETS_PER_MATCH);
+                completeByMaxPasses = (team1NextPasse > MAX_SETS_PER_MATCH) && (team2NextPasse > MAX_SETS_PER_MATCH);
                 
                 LOGGER.debug("Max passes check: team1NextPasse={}, team2NextPasse={}, maxPasses={}, completeByMaxPasses={}", 
                            team1NextPasse, team2NextPasse, MAX_SETS_PER_MATCH, completeByMaxPasses);
