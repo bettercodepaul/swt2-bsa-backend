@@ -38,8 +38,8 @@ public class TabletSchuetzenMeldungMapper {
             List<Long> resultList = new ArrayList<>();
 
             for (Object obj : inputList) {
-                if (obj instanceof Number) {
-                    resultList.add(((Number) obj).longValue());
+                if (obj instanceof Number number) {
+                    resultList.add((number).longValue());
                 } else if (obj instanceof String result) {
                     resultList.add(Long.valueOf(result));
                 }
