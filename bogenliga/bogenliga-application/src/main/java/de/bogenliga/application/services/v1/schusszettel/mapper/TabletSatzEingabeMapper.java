@@ -85,7 +85,7 @@ public class TabletSatzEingabeMapper {
     }
 
     private static Integer getInt(Object o) {
-        if (o instanceof Number) return ((Number) o).intValue();
+        if (o instanceof Number number) return (number).intValue();
         if (o instanceof String string) return Integer.valueOf(string);
         return null;
     }
