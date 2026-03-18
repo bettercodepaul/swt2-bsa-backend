@@ -67,6 +67,8 @@ public class SyncService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
     private static final String ERR_WETTKAMPF_ALREADY_OFFLINE = "Cannot got offline. Wettkampf is already offline";
+    private static final String ERR_SYNC_MITGLIEDER_PERMISSION = "error syncing mitglieder";
+    private static final String ERR_SYNC_MATCHES_PERMISSION = "error syncing matches and passen";
 
 
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
@@ -271,7 +273,7 @@ public class SyncService implements ServiceFacade {
     public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
                                                                                @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
                                                                                final Principal principal
-    ) throws NoPermissionException {
+    ) {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
@@ -283,8 +285,12 @@ public class SyncService implements ServiceFacade {
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
             MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
-
-            MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
+            final MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO;
+            try {
+                addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
+            } catch (NoPermissionException e) {
+                throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, ERR_SYNC_MITGLIEDER_PERMISSION, e);
+            }
 
 
             savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
@@ -308,7 +314,7 @@ public class SyncService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public List<MatchDTO> synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
                                                       List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
-                                                      Principal principal) throws NoPermissionException {
+                                                      Principal principal) {
 
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
@@ -361,7 +367,11 @@ public class SyncService implements ServiceFacade {
                     twoMatchesDTO.add(matchDTOs.get(j));
                     logger.debug("second match found: match 1 {} match 2 {} ", twoMatchesDTO.get(0).getId(), twoMatchesDTO.get(1).getId());
                     logger.debug("second match found: matchnr 1 {} matchnr 2 {} ", twoMatchesDTO.get(0).getPassen().get(0).getMatchNr(), twoMatchesDTO.get(1).getPassen().get(0).getMatchNr());
-                    matchService.saveMatches(twoMatchesDTO, principal);
+                    try {
+                        matchService.saveMatches(twoMatchesDTO, principal);
+                    } catch (NoPermissionException e) {
+                        throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, ERR_SYNC_MATCHES_PERMISSION, e);
+                    }
                     logger.debug("save matches");
                 }
             }
@@ -422,20 +432,12 @@ public class SyncService implements ServiceFacade {
 
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
-        try {
-            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
-        } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
-        }
+        checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
         // handle matches
-        List<MatchDTO> response;
+        final List<MatchDTO> response;
         final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
         final List<LigaSyncPasseDTO> passeDTOS = syncPayload.getPasse();
-        try {
-            response = synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
-        } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
-        }
+        response = synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
         // delete offline token
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);

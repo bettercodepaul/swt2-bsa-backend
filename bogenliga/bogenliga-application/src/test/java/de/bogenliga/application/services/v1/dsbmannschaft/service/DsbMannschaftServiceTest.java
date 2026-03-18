@@ -479,12 +479,10 @@ public class DsbMannschaftServiceTest {
         platzhalterDO2.setVereinId(0L);
 
         // call test method
-        try {
-            underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
+        underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
 
-            assertThatExceptionOfType(BusinessException.class)
-                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
-        } catch (NoPermissionException ignored) { }
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
     }
 
     @Test
