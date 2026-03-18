@@ -20,9 +20,9 @@ public class SchuetzenstatistikLetzteJahreMapper {
         final float sportjahr3 = be.getSportjahr3();
         final float sportjahr4 = be.getSportjahr4();
         final float sportjahr5 = be.getSportjahr5();
-        final float allejahre_schnitt = be.getAllejahre_schnitt();
+        final float allejahreSchnitt = be.getAllejahreSchnitt();
 
-        return new SchuetzenstatistikLetzteJahreDO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahre_schnitt);
+        return new SchuetzenstatistikLetzteJahreDO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahreSchnitt);
     };
 
     /**
@@ -37,7 +37,7 @@ public class SchuetzenstatistikLetzteJahreMapper {
         schuetzenstatistikLetzteJahre.setSportjahr3(vo.getSportjahr3());
         schuetzenstatistikLetzteJahre.setSportjahr4(vo.getSportjahr4());
         schuetzenstatistikLetzteJahre.setSportjahr5(vo.getSportjahr5());
-        schuetzenstatistikLetzteJahre.setAllejahre_schnitt(vo.getAllejahre_schnitt());
+        schuetzenstatistikLetzteJahre.setAllejahreSchnitt(vo.getAllejahreSchnitt());
 
         return schuetzenstatistikLetzteJahre;
     };

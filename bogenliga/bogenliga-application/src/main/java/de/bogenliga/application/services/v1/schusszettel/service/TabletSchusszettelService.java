@@ -123,13 +123,6 @@ public class TabletSchusszettelService {
                 SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
                 component.submitSchuetzen(wettkampfid, teamid, token, doObj);
             }
-            default -> {
-                // Sollte nie passieren, da valueOf abgefangen wird
-                throw new BusinessException(
-                        ErrorCode.INVALID_ARGUMENT_ERROR,
-                        "Unbekannter Eingabetyp: " + typRaw
-                );
-            }
         }
 
         // Erfolgreiche Speicherung

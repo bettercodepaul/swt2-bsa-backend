@@ -135,13 +135,13 @@ public class SatzErgebnisDTOTest {
         SatzErgebnisDTO satzErgebnis = new SatzErgebnisDTO(0, 0, 0, 0L, "", 0L, "");
 
         // Assert
-        Assertions.assertThat(satzErgebnis.getSatzNr()).isEqualTo(0);
-        Assertions.assertThat(satzErgebnis.getTeam1Punkte()).isEqualTo(0);
-        Assertions.assertThat(satzErgebnis.getTeam2Punkte()).isEqualTo(0);
-        Assertions.assertThat(satzErgebnis.getTeam1Id()).isEqualTo(0L);
-        Assertions.assertThat(satzErgebnis.getTeam1Name()).isEqualTo("");
-        Assertions.assertThat(satzErgebnis.getTeam2Id()).isEqualTo(0L);
-        Assertions.assertThat(satzErgebnis.getTeam2Name()).isEqualTo("");
+        Assertions.assertThat(satzErgebnis.getSatzNr()).isZero();
+        Assertions.assertThat(satzErgebnis.getTeam1Punkte()).isZero();
+        Assertions.assertThat(satzErgebnis.getTeam2Punkte()).isZero();
+        Assertions.assertThat(satzErgebnis.getTeam1Id()).isZero();
+        Assertions.assertThat(satzErgebnis.getTeam1Name()).isEmpty();
+        Assertions.assertThat(satzErgebnis.getTeam2Id()).isZero();
+        Assertions.assertThat(satzErgebnis.getTeam2Name()).isEmpty();
     }
 
     @Test

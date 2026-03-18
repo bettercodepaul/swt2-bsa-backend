@@ -54,7 +54,7 @@ public class SchuetzenstatistikLetzteJahreDAOTest {
         assertThat(actual.get(0).getSportjahr3()).isEqualTo(expectedBE.getSportjahr3());
         assertThat(actual.get(0).getSportjahr4()).isEqualTo(expectedBE.getSportjahr4());
         assertThat(actual.get(0).getSportjahr5()).isEqualTo(expectedBE.getSportjahr5());
-        assertThat(actual.get(0).getAllejahre_schnitt()).isEqualTo(expectedBE.getAllejahre_schnitt());
+        assertThat(actual.get(0).getAllejahreSchnitt()).isEqualTo(expectedBE.getAllejahreSchnitt());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
