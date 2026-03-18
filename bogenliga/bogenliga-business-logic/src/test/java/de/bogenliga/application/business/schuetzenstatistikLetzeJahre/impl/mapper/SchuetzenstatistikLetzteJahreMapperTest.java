@@ -27,7 +27,7 @@ public class SchuetzenstatistikLetzteJahreMapperTest {
         assertThat(actual.getSportjahr3()).isEqualTo(schuetzenstatistikLetzteJahreBE.getSportjahr3());
         assertThat(actual.getSportjahr4()).isEqualTo(schuetzenstatistikLetzteJahreBE.getSportjahr4());
         assertThat(actual.getSportjahr5()).isEqualTo(schuetzenstatistikLetzteJahreBE.getSportjahr5());
-        assertThat(actual.getAllejahre_schnitt()).isEqualTo(schuetzenstatistikLetzteJahreBE.getAllejahre_schnitt());
+        assertThat(actual.getAllejahreSchnitt()).isEqualTo(schuetzenstatistikLetzteJahreBE.getAllejahreSchnitt());
 
 
         SchuetzenstatistikLetzteJahreDO schuetzenstatistikLetzteJahreDO = new SchuetzenstatistikLetzteJahreDO(
@@ -37,7 +37,7 @@ public class SchuetzenstatistikLetzteJahreMapperTest {
                 schuetzenstatistikLetzteJahreBE.getSportjahr3(),
                 schuetzenstatistikLetzteJahreBE.getSportjahr4(),
                 schuetzenstatistikLetzteJahreBE.getSportjahr5(),
-                schuetzenstatistikLetzteJahreBE.getAllejahre_schnitt());
+                schuetzenstatistikLetzteJahreBE.getAllejahreSchnitt());
     }
 
     @Test
@@ -52,6 +52,6 @@ public class SchuetzenstatistikLetzteJahreMapperTest {
         assertThat(actual.getSportjahr3()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr3());
         assertThat(actual.getSportjahr4()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr4());
         assertThat(actual.getSportjahr5()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr5());
-        assertThat(actual.getAllejahre_schnitt()).isEqualTo(schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt());
+        assertThat(actual.getAllejahreSchnitt()).isEqualTo(schuetzenstatistikLetzteJahreDO.getAllejahreSchnitt());
     }
 }
