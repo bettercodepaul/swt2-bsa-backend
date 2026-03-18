@@ -67,10 +67,10 @@ public class TabletSessionInfoMapper {
     }
 
     public static TabletSessionInfoDO toDO(final TabletSessionInfoDTO dto) {
-        TabletSessionInfoDO do_ = new TabletSessionInfoDO();
-        do_.setWettkampfId(dto.getWettkampfId());
-        do_.setTabletSessionSingDOs(toDOs(dto));
-        return do_;
+        TabletSessionInfoDO tabletSessionInfoDO = new TabletSessionInfoDO();
+        tabletSessionInfoDO.setWettkampfId(dto.getWettkampfId());
+        tabletSessionInfoDO.setTabletSessionSingDOs(toDOs(dto));
+        return tabletSessionInfoDO;
     }
 
     private static TabletSessionSingDO toSingDO(final TabletSessionSingDTO singDTO) {
