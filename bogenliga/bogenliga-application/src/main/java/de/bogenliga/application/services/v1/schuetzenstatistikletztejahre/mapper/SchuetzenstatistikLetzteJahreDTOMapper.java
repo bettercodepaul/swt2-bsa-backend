@@ -19,9 +19,9 @@ public class SchuetzenstatistikLetzteJahreDTOMapper {
         final float sportjahr3 = schuetzenstatistikLetzteJahreDO.getSportjahr3();
         final float sportjahr4 = schuetzenstatistikLetzteJahreDO.getSportjahr4();
         final float sportjahr5 = schuetzenstatistikLetzteJahreDO.getSportjahr5();
-        final float allejahre_schnitt = schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt();
+        final float allejahreSchnitt = schuetzenstatistikLetzteJahreDO.getAllejahreSchnitt();
 
-        return new SchuetzenstatistikLetzteJahreDTO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahre_schnitt);
+        return new SchuetzenstatistikLetzteJahreDTO(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahreSchnitt);
     };
 
     /**
@@ -37,7 +37,7 @@ public class SchuetzenstatistikLetzteJahreDTOMapper {
         schuetzenstatistikLetzteJahreDO.setSportjahr3(dto.getSportjahr3());
         schuetzenstatistikLetzteJahreDO.setSportjahr4(dto.getSportjahr4());
         schuetzenstatistikLetzteJahreDO.setSportjahr5(dto.getSportjahr5());
-        schuetzenstatistikLetzteJahreDO.setAllejahre_schnitt(dto.getAllejahre_schnitt());
+        schuetzenstatistikLetzteJahreDO.setAllejahreSchnitt(dto.getAllejahreSchnitt());
 
         return schuetzenstatistikLetzteJahreDO;
     };
