@@ -23,6 +23,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -156,17 +157,22 @@ public class SessionRuntimeTest {
     @Test
     public void nudgeAlong_unknownState_logsWarning() {
         testEntity.setStatus("UNKNOWN_STATE");
+        String originalStatus = testEntity.getStatus();
         
         sessionRuntime.nudgeAlong();
         // Should not crash, just log warning
+
+        assertThat(originalStatus).isEqualTo("UNKNOWN_STATE");
     }
 
     @Test
     public void nudgeAlong_exceptionInPersistence_handledGracefully() {
         doThrow(new RuntimeException("DB error")).when(mockDAO).updateStatus(any(), anyLong());
-        
-        sessionRuntime.nudgeAlong();
+
+        assertThatCode(() -> sessionRuntime.nudgeAlong()).doesNotThrowAnyException();
         // Should not crash, just log error
+
+        verify(mockDAO).updateStatus(any(), anyLong());
     }
 
     @Test
@@ -451,6 +457,13 @@ public class SessionRuntimeTest {
     }
 
     @Test
+    public void advanceToNextMatch_negativeOpponentId_throwsBusinessException() {
+        assertThatThrownBy(() -> sessionRuntime.advanceToNextMatch(testNextMatch, -1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Invalid opponent ID");
+    }
+
+    @Test
     public void getCurrentMatchId_returnsCorrectId() {
         long result = sessionRuntime.getCurrentMatchId();
         assertThat(result).isEqualTo(300L);
@@ -550,19 +563,29 @@ public class SessionRuntimeTest {
     }
 
     @Test
-    public void getOver80(){
-        try {
-            sessionRuntime.advanceToNextMatch();
-        } catch (Exception ignored){
-        }
+    public void hasActualArrowScores_emptyPasse_returnsFalse() {
+        PasseDO passe = new PasseDO();
+        passe.setPfeil1(0);
+        passe.setPfeil2(0);
+        passe.setPfeil3(0);
+
+        assertThat(SessionRuntime.hasActualArrowScores(passe)).isFalse();
     }
 
     @Test
-    public void getOver80_2(){
-        try{
-            SessionRuntime.hasActualArrowScores(null);
-        } catch (Exception ignored){
-        }
+    public void hasActualArrowScores_positiveArrowScore_returnsTrue() {
+        PasseDO passe = new PasseDO();
+        passe.setPfeil1(0);
+        passe.setPfeil2(7);
+        passe.setPfeil3(0);
+
+        assertThat(SessionRuntime.hasActualArrowScores(passe)).isTrue();
+    }
+
+    @Test
+    public void hasActualArrowScores_nullPasse_throwsNullPointerException() {
+        assertThatThrownBy(() -> SessionRuntime.hasActualArrowScores(null))
+                .isInstanceOf(NullPointerException.class);
     }
 
     private TabletSchusszettelEntity createOpponentEntity() {
