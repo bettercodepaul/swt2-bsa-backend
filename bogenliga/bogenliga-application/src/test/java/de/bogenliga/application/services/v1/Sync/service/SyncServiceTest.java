@@ -1285,26 +1285,23 @@ public class SyncServiceTest {
         when(wettkampfComponent.findById(anyLong())).thenReturn(getDO);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
 
-        try {
-            // call test method
-            final List<WettkampfExtDTO> actual = underTest.getToken(id, principal);
+        // call test method
+        final List<WettkampfExtDTO> actual = underTest.getToken(id, principal);
 
-            // assert result
-            assertThat(actual).isNotNull();
-            assertThat(actual.get(0).getId()).isEqualTo(input.getId());
-            assertThat(actual.get(0).getOfflineToken()).isNotNull();
-            assertThat(actual.get(0).getOfflineToken()).isEqualTo(result.getOfflineToken());
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getId()).isEqualTo(input.getId());
+        assertThat(actual.get(0).getOfflineToken()).isNotNull();
+        assertThat(actual.get(0).getOfflineToken()).isEqualTo(result.getOfflineToken());
 
-            // verify invocations
-            verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
 
-            final WettkampfDO updatedWettkampf = wettkampfDOArgumentCaptor.getValue();
+        final WettkampfDO updatedWettkampf = wettkampfDOArgumentCaptor.getValue();
 
-            assertThat(updatedWettkampf).isNotNull();
-            assertThat(updatedWettkampf.getId()).isEqualTo(input.getId());
+        assertThat(updatedWettkampf).isNotNull();
+        assertThat(updatedWettkampf.getId()).isEqualTo(input.getId());
 
-        } catch (NoPermissionException e) {
-        }
     }
 
 
