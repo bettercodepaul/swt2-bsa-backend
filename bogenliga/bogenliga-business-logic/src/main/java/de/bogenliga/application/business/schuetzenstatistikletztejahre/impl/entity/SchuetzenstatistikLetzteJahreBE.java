@@ -16,7 +16,7 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
     private float sportjahr3;
     private float sportjahr4;
     private float sportjahr5;
-    private float allejahre_schnitt;
+    private float allejahreSchnitt;
 
     @Override
     public String toString() {
@@ -27,7 +27,7 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
                 ", sportjahr3='" + sportjahr3 +
                 ", sportjahr4='" + sportjahr4 +
                 ", sportjahr5='" + sportjahr5 +
-                ", allejahre_schnitt='" + allejahre_schnitt +
+                ", allejahreSchnitt='" + allejahreSchnitt +
                 '}';
     }
 
@@ -41,13 +41,13 @@ public class SchuetzenstatistikLetzteJahreBE extends CommonBusinessEntity implem
     }
 
 
-    public float getAllejahre_schnitt() {
-        return allejahre_schnitt;
+    public float getAllejahreSchnitt() {
+        return allejahreSchnitt;
     }
 
 
-    public void setAllejahre_schnitt(float allejahre_schnitt) {
-        this.allejahre_schnitt = allejahre_schnitt;
+    public void setAllejahreSchnitt(float allejahreSchnitt) {
+        this.allejahreSchnitt = allejahreSchnitt;
     }
 
 
