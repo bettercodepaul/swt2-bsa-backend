@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingSecurityException;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.common.errorhandling.ErrorCode;
