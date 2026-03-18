@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 import org.slf4j.Logger;
@@ -44,10 +42,7 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerCountDO;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
-import de.bogenliga.application.business.trigger.impl.dao.TriggerCountDAO;
-import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
-import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -76,7 +71,6 @@ public class TriggerService implements ServiceFacade {
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
     private final BasicDAO basicDao;
-    private final TriggerDAO triggerDAO;
     private final TriggerComponent triggerComponent;
 
     private final MigrationTimestampDAO migrationTimestampDAO;
@@ -85,7 +79,7 @@ public class TriggerService implements ServiceFacade {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Autowired
-    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
+    public TriggerService(final BasicDAO basicDao, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
                           final AltsystemLiga altsystemLiga,
                           final AltsystemSaison altsystemSaison,
                           final AltsystemMannschaft altsystemMannschaft,
@@ -95,7 +89,6 @@ public class TriggerService implements ServiceFacade {
                           final OldDbImport oldDBImport
     ) {
         this.basicDao = basicDao;
-        this.triggerDAO = triggerDAO;
         this.triggerComponent = triggerComponent;
         this.migrationTimestampDAO = migrationTimestampDAO;
         this.oldDBImport = oldDBImport;
@@ -251,8 +244,8 @@ public class TriggerService implements ServiceFacade {
         //returns true if Params are not malicious
         try{
             if(offsetMuliplicator != null && queryPageLimit != null){
-                int actualOffsetMuliplicator = Integer.parseInt(offsetMuliplicator);
-                int actualQueryPageLimit = Integer.parseInt(queryPageLimit);
+                Integer.parseInt(offsetMuliplicator);
+                Integer.parseInt(queryPageLimit);
             }
             else {
                 throw new IllegalArgumentException();
