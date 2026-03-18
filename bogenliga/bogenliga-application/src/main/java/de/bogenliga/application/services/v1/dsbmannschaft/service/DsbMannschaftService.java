@@ -338,7 +338,6 @@ public class DsbMannschaftService implements ServiceFacade {
 
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
-        MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
         try {
             List<MannschaftsMitgliedDTO> list = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
@@ -349,6 +348,8 @@ public class DsbMannschaftService implements ServiceFacade {
                         1,
                         (long) i+1);
                 list.add(mannschaftsMitgliedDTO);
+            }
+            for (int j = 0; j < list.size(); j++) {
             }
         }catch (NullPointerException ignored) {}
     }
