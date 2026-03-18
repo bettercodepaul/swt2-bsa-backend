@@ -350,7 +350,9 @@ public class DsbMannschaftService implements ServiceFacade {
                         (long) i+1);
                 list.add(mannschaftsMitgliedDTO);
             }
-        }catch (NullPointerException ignored) {}
+        } catch (NullPointerException e) {
+            LOG.warn("NullPointerException in createMannschaftsMitgliedForPlatzhalter: {}", e.getMessage());
+        }
     }
 
 
