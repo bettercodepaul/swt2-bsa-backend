@@ -1,5 +1,4 @@
 package de.bogenliga.application.business.trigger.impl.dao;
-import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.*;
  */
 public class TriggerCountDAOTest{
     private static final Long COUNT = 40000L;
-    private static final Long altCount =50000L;
+    private static final Long ALT_COUNT =50000L;
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
