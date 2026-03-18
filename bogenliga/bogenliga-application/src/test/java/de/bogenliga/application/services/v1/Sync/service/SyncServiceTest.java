@@ -1301,7 +1301,6 @@ public class SyncServiceTest {
 
         assertThat(updatedWettkampf).isNotNull();
         assertThat(updatedWettkampf.getId()).isEqualTo(input.getId());
-
     }
 
 
@@ -1393,20 +1392,15 @@ public class SyncServiceTest {
         //when(wettkampfComponent.deleteOfflineToken();)
 
 
-        try {
-            List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
-            assertThat(actual).isNotNull().isNotEmpty().hasSize(4);
+        List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(4);
 
-            for (int i = 0; i < expectedMatchDTOs.size(); i++) {
+        for (int i = 0; i < expectedMatchDTOs.size(); i++) {
 
-                assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
-                assertThat(actual.get(i).getId()).isEqualTo(expectedMatchDTOs.get(i).getId());
-                assertThat(actual.get(i).getPassen().get(0).getMatchId()).isEqualTo(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId());
-                assertThat(actual.get(i).getMatchNr()).isEqualTo(expectedMatchDTOs.get(i).getMatchNr());
-            }
-
-        } catch (NoPermissionException e) {
-
+            assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
+            assertThat(actual.get(i).getId()).isEqualTo(expectedMatchDTOs.get(i).getId());
+            assertThat(actual.get(i).getPassen().get(0).getMatchId()).isEqualTo(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId());
+            assertThat(actual.get(i).getMatchNr()).isEqualTo(expectedMatchDTOs.get(i).getMatchNr());
         }
     }
 

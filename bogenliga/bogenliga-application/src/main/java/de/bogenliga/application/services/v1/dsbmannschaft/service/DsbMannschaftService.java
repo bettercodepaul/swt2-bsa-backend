@@ -1,10 +1,8 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingSecurityException;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -24,8 +22,6 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -215,8 +211,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllVeranstaltungAndWettkampfByID' request with id '{}'", id);
 
-        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
-        return DbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
+        final List<DsbMannschaftDO> dbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
+        return dbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
     }
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
@@ -335,27 +331,8 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
-                                                        final Principal principal) throws NoPermissionException {
-
+                                                        final Principal principal) {
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
-
-        MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
-        try {
-            List<MannschaftsMitgliedDTO> list = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
-                        (long) i,
-                        savedDsbMannschaftDO.getId(),
-                        (long) i+1,
-                        1,
-                        (long) i+1);
-                list.add(mannschaftsMitgliedDTO);
-            }
-
-            for (int j = 0; j < list.size(); j++) {
-                MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
-            }
-        }catch (NullPointerException ignored) {}
     }
 
 
