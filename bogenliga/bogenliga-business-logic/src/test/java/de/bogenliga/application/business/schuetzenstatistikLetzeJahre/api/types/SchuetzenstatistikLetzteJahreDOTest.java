@@ -19,7 +19,7 @@ public class SchuetzenstatistikLetzteJahreDOTest {
     private static final float sportjahr3 = (float) 6.5;
     private static final float sportjahr4 = (float) 7.8;
     private static final float sportjahr5 = (float) 8.2;
-    private static final float allejahre_schnitt = (float) 7.5;
+    private static final float allejahreSchnitt = (float) 7.5;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -38,7 +38,7 @@ public class SchuetzenstatistikLetzteJahreDOTest {
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr3(sportjahr3);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr4(sportjahr4);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr5(sportjahr5);
-        expectedSchuetzenstatistikLetzteJahreDO.setAllejahre_schnitt(allejahre_schnitt);
+        expectedSchuetzenstatistikLetzteJahreDO.setAllejahreSchnitt(allejahreSchnitt);
 
         return expectedSchuetzenstatistikLetzteJahreDO;
     }
