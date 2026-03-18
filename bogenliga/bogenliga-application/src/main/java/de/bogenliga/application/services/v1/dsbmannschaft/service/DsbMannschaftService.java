@@ -24,7 +24,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -334,7 +333,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
-                                                        final Principal principal) throws NoPermissionException {
+                                                        final Principal principal) {
 
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
@@ -349,8 +348,7 @@ public class DsbMannschaftService implements ServiceFacade {
                         (long) i+1);
                 list.add(mannschaftsMitgliedDTO);
             }
-            for (int j = 0; j < list.size(); j++) {
-            }
+
         }catch (NullPointerException ignored) {}
     }
 
