@@ -47,7 +47,7 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr3(SPORTJAHR3);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr4(SPORTJAHR4);
         expectedSchuetzenstatistikLetzteJahreDO.setSportjahr5(SPORTJAHR5);
-        expectedSchuetzenstatistikLetzteJahreDO.setAllejahre_schnitt(ALLEJAHRE_SCHNITT);
+        expectedSchuetzenstatistikLetzteJahreDO.setAllejahreSchnitt(ALLEJAHRE_SCHNITT);
 
         return expectedSchuetzenstatistikLetzteJahreDO;
     }
@@ -108,7 +108,7 @@ public class SchuetzenstatistikLetzteJahreServiceTest {
         assertThat(actualDTO.getSportjahr3()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr3());
         assertThat(actualDTO.getSportjahr4()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr4());
         assertThat(actualDTO.getSportjahr5()).isEqualTo(schuetzenstatistikLetzteJahreDO.getSportjahr5());
-        assertThat(actualDTO.getAllejahre_schnitt()).isEqualTo(schuetzenstatistikLetzteJahreDO.getAllejahre_schnitt());
+        assertThat(actualDTO.getAllejahreSchnitt()).isEqualTo(schuetzenstatistikLetzteJahreDO.getAllejahreSchnitt());
 
         // verify invocations
         verify(schuetzenstatistikLetzteJahreComponent).getSchuetzenstatistikLetzteJahre(SPORTJAHR, VERANSTALTUNGID, VEREINID);
