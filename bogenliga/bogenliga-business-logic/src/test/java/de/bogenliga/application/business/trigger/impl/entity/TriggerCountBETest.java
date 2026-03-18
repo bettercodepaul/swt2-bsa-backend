@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.trigger.impl.entity;
 import org.junit.Test;
 import junit.framework.TestCase;
-import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class TriggerCountBETest extends TestCase {
     private static final Long COUNT = 40000L;
-    private static final Long altCount = 50000L;
+    private static final Long ALT_COUNT = 50000L;
     public TriggerCountBE getExpectedCountBE() {
         return new TriggerCountBE();
     }
@@ -28,10 +28,10 @@ public class TriggerCountBETest extends TestCase {
     @Test
     public void testSetCount(){
         TriggerCountBE actualBE = getExpectedCountBE();
-        actualBE.setCount(altCount);
+        actualBE.setCount(ALT_COUNT);
         Long actualCount = actualBE.getCount();
 
-        assertEquals(altCount, actualCount);
+        assertEquals(ALT_COUNT, actualCount);
     }
 
     @Test
