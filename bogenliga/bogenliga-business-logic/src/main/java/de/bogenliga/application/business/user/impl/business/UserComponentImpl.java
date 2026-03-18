@@ -143,7 +143,7 @@ public class UserComponentImpl implements UserComponent {
      */
     @Override
     public UserDO create(final String email, final String password, final Long dsb_mitglied_id, final Long currentUserId, final boolean isUsing2FA) {
-        // 1. Bestehende Validierungen (bleiben so)
+        // 1. Bestehende Validierungen
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
         Preconditions.checkNotNull(dsb_mitglied_id, PRECONDITION_MSG_DSB_MITGLIED_NULL);
@@ -162,7 +162,7 @@ public class UserComponentImpl implements UserComponent {
         // 3. Den User persistieren (Speichern in DB)
         final UserBE persistedUserBE = userDAO.create(result, currentUserId);
 
-        // Wir nutzen hier die dsbMitgliedComponent (die du noch oben injizieren musst!)
+        // Wir nutzen hier die dsbMitgliedComponent
         if (persistedUserBE.getDsbMitgliedId() != null) {
             // Mitglied finden
             var dsbMitgliedDO = dsbMitgliedComponent.findById(persistedUserBE.getDsbMitgliedId());
