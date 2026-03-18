@@ -214,8 +214,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllVeranstaltungAndWettkampfByID' request with id '{}'", id);
 
-        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
-        return DbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
+        final List<DsbMannschaftDO> dbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
+        return dbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
     }
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
