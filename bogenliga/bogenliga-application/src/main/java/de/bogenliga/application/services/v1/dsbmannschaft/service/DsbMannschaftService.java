@@ -350,10 +350,6 @@ public class DsbMannschaftService implements ServiceFacade {
                         (long) i+1);
                 list.add(mannschaftsMitgliedDTO);
             }
-
-            for (int j = 0; j < list.size(); j++) {
-                MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
-            }
         }catch (NullPointerException ignored) {}
     }
 
