@@ -333,12 +333,11 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
-                                                        final Principal principal) throws NoPermissionException {
+                                                        final Principal principal) {
 
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
 
         try {
-            List<MannschaftsMitgliedDTO> list = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
                         (long) i,
@@ -346,7 +345,6 @@ public class DsbMannschaftService implements ServiceFacade {
                         (long) i+1,
                         1,
                         (long) i+1);
-                list.add(mannschaftsMitgliedDTO);
             }
 
         }catch (NullPointerException ignored) {}
