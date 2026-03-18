@@ -276,7 +276,7 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
@@ -287,27 +287,24 @@ public class MannschaftsmitgliedServiceTest {
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
         // call test method
-        try {
-            final MannschaftsMitgliedDTO actual = underTest.update(input, principal);
+        final MannschaftsMitgliedDTO actual = underTest.update(input, principal);
 
-            // assert result
-            assertThat(actual).isNotNull();
-            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(persistedDO).isNotNull();
-            assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(persistedDO).isNotNull();
+        assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
     }
 
 
     @Test
-    public void updateDataSepcificPermission() {
+    public void updateDataSepcificPermission() throws NoPermissionException {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
@@ -320,22 +317,19 @@ public class MannschaftsmitgliedServiceTest {
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
         // call test method
-        try {
-            final MannschaftsMitgliedDTO actual = underTest.update(input, principal);
+        final MannschaftsMitgliedDTO actual = underTest.update(input, principal);
 
-            // assert result
-            assertThat(actual).isNotNull();
-            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(persistedDO).isNotNull();
-            assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(persistedDO).isNotNull();
+        assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
     }
 
 
@@ -358,7 +352,7 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void create() {
+    public void create() throws NoPermissionException {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
@@ -369,31 +363,27 @@ public class MannschaftsmitgliedServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
-        try {
-            // call test method
-            final MannschaftsMitgliedDTO actual = underTest.create(input, principal);
+        // call test method
+        final MannschaftsMitgliedDTO actual = underTest.create(input, principal);
 
-            // assert result
-            assertThat(actual).isNotNull();
-            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
-            assertThat(actual.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(createdDsbMannschaft).isNotNull();
-            assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
-            assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
-
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(createdDsbMannschaft).isNotNull();
+        assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
+        assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
     }
 
 
     @Test
-    public void createOnlyDataSepcificPermission() {
+    public void createOnlyDataSepcificPermission() throws NoPermissionException {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
@@ -405,25 +395,22 @@ public class MannschaftsmitgliedServiceTest {
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
-        try {
-            // call test method
-            final MannschaftsMitgliedDTO actual = underTest.create(input, principal);
+        // call test method
+        final MannschaftsMitgliedDTO actual = underTest.create(input, principal);
 
-            // assert result
-            assertThat(actual).isNotNull();
-            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
-            assertThat(actual.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(createdDsbMannschaft).isNotNull();
-            assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
-            assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(createdDsbMannschaft).isNotNull();
+        assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
+        assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
     }
 
 
@@ -453,65 +440,61 @@ public class MannschaftsmitgliedServiceTest {
         doNothing().when(mannschaftsmitgliedComponent).delete(any(), anyLong());
 
         /* call test method */
-        try {
-            underTest.delete(MANNSCHAFTS_ID, principal);
+        underTest.delete(MANNSCHAFTS_ID, principal);
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
-
-        } catch (NullPointerException e) { }
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
     }
 
 
     @Test
-    public void deleteByTeamMember() {
+    public void deleteByTeamMember() throws NoPermissionException {
         // prepare test data
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         doNothing().when(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(any(), anyLong());
 
         // call test method
-        try {
-            underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
+        underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(deletedDsbMitglied).isNotNull();
-            assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
-            assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(deletedDsbMitglied).isNotNull();
+        assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
+        assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
     }
 
 
     @Test
-    public void deleteByTeamMemberOnlyDataSpecificPermission() {
+    public void deleteByTeamMemberOnlyDataSpecificPermission() throws NoPermissionException {
         // prepare test data
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
+        doNothing().when(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(any(), anyLong());
 
         // call test method
-        try {
-            underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
+        underTest.deleteByTeamIdAndMemberId(MANNSCHAFTS_ID, DSB_MITGLIED_ID, principal);
 
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
+        final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
-            assertThat(deletedDsbMitglied).isNotNull();
-            assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
-            assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
-
-        } catch (NoPermissionException | NullPointerException e) { }
+        assertThat(deletedDsbMitglied).isNotNull();
+        assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
+        assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
     }
 
 

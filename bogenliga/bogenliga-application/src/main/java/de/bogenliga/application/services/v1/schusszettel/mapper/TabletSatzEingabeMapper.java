@@ -22,7 +22,7 @@ public class TabletSatzEingabeMapper {
         doObj.setSatzeingabe(
                 dto.getSatzeingabe().stream()
                         .map(TabletSatzEingabeMapper::toDO)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         return doObj;
     }
@@ -32,7 +32,7 @@ public class TabletSatzEingabeMapper {
         dto.setSatzeingabe(
                 doObj.getSatzeingabe().stream()
                         .map(TabletSatzEingabeMapper::toDTO)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         return dto;
     }
