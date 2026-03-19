@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.wettkampf.service;
 
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
-import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import java.security.Principal;
 import java.util.List;
 import javax.naming.NoPermissionException;
