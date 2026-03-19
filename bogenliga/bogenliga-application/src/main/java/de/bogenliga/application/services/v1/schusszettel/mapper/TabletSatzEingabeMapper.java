@@ -6,7 +6,6 @@ import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzenSatzDO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.ArrayList;
 
