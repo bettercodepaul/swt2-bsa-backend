@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -61,6 +63,8 @@ public class DsbMitgliedComponentImplTest {
     private DsbMitgliedDAO dsbMitgliedDAO;
     @Mock
     private LizenzDAO lizenzDAO;
+    @Mock
+    private UserDAO userDAO;
     @InjectMocks
     private DsbMitgliedComponentImpl underTest;
     @Captor
@@ -208,6 +212,10 @@ public class DsbMitgliedComponentImplTest {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.isKampfrichter();
 
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test,1L)).isNotNull();
 
 
@@ -235,6 +243,11 @@ public class DsbMitgliedComponentImplTest {
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setKampfrichter(false);
+
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test, 1L)).isNotNull();
 
         }catch(Exception e){
@@ -247,6 +260,11 @@ public class DsbMitgliedComponentImplTest {
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setKampfrichter(true);
+
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test, 1L)).isNotNull();
 
         }catch(Exception e){
@@ -536,6 +554,7 @@ public class DsbMitgliedComponentImplTest {
 
         // configure mocks
         when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
 
         // call test method
         final DsbMitgliedDO actual = underTest.update(input, USER);
@@ -599,7 +618,7 @@ public class DsbMitgliedComponentImplTest {
 
         // configure mocks
         when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
-        //when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
 
         // call test method
         final DsbMitgliedDO actual = underTest.update(input, USER);
