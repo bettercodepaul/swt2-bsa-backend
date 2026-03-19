@@ -55,7 +55,7 @@ public class SchuetzenstatistikLetzteJahreImplTest {
         expectedSchuetzenstatistikLetzteJahreBE.setSportjahr3(SPORTJAHR_3);
         expectedSchuetzenstatistikLetzteJahreBE.setSportjahr4(SPORTJAHR_4);
         expectedSchuetzenstatistikLetzteJahreBE.setSportjahr5(SPORTJAHR_5);
-        expectedSchuetzenstatistikLetzteJahreBE.setAllejahre_schnitt(ALLEJAHRE_SCHNITT);
+        expectedSchuetzenstatistikLetzteJahreBE.setAllejahreSchnitt(ALLEJAHRE_SCHNITT);
 
         return expectedSchuetzenstatistikLetzteJahreBE;
     }
@@ -87,7 +87,7 @@ public class SchuetzenstatistikLetzteJahreImplTest {
         assertThat(actual.get(0).getSportjahr3()).isEqualTo(expectedSchuetzenstatistikLetzteJahreBE.getSportjahr3());
         assertThat(actual.get(0).getSportjahr4()).isEqualTo(expectedSchuetzenstatistikLetzteJahreBE.getSportjahr4());
         assertThat(actual.get(0).getSportjahr5()).isEqualTo(expectedSchuetzenstatistikLetzteJahreBE.getSportjahr5());
-        assertThat(actual.get(0).getAllejahre_schnitt()).isEqualTo(expectedSchuetzenstatistikLetzteJahreBE.getAllejahre_schnitt());
+        assertThat(actual.get(0).getAllejahreSchnitt()).isEqualTo(expectedSchuetzenstatistikLetzteJahreBE.getAllejahreSchnitt());
 
         // verify invocations
         verify(SchuetzenstatistikLetzteJahreDAO)
