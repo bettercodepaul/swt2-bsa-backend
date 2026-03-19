@@ -973,7 +973,7 @@ public class SyncServiceTest {
 
     @Test
     public void ligaSyncPasseTestDTO(){
-
+        //refactored name
         Long matchId = 17L;
         Long matchId2 = 18L;
         Long lfdnr = 31L;
