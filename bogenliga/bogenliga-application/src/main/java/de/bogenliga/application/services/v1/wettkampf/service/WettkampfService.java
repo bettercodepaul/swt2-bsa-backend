@@ -1,5 +1,4 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
-
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelAdminComponent;
 import java.security.Principal;
