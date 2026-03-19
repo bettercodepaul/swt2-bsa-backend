@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -34,7 +35,7 @@ public class UserComponentImpl implements UserComponent {
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
     private final PasswordHashingBA passwordHashingBA;
-
+    private final DsbMitgliedComponent dsbMitgliedComponent;
 
     /**
      * Constructor
@@ -48,11 +49,13 @@ public class UserComponentImpl implements UserComponent {
     public UserComponentImpl(final UserDAO userDAO,
                              final PasswordHashingBA passwordHashingBA,
                              final SignInBA signInBA,
-                             final TechnicalUserBA technicalUserBA) {
+                             final TechnicalUserBA technicalUserBA,
+                             final DsbMitgliedComponent dsbMitgliedComponent) { // Alle 5 hier rein
         this.userDAO = userDAO;
         this.passwordHashingBA = passwordHashingBA;
         this.signInBA = signInBA;
         this.technicalUserBA = technicalUserBA;
+        this.dsbMitgliedComponent = dsbMitgliedComponent; // Hier die Zuweisung
     }
 
     /**
@@ -140,11 +143,13 @@ public class UserComponentImpl implements UserComponent {
      */
     @Override
     public UserDO create(final String email, final String password, final Long dsb_mitglied_id, final Long currentUserId, final boolean isUsing2FA) {
+        // 1. Bestehende Validierungen
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
         Preconditions.checkNotNull(dsb_mitglied_id, PRECONDITION_MSG_DSB_MITGLIED_NULL);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_NULL);
 
+        // 2. Bestehende Business-Logik (Passwort-Hashing)
         final UserBE result = new UserBE();
         final String salt = passwordHashingBA.generateSalt();
         final String pwdhash = passwordHashingBA.calculateHash(password, salt);
@@ -154,9 +159,24 @@ public class UserComponentImpl implements UserComponent {
         result.setUserPassword(pwdhash);
         result.setUsing2FA(isUsing2FA);
 
+        // 3. Den User persistieren (Speichern in DB)
         final UserBE persistedUserBE = userDAO.create(result, currentUserId);
 
+        // Wir nutzen hier die dsbMitgliedComponent
+        if (persistedUserBE.getDsbMitgliedId() != null) {
+            // Mitglied finden
+            var dsbMitgliedDO = dsbMitgliedComponent.findById(persistedUserBE.getDsbMitgliedId());
 
+            if (dsbMitgliedDO != null) {
+                // Die neue User-ID (Foreign Key) im Mitglied setzen
+                dsbMitgliedDO.setUserId(persistedUserBE.getUserId());
+
+                // Mitglied aktualisieren
+                dsbMitgliedComponent.update(dsbMitgliedDO, currentUserId);
+            }
+        }
+
+        // Rückgabe (Mapping auf DO)
         return UserMapper.toUserDO.apply(persistedUserBE);
     }
 
