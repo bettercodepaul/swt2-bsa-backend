@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 
 /**
@@ -427,7 +426,7 @@ public class UserComponentImplTest {
         verify(userDAO).create(userBEArgumentCaptor.capture(), anyLong());
 
         // NEU: Verifiziere, dass die Component das Mitglied wirklich updatet
-        verify(dsbMitgliedComponent).findById(eq(DSBMITGLIEDID));
+        verify(dsbMitgliedComponent).findById(DSBMITGLIEDID);
         verify(dsbMitgliedComponent).update(any(DsbMitgliedDO.class), eq(USER));
     }
 
