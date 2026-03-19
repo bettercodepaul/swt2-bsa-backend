@@ -112,24 +112,14 @@ public class TabletSchusszettelService {
         }
 
         // 3) Dispatch je nach Typ
-        switch (typ) {
-            case SATZEINGABE -> {
-                SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
-                SatzEingabeDO doObj = TabletSatzEingabeMapper.toDO(dto);
-                component.submitSatz(wettkampfid, teamid, token, doObj);
-            }
-            case SCHUETZENMELDUNG -> {
-                SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
-                SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
-                component.submitSchuetzen(wettkampfid, teamid, token, doObj);
-            }
-            default -> {
-                // Sollte nie passieren, da valueOf abgefangen wird
-                throw new BusinessException(
-                        ErrorCode.INVALID_ARGUMENT_ERROR,
-                        "Unbekannter Eingabetyp: " + typRaw
-                );
-            }
+        if (typ == EingabeTyp.SATZEINGABE) {
+            SatzEingabeDTO dto = objectMapper.convertValue(payload, SatzEingabeDTO.class);
+            SatzEingabeDO doObj = TabletSatzEingabeMapper.toDO(dto);
+            component.submitSatz(wettkampfid, teamid, token, doObj);
+        } else if (typ == EingabeTyp.SCHUETZENMELDUNG) {
+            SchuetzenMeldungDTO dto = objectMapper.convertValue(payload, SchuetzenMeldungDTO.class);
+            SchuetzenMeldungDO doObj = TabletSchuetzenMeldungMapper.toDO(dto);
+            component.submitSchuetzen(wettkampfid, teamid, token, doObj);
         }
 
         // Erfolgreiche Speicherung
