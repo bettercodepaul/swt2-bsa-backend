@@ -565,7 +565,6 @@ public class DsbMitgliedComponentImplTest {
         // prepare test data
         final DsbMitgliedDO input = getDsbMitgliedDO();
 
-        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
         final LizenzBE inputLizenzBE = getLizenzBE();
 
         // configure mocks
