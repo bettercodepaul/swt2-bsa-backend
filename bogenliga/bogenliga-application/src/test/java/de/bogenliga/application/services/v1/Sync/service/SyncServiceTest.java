@@ -973,17 +973,17 @@ public class SyncServiceTest {
 
     @Test
     public void ligaSyncPasseTestDTO(){
-
-        Long match_id = 17L;
-        Long match_id_2 = 18L;
+        //refactored name
+        Long matchId = 17L;
+        Long matchId2 = 18L;
         Long lfdnr = 31L;
         Integer rueckennummer = 5;
         Integer[] ringzahl = {10,9,8,7};
-        LigaSyncPasseDTO test = new LigaSyncPasseDTO(id, version, match_id, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
-        LigaSyncPasseDTO test_2 = new LigaSyncPasseDTO(id, version, match_id_2, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        LigaSyncPasseDTO test = new LigaSyncPasseDTO(id, version, matchId, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        LigaSyncPasseDTO test_2 = new LigaSyncPasseDTO(id, version, matchId2, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
         assertThat(test.getId()).isEqualTo(id);
         assertThat(test.getVersion()).isEqualTo(version);
-        assertThat(test.getMatchId()).isEqualTo(match_id);
+        assertThat(test.getMatchId()).isEqualTo(matchId);
         assertThat(test.getMannschaftId()).isEqualTo(mannschaftId);
         assertThat(test.getWettkampfId()).isEqualTo(wettkampfId);
         assertThat(test.getLfdNr()).isEqualTo(lfdnr);
