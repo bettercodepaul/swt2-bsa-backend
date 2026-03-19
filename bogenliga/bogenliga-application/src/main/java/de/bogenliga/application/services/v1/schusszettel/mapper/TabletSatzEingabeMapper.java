@@ -22,7 +22,7 @@ public class TabletSatzEingabeMapper {
         doObj.setSatzeingabe(
                 dto.getSatzeingabe().stream()
                         .map(TabletSatzEingabeMapper::toDO)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         return doObj;
     }
@@ -32,7 +32,7 @@ public class TabletSatzEingabeMapper {
         dto.setSatzeingabe(
                 doObj.getSatzeingabe().stream()
                         .map(TabletSatzEingabeMapper::toDTO)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         return dto;
     }
@@ -79,14 +79,14 @@ public class TabletSatzEingabeMapper {
     }
 
     private static Long getLong(Object o) {
-        if (o instanceof Number) return ((Number) o).longValue();
-        if (o instanceof String) return Long.valueOf((String) o);
+        if (o instanceof Number number) return (number).longValue();
+        if (o instanceof String string) return Long.valueOf(string);
         return null;
     }
 
     private static Integer getInt(Object o) {
-        if (o instanceof Number) return ((Number) o).intValue();
-        if (o instanceof String) return Integer.valueOf((String) o);
+        if (o instanceof Number number) return (number).intValue();
+        if (o instanceof String string) return Integer.valueOf(string);
         return null;
     }
 

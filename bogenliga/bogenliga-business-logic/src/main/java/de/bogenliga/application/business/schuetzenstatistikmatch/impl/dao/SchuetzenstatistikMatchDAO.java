@@ -57,7 +57,7 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
     private static final String SQLSTRINGMAXPART = "MAX( CASE WHEN ";
     private static final String SQLSTRINGELSEPART = " ELSE 0 END) AS ";
 
-    private static String GET_SCHUETZENSTATISTIK_MATCH = new QueryBuilder().selectFields(
+    private static final String GET_SCHUETZENSTATISTIK_MATCH = new QueryBuilder().selectFields(
             DSBMITGLIEDNAME_TABLE,
             RUECKENNUMMER_TABLE,
             SQLSTRINGMAXPART + MATCHNR_TABLE + " = 1 THEN " + PFEILPUNKTESCHNITT_TABLE + SQLSTRINGELSEPART + MATCHNR1_TABLE,
@@ -122,7 +122,6 @@ public class SchuetzenstatistikMatchDAO implements DataAccessObject {
             .havingGt("ROUND(AVG( CASE WHEN "+ PFEILPUNKTESCHNITT_TABLE + " <> 0 THEN " + PFEILPUNKTESCHNITT_TABLE + " END), 2 )")
             .orderBy(RUECKENNUMMER_TABLE)
             .compose().toString();
-    ;
 
 
 

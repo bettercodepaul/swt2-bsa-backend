@@ -32,7 +32,7 @@ public class SchuetzenstatistikLetzteJahreDAO implements DataAccessObject {
     private static final String SPORTJAHR3_BE = "sportjahr3";
     private static final String SPORTJAHR4_BE = "sportjahr4";
     private static final String SPORTJAHR5_BE = "sportjahr5";
-    private static final String ALLEJAHRE_SCHNITT_BE = "allejahre_schnitt";
+    private static final String ALLEJAHRE_SCHNITT_BE = "allejahreSchnitt";
 
     // entity names in table
     private static final String SCHUETZENNAME_TABLE = "schuetzenname";
@@ -41,7 +41,7 @@ public class SchuetzenstatistikLetzteJahreDAO implements DataAccessObject {
     private static final String SPORTJAHR3_TABLE = "sportjahr3";
     private static final String SPORTJAHR4_TABLE = "sportjahr4";
     private static final String SPORTJAHR5_TABLE = "sportjahr5";
-    private static final String ALLEJAHRE_SCHNITT_TABLE = "allejahre_schnitt";
+    private static final String ALLEJAHRE_SCHNITT_TABLE = "allejahreSchnitt";
 
     private static final String GET_SCHUETZENSTATISTIKLETZTEJAHRE =
             "WITH veranstaltungschnitte AS (" +
@@ -74,7 +74,7 @@ public class SchuetzenstatistikLetzteJahreDAO implements DataAccessObject {
                     "            THEN veranstaltung_pfeilschnitt ELSE 0 END) as sportjahr4, " +
                     "   MAX(CASE WHEN highest_sportjahr - veranstaltung_sportjahr  = 0 " +
                     "            THEN veranstaltung_pfeilschnitt ELSE 0 END) as sportjahr5, " +
-                    "   ROUND(AVG(veranstaltung_pfeilschnitt), 2) as allejahre_schnitt " +
+                    "   ROUND(AVG(veranstaltung_pfeilschnitt), 2) as allejahreSchnitt " +
                     "FROM veranstaltungschnitte " +
                     "WHERE highest_sportjahr - veranstaltung_sportjahr >= 0 AND highest_sportjahr - veranstaltung_sportjahr <= 4 " +
                     "GROUP BY schuetzenname;";
