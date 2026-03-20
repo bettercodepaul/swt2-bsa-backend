@@ -18,7 +18,7 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
     private float sportjahr3;
     private float sportjahr4;
     private float sportjahr5;
-    private float allejahre_schnitt;
+    private float allejahreSchnitt;
 
 
     /**
@@ -30,7 +30,7 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
      * @param sportjahr3;
      * @param sportjahr4;
      * @param sportjahr5;
-     * @param allejahre_schnitt;
+     * @param allejahreSchnitt;
      */
     public SchuetzenstatistikLetzteJahreDTO(
             String schuetzenname,
@@ -39,7 +39,7 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
             float sportjahr3,
             float sportjahr4,
             float sportjahr5,
-            float allejahre_schnitt
+            float allejahreSchnitt
     ) {
         this.schuetzenname = schuetzenname;
         this.sportjahr1 = sportjahr1;
@@ -47,7 +47,7 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
         this.sportjahr3 = sportjahr3;
         this.sportjahr4 = sportjahr4;
         this.sportjahr5 = sportjahr5;
-        this.allejahre_schnitt = allejahre_schnitt;
+        this.allejahreSchnitt = allejahreSchnitt;
     }
 
     // Getters
@@ -71,7 +71,7 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
         return sportjahr4;
     }
 
-    public float getAllejahre_schnitt() { return allejahre_schnitt; }
+    public float getAllejahreSchnitt() { return allejahreSchnitt; }
 
     public float getSportjahr5() {
         return sportjahr5;
@@ -88,11 +88,11 @@ public class SchuetzenstatistikLetzteJahreDTO implements DataTransferObject {
                 sportjahr3 == that.sportjahr3 &&
                 sportjahr4 == that.sportjahr4 &&
                 sportjahr5 == that.sportjahr5 &&
-                allejahre_schnitt == that.allejahre_schnitt;
+                allejahreSchnitt == that.allejahreSchnitt;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahre_schnitt);
+        return Objects.hash(schuetzenname, sportjahr1, sportjahr2, sportjahr3, sportjahr4, sportjahr5, allejahreSchnitt);
     }
 }
