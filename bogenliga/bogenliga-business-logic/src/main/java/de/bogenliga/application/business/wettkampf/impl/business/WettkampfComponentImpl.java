@@ -532,16 +532,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.close();
     }
 
-    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
-    {
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstaltungsId, long wettkampftag) {
+        VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstaltungsId); // Use VeranstaltungComponent
+
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(veranstatungsId)).setBold());
+        doc.add(new Paragraph(wettkampftag + ". Bogenligawettkampf / " + selectedVeranstaltung.getVeranstaltungName()).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
-        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
-                    + ", " +  wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
+        doc.add(new Paragraph("am " + wettkaempfe.get(0).getDatum()));
+        doc.add(new Paragraph("in " + wettkaempfe.get(0).getWettkampfPlz() + ", " + wettkaempfe.get(0).getWettkampfOrtsname()
+                + ", " + wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
         Table table = new Table(new float[]{100, 20, 20, 20, 20, 20, 100, 20, 20, 20, 20, 20, 50, 50});
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         satzToTable(table);
