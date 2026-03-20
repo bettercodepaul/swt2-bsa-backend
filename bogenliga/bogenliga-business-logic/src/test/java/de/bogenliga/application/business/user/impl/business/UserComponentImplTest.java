@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 
 /**
  * @author Andre Lehnert, BettercallPaul gmbh
@@ -61,6 +63,9 @@ public class UserComponentImplTest {
 
     @Captor
     private ArgumentCaptor<UserBE> userBEArgumentCaptor;
+
+    @Mock
+    private DsbMitgliedComponent dsbMitgliedComponent;
 
 
     @Test
@@ -382,11 +387,12 @@ public class UserComponentImplTest {
 
     @Test
     public void create_sucessful() {
-
+        // prepare test data
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
+        expectedBE.setDsbMitgliedId(DSBMITGLIEDID); // NEU: ID setzen, damit die Logik triggert
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
@@ -399,6 +405,9 @@ public class UserComponentImplTest {
         when(passwordHashingBA.generateSalt()).thenReturn(SALT);
         when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
         when(userDAO.create(any(UserBE.class), anyLong())).thenReturn(expectedBE);
+
+        // NEU: Simuliere, dass ein Mitglied gefunden wird
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(new DsbMitgliedDO());
 
         // call test method
         final UserDO actual = underTest.create(EMAIL, PASSWORD, DSBMITGLIEDID, USER, false);
@@ -416,6 +425,9 @@ public class UserComponentImplTest {
         // verify invocations
         verify(userDAO).create(userBEArgumentCaptor.capture(), anyLong());
 
+        // NEU: Verifiziere, dass die Component das Mitglied wirklich updatet
+        verify(dsbMitgliedComponent).findById(DSBMITGLIEDID);
+        verify(dsbMitgliedComponent).update(any(DsbMitgliedDO.class), eq(USER));
     }
 
 
