@@ -6,6 +6,7 @@ import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWith
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.lizenz.impl.mapper.KampfrichterlizenzMapper;
+import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -16,6 +17,7 @@ import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapp
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 
 /**
  * Implementation of {@link DsbMitgliedComponent}
@@ -38,7 +40,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
     private final DsbMitgliedDAO dsbMitgliedDAO;
     private final LizenzDAO lizenzDAO;
-
+    private final UserDAO userDAO;
 
     /**
      * Constructor
@@ -48,9 +50,10 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
      * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final LizenzDAO lizenzDAO) {
+    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final LizenzDAO lizenzDAO, final UserDAO userDAO) {
         this.dsbMitgliedDAO = dsbMitgliedDAO;
         this.lizenzDAO = lizenzDAO;
+        this.userDAO = userDAO;
     }
 
 
@@ -141,8 +144,18 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
         final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedWithoutVereinsnameBE.apply(dsbMitgliedDO);
 
-        final DsbMitgliedWithoutVereinsnameBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
-        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDOWithoutVereinsname.apply(persistedDsbMitgliedBE);
+        DsbMitgliedWithoutVereinsnameBE updatedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
+
+        // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
+        if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
+            UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+            if (userBE != null) {
+                updatedDsbMitgliedBE.setDsbMitgliedUserId(userBE.getUserId());
+                updatedDsbMitgliedBE = dsbMitgliedDAO.update(updatedDsbMitgliedBE, currentDsbMitgliedId);
+            }
+        }
+
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDOWithoutVereinsname.apply(updatedDsbMitgliedBE);
 
         // Null-safe license logic: explicitly check for Boolean.TRUE/FALSE to handle null values
         boolean isKampfrichterFalse = Boolean.FALSE.equals(dsbMitgliedDO.isKampfrichter());
