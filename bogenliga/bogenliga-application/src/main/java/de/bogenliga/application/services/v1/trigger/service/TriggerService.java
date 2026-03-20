@@ -247,8 +247,8 @@ public class TriggerService implements ServiceFacade {
         //returns true if Params are not malicious
         try{
             if(offsetMuliplicator != null && queryPageLimit != null){
-                int actualOffsetMuliplicator = Integer.parseInt(offsetMuliplicator);
-                int actualQueryPageLimit = Integer.parseInt(queryPageLimit);
+                Integer.parseInt(offsetMuliplicator);
+                Integer.parseInt(queryPageLimit);
             }
             else {
                 throw new IllegalArgumentException();
