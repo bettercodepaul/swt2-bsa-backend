@@ -19,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DsbMitgliedMapperTest {
 
-    private static final long USER = 0;
-
     private static final long ID = 1337;
     private static final String VORNAME = "Sorscha";
     private static final String NACHNAME = "Kratikoff";
