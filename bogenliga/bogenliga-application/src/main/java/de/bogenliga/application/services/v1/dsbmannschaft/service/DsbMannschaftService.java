@@ -205,6 +205,15 @@ public class DsbMannschaftService implements ServiceFacade {
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
+
+
+    /**
+     * I return the dsbMannschaft entries of the database having the given MannschaftID.
+     *
+     * @param id the given SearchTerm
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+
     @GetMapping(value = "VeranstaltungAndWettkampfByID/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllVeranstaltungAndWettkampfByID(@PathVariable("id") final long id) {
