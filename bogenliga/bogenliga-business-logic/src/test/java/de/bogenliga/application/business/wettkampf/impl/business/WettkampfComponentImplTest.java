@@ -140,7 +140,6 @@ public class WettkampfComponentImplTest {
     private NameMappingComponent nameMappingComponent;
 
 
-
     /***
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
@@ -742,30 +741,32 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void testGetUebersichtPDFasByteArray() throws IOException {
-        // Use the existing constant VERANSTALTUNG_ID
-        long veranstaltungsId = VERANSTALTUNG_ID;
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
 
-        List<WettkampfBE> wettkampflisteBEList = new ArrayList<>();
+        List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
         wettkampflisteBEList.add(getWettkampfBE());
         wettkampflisteBEList.add(getWettkampfBE());
 
         long expectedWettkampfTag = 7;
+        int veranstaltungsid = 1;
 
         underTest.setMatchComponent(matchComponent);
         underTest.setLigatabelleComponent(ligatabelleComponent);
-        underTest.setVeranstaltungComponent(veranstaltungComponent);
 
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
-        when(veranstaltungComponent.findById(veranstaltungsId)).thenReturn(getVeranstaltungDO());
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));
         when(nameMappingComponent.getMannschaftsnameForMannschaftId(anyLong())).thenReturn("Demo Mannschaft");
 
-        assertThat(wettkampflisteBEList.get(0).getWettkampfTag()).isEqualTo(expectedWettkampfTag);
+        assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag()).isEqualTo(expectedWettkampfTag);
 
-        byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsId, expectedWettkampfTag);
+        byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag);
+
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
         ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
         PdfReader reader = new PdfReader(serializedPDF);
@@ -773,8 +774,7 @@ public class WettkampfComponentImplTest {
 
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(Collections.EMPTY_LIST);
 
-        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(veranstaltungsId, expectedWettkampfTag))
-                .isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag)).isInstanceOf(BusinessException.class);
     }
 
     @Test
