@@ -44,7 +44,43 @@ public class DsbMannschaftBasicDAOextTest {
         expectedBE.setVeranstaltungId(null);
 
         // call test method
-        final List<DsbMannschaftBEext> actual = underTest.findVeranstaltungAndWettkampfById(WETTKAMPFID);
+        final List<DsbMannschaftBEext> actual = underTest.findVeranstaltungAndWettkampfById(ID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVereinName())
+                .isEqualTo(expectedBE.getVereinName());
+        assertThat(actual.get(0).getWettkampfOrtsname())
+                .isEqualTo(expectedBE.getWettkampfOrtsname());
+        assertThat(actual.get(0).getWettkampfTag())
+                .isEqualTo(expectedBE.getWettkampfTag());
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+
+
+    }
+    @Test
+    public void findVeranstaltungAndWettkampfByVereinId() {
+        // prepare test data
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        expectedBE.setVeranstaltungId(null);
+
+        // call test method
+        final List<DsbMannschaftBEext> actual = underTest.findVeranstaltungAndWettkampfByVereinId(ID);
 
         // assert result
         assertThat(actual)
