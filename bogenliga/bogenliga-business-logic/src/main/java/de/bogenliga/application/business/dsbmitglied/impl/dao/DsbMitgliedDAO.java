@@ -2,8 +2,6 @@ package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
-import de.bogenliga.application.business.user.impl.dao.UserDAO;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -260,13 +258,6 @@ public class DsbMitgliedDAO implements DataAccessObject {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
         DsbMitgliedWithoutVereinsnameBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, dsbMitgliedBE, DSBMITGLIED_BE_ID);
-        // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        UserDAO userDAO = new UserDAO(basicDao);
-        UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
-        if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && userBE != null) {
-            updatedDsbMitgliedBE.setDsbMitgliedUserId(userBE.getUserId());
-            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED_WITHOUT_VEREINNAME, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
-        }
 
         return updatedDsbMitgliedBE;
     }

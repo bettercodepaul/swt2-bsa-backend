@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +22,7 @@ import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedWithoutVereinsnameBE;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -61,6 +64,8 @@ public class DsbMitgliedComponentImplTest {
     private DsbMitgliedDAO dsbMitgliedDAO;
     @Mock
     private LizenzDAO lizenzDAO;
+    @Mock
+    private UserDAO userDAO;
     @InjectMocks
     private DsbMitgliedComponentImpl underTest;
     @Captor
@@ -208,6 +213,10 @@ public class DsbMitgliedComponentImplTest {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.isKampfrichter();
 
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test,1L)).isNotNull();
 
 
@@ -235,6 +244,11 @@ public class DsbMitgliedComponentImplTest {
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setKampfrichter(false);
+
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test, 1L)).isNotNull();
 
         }catch(Exception e){
@@ -247,6 +261,11 @@ public class DsbMitgliedComponentImplTest {
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setKampfrichter(true);
+
+            final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+            when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+            when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
             assertThat(underTest.update(test, 1L)).isNotNull();
 
         }catch(Exception e){
@@ -536,6 +555,7 @@ public class DsbMitgliedComponentImplTest {
 
         // configure mocks
         when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
 
         // call test method
         final DsbMitgliedDO actual = underTest.update(input, USER);
@@ -599,7 +619,7 @@ public class DsbMitgliedComponentImplTest {
 
         // configure mocks
         when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong())).thenReturn(expectedBE);
-        //when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
 
         // call test method
         final DsbMitgliedDO actual = underTest.update(input, USER);
@@ -744,5 +764,149 @@ public class DsbMitgliedComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMitgliedDAO);
+    }
+
+    @Test
+    public void update_withUserIdNull_shouldSetUserIdFromUserDAO() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        input.setUserId(null);  // userId is null
+        input.setKampfrichter(false);
+
+        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+        expectedBE.setDsbMitgliedUserId(null);  // userId null initially
+
+        final UserBE userBE = new UserBE();
+        userBE.setUserId(4242L);
+        userBE.setDsbMitgliedId(ID);
+
+        final DsbMitgliedWithoutVereinsnameBE updatedBE = getDsbMitgliedWithoutVereinsnameBE();
+        updatedBE.setDsbMitgliedUserId(4242L);  // userId set after update
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong()))
+                .thenReturn(expectedBE)  // first call returns null userId
+                .thenReturn(updatedBE);  // second call returns updated with userId
+        when(userDAO.findByDsbMitgliedId(ID)).thenReturn(userBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+
+        // verify invocations - should call update twice (once initial, once after setting userId)
+        verify(dsbMitgliedDAO, times(2)).update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong());
+        verify(userDAO).findByDsbMitgliedId(ID);
+    }
+
+    @Test
+    public void update_withUserIdNull_UserNotFound_shouldNotUpdateUserId() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        input.setUserId(null);  // userId is null
+        input.setKampfrichter(false);
+
+        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+        expectedBE.setDsbMitgliedUserId(null);  // userId stays null
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong()))
+                .thenReturn(expectedBE);
+        when(userDAO.findByDsbMitgliedId(ID)).thenReturn(null);  // User not found
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+
+        // verify invocations - should call update only once (no second update for userId)
+        verify(dsbMitgliedDAO, times(1)).update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong());
+        verify(userDAO).findByDsbMitgliedId(ID);
+    }
+
+    @Test
+    public void update_withUserIdPresent_shouldNotCallUserDAO() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        input.setUserId(USERID);  // userId is already set
+        input.setKampfrichter(false);
+
+        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+        expectedBE.setDsbMitgliedUserId(USERID);  // userId already set
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong()))
+                .thenReturn(expectedBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(false);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+
+        // verify invocations - should call update only once and NOT call userDAO
+        verify(dsbMitgliedDAO, times(1)).update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong());
+        verify(userDAO, never()).findByDsbMitgliedId(anyLong());  // UserDAO should NOT be called
+    }
+
+    @Test
+    public void update_withKampfrichterTrue_shouldCreateLizenz() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        input.setKampfrichter(true);
+        input.setUserId(USERID);
+
+        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+        expectedBE.setDsbMitgliedUserId(USERID);
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong()))
+                .thenReturn(expectedBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(ID)).thenReturn(false);  // no license yet
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations - should call lizenzDAO.create
+        verify(lizenzDAO).create(any(LizenzBE.class), anyLong());
+    }
+
+    @Test
+    public void update_withKampfrichterFalse_shouldDeleteLizenz() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        input.setKampfrichter(false);
+        input.setUserId(USERID);
+
+        final DsbMitgliedWithoutVereinsnameBE expectedBE = getDsbMitgliedWithoutVereinsnameBE();
+        expectedBE.setDsbMitgliedUserId(USERID);
+
+        final LizenzBE lizenzBE = getLizenzBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedWithoutVereinsnameBE.class), anyLong()))
+                .thenReturn(expectedBE);
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(ID)).thenReturn(true);  // has license
+        when(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(ID)).thenReturn(lizenzBE);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations - should call lizenzDAO.delete
+        verify(lizenzDAO).delete(lizenzBE, USER);
     }
 }
