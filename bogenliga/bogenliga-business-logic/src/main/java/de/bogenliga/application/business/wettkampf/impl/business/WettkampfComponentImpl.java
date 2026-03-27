@@ -532,7 +532,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.close();
     }
 
-    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstaltungsId, long wettkampftag) {
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstaltungsId, long wettkampftag)
+    {
         VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstaltungsId); // Use VeranstaltungComponent
 
         long wettkampfid = wettkaempfe.get(0).getId();
