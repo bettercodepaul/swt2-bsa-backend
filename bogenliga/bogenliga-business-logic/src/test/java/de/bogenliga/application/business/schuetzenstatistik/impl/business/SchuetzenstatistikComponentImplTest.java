@@ -27,24 +27,24 @@ public class SchuetzenstatistikComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 1L;
-    private static final String veranstaltungName = "Name_der_Veranstaltung";
-    private static final Long wettkampfId = 2L;
-    private static final int wettkampfTag = 3;
-    private static final Long mannschaftId = 4L;
-    private static final int mannschaftNummer = 9;
-    private static final Long vereinId = 7L;
-    private static final String vereinName = "Name_Verein";
-    private static final Long matchId = 6L;
-    private static final int matchNr = 2;
-    private static final Long dsbMitgliedId = 2L;
-    private static final String dsbMitgliedName = "Mitglied_Name";
-    private static final int rueckenNummer = 5;
-    private static final float pfeilpunkteSchnitt = (float) 3.7;
+    private static final String VERANSTALTUNG_NAME = "Name_der_Veranstaltung";
+    private static final Long WETTKAMPF_ID = 2L;
+    private static final int WETTKAMPF_TAG = 3;
+    private static final Long MANNSCHAFT_ID = 4L;
+    private static final int MANNSCHAFT_NUMMER = 9;
+    private static final Long VEREIN_ID = 7L;
+    private static final String VEREIN_NAME = "Name_Verein";
+    private static final Long MATCH_ID = 6L;
+    private static final int MATCH_NR = 2;
+    private static final Long DSB_MITGLIED_ID = 2L;
+    private static final String DSB_MITGLIED_NAME = "Mitglied_Name";
+    private static final int RUECKEN_NUMMER = 5;
+    private static final float PFEILPUNKTE_SCHNITT = (float) 3.7;
     private static final String SCHUETZE_SATZ_1 = "10,5,6,null,9,9";
-    private static final String schuetzeSatz2 = "4,10,null,null,7,8";
-    private static final String schuetzeSatz3 = "10,null,8,null,9,null";
-    private static final String schuetzeSatz4 = "null,3,8,null,10,3";
-    private static final String schuetzeSatz5 = "10,8,3,7,null,8";
+    private static final String SCHUETZE_SATZ_2 = "4,10,null,null,7,8";
+    private static final String SCHUETZE_SATZ_3 = "10,null,8,null,9,null";
+    private static final String SCHUETZE_SATZ_4 = "null,3,8,null,10,3";
+    private static final String SCHUETZE_SATZ_5 = "10,8,3,7,null,8";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -61,24 +61,24 @@ public class SchuetzenstatistikComponentImplTest {
     public static SchuetzenstatistikBE getSchuetzenstatistikBE() {
         final SchuetzenstatistikBE expectedSchuetzenstatistikBE = new SchuetzenstatistikBE();
         expectedSchuetzenstatistikBE.setVeranstaltungId(VERANSTALTUNG_ID);
-        expectedSchuetzenstatistikBE.setVeranstaltungName(veranstaltungName);
-        expectedSchuetzenstatistikBE.setWettkampfId(wettkampfId);
-        expectedSchuetzenstatistikBE.setWettkampfTag(wettkampfTag);
-        expectedSchuetzenstatistikBE.setMannschaftId(mannschaftId);
-        expectedSchuetzenstatistikBE.setMannschaftNummer(mannschaftNummer);
-        expectedSchuetzenstatistikBE.setVereinId(vereinId);
-        expectedSchuetzenstatistikBE.setVereinName(vereinName);
-        expectedSchuetzenstatistikBE.setMatchId(matchId);
-        expectedSchuetzenstatistikBE.setMatchNr(matchNr);
-        expectedSchuetzenstatistikBE.setDsbMitgliedId(dsbMitgliedId);
-        expectedSchuetzenstatistikBE.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikBE.setRueckenNummer(rueckenNummer);
-        expectedSchuetzenstatistikBE.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
+        expectedSchuetzenstatistikBE.setVeranstaltungName(VERANSTALTUNG_NAME);
+        expectedSchuetzenstatistikBE.setWettkampfId(WETTKAMPF_ID);
+        expectedSchuetzenstatistikBE.setWettkampfTag(WETTKAMPF_TAG);
+        expectedSchuetzenstatistikBE.setMannschaftId(MANNSCHAFT_ID);
+        expectedSchuetzenstatistikBE.setMannschaftNummer(MANNSCHAFT_NUMMER);
+        expectedSchuetzenstatistikBE.setVereinId(VEREIN_ID);
+        expectedSchuetzenstatistikBE.setVereinName(VEREIN_NAME);
+        expectedSchuetzenstatistikBE.setMatchId(MATCH_ID);
+        expectedSchuetzenstatistikBE.setMatchNr(MATCH_NR);
+        expectedSchuetzenstatistikBE.setDsbMitgliedId(DSB_MITGLIED_ID);
+        expectedSchuetzenstatistikBE.setDsbMitgliedName(DSB_MITGLIED_NAME);
+        expectedSchuetzenstatistikBE.setRueckenNummer(RUECKEN_NUMMER);
+        expectedSchuetzenstatistikBE.setPfeilpunkteSchnitt(PFEILPUNKTE_SCHNITT);
         expectedSchuetzenstatistikBE.setschuetzeSatz1(SCHUETZE_SATZ_1);
-        expectedSchuetzenstatistikBE.setschuetzeSatz2(schuetzeSatz2);
-        expectedSchuetzenstatistikBE.setschuetzeSatz3(schuetzeSatz3);
-        expectedSchuetzenstatistikBE.setschuetzeSatz4(schuetzeSatz4);
-        expectedSchuetzenstatistikBE.setschuetzeSatz5(schuetzeSatz5);
+        expectedSchuetzenstatistikBE.setschuetzeSatz2(SCHUETZE_SATZ_2);
+        expectedSchuetzenstatistikBE.setschuetzeSatz3(SCHUETZE_SATZ_3);
+        expectedSchuetzenstatistikBE.setschuetzeSatz4(SCHUETZE_SATZ_4);
+        expectedSchuetzenstatistikBE.setschuetzeSatz5(SCHUETZE_SATZ_5);
         return expectedSchuetzenstatistikBE;
     }
 
@@ -86,19 +86,19 @@ public class SchuetzenstatistikComponentImplTest {
     public static SchuetzenstatistikDO getLigatabelleDO() {
         final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
         expectedSchuetzenstatistikDO.setveranstaltungId(VERANSTALTUNG_ID);
-        expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
-        expectedSchuetzenstatistikDO.setwettkampfId(wettkampfId);
-        expectedSchuetzenstatistikDO.setwettkampfTag(wettkampfTag);
-        expectedSchuetzenstatistikDO.setmannschaftId(mannschaftId);
-        expectedSchuetzenstatistikDO.setmannschaftNummer(mannschaftNummer);
-        expectedSchuetzenstatistikDO.setvereinId(vereinId);
-        expectedSchuetzenstatistikDO.setvereinName(vereinName);
-        expectedSchuetzenstatistikDO.setMatchId(matchId);
-        expectedSchuetzenstatistikDO.setMatchNr(matchNr);
-        expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
-        expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
-        expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
-        expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
+        expectedSchuetzenstatistikDO.setveranstaltungName(VERANSTALTUNG_NAME);
+        expectedSchuetzenstatistikDO.setwettkampfId(WETTKAMPF_ID);
+        expectedSchuetzenstatistikDO.setwettkampfTag(WETTKAMPF_TAG);
+        expectedSchuetzenstatistikDO.setmannschaftId(MANNSCHAFT_ID);
+        expectedSchuetzenstatistikDO.setmannschaftNummer(MANNSCHAFT_NUMMER);
+        expectedSchuetzenstatistikDO.setvereinId(VEREIN_ID);
+        expectedSchuetzenstatistikDO.setvereinName(VEREIN_NAME);
+        expectedSchuetzenstatistikDO.setMatchId(MATCH_ID);
+        expectedSchuetzenstatistikDO.setMatchNr(MATCH_NR);
+        expectedSchuetzenstatistikDO.setDsbMitgliedId(DSB_MITGLIED_ID);
+        expectedSchuetzenstatistikDO.setDsbMitgliedName(DSB_MITGLIED_NAME);
+        expectedSchuetzenstatistikDO.setRueckenNummer(RUECKEN_NUMMER);
+        expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(PFEILPUNKTE_SCHNITT);
 
         return expectedSchuetzenstatistikDO;
     }
