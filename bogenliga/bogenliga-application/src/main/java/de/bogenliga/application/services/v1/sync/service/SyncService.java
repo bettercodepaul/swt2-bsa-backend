@@ -67,8 +67,8 @@ public class SyncService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
     private static final String ERR_WETTKAMPF_ALREADY_OFFLINE = "Cannot got offline. Wettkampf is already offline";
-    private static final String ERR_SYNC_MITGLIEDER_PERMISSION = "error syncing mitglieder";
-    private static final String ERR_SYNC_MATCHES_PERMISSION = "error syncing matches and passen";
+    private static final String ERR_SYNC_MITGLIEDER_PERMISSION = "Synchronization of team members failed. You do not have the required permissions.";
+    private static final String ERR_SYNC_MATCHES_PERMISSION = "Synchronization of matches and passes failed. You do not have the required permissions.";
 
 
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
