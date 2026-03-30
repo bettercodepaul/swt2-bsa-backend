@@ -54,13 +54,13 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String FIND_ALL =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
+            "SELECT benutzer.benutzer_id AS benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
                     + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name, dsb_mitglied.dsb_mitglied_nachname, dsb_mitglied.dsb_mitglied_vorname "
-                    + " FROM benutzer_rolle, benutzer, rolle, dsb_mitglied"
-                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
-                    + " AND benutzer.benutzer_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id"
-                    + " AND benutzer.benutzer_active = TRUE";
+                    + " FROM benutzer "
+                    + " LEFT JOIN benutzer_rolle ON benutzer.benutzer_id = benutzer_rolle.benutzer_rolle_benutzer_id "
+                    + " LEFT JOIN rolle ON benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
+                    + " LEFT JOIN dsb_mitglied ON benutzer.benutzer_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id "
+                    + " WHERE benutzer.benutzer_active = TRUE";
 
     private static final String FIND_BY_SEARCH =
             "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
