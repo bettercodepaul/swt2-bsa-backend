@@ -14,6 +14,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -634,6 +635,19 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(vereinComponent);
     }
 
+        @Test
+        public void create_duplicateMannschaftConstraint_shouldThrowConflict() {
+                final DsbMannschaftDO input = getDsbMannschaftDO();
+
+                when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong()))
+                                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                                                "duplicate key value violates unique constraint \"cu_mannschaft_veranstaltung\""));
+
+                assertThatThrownBy(() -> underTest.create(input, USER))
+                                .isInstanceOf(BusinessException.class)
+                                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+        }
+
 
     @Test
     public void update() {
@@ -703,6 +717,21 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(dsbMannschaftDAO);
         verifyZeroInteractions(vereinComponent);
     }
+
+        @Test
+        public void update_duplicateMannschaftConstraint_shouldThrowConflict() {
+                final DsbMannschaftDO input = getDsbMannschaftDO();
+                final DsbMannschaftBE existingBE = getDsbMannschaftBE();
+
+                when(dsbMannschaftDAO.findById(anyLong())).thenReturn(existingBE);
+                when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong()))
+                                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                                                "duplicate key value violates unique constraint \"cu_mannschaft_veranstaltung\""));
+
+                assertThatThrownBy(() -> underTest.update(input, USER))
+                                .isInstanceOf(BusinessException.class)
+                                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+        }
 
     @Test
     public void update_checkSortierung() {

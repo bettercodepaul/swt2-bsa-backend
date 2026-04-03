@@ -13,6 +13,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.types.Mannschaf
 import de.bogenliga.application.business.namemapping.api.NameMappingComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String PRECONDITION_MSG_SORTIERUNG = "The Sortierung must not be null or negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs ID must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative";
+    private static final String DUPLICATE_MANNSCHAFT_CONSTRAINT = "cu_mannschaft_veranstaltung";
+    private static final String EXCEPTION_DUPLICATE_MANNSCHAFT = "Duplicate Mannschaft for verein/nummer/veranstaltung";
 
     private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
@@ -162,7 +165,15 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentUserId);
+        final DsbMannschaftBE persistedDsbMannschaftBE;
+        try {
+            persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentUserId);
+        } catch (TechnicalException e) {
+            if (isDuplicateMannschaftConflict(e)) {
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, EXCEPTION_DUPLICATE_MANNSCHAFT);
+            }
+            throw e;
+        }
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
@@ -176,9 +187,23 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         checkSortierung(dsbMannschaftDO); //To avoid corruption of the Sortierung
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentUserId);
+        final DsbMannschaftBE persistedDsbMannschaftBE;
+        try {
+            persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentUserId);
+        } catch (TechnicalException e) {
+            if (isDuplicateMannschaftConflict(e)) {
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, EXCEPTION_DUPLICATE_MANNSCHAFT);
+            }
+            throw e;
+        }
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
+    }
+
+    private boolean isDuplicateMannschaftConflict(final TechnicalException e) {
+        return e.getErrorCode() == ErrorCode.DATABASE_ERROR
+                && e.getMessage() != null
+                && e.getMessage().contains(DUPLICATE_MANNSCHAFT_CONSTRAINT);
     }
 
     // Löschen von Mannschaften
