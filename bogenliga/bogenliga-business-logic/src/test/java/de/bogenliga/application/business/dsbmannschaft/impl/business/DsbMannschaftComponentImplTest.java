@@ -648,6 +648,40 @@ public class DsbMannschaftComponentImplTest {
                                 .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
         }
 
+        @Test
+        public void create_nonDatabaseTechnicalException_shouldRethrowOriginalException() {
+                final DsbMannschaftDO input = getDsbMannschaftDO();
+                final TechnicalException expectedException =
+                                new TechnicalException(ErrorCode.INTERNAL_ERROR, "unexpected technical failure");
+
+                when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong()))
+                                .thenThrow(expectedException);
+
+                try {
+                        underTest.create(input, USER);
+                        Assertions.fail("Expected TechnicalException to be thrown");
+                } catch (TechnicalException actualException) {
+                        assertThat(actualException).isSameAs(expectedException);
+                }
+        }
+
+        @Test
+        public void create_databaseErrorWithoutDuplicateConstraint_shouldRethrowTechnicalException() {
+                final DsbMannschaftDO input = getDsbMannschaftDO();
+                final TechnicalException expectedException =
+                                new TechnicalException(ErrorCode.DATABASE_ERROR, "some other database error");
+
+                when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong()))
+                                .thenThrow(expectedException);
+
+                try {
+                        underTest.create(input, USER);
+                        Assertions.fail("Expected TechnicalException to be thrown");
+                } catch (TechnicalException actualException) {
+                        assertThat(actualException).isSameAs(expectedException);
+                }
+        }
+
 
     @Test
     public void update() {
@@ -731,6 +765,31 @@ public class DsbMannschaftComponentImplTest {
                 assertThatThrownBy(() -> underTest.update(input, USER))
                                 .isInstanceOf(BusinessException.class)
                                 .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+        }
+
+        @Test
+        public void update_databaseErrorWithNullMessage_shouldRethrowTechnicalException() {
+                final DsbMannschaftDO input = getDsbMannschaftDO();
+                final DsbMannschaftBE existingBE = getDsbMannschaftBE();
+
+                final TechnicalException expectedException = new TechnicalException(ErrorCode.DATABASE_ERROR,
+                                "placeholder message") {
+                        @Override
+                        public String getMessage() {
+                                return null;
+                        }
+                };
+
+                when(dsbMannschaftDAO.findById(anyLong())).thenReturn(existingBE);
+                when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong()))
+                                .thenThrow(expectedException);
+
+                try {
+                        underTest.update(input, USER);
+                        Assertions.fail("Expected TechnicalException to be thrown");
+                } catch (TechnicalException actualException) {
+                        assertThat(actualException).isSameAs(expectedException);
+                }
         }
 
     @Test
