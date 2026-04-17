@@ -64,6 +64,11 @@ public class DsbMannschaftService implements ServiceFacade {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+
+    private static final String ERROR_MSG_CREATE_MANNSCHAFT_NO_PERMISSION = "Keine Berechtigung zum Erstellen einer Mannschaft";
+    private static final String ERROR_MSG_PLATZHALTER_NO_PERMISSION = "Sie haben keine Berechtigung für diese Aktion.";
+    private static final String ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION = "Löschen einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
+
     MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     /**
@@ -273,7 +278,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal){
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
         //and if the user has the permission to modify his verein.
@@ -329,7 +334,12 @@ public class DsbMannschaftService implements ServiceFacade {
 
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
 
-        } else throw new NoPermissionException();
+        } else {
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_CREATE_MANNSCHAFT_NO_PERMISSION
+            );
+        }
     }
 
 
@@ -360,7 +370,7 @@ public class DsbMannschaftService implements ServiceFacade {
                                     final List<DsbMannschaftDO> allExistingPlatzhalterList,
                                     final DsbMannschaftDTO dsbMannschaftDTO,
                                     final int veranstaltungsgroesse,
-                                    final Principal principal) throws NoPermissionException {
+                                    final Principal principal) {
 
         // Check if the user has the required permission
         if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
@@ -400,7 +410,10 @@ public class DsbMannschaftService implements ServiceFacade {
             }
         } else {
             // Throw an exception if the user does not have permission
-            throw new NoPermissionException();
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_PLATZHALTER_NO_PERMISSION
+            );
         }
     }
 
@@ -579,7 +592,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
@@ -589,7 +602,10 @@ public class DsbMannschaftService implements ServiceFacade {
 
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
-            throw new NoPermissionException();
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION
+            );
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
