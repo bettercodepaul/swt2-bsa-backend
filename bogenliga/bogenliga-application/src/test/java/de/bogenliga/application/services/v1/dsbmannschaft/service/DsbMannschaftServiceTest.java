@@ -467,7 +467,7 @@ public class DsbMannschaftServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
-        assertThatExceptionOfType(NoPermissionException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
     }
 
@@ -611,7 +611,7 @@ public class DsbMannschaftServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
-        assertThatExceptionOfType(NoPermissionException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
     }
 
