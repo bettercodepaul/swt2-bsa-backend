@@ -596,7 +596,7 @@ public class DsbMannschaftServiceTest {
             assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
             assertThat(updatedDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
-        } catch (NoPermissionException e) { }
+        } catch (BusinessException e) { }
     }
 
 

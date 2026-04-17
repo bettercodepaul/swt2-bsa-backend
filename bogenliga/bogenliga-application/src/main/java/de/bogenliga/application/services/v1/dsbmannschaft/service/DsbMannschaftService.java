@@ -68,6 +68,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String ERROR_MSG_CREATE_MANNSCHAFT_NO_PERMISSION = "Keine Berechtigung zum Erstellen einer Mannschaft";
     private static final String ERROR_MSG_PLATZHALTER_NO_PERMISSION = "Sie haben keine Berechtigung für diese Aktion.";
     private static final String ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION = "Löschen einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
+    private static final String ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION = "Ändern einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
 
     MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
@@ -541,7 +542,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions( perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
         //and if the user has the permission to modify his verein.
@@ -549,7 +550,10 @@ public class DsbMannschaftService implements ServiceFacade {
         DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) && (!this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())
                     ||!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId()))) {
-                throw new NoPermissionException();
+                throw new BusinessException(
+                        ErrorCode.NO_PERMISSION_ERROR,
+                        ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION
+                );
         }
 
         checkPreconditions(dsbMannschaftDTO);
