@@ -17,7 +17,6 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.disziplin.mapper.DisziplinDTOMapper;
 import de.bogenliga.application.services.v1.disziplin.model.DisziplinDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
