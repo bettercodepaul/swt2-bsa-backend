@@ -12,6 +12,9 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.mapper.VereinMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 
@@ -30,6 +33,9 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID = "VereinDO region id must not be null";
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG = "VereinDO region id must not be negative";
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
+    private static final String DUPLICATE_VEREIN_DSB_IDENTIFIER_CONSTRAINT = "uc_verein_dsb_identifier";
+    private static final String DUPLICATE_VEREIN_NAME_CONSTRAINT = "uc_verein_name";
+    private static final String EXCEPTION_DUPLICATE_VEREIN = "Duplicate Verein";
 
     private final VereinDAO vereinDAO;
     private final VereinDAOext vereinDAOext;
@@ -61,7 +67,15 @@ public class VereinComponentImpl implements VereinComponent {
         checkVereinDO(vereinDO, currentDsbMitglied);
 
         final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
-        final VereinBE persistedVereinBE = vereinDAO.create(vereinBE, currentDsbMitglied);
+        final VereinBE persistedVereinBE;
+        try {
+            persistedVereinBE = vereinDAO.create(vereinBE, currentDsbMitglied);
+        } catch (TechnicalException e) {
+            if (isDuplicateVereinConflict(e)) {
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, EXCEPTION_DUPLICATE_VEREIN);
+            }
+            throw e;
+        }
 
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
@@ -78,7 +92,15 @@ public class VereinComponentImpl implements VereinComponent {
         Preconditions.checkArgument(vereinDO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
         final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
-        final VereinBE persistedVereinBE = vereinDAO.update(vereinBE, currentDsbMitglied);
+        final VereinBE persistedVereinBE;
+        try {
+            persistedVereinBE = vereinDAO.update(vereinBE, currentDsbMitglied);
+        } catch (TechnicalException e) {
+            if (isDuplicateVereinConflict(e)) {
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, EXCEPTION_DUPLICATE_VEREIN);
+            }
+            throw e;
+        }
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
@@ -101,6 +123,13 @@ public class VereinComponentImpl implements VereinComponent {
         Preconditions.checkNotNull(vereinDO.getRegionId(), PRECONDITION_MSG_VEREIN_REGION_ID);
 
         Preconditions.checkArgument(vereinDO.getRegionId() >= 0, PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG);
+    }
+
+    private boolean isDuplicateVereinConflict(final TechnicalException e) {
+        return e.getErrorCode() == ErrorCode.DATABASE_ERROR
+                && e.getMessage() != null
+                && (e.getMessage().contains(DUPLICATE_VEREIN_DSB_IDENTIFIER_CONSTRAINT)
+                || e.getMessage().contains(DUPLICATE_VEREIN_NAME_CONSTRAINT));
     }
 
 }
