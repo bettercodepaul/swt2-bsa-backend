@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.disziplin.service;
 
 import java.util.List;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ public class DisziplinService implements ServiceFacade {
      * @return list of {@link DisziplinDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
     public List<DisziplinDTO> findAll() {
         final List<DisziplinDO> disziplinDOList = disziplinComponent.findAll();
         LOG.debug("Received Disziplin request");
@@ -58,7 +60,7 @@ public class DisziplinService implements ServiceFacade {
      * @return list of {@link DisziplinDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
     public DisziplinDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
