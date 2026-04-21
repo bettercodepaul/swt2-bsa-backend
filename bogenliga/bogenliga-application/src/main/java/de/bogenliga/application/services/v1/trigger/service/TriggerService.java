@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class TriggerService implements ServiceFacade {
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
     private final BasicDAO basicDao;
+    private final TriggerDAO triggerDAO;
     private final TriggerComponent triggerComponent;
 
     private final MigrationTimestampDAO migrationTimestampDAO;
@@ -79,7 +81,7 @@ public class TriggerService implements ServiceFacade {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Autowired
-    public TriggerService(final BasicDAO basicDao, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
+    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
                           final AltsystemLiga altsystemLiga,
                           final AltsystemSaison altsystemSaison,
                           final AltsystemMannschaft altsystemMannschaft,
@@ -91,6 +93,7 @@ public class TriggerService implements ServiceFacade {
         this.basicDao = basicDao;
         this.triggerComponent = triggerComponent;
         this.migrationTimestampDAO = migrationTimestampDAO;
+        this.triggerDAO = triggerDAO;
         this.oldDBImport = oldDBImport;
 
         dataObjectToEntity = new HashMap<>();
@@ -244,8 +247,8 @@ public class TriggerService implements ServiceFacade {
         //returns true if Params are not malicious
         try{
             if(offsetMuliplicator != null && queryPageLimit != null){
-                int actualOffsetMuliplicator = Integer.parseInt(offsetMuliplicator);
-                int actualQueryPageLimit = Integer.parseInt(queryPageLimit);
+                Integer.parseInt(offsetMuliplicator);
+                Integer.parseInt(queryPageLimit);
             }
             else {
                 throw new IllegalArgumentException();

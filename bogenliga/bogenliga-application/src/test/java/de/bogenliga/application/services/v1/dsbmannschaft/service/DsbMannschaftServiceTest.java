@@ -408,7 +408,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
             assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
-        } catch (NoPermissionException e) { }
+        } catch (BusinessException e) { }
     }
 
     @Test
@@ -452,7 +452,7 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
             assertThat(createdDsbMannschaft.getSportjahr()).isEqualTo(platzhalterDTO.getSportjahr());
 
-        } catch (NoPermissionException e) { }
+        } catch (BusinessException e) { }
     }
 
 
@@ -467,7 +467,7 @@ public class DsbMannschaftServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
-        assertThatExceptionOfType(NoPermissionException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
     }
 
@@ -479,12 +479,10 @@ public class DsbMannschaftServiceTest {
         platzhalterDO2.setVereinId(0L);
 
         // call test method
-        try {
-            underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
+        underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
 
-            assertThatExceptionOfType(BusinessException.class)
-                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
-        } catch (NoPermissionException ignored) { }
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
     }
 
     @Test
@@ -518,7 +516,7 @@ public class DsbMannschaftServiceTest {
             underTest.checkForPlatzhalter(actualMannschaftInVeranstaltungCount,
                     allExistingPlatzhalterList, platzhalterDTO, veranstaltunggroesse, principal);
 
-        }catch (NoPermissionException ignored) {}
+        }catch (BusinessException ignored) {}
     }
 
     @Test
@@ -559,7 +557,7 @@ public class DsbMannschaftServiceTest {
 
             assertThat(deletedDsbMannschaft).isNotNull();
 
-        }catch (NoPermissionException ignored) {}
+        }catch (BusinessException ignored) {}
     }
 
 
@@ -598,7 +596,7 @@ public class DsbMannschaftServiceTest {
             assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
             assertThat(updatedDsbMannschaft.getSportjahr()).isEqualTo(input.getSportjahr());
 
-        } catch (NoPermissionException e) { }
+        } catch (BusinessException e) { }
     }
 
 
@@ -613,7 +611,7 @@ public class DsbMannschaftServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
-        assertThatExceptionOfType(NoPermissionException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
     }
 
@@ -665,7 +663,7 @@ public class DsbMannschaftServiceTest {
         assertThat(deletedDsbMannschaft).isNotNull();
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMannschaft.getVereinId()).isEqualTo(VEREIN_ID);
-        }catch (NoPermissionException e) { }
+        }catch (BusinessException e) { }
     }
 
     @Test

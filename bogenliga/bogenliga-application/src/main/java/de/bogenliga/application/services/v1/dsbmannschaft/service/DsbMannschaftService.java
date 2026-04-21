@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
@@ -23,8 +22,6 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -67,6 +64,12 @@ public class DsbMannschaftService implements ServiceFacade {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+
+    private static final String ERROR_MSG_CREATE_MANNSCHAFT_NO_PERMISSION = "Keine Berechtigung zum Erstellen einer Mannschaft";
+    private static final String ERROR_MSG_PLATZHALTER_NO_PERMISSION = "Sie haben keine Berechtigung für diese Aktion.";
+    private static final String ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION = "Löschen einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
+    private static final String ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION = "Ändern einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
+
     MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     /**
@@ -208,14 +211,23 @@ public class DsbMannschaftService implements ServiceFacade {
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByName(name);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
+
+
+    /**
+     * I return the dsbMannschaft entries of the database having the given MannschaftID.
+     *
+     * @param id the given SearchTerm
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+
     @GetMapping(value = "VeranstaltungAndWettkampfByID/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllVeranstaltungAndWettkampfByID(@PathVariable("id") final long id) {
 
         LOG.debug("Receive 'findAllVeranstaltungAndWettkampfByID' request with id '{}'", id);
 
-        final List<DsbMannschaftDO> DbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
-        return DbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
+        final List<DsbMannschaftDO> dbsMannschaftVerUWettDOList  = dsbMannschaftComponent.findVeranstaltungAndWettkampfByID(id);
+        return dbsMannschaftVerUWettDOList.stream().map(DsbMannschaftDTOMapper.toVerUWettDTO).toList();
     }
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
@@ -267,7 +279,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal){
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
         //and if the user has the permission to modify his verein.
@@ -323,7 +335,12 @@ public class DsbMannschaftService implements ServiceFacade {
 
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
 
-        } else throw new NoPermissionException();
+        } else {
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_CREATE_MANNSCHAFT_NO_PERMISSION
+            );
+        }
     }
 
 
@@ -334,27 +351,8 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
-                                                        final Principal principal) throws NoPermissionException {
-
+                                                        final Principal principal) {
         Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId().equals(PLATZHALTER_VEREIN_ID), "tja");
-
-        MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
-        try {
-            List<MannschaftsMitgliedDTO> list = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
-                        (long) i,
-                        savedDsbMannschaftDO.getId(),
-                        (long) i+1,
-                        1,
-                        (long) i+1);
-                list.add(mannschaftsMitgliedDTO);
-            }
-
-            for (int j = 0; j < list.size(); j++) {
-                MannschaftsMitgliedDTO createdSchuetze = mannschaftsMitgliedService.create(list.get(j), principal);
-            }
-        }catch (NullPointerException ignored) {}
     }
 
 
@@ -373,7 +371,7 @@ public class DsbMannschaftService implements ServiceFacade {
                                     final List<DsbMannschaftDO> allExistingPlatzhalterList,
                                     final DsbMannschaftDTO dsbMannschaftDTO,
                                     final int veranstaltungsgroesse,
-                                    final Principal principal) throws NoPermissionException {
+                                    final Principal principal) {
 
         // Check if the user has the required permission
         if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
@@ -413,7 +411,10 @@ public class DsbMannschaftService implements ServiceFacade {
             }
         } else {
             // Throw an exception if the user does not have permission
-            throw new NoPermissionException();
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_PLATZHALTER_NO_PERMISSION
+            );
         }
     }
 
@@ -541,7 +542,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions( perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
         //and if the user has the permission to modify his verein.
@@ -549,7 +550,10 @@ public class DsbMannschaftService implements ServiceFacade {
         DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) && (!this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())
                     ||!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId()))) {
-                throw new NoPermissionException();
+                throw new BusinessException(
+                        ErrorCode.NO_PERMISSION_ERROR,
+                        ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION
+                );
         }
 
         checkPreconditions(dsbMannschaftDTO);
@@ -592,7 +596,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
@@ -602,7 +606,10 @@ public class DsbMannschaftService implements ServiceFacade {
 
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
-            throw new NoPermissionException();
+            throw new BusinessException(
+                    ErrorCode.NO_PERMISSION_ERROR,
+                    ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION
+            );
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
