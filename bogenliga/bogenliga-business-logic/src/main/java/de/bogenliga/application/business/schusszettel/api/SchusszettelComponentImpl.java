@@ -8,10 +8,21 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.layout.element.Image;
+import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -83,8 +94,12 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+    private final TabletSchusszettelDAO tabletSchusszettelDAO;
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     SchusszettelComponentAsync schusszettelComponentAsync;
+
+    @Value("${app.frontend.url:http://localhost:4200}")
+    private String frontendUrl;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -93,7 +108,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
                                      final WettkampfComponent wettkampfComponent,
-                                     final VeranstaltungComponent veranstaltungComponent) {
+                                     final VeranstaltungComponent veranstaltungComponent,
+                                     final TabletSchusszettelDAO tabletSchusszettelDAO) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
@@ -101,6 +117,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.tabletSchusszettelDAO = tabletSchusszettelDAO;
         this.schusszettelComponentAsync = new SchusszettelComponentAsync();
     }
 
@@ -781,9 +798,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             final Table tableSecondRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableSecondRowSecondPart = new Table(UnitValue.createPercentArray(10), true);
             final Table tableSecondRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
+            final Table tableThirdRow = new Table(UnitValue.createPercentArray(new float[]{44.0F, 44.0F, 12.0F}));
+
+            // Look up tablet session for QR code (done before tableHead so we can embed it)
+            long teamId = matchDOs[i - 1].getMannschaftId();
+            long wettkampfId = matchDOs[i - 1].getWettkampfId();
+            Optional<TabletSchusszettelEntity> session = tabletSchusszettelDAO.findByWettkampfUndTeam(wettkampfId, teamId);
+            Image qrImage = null;
+            if (session.isPresent()) {
+                String qrUrl = frontendUrl + "/#/schusszettel/tablet?token=" + session.get().getToken()
+                        + "&teamid=" + teamId + "&wettkampfid=" + wettkampfId;
+                qrImage = generateQrCodeImage(qrUrl, 50);
+            }
 
             // Table head
+            Cell scheibeCell = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
+                    .add(new Paragraph("Scheibe " + matchDOs[i - 1].getMatchScheibennummer()).setBold().setFontSize(12.0F));
             tableHead
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                             .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[i - 1], 12.0F)))
@@ -791,9 +821,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                             .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
                     )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                            .add(new Paragraph("Scheibe " + matchDOs[i - 1].getMatchScheibennummer()).setBold().setFontSize(12.0F))
-                    )
+                    .addCell(scheibeCell)
             ;
 
             // First row
@@ -1015,12 +1043,21 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
             // If the first team is a Platzhalter (Leermatch) don´t show the Unterschrift section for the Platzhalter,
             // the same procedure if the second team is a Platzhalter
+            // Build QR cell spanning all 3 rows of tableThirdRow (right column)
+            Cell qrCell = new Cell(3, 1).setBorder(Border.NO_BORDER)
+                    .setVerticalAlignment(com.itextpdf.layout.property.VerticalAlignment.BOTTOM);
+            if (qrImage != null) {
+                qrCell.add(qrImage.setWidth(50).setHeight(50)
+                        .setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.RIGHT));
+            }
+
             if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
                 tableThirdRow
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
                         )
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(qrCell)
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(new Paragraph("\n"))
                         )
@@ -1036,6 +1073,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                 .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
                         )
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(qrCell)
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(new Paragraph("\n"))
                         )
@@ -1053,6 +1091,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
                         )
+                        .addCell(qrCell)
                         // Two empty cells for text input
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(new Paragraph("\n"))
@@ -1102,6 +1141,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
             ;
 
+
         }
     }
 
@@ -1129,6 +1169,18 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             return  fontSize;
         }
         return 175f  / text.length();
+    }
+
+    private Image generateQrCodeImage(String url, int size) {
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, size, size);
+            ByteArrayOutputStream qrStream = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(matrix, "PNG", qrStream);
+            return new Image(ImageDataFactory.create(qrStream.toByteArray()));
+        } catch (WriterException | IOException e) {
+            return null;
+        }
     }
 
     public class SchusszettelComponentAsync {
