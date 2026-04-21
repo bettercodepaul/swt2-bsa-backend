@@ -225,6 +225,31 @@ public class VereinComponentImplTest {
     }
 
     @Test
+    public void create_duplicateVereinNameConstraint_shouldThrowConflict() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.create(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                        "duplicate key value violates unique constraint \"uc_verein_name\""));
+
+        assertThatThrownBy(() -> underTest.create(input, USER))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+    }
+
+    @Test
+    public void create_nonDuplicateDatabaseError_shouldRethrowTechnicalException() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.create(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR, "other database error"));
+
+        assertThatThrownBy(() -> underTest.create(input, USER))
+                .isInstanceOf(TechnicalException.class)
+                .hasMessageContaining("other database error");
+    }
+
+    @Test
     public void update() {
         // prepare test data
         final VereinDO input = getVereinDO();
@@ -269,6 +294,31 @@ public class VereinComponentImplTest {
         assertThatThrownBy(() -> underTest.update(input, USER))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+    }
+
+    @Test
+    public void update_duplicateVereinNameConstraint_shouldThrowConflict() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.update(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                        "duplicate key value violates unique constraint \"uc_verein_name\""));
+
+        assertThatThrownBy(() -> underTest.update(input, USER))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+    }
+
+    @Test
+    public void update_nonDuplicateDatabaseError_shouldRethrowTechnicalException() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.update(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR, "other database error"));
+
+        assertThatThrownBy(() -> underTest.update(input, USER))
+                .isInstanceOf(TechnicalException.class)
+                .hasMessageContaining("other database error");
     }
 
     @Test
