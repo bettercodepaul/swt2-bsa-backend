@@ -124,7 +124,15 @@ public class DsbMannschaftDAOext implements DataAccessObject {
                     + " LEFT JOIN "
                     + " verein v ON m.mannschaft_verein_id = v.verein_id "
                     + " WHERE mannschaft_verein_id = ? "
-                    + " ORDER BY mannschaft_nummer ";
+                    + " AND ("
+                    + "   m.mannschaft_veranstaltung_id IS NULL "
+                    + "   OR EXISTS ("
+                    + "     SELECT 1 FROM veranstaltung ver "
+                    + "     WHERE ver.veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + "     AND (ver.veranstaltung_phase IS NULL OR ver.veranstaltung_phase IN (1, 2))"
+                    + "   )"
+                    + " )"
+                    + " ORDER BY mannschaft_nummer";
 
     private static final String FIND_ALL_BY_NAME_WITH_NAME =
             " SELECT "
@@ -229,7 +237,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
     public FileChannel findById(long teamId) {
         // TODO
-        
+
         return null;
     }
 
