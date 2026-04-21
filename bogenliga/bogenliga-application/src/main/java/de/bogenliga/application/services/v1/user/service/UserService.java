@@ -372,7 +372,7 @@ public class UserService implements ServiceFacade {
      * @return list of {@link UserDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).toList();
