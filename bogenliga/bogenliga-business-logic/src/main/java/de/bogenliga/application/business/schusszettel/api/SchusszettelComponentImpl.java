@@ -769,13 +769,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
-        // QR overlay: images collected here, placed with fixed position after loop
-        // so they don't affect the flow layout (table heights stay at 50pt)
-        final float QR_DISPLAY_SIZE = 90f;
-        final float QR_X = com.itextpdf.kernel.geom.PageSize.A4.getWidth() - 36f - QR_DISPLAY_SIZE; // right-aligned with margin
-        final float[] QR_Y = { 435f, 20f }; // y from page bottom: [0]=top-half, [1]=bottom-half
-        Image[] qrOverlayImages = new Image[2];
-
         for (int i = 1; i <= 2; i++) {
             // If the first team is a Platzhalter (Leermatch) skip it, the same procedure if the second team is
             // a Platzhalter
@@ -807,14 +800,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             final Table tableSecondRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableThirdRow = new Table(UnitValue.createPercentArray(new float[]{44.0F, 44.0F, 12.0F}));
 
-            // Look up tablet session for QR code
+            // Look up tablet session for QR code (done before tableHead so we can embed it)
             long teamId = matchDOs[i - 1].getMannschaftId();
             long wettkampfId = matchDOs[i - 1].getWettkampfId();
             Optional<TabletSchusszettelEntity> session = tabletSchusszettelDAO.findByWettkampfUndTeam(wettkampfId, teamId);
+            Image qrImage = null;
             if (session.isPresent()) {
                 String qrUrl = frontendUrl + "/#/schusszettel/tablet?token=" + session.get().getToken()
                         + "&teamid=" + teamId + "&wettkampfid=" + wettkampfId;
-                qrOverlayImages[i - 1] = generateQrCodeImage(qrUrl, 200);
+                qrImage = generateQrCodeImage(qrUrl, 50);
             }
 
             // Table head
@@ -1047,10 +1041,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
-            // QR cell: always 50pt placeholder — actual QR image is placed as overlay after loop
+            // If the first team is a Platzhalter (Leermatch) don´t show the Unterschrift section for the Platzhalter,
+            // the same procedure if the second team is a Platzhalter
+            // Build QR cell spanning all 3 rows of tableThirdRow (right column)
             Cell qrCell = new Cell(3, 1).setBorder(Border.NO_BORDER)
                     .setVerticalAlignment(com.itextpdf.layout.property.VerticalAlignment.BOTTOM);
-            qrCell.add(new com.itextpdf.layout.element.Div().setWidth(50).setHeight(50));
+            if (qrImage != null) {
+                qrCell.add(qrImage.setWidth(50).setHeight(50)
+                        .setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.RIGHT));
+            }
 
             if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
                 tableThirdRow
@@ -1141,17 +1140,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(tableThirdRow)
                     )
             ;
-        }
 
-        // Place QR overlays at fixed positions — outside the flow, so layout is unaffected.
-        // QR_Y values are from the page bottom; adjust if positioning is off after testing.
-        doc.flush();
-        int pageNum = Math.max(1, doc.getPdfDocument().getNumberOfPages());
-        for (int i = 0; i < 2; i++) {
-            if (qrOverlayImages[i] != null) {
-                qrOverlayImages[i].setFixedPosition(pageNum, QR_X, QR_Y[i], QR_DISPLAY_SIZE);
-                doc.add(qrOverlayImages[i]);
-            }
+
         }
     }
 
