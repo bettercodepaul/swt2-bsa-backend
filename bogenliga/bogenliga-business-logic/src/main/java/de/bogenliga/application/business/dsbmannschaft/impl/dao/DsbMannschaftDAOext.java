@@ -85,6 +85,16 @@ public class DsbMannschaftDAOext implements DataAccessObject {
                     + "AND ver.veranstaltung_phase = 2 "
                     + "GROUP BY mannschaft_nummer, veranstaltung_name, verein_name, wettkampf_ortsname, wettkampf_tag; ";
 
+    private static final String FIND_VERSANSTALTUNGEN_BY_MANNSCHAFT =
+            "SELECT veranstaltung_name, wettkampf_tag, wettkampf_ortsname, verein_name, mannschaft_nummer "
+                    + "FROM veranstaltung ver "
+                    + "JOIN mannschaft m ON ver.veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + "JOIN verein v ON m.mannschaft_verein_id = v.verein_id "
+                    + "JOIN wettkampf ON ver.veranstaltung_id = wettkampf.wettkampf_veranstaltung_id "
+                    + "WHERE m.mannschaft_id = ? "
+                    + "AND ver.veranstaltung_phase = 2 "
+                    + "GROUP BY mannschaft_nummer, veranstaltung_name, verein_name, wettkampf_ortsname, wettkampf_tag; ";
+
     private static final String FIND_ALL_BY_WETTKAMPF_ID_WITH_NAME =
             " SELECT "
                     + " m.*, "
@@ -114,7 +124,15 @@ public class DsbMannschaftDAOext implements DataAccessObject {
                     + " LEFT JOIN "
                     + " verein v ON m.mannschaft_verein_id = v.verein_id "
                     + " WHERE mannschaft_verein_id = ? "
-                    + " ORDER BY mannschaft_nummer ";
+                    + " AND ("
+                    + "   m.mannschaft_veranstaltung_id IS NULL "
+                    + "   OR EXISTS ("
+                    + "     SELECT 1 FROM veranstaltung ver "
+                    + "     WHERE ver.veranstaltung_id = m.mannschaft_veranstaltung_id "
+                    + "     AND (ver.veranstaltung_phase IS NULL OR ver.veranstaltung_phase IN (1, 2))"
+                    + "   )"
+                    + " )"
+                    + " ORDER BY mannschaft_nummer";
 
     private static final String FIND_ALL_BY_NAME_WITH_NAME =
             " SELECT "
@@ -197,8 +215,10 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
     public List<DsbMannschaftBEext> findAllByWettkampfId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
-    public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfById(final long id) {
+    public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfByVereinId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_VERSANSTALTUNGEN_BY_VEREIN, id);}
+    public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfById(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_VERSANSTALTUNGEN_BY_MANNSCHAFT, id);}
     public List<DsbMannschaftBEext> findAllByWettkampfIdWithName(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID_WITH_NAME, id);}
     public DsbMannschaftBEext findByIdwithName(final long id) {
@@ -217,7 +237,7 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
     public FileChannel findById(long teamId) {
         // TODO
-        
+
         return null;
     }
 

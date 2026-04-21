@@ -35,7 +35,6 @@ public class DsbMitgliedBasicDAOTest {
 
     private static final long ID = 1337;
     private static final String VORNAME = "Sorscha";
-    private static final String NACHNAME = "Kratikoff";
     private static final String GEBURTSDATUM = "1.9.1991";
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";

@@ -29,7 +29,6 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -73,7 +72,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Can't save the given data, due to the invalidity of the current offline session.";
 
     private final WettkampfDAO wettkampfDAO;
-    private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
     private final LigaComponent ligaComponent;
     private MatchComponent matchComponent;
@@ -98,14 +96,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final PasseComponent passeComponent,
                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                   final DsbMitgliedComponent dsbMitgliedComponent,
-                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
                                   final NameMappingComponent nameMappingComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
         this.nameMappingComponent = nameMappingComponent;
     }
 
@@ -463,7 +459,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     {
         for(WettkampfBE wettkampf : wettkampflisteBEList)
         {
-            List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+            List<MannschaftsmitgliedDO> mitglied = mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
             Table table = new Table(new float[]{100, 150, 100, 250});
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
@@ -471,7 +467,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
-            for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
+            for (MannschaftsmitgliedDO schuetze : mitglied)
             {
                 List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
                 List<Long> passennummern = getNummern(passen);
@@ -498,14 +494,14 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     //Generiert Tabelle für Gesammtstatistik
     void generateGesamt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
-        List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+        List<MannschaftsmitgliedDO> mitglied = mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
         Table table = new Table(new float[]{100, 150, 250});
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
-        for(MannschaftsmitgliedExtendedBE schuetze : mitglied)
+        for(MannschaftsmitgliedDO schuetze : mitglied)
         {
             float average = -1;
             for(WettkampfBE wettkampf : wettkampflisteBEList)
@@ -536,16 +532,18 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.close();
     }
 
-    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstaltungsId, long wettkampftag)
     {
+        VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstaltungsId); // Use VeranstaltungComponent
+
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ nameMappingComponent.getVeranstaltungsNameForVeranstaltungsId(veranstatungsId)).setBold());
+        doc.add(new Paragraph(wettkampftag + ". Bogenligawettkampf / " + selectedVeranstaltung.getVeranstaltungName()).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
-        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
-                    + ", " +  wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
+        doc.add(new Paragraph("am " + wettkaempfe.get(0).getDatum()));
+        doc.add(new Paragraph("in " + wettkaempfe.get(0).getWettkampfPlz() + ", " + wettkaempfe.get(0).getWettkampfOrtsname()
+                + ", " + wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
         Table table = new Table(new float[]{100, 20, 20, 20, 20, 20, 100, 20, 20, 20, 20, 20, 50, 50});
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         satzToTable(table);
