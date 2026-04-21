@@ -6,6 +6,9 @@ import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAOext;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBEext;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -206,6 +210,20 @@ public class VereinComponentImplTest {
         assertThat(persistedBE.getVereinId())
                 .isEqualTo(input.getId());
     }
+
+    @Test
+    public void create_duplicateVereinConstraint_shouldThrowConflict() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.create(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                        "duplicate key value violates unique constraint \"uc_verein_dsb_identifier\""));
+
+        assertThatThrownBy(() -> underTest.create(input, USER))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
+    }
+
     @Test
     public void update() {
         // prepare test data
@@ -238,6 +256,19 @@ public class VereinComponentImplTest {
                 .isEqualTo(input.getId());
         assertThat(persistedBE.getVereinName())
                 .isEqualTo(input.getName());
+    }
+
+    @Test
+    public void update_duplicateVereinConstraint_shouldThrowConflict() {
+        final VereinDO input = getVereinDO();
+
+        when(vereinDAO.update(any(VereinBE.class), anyLong()))
+                .thenThrow(new TechnicalException(ErrorCode.DATABASE_ERROR,
+                        "duplicate key value violates unique constraint \"uc_verein_dsb_identifier\""));
+
+        assertThatThrownBy(() -> underTest.update(input, USER))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.ENTITY_CONFLICT_ERROR.getValue());
     }
 
     @Test
