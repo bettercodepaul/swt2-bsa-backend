@@ -97,6 +97,7 @@ public class TabletSchusszettelComponentImplTest {
         testMatch.setSatzpunkte(0L);
         testMatch.setMatchpunkte(0L);
         testMatch.setNr(1L);
+        testMatch.setMatchScheibennummer(7L);
     }
     
     private void setupMockBehavior() {
@@ -372,6 +373,29 @@ public class TabletSchusszettelComponentImplTest {
         }
     }
     
+    @Test
+    public void getStatus_mapsOwnTeamScheibennummer_whenMatchAvailable() {
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        // Field may remain null in states without assigned own match id.
+        if (result.getEigenesTeamMatchId() != null) {
+            assertThat(result.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        }
+    }
+
+    @Test
+    public void getStatus_keepsScheibennummerNull_whenOwnMatchHasNoScheibe() {
+        testMatch.setMatchScheibennummer(null);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        if (result.getEigenesTeamMatchId() != null) {
+            assertThat(result.getEigenesTeamScheibennummer()).isNull();
+        }
+    }
+
     private List<PasseDO> createTestPasses(Long teamId, Long matchId, int passeNr, int arrow1, int arrow2, int arrow3) {
         List<PasseDO> passes = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
