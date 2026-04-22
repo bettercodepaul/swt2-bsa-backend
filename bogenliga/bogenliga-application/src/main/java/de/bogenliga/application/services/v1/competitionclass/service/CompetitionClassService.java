@@ -2,6 +2,8 @@ package de.bogenliga.application.services.v1.competitionclass.service;
 
 import java.security.Principal;
 import java.util.List;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +58,7 @@ public class CompetitionClassService implements ServiceFacade {
      * @return lost of {@link CompetitionClassDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
         return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).toList();
@@ -87,7 +89,7 @@ public class CompetitionClassService implements ServiceFacade {
     @GetMapping(
             value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
     public CompetitionClassDTO findById(@PathVariable("id") final long id){
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
