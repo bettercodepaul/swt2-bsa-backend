@@ -1049,6 +1049,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             if (qrImage != null) {
                 qrCell.add(qrImage.setWidth(50).setHeight(50)
                         .setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.RIGHT));
+            } else {
+                // Placeholder keeps same height as QR image so tableThirdRow rows don't expand
+                qrCell.add(new com.itextpdf.layout.element.Div().setWidth(50).setHeight(50));
             }
 
             if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
