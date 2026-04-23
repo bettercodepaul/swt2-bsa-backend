@@ -44,6 +44,14 @@ public interface DsbMannschaftComponent extends ComponentFacade {
 
 
     /**
+     * Return all exising Sportjahre in dsbmannschaft database.
+     *
+     * @return list of all exising Sportjahre in dsbmannschaft database;
+     * empty list, if no exising Sportjahre in dsbmannschaft is found
+     */
+    List<DsbMannschaftDO> findAllSportjahre();
+
+    /**
      * Return all dsbmannschaft entries with the given Wettkampf-Id.
      *
      * @param id of th eWettkampf

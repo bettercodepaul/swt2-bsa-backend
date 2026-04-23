@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
 import java.sql.Date;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -207,18 +208,20 @@ public class DsbMannschaftServiceTest {
         verify(dsbMannschaftComponent).findAll();
     }
 
-
     @Test
     public void findAllByVereinsId() {
         // prepare test data
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
+        final int currentYear = Year.now().getValue();
+        dsbMannschaftDO.setSportjahr( (long) currentYear);
+
         // configure mocks
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID);
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, currentYear);
 
         //assert result
         assertThat(actual).isNotNull().hasSize(1);

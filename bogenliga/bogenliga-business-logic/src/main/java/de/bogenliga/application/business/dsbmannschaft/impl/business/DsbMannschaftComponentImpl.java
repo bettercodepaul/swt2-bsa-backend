@@ -107,6 +107,17 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
     }
 
+    @Override
+    public List<DsbMannschaftDO> findAllSportjahre() {
+        final List<DsbMannschaftBEext> dsbMannschaftBEextSportjahreList = dsbMannschaftDAOext.findAllSportjahre();
+        if(dsbMannschaftBEextSportjahreList == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format(EXCEPTION_NO_RESULTS, ""));
+        }
+        return dsbMannschaftBEextSportjahreList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
+    }
+
 
     @Override
     public List<DsbMannschaftDO> findAllByVeranstaltungsId(long id){
