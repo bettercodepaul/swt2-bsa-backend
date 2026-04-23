@@ -108,14 +108,15 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
     @Override
-    public List<DsbMannschaftDO> findAllSportjahre() {
+    public List<Long> findAllSportjahre() {
         final List<DsbMannschaftBEext> dsbMannschaftBEextSportjahreList = dsbMannschaftDAOext.findAllSportjahre();
         if(dsbMannschaftBEextSportjahreList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, ""));
         }
         return dsbMannschaftBEextSportjahreList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftVerUWettDO).toList();
+                .map(DsbMannschaftBEext::getSportjahr)
+                .toList();
     }
 
 

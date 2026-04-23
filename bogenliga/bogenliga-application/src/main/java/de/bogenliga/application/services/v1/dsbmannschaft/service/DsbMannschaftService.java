@@ -149,11 +149,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @GetMapping(value = "sportjahre", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<Long> findAllSportjahre() {
-        final List<DsbMannschaftDO> dsbMannschaftDOListSportjahre = dsbMannschaftComponent.findAllSportjahre();
-
-        return dsbMannschaftDOListSportjahre.stream().map(DsbMannschaftDTOMapper.toDTO)
-                .map(DsbMannschaftDTO::getSportjahr)
-                .toList();
+        return dsbMannschaftComponent.findAllSportjahre();
     }
 
 
