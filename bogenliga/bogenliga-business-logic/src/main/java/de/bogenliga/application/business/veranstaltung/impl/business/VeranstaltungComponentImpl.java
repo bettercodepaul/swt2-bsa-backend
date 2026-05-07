@@ -132,6 +132,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        preventPhaseDowngrade(veranstaltungBE);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
         return VeranstaltungMapper.toVeranstaltungDO(persistedVeranstaltungBE,
                 nameMappingComponent.getUserEmailForUserId(persistedVeranstaltungBE.getVeranstaltungLigaleiterId()),
@@ -275,6 +276,20 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
             }
         }
         return true;
+    }
+
+    private void preventPhaseDowngrade(final VeranstaltungBE veranstaltungBE) {
+        final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.findById(veranstaltungBE.getVeranstaltungId());
+
+        if (persistedVeranstaltungBE == null
+                || persistedVeranstaltungBE.getVeranstaltungPhase() == null
+                || veranstaltungBE.getVeranstaltungPhase() == null) {
+            return;
+        }
+
+        if (persistedVeranstaltungBE.getVeranstaltungPhase() > veranstaltungBE.getVeranstaltungPhase()) {
+            veranstaltungBE.setVeranstaltungPhase(persistedVeranstaltungBE.getVeranstaltungPhase());
+        }
     }
 
     /**
