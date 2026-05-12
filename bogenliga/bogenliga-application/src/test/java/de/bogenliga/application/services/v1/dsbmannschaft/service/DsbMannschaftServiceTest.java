@@ -209,6 +209,25 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
+    public void findAllSportjahre() {
+        // prepare test data
+        final List<Long> expectedSportjahre = List.of(2026L, 2025L, 2024L);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllSportjahre()).thenReturn(expectedSportjahre);
+
+        // call test method
+        final List<Long> actual = underTest.findAllSportjahre();
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(3);
+        assertThat(actual).containsExactly(2026L, 2025L, 2024L);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllSportjahre();
+    }
+
+    @Test
     public void findAllByVereinsId() {
         // prepare test data
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
