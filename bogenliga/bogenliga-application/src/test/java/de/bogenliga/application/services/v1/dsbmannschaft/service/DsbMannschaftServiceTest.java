@@ -257,6 +257,27 @@ public class DsbMannschaftServiceTest {
         verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
     }
 
+    @Test
+    public void findAllByVereinsId_OnlyMatchingSportjahr() {
+        // prepare test data
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        dsbMannschaftDO.setSportjahr(2019L);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, 2018);
+
+        // assert result
+        assertThat(actual).isNotNull().isEmpty();
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
+    }
+
 
     @Test
     public void findAllByVeranstaltungsId() {
