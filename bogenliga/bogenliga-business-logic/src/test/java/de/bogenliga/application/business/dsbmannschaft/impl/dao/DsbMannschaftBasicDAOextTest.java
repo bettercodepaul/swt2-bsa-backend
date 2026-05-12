@@ -108,6 +108,22 @@ public class DsbMannschaftBasicDAOextTest {
     }
 
     @Test
+    public void findAllSportjahre() {
+        // Arrange
+        final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
+        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // Act
+        final List<DsbMannschaftBEext> actual = underTest.findAllSportjahre();
+
+        // Assert
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(expectedBE);
+
+        verify(basicDao).selectEntityList(any(), any());
+    }
+
+    @Test
     public void findAllByWettkampfId() {
         // Arrange
         final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
