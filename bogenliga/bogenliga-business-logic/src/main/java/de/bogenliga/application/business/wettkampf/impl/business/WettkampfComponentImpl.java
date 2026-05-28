@@ -268,8 +268,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         else {
             generateGesamt(doc, wettkampflisteBEList, mannschaftsid);
         }
-
-        doc.close();
     }
 
     //liefert eine liste mit den matchnummern der passen die übergeben wurden
@@ -399,6 +397,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 pdfDocument.getDocumentInfo().setTitle(name+".pdf");
                 generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
+                doc.close();
                 bResult = result.toByteArray();
                 LOGGER.debug("{} erstellt",name);
             } catch(IOException e){
@@ -440,6 +439,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 pdfDocument.getDocumentInfo().setTitle("Übersicht.pdf");
                 generateUebersicht(doc,wettkaempfeAmTag ,veranstaltungsid ,wettkampftag);
 
+                doc.close();
                 bResult = result.toByteArray();
                 LOGGER.debug("Uebersicht erstellt");
             } catch(IOException e){
@@ -488,7 +488,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 doc.add(new Paragraph(""));
             }
         }
-        doc.close();
     }
 
     //Generiert Tabelle für Gesammtstatistik
@@ -528,8 +527,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             doc.add(table);
             doc.add(new Paragraph(""));
         }
-
-        doc.close();
     }
 
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstaltungsId, long wettkampftag)
@@ -557,7 +554,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
         for(WettkampfBE wettkampf : wettkaempfe)
         {
-            List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampfid));
+            List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampf.getId()));
 
             MatchDO alt = new MatchDO(null,null,null,null,null,null,null,null,null,null,null,null,null);
             int count = 1;
@@ -590,8 +587,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.add(new Paragraph(""));
         //ligatabelle hinzufügen
         doc.add(getLigatabelleAsTable(wettkampfid));
-
-        doc.close();
     }
     public String ausgabeTabelle(Long wert)
     {

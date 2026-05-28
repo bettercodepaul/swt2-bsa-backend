@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -175,6 +176,24 @@ public class DownloadService implements ServiceFacade {
 
         final byte[] fileBloB = meldezettelComponent.getMeldezettelPDFasByteArray(wettkampfid);
 
+        return generateInputStream(fileBloB);
+    }
+
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/ergebnisliste",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public
+    ResponseEntity<InputStreamResource> downloadErgebnislistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+
+        WettkampfDO wettkampf = wettkampfComponent.findById(wettkampfid);
+
+        final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(
+                wettkampf.getWettkampfVeranstaltungsId(),
+                wettkampf.getWettkampfTag()
+        );
         return generateInputStream(fileBloB);
     }
 
