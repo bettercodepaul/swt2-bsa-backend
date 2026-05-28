@@ -179,7 +179,7 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
-
+    @CrossOrigin(maxAge = 0)
     @GetMapping(
             path = "pdf/ergebnisliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
@@ -189,11 +189,11 @@ public class DownloadService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         WettkampfDO wettkampf = wettkampfComponent.findById(wettkampfid);
-
         final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(
                 wettkampf.getWettkampfVeranstaltungsId(),
                 wettkampf.getWettkampfTag()
         );
+
         return generateInputStream(fileBloB);
     }
 
