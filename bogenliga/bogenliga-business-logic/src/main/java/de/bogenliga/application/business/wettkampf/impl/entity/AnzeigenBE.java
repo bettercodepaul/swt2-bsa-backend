@@ -14,6 +14,9 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
     public Long getId() {
         return id;
     }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getPhysischeBildschirmId() {
         return physischeBildschirmId;
