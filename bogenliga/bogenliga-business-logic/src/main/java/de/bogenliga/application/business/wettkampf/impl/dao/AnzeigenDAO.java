@@ -66,6 +66,13 @@ public class AnzeigenDAO implements DataAccessObject {
             .orderBy(ANZEIGEN_TABLE_ID)
             .compose().toString();
 
+    private static final String FIND_BY_VERANSTALTUNGS_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(ANZEIGEN_TABLE_VERANSTALTUNGS_ID)
+            .orderBy(ANZEIGEN_TABLE_ID)
+            .compose().toString();
+
     /**
      * Return a specific anzeige.
      *
@@ -75,6 +82,9 @@ public class AnzeigenDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_ID, matchId);
     }
 
+    public AnzeigenBE findByVeranstaltungsId(Long veranstaltungsId) {
+        return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_VERANSTALTUNGS_ID, veranstaltungsId);
+    }
     /**
      * Return all entries.
      *
