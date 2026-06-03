@@ -221,18 +221,28 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER})
-    public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
-        checkPreconditions(dsbMitgliedDTO);
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) throws NoPermissionException {
 
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+        if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER)
+                || this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER)
+                || this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMitgliedDTO.getVereinsId()))
+        {
+            checkPreconditions(dsbMitgliedDTO);
+
+            if(LOG.isDebugEnabled()) {
+                LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+            }
+            final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
+            final long userId = UserProvider.getCurrentUserId(principal);
+            final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
+
+            return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
         }
-        final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-        final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
-
-        return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
+        else
+        {
+            throw new NoPermissionException();
+        }
     }
 
 
