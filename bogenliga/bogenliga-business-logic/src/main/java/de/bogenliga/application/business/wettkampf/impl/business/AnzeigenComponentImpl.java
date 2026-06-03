@@ -26,6 +26,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
             "anzeigenTableTyp");
     public static final String PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID = String.format(PRECONDITION_MSG_TEMPLATE,
             "anzeigenVeranstaltungsID");
+    public static final String PRECONDITION_MSG_CURRENT_AKTUELLES_MATCH = String.format(PRECONDITION_MSG_TEMPLATE,
+            "aktuellesMatch");
 
     private final AnzeigenDAO anzeigenDAO;
 
@@ -109,6 +111,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
         Preconditions.checkNotNull(anzeigenDO.getTableTyp(), PRECONDITION_MSG_CURRENT_TABLE_TYP);
         Preconditions.checkArgument(!anzeigenDO.getTableTyp().isEmpty(), PRECONDITION_MSG_CURRENT_TABLE_TYP);
+
+        Preconditions.checkArgument(anzeigenDO.getAktuellesMatch() > 0, PRECONDITION_MSG_CURRENT_AKTUELLES_MATCH);
 
         if(anzeigenDO.getVeranstaltungsId() != null) {
             Preconditions.checkArgument(anzeigenDO.getId() >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID);
