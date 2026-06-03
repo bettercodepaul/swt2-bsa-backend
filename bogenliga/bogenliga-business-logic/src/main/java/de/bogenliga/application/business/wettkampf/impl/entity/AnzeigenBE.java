@@ -10,6 +10,7 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
     private String physischeBildschirmId;
     private String tableTyp;
     private Long veranstaltungsId;
+    private int aktuellesMatch;
 
     public Long getId() {
         return id;
@@ -39,6 +40,12 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
         this.veranstaltungsId = veranstaltungsId;
     }
 
+    public int getAktuellesMatch() {
+        return aktuellesMatch;
+    }
+    public void setAktuellesMatch(int aktuellesMatch) {
+        this.aktuellesMatch = aktuellesMatch;
+    }
 
 }
 

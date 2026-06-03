@@ -9,18 +9,21 @@ public class AnzeigenDTO implements DataTransferObject {
     private String physischeBildschirmId;
     private String tableTyp;
     private Long veranstaltungsId;
+    private int aktuellesMatch;
 
     public AnzeigenDTO() {
         this.physischeBildschirmId = "----";
         this.tableTyp = "Tabelle";
         this.veranstaltungsId = null;
+        this.aktuellesMatch = 1;
     }
 
-    public AnzeigenDTO(Long id, String physischeBildschirmId, String tableTyp, Long veranstaltungsId) {
+    public AnzeigenDTO(Long id, String physischeBildschirmId, String tableTyp, Long veranstaltungsId, int aktuellesMatch) {
         this.id = id;
         this.physischeBildschirmId = physischeBildschirmId;
         this.tableTyp = tableTyp;
         this.veranstaltungsId = veranstaltungsId;
+        this.aktuellesMatch = aktuellesMatch;
     }
 
     public String getPhysischeBildschirmId() {
@@ -49,5 +52,12 @@ public class AnzeigenDTO implements DataTransferObject {
 
     public Long getId() {
         return id;
+    }
+
+    public void setAktuellesMatch(int aktuellesMatch) {
+        this.aktuellesMatch = aktuellesMatch;
+    }
+    public int getAktuellesMatch() {
+        return aktuellesMatch;
     }
 }

@@ -24,11 +24,13 @@ public class AnzeigenDAO implements DataAccessObject {
     private static final String ANZEIGEN_BE_PHYSISCHE_BILDSCHIRM_ID = "physischeBildschirmId";
     private static final String ANZEIGEN_BE_TABLE_TYP = "tableTyp";
     private static final String ANZEIGEN_BE_VERANSTALTUNGS_ID = "veranstaltungsId";
+    private static final String ANZEIGEN_BE_AKTUELLES_MATCH = "aktuellesMatch";
 
     private static final String ANZEIGEN_TABLE_ID = "anzeigen_id";
     private static final String ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID = "physische_bildschirm_id";
     private static final String ANZEIGEN_TABLE_TABLE_TYP = "table_typ";
     private static final String ANZEIGEN_TABLE_VERANSTALTUNGS_ID = "veranstaltungs_id";
+    private static final String ANZEIGEN_TABLE_AKTUELLES_MATCH = "aktuelles_match";
 
     private static final BusinessEntityConfiguration<AnzeigenBE> ANZEIGE = new BusinessEntityConfiguration<>(
             AnzeigenBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -47,6 +49,7 @@ public class AnzeigenDAO implements DataAccessObject {
         columnsToFieldsMap.put(ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID, ANZEIGEN_BE_PHYSISCHE_BILDSCHIRM_ID);
         columnsToFieldsMap.put(ANZEIGEN_TABLE_TABLE_TYP, ANZEIGEN_BE_TABLE_TYP);
         columnsToFieldsMap.put(ANZEIGEN_TABLE_VERANSTALTUNGS_ID, ANZEIGEN_BE_VERANSTALTUNGS_ID);
+        columnsToFieldsMap.put(ANZEIGEN_TABLE_AKTUELLES_MATCH, ANZEIGEN_BE_AKTUELLES_MATCH);
 
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
