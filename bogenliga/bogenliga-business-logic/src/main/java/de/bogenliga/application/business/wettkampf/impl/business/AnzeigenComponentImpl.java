@@ -64,15 +64,15 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
-    public AnzeigenDO findByVeranstaltungsId(Long veranstaltungsId) {
-        final AnzeigenBE anzeigenBE = anzeigenDAO.findByVeranstaltungsId(veranstaltungsId);
+    public List<AnzeigenDO> findByVeranstaltungsId(Long veranstaltungsId) {
+        final List<AnzeigenBE> anzeigenBEList = anzeigenDAO.findByVeranstaltungsId(veranstaltungsId);
 
-        if (anzeigenBE == null) {
+        if (anzeigenBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No match found for ID '%s'", veranstaltungsId));
         }
 
-        return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
+        return anzeigenBEList.stream().map(AnzeigenMapper.toAnzeigenDO).toList();
     }
 
 

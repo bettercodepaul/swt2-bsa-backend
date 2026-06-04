@@ -85,8 +85,13 @@ public class AnzeigenDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_ID, matchId);
     }
 
-    public AnzeigenBE findByVeranstaltungsId(Long veranstaltungsId) {
-        return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_VERANSTALTUNGS_ID, veranstaltungsId);
+    /**
+     * Return all entries with specific veranstaltungsId.
+     *
+     * @return list of all anzeigen with this veranstaltungsId; empty list, if no match is found
+     */
+    public List<AnzeigenBE> findByVeranstaltungsId(Long veranstaltungsId) {
+        return basicDao.selectEntityList(ANZEIGE, FIND_BY_VERANSTALTUNGS_ID, veranstaltungsId);
     }
     /**
      * Return all entries.
