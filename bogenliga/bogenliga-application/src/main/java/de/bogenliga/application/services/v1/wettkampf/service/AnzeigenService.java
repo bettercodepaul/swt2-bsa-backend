@@ -70,13 +70,13 @@ public class AnzeigenService implements ServiceFacade {
      */
     @GetMapping(value = "{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
-    public AnzeigenDTO findByVeranstaltungsId(@PathVariable("veranstaltungsId") final long veranstaltungsId) {
+    public List<AnzeigenDTO> findByVeranstaltungsId(@PathVariable("veranstaltungsId") final long veranstaltungsId) {
         Preconditions.checkArgument(veranstaltungsId > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findByVeranstaltungsId' request with id '{}'", veranstaltungsId);
 
-        final AnzeigenDO anzeigenDO = anzeigenComponent.findByVeranstaltungsId(veranstaltungsId);
-        return AnzeigenDTOMapper.toDTO.apply(anzeigenDO);
+        final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findByVeranstaltungsId(veranstaltungsId);
+        return anzeigenDOList.stream().map(AnzeigenDTOMapper.toDTO).toList();
     }
 
     /**

@@ -21,7 +21,7 @@ public interface AnzeigenComponent {
 
     AnzeigenDO findById(Long id);
 
-    AnzeigenDO findByVeranstaltungsId(Long veranstaltungsId);
+    List<AnzeigenDO> findByVeranstaltungsId(Long veranstaltungsId);
 
     /**
      * Create a new anzeige in the database.
