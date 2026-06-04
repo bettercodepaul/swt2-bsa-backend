@@ -15,7 +15,7 @@ public class AnzeigenDO extends CommonDataObject implements DataObject {
     private int aktuellesMatch;
 
     public AnzeigenDO() {
-        this.physischeBildschirmId = "----";
+        this.physischeBildschirmId = null;
         this.tableTyp = "Tabelle";
         this.veranstaltungsId = null;
         this.aktuellesMatch = 1;

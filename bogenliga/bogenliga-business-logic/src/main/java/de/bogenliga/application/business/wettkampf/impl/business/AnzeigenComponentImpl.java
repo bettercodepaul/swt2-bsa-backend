@@ -106,8 +106,9 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     private void checkAnzeigen(AnzeigenDO anzeigenDO) {
         Preconditions.checkNotNull(anzeigenDO, PRECONDITION_MSG_ANZEIGEN_DO);
 
-        Preconditions.checkNotNull(anzeigenDO.getPhysischeBildschirmId(), PRECONDITION_MSG_CURRENT_ANZEIGEN_PHYSISCHE_BILDSCHIRM_ID);
-        Preconditions.checkArgument(!anzeigenDO.getPhysischeBildschirmId().isEmpty(), PRECONDITION_MSG_CURRENT_ANZEIGEN_PHYSISCHE_BILDSCHIRM_ID);
+        if(anzeigenDO.getPhysischeBildschirmId() != null) {
+            Preconditions.checkArgument(!anzeigenDO.getPhysischeBildschirmId().isEmpty(), PRECONDITION_MSG_CURRENT_ANZEIGEN_PHYSISCHE_BILDSCHIRM_ID);
+        }
 
         Preconditions.checkNotNull(anzeigenDO.getTableTyp(), PRECONDITION_MSG_CURRENT_TABLE_TYP);
         Preconditions.checkArgument(!anzeigenDO.getTableTyp().isEmpty(), PRECONDITION_MSG_CURRENT_TABLE_TYP);
@@ -115,7 +116,7 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
         Preconditions.checkArgument(anzeigenDO.getAktuellesMatch() > 0, PRECONDITION_MSG_CURRENT_AKTUELLES_MATCH);
 
         if(anzeigenDO.getVeranstaltungsId() != null) {
-            Preconditions.checkArgument(anzeigenDO.getId() >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID);
+            Preconditions.checkArgument(anzeigenDO.getVeranstaltungsId() >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID);
         }
     }
 

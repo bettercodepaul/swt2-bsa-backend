@@ -7,6 +7,9 @@ alter table anzeigen
     ADD COLUMN version BIGINT NOT NULL DEFAULT 0,
 
     -- adding missing column
-    ADD COLUMN aktuelles_match NUMERIC(2);
+    ADD COLUMN aktuelles_match NUMERIC(2),
+
+    -- changing physische_bilschirm_id to be nullable
+    ALTER COLUMN physische_bildschirm_id DROP NOT NULL;
 
 
