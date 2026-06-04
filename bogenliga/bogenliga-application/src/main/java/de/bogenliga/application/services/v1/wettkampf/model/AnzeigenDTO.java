@@ -12,7 +12,7 @@ public class AnzeigenDTO implements DataTransferObject {
     private int aktuellesMatch;
 
     public AnzeigenDTO() {
-        this.physischeBildschirmId = "----";
+        this.physischeBildschirmId = null;
         this.tableTyp = "Tabelle";
         this.veranstaltungsId = null;
         this.aktuellesMatch = 1;
