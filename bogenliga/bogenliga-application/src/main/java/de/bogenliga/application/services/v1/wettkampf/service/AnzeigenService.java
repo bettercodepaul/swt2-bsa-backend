@@ -1,11 +1,9 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
-import java.security.Principal;
 import java.util.List;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.wettkampf.mapper.AnzeigenDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -79,28 +77,6 @@ public class AnzeigenService implements ServiceFacade {
         return anzeigenDOList.stream().map(AnzeigenDTOMapper.toDTO).toList();
     }
 
-    /**
-     * create-Method() writes a new entry of Anzeigen into the database
-     *
-     * @param anzeigenDTO anzulegender anzeige
-     * @param principal user der arbeitet
-     *
-     * @return angelegter anzeigenDTO
-     */
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN})
-    public AnzeigenDTO create(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
 
-        LOG.debug("Received 'create' request with id '{}' ", anzeigenDTO.getId());
-
-        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        final AnzeigenDO savedAnzeigenDO = anzeigenComponent.create(newAnzeigenDO, userId);
-
-        return AnzeigenDTOMapper.toDTO.apply(savedAnzeigenDO);
-    }
 
 }
