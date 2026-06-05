@@ -1,6 +1,5 @@
-package de.bogenliga.application.business.anzeigen.business;
+package de.bogenliga.application.business.anzeigen;
 
-import de.bogenliga.application.business.anzeigen.dao.AnzeigenDAOTestHelper;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.business.wettkampf.impl.business.AnzeigenComponentImpl;
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;

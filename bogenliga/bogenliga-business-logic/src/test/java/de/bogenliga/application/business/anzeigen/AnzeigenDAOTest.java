@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.anzeigen.dao;
+package de.bogenliga.application.business.anzeigen;
 
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
