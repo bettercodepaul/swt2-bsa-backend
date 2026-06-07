@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.time.Year;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
@@ -48,6 +49,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
+    private static final String PRECONDITION_MSG_WRONG_YEAR = "Year has to be a valid year.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
     private static final String PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING = "Already an existing Platzhalter in this Veranstaltung";
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
@@ -122,6 +124,34 @@ public class DsbMannschaftService implements ServiceFacade {
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).toList();
     }
 
+    /**
+     * I return all dsbMannschaft entries of the database.
+     * ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
+     *
+     * Usage:
+     * <pre>{@code Request: GET /v1/dsbmannschaft}</pre>
+     * <pre>{@code Response:
+     * [
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  },
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.interval",
+     *    "value": "10"
+     *  }
+     * ]
+     * }
+     * </pre>
+     *
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @GetMapping(value = "sportjahre", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<Long> findAllSportjahre() {
+        return dsbMannschaftComponent.findAllSportjahre();
+    }
+
 
     /**
      * I return the dsbMannschaft entries of the database with the given vereinsId.
@@ -145,24 +175,37 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @GetMapping(value = "byVereinsID/{vereinsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final Long id) {
+    public List<DsbMannschaftDTO> findAllByVereinsId (
+            @PathVariable("vereinsId") final Long id,
+            @RequestParam(value = "sportjahr", required = false) final Integer year
+    ) {
+        final Year usedYear = (year != null) ? Year.of(year) : Year.now();
+
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(usedYear.getValue() >= 0, PRECONDITION_MSG_WRONG_YEAR);
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
+        LOG.debug("Receive 'findAllByVereinsId' request with Sportjahr '{}'", usedYear);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
-        return dsbMannschaftDOList.stream().map(dsbMannschaftDO -> {
-            DsbMannschaftDTO dto = DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
-            // Fetch and set veranstaltung name and liga ID if veranstaltungId is present
-            if (dsbMannschaftDO.getVeranstaltungId() != null) {
-                VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
-                if (veranstaltungDO != null) {
-                    dto.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
-                    dto.setLigaId(veranstaltungDO.getVeranstaltungLigaID());
-                }
-            }
-            return dto;
-        }).toList();
+        final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAllByVereinsId(id);
+
+        return dsbMannschaftDOList
+                .stream()
+                .map(dsbMannschaftDO -> {
+                    DsbMannschaftDTO dto = DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
+                    if (dsbMannschaftDO.getVeranstaltungId() != null) {
+                        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
+                        if (veranstaltungDO != null) {
+                            dto.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
+                            dto.setLigaId(veranstaltungDO.getVeranstaltungLigaID());
+                        }
+                    }
+                    return dto;
+                 })
+                 .filter(dsbMannschaftDO -> dsbMannschaftDO.getSportjahr() != null
+                         && dsbMannschaftDO.getSportjahr().equals((long) usedYear.getValue())
+                 )
+                 .toList();
     }
 
 
