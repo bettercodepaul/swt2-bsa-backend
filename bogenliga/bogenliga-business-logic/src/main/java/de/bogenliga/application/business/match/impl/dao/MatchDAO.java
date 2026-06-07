@@ -157,7 +157,7 @@ public class MatchDAO implements DataAccessObject {
             "m.match_strafpunkte_satz_5" +
                     " FROM match as m" +
                     " WHERE m.match_wettkampf_id = ?" +
-                     "ORDER BY match_wettkampf_id, match_nr, match_begegnung, match_scheibennummer, match_id";
+                    " ORDER BY match_wettkampf_id, match_nr, match_begegnung, match_scheibennummer, match_id";
 
 
 
