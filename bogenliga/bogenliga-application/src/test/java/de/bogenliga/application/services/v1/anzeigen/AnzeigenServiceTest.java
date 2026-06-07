@@ -45,14 +45,7 @@ public class AnzeigenServiceTest {
     @Before
     public void setUp() {
         anzeigenDO = new AnzeigenDO();
-        principal = new Principal() {
-            @Override
-            public String getName() {
-                // Falls der UserProvider Long.parseLong() nutzt,
-                // muss hier eine Zahl als String zurückgegeben werden!
-                return "99";
-            }
-        };
+        principal = () -> "99";
     }
 
     @Test
