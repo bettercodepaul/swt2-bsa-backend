@@ -52,6 +52,8 @@ public class VeranstaltungComponentImplTest {
 
     private static final Integer VERANSTALTUNG_PHASE = 1;
     private static final String VERANSTALTUNG_PHASE_GEPLANT = "Geplant";
+    private static final Integer VERANSTALTUNG_PHASE_LAUFEND = 2;
+    private static final String VERANSTALTUNG_PHASE_LAUFEND_NAME = "Laufend";
     private static final Integer VERANSTALTUNG_GROESSE = 8;
 
     private static final OffsetDateTime VERANSTALTUNG_CREATEDATUTC = OffsetDateTime.now();
@@ -390,7 +392,7 @@ public class VeranstaltungComponentImplTest {
 
 
     @Test
-  public void update() {
+    public void update() {
         // prepare test data
         final VeranstaltungDO input = getVeranstaltungDO();
         final VeranstaltungDO expectedDO = getVeranstaltungDO();
@@ -441,6 +443,34 @@ public class VeranstaltungComponentImplTest {
                 .isEqualTo(input.getVeranstaltungID());
         assertThat(persistedBE.getVeranstaltungName())
                 .isEqualTo(input.getVeranstaltungName());
+    }
+
+    @Test
+    public void updatePreservesPersistedPhaseWhenRequestWouldDowngrade() {
+        final VeranstaltungDO input = getVeranstaltungDO();
+        input.setVeranstaltungPhase(VERANSTALTUNG_PHASE_GEPLANT);
+
+        final VeranstaltungBE persistedBeforeUpdate = getVeranstaltungBE();
+        persistedBeforeUpdate.setVeranstaltungPhase(VERANSTALTUNG_PHASE_LAUFEND);
+
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        expectedBE.setVeranstaltungPhase(VERANSTALTUNG_PHASE_LAUFEND);
+
+        when(veranstaltungDAO.findById(VERANSTALTUNG_ID)).thenReturn(persistedBeforeUpdate);
+        when(veranstaltungDAO.update(any(VeranstaltungBE.class), anyLong())).thenReturn(expectedBE);
+        when(nameMappingComponent.getUserEmailForUserId(anyLong())).thenReturn(VERANSTALTUNG_LIGALEITER_EMAIL);
+        when(nameMappingComponent.getWettkampftypNameForWettkampftypId(anyLong())).thenReturn(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+        when(nameMappingComponent.getLigaNameForLigaId(anyLong())).thenReturn(VERANSTALTUNG_LIGA_NAME);
+
+        final VeranstaltungDO actual = underTest.update(input, USER);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getVeranstaltungPhase()).isEqualTo(VERANSTALTUNG_PHASE_LAUFEND_NAME);
+
+        verify(veranstaltungDAO).update(veranstaltungBEArgumentCaptor.capture(), anyLong());
+        final VeranstaltungBE persistedBE = veranstaltungBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE.getVeranstaltungPhase()).isEqualTo(VERANSTALTUNG_PHASE_LAUFEND);
     }
 
     @Test
