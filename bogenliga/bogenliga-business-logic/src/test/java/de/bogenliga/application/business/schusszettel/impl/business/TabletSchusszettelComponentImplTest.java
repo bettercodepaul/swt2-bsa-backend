@@ -396,6 +396,46 @@ public class TabletSchusszettelComponentImplTest {
         }
     }
 
+    @Test
+    public void getStatus_keepsScheibennummerNull_whenMatchComponentReturnsNull() {
+        lenient().when(mockMatchComponent.findById(200L)).thenReturn(null);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamScheibennummer()).isNull();
+    }
+
+    @Test
+    public void getStatus_swallowsException_whenMatchComponentThrows() {
+        // Make the *own match lookup* (called via result.getEigenesTeamMatchId())
+        // throw. The component should log debug and continue, returning a result
+        // with eigenesTeamScheibennummer == null.
+        lenient().when(mockMatchComponent.findById(200L))
+            .thenThrow(new RuntimeException("simulated DB failure"));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamScheibennummer()).isNull();
+    }
+
+    @Test
+    public void getStatus_invokesMatchComponentForOwnTeam_whenMatchIdPresent() {
+        // Reset to a clean invocation count and run.
+        reset(mockMatchComponent);
+        lenient().when(mockMatchComponent.findById(200L)).thenReturn(testMatch);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        if (result.getEigenesTeamMatchId() != null) {
+            // The new logic must hit findById to read Scheibennummer.
+            verify(mockMatchComponent, atLeastOnce()).findById(result.getEigenesTeamMatchId());
+            assertThat(result.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        }
+    }
+
     private List<PasseDO> createTestPasses(Long teamId, Long matchId, int passeNr, int arrow1, int arrow2, int arrow3) {
         List<PasseDO> passes = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {

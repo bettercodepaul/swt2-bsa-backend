@@ -171,4 +171,34 @@ public class TabletSchusszettelMapperTest {
         assertThat(mapped).isNotNull();
         assertThat(mapped.getStatus()).isEqualTo(TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED);
     }
+
+    @Test
+    public void testFromDTO_nullInput_returnsNull() {
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(null);
+
+        assertThat(mapped).isNull();
+    }
+
+    @Test
+    public void testRoundTrip_preservesScheibennummer() {
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+        TabletSchusszettelDO roundTrip = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(roundTrip).isNotNull();
+        assertThat(roundTrip.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        assertThat(roundTrip.getEigenesTeamMatchId()).isEqualTo(111L);
+        assertThat(roundTrip.getGegnerischesTeamMatchId()).isEqualTo(222L);
+    }
+
+    @Test
+    public void testFromDTO_nullScheibennummer_isPreserved() {
+        TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
+        dto.setStatus(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE);
+        dto.setEigenesTeamScheibennummer(null);
+
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(mapped).isNotNull();
+        assertThat(mapped.getEigenesTeamScheibennummer()).isNull();
+    }
 }
