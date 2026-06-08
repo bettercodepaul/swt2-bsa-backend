@@ -82,8 +82,8 @@ public class AnzeigenService implements ServiceFacade {
     /**
      * create-Method() writes a new entry of Anzeigen into the database
      *
-     * @param anzeigenDTO anzulegender anzeige
-     * @param principal user der arbeitet
+     * @param anzeigenDTO anzulegende Anzeige
+     * @param principal User der arbeitet
      *
      * @return angelegter anzeigenDTO
      */
