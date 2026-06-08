@@ -389,22 +389,21 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
         byte[] bResult;
         if (!wettkampflisteBEList.isEmpty()) {
-            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 PdfWriter writer = new PdfWriter(result);
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            try (PdfWriter writer = new PdfWriter(result);
                  PdfDocument pdfDocument = new PdfDocument(writer);
                  Document doc = new Document(pdfDocument, PageSize.A4)) {
 
                 pdfDocument.getDocumentInfo().setTitle(name+".pdf");
                 generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
-                doc.close();
-                bResult = result.toByteArray();
                 LOGGER.debug("{} erstellt",name);
             } catch(IOException e){
                 LOGGER.error("PDF {} konnte nicht erstellt werden: {}",name , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF"+ name +"konnte nicht erstellt werden: " + e);
             }
+            bResult = result.toByteArray();
         }
         else
         {
@@ -431,22 +430,21 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
         byte[] bResult;
         if (!wettkaempfeAmTag.isEmpty()) {
-            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 PdfWriter writer = new PdfWriter(result);
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            try (PdfWriter writer = new PdfWriter(result);
                  PdfDocument pdfDocument = new PdfDocument(writer);
                  Document doc = new Document(pdfDocument, PageSize.A4)) {
 
                 pdfDocument.getDocumentInfo().setTitle("Übersicht.pdf");
                 generateUebersicht(doc,wettkaempfeAmTag ,veranstaltungsid ,wettkampftag);
 
-                doc.close();
-                bResult = result.toByteArray();
                 LOGGER.debug("Uebersicht erstellt");
             } catch(IOException e){
                 LOGGER.error("PDF Uebersicht konnte nicht erstellt werden: {}", e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Uebersicht konnte nicht erstellt werden: " + e);
             }
+            bResult = result.toByteArray();
         }
         else
         {
