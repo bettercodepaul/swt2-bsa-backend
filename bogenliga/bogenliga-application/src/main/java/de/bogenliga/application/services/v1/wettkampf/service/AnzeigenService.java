@@ -64,25 +64,25 @@ public class AnzeigenService implements ServiceFacade {
     }
 
     /**
-     * I return all Anzeigen entries of the database with a specific VeranstaltungsId.
+     * I return all Anzeigen entries of the database with a specific WettkampfId.
      *
      * @return list of {@link AnzeigenDTO} as JSON
      */
-    @GetMapping(value = "{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
-    public List<AnzeigenDTO> findByVeranstaltungsId(@PathVariable("veranstaltungsId") final long veranstaltungsId) {
-        Preconditions.checkArgument(veranstaltungsId > 0, "ID must not be negative.");
+    public List<AnzeigenDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(wettkampfId > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findByVeranstaltungsId' request with id '{}'", veranstaltungsId);
+        LOG.debug("Receive 'findByWettkampfId' request with id '{}'", wettkampfId);
 
-        final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findByVeranstaltungsId(veranstaltungsId);
+        final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findByWettkampfId(wettkampfId);
         return anzeigenDOList.stream().map(AnzeigenDTOMapper.toDTO).toList();
     }
 
     /**
      * create-Method() writes a new entry of Anzeigen into the database
      *
-     * @param anzeigenDTO anzulegende Anzeige
+     * @param wettkampfId Wettkampf ID der anzulegenden Anzeige
      * @param principal User der arbeitet
      *
      * @return angelegter anzeigenDTO
