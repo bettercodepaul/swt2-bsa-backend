@@ -51,6 +51,12 @@ public interface AnzeigenComponent {
      * @param currentMemberId id of the member currently updating the anzeige
      */
     void delete(AnzeigenDO anzeigenDO, Long currentMemberId);
+
+    /**
+     * Generate a randomized, alphanumeric four character id.
+     * @return The generated id.
+     */
+    public String generatePhysischeBildschirmId();
 }
 
 
