@@ -232,6 +232,51 @@ public class DsbMannschaftComponentImplTest {
     }
 
     @Test
+    public void findAllSportjahre() {
+        // prepare test data
+        final DsbMannschaftBEext be1 = getDsbMannschaftBEext();
+        be1.setSportjahr(2024L);
+
+        final DsbMannschaftBEext be2 = getDsbMannschaftBEext();
+        be2.setId(3333L);
+        be2.setSportjahr(2023L);
+
+        final List<DsbMannschaftBEext> expectedBEList = List.of(be1, be2);
+
+        // configure mocks
+        when(dsbMannschaftDAOext.findAllSportjahre()).thenReturn(expectedBEList);
+
+        // call test method
+        final List<Long> actual = underTest.findAllSportjahre();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2);
+
+        assertThat(actual.get(0)).isEqualTo(2024L);
+        assertThat(actual.get(1)).isEqualTo(2023L);
+
+        // verify invocations
+        verify(dsbMannschaftDAOext).findAllSportjahre();
+    }
+
+    @Test
+    public void findAllSportjahre_shouldThrowException_whenResultIsNull() {
+        // configure mocks
+        when(dsbMannschaftDAOext.findAllSportjahre()).thenReturn(null);
+
+        // call test method + assert
+        assertThatThrownBy(() -> underTest.findAllSportjahre())
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.ENTITY_NOT_FOUND_ERROR.getValue());
+
+        // verify invocations
+        verify(dsbMannschaftDAOext).findAllSportjahre();
+    }
+
+    @Test
     public void findAllByVeranstaltungsId() {
         // prepare test data
         final DsbMannschaftBEext expectedBE = getDsbMannschaftBEext();
