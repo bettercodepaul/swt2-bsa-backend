@@ -13,6 +13,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 import java.security.Principal;
 
@@ -128,6 +129,32 @@ public class DownloadServiceTest {
         Assertions.assertThat(actual).isNotNull();
 
         //verify invocations
+        verify(wettkampfComponent).getUebersichtPDFasByteArray(VERANSTALTUNGS_ID, WETTKAMPFTAG);
+    }
+
+    @Test
+    public void downloadErgebnislistePdf()
+    {
+        final byte[] test = new byte[0];
+
+        final WettkampfDO wettkampf = new WettkampfDO();
+        wettkampf.setWettkampfVeranstaltungsId(VERANSTALTUNGS_ID);
+        wettkampf.setWettkampfTag(WETTKAMPFTAG);
+
+        // configure Mocks
+        when(wettkampfComponent.findById(WETTKAMPF_ID)).thenReturn(wettkampf);
+        when(wettkampfComponent.getUebersichtPDFasByteArray(VERANSTALTUNGS_ID, WETTKAMPFTAG))
+                .thenReturn(test);
+
+        // call Method
+        final ResponseEntity<InputStreamResource> actual =
+                DownloadService.downloadErgebnislistePdf(WETTKAMPF_ID);
+
+        // result is not NULL
+        Assertions.assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(wettkampfComponent).findById(WETTKAMPF_ID);
         verify(wettkampfComponent).getUebersichtPDFasByteArray(VERANSTALTUNGS_ID, WETTKAMPFTAG);
     }
 
