@@ -71,10 +71,23 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
         if (anzeigenBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No match found for ID '%s'", veranstaltungsId));
+                    String.format("No match found for VeranstaltungsID '%s'", veranstaltungsId));
         }
 
         return anzeigenBEList.stream().map(AnzeigenMapper.toAnzeigenDO).toList();
+    }
+
+
+    @Override
+    public AnzeigenDO findByPhysischeBildschirmId(String physischeBildschirmId) {
+        final AnzeigenBE anzeigenBE = anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId);
+
+        if (anzeigenBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found for PhysischeBildschirmID '%s'", physischeBildschirmId));
+        }
+
+        return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
     }
 
 
@@ -129,7 +142,7 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
         anzeigenDAO.delete(anzeigenBE, currentUserId);
     }
 
-
+    @Override
     public String generatePhysischeBildschirmId() {
         // Alpha-numeric characters
         final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
@@ -142,6 +155,9 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
         }
         String id;
         id = new String(characters);
+        if (findByPhysischeBildschirmId(id) == null) {
+            return generatePhysischeBildschirmId();
+        }
         return id;
     }
 }
