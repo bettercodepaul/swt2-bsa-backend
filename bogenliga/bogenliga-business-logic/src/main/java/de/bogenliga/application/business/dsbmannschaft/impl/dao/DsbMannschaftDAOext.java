@@ -104,6 +104,12 @@ public class DsbMannschaftDAOext implements DataAccessObject {
                     + " WHERE m.mannschaft_veranstaltung_id = ? "
                     + " ORDER BY m.mannschaft_sortierung; ";
 
+    private static final String GET_ALL_SPORTJAHRE =
+            " SELECT DISTINCT mannschaft_sportjahr "
+                    + " FROM mannschaft "
+                    + " WHERE mannschaft_sportjahr IS NOT NULL "
+                    + " ORDER BY mannschaft_sportjahr DESC; ";
+
     private static final String FIND_BY_ID_WITH_NAME =
             " SELECT "
                     + "m.*, "
@@ -215,6 +221,8 @@ public class DsbMannschaftDAOext implements DataAccessObject {
 
     public List<DsbMannschaftBEext> findAllByWettkampfId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
+    public List<DsbMannschaftBEext> findAllSportjahre() {
+        return basicDao.selectEntityList(MANNSCHAFT, GET_ALL_SPORTJAHRE);}
     public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfByVereinId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_VERSANSTALTUNGEN_BY_VEREIN, id);}
     public List<DsbMannschaftBEext> findVeranstaltungAndWettkampfById(final long id) {
