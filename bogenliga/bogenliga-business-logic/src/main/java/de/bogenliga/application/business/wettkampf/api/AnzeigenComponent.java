@@ -24,6 +24,13 @@ public interface AnzeigenComponent {
     List<AnzeigenDO> findByVeranstaltungsId(Long veranstaltungsId);
 
     /**
+     * Return a single anzeige by unique physischeBildschirmId
+     * @param physischeBildschirmId The physischeBilschirmId to search for.
+     * @return single anzeigenDO
+     */
+    AnzeigenDO findByPhysischeBildschirmId(String physischeBildschirmId);
+
+    /**
      * Create a new anzeige in the database.
      *
      * @param anzeigenDO the new anzeigenDO
