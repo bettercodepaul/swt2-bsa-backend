@@ -56,7 +56,7 @@ public interface AnzeigenComponent {
      * Generate a randomized, alphanumeric four character id.
      * @return The generated id.
      */
-    public String generatePhysischeBildschirmId();
+    String generatePhysischeBildschirmId();
 }
 
 
