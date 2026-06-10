@@ -95,7 +95,9 @@ public class AnzeigenService implements ServiceFacade {
 
         final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(new AnzeigenDTO());
         final long userId = UserProvider.getCurrentUserId(principal);
-        newAnzeigenDO.setWettkampfId(wettkampfId);
+
+        newAnzeigenDO.setWettkampfId(wettkampfId); // Setze ID direkt im 1. Aufkommen des AnzeigenDOs
+
         final AnzeigenDO savedAnzeigenDO = anzeigenComponent.create(newAnzeigenDO, userId);
 
         final AnzeigenDTO savedAnzeigenDTO = AnzeigenDTOMapper.toDTO.apply(savedAnzeigenDO);
