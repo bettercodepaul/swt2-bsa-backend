@@ -454,6 +454,23 @@ public class DsbMitgliedServiceTest {
     }
 
     @Test
+    public void createNoPermission() {
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+
+        // configure mocks for permission checks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER))
+            .thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, input.getVereinsId()))
+                .thenReturn(false);
+
+        // call test method and assert exception
+        assertThatExceptionOfType(NoPermissionException.class)
+            .isThrownBy(() -> underTest.create(input, principal));
+    }
+
+    @Test
     public void update() {
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
