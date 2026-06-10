@@ -128,14 +128,6 @@ public class AnzeigenService implements ServiceFacade {
 
         AnzeigenDO anzeigenDO = this.anzeigenComponent.findById(anzeigenDTO.getId());
 
-        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
-                        UserPermission.CAN_MODIFY_SYSTEMDATEN, anzeigenDTO.getVeranstaltungsId())&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
-                        UserPermission.CAN_MODIFY_SYSTEMDATEN, anzeigenDO.getId())) {
-            //keines der Rechte besitzt der user
-            throw new NoPermissionException();
-        }
 
         final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
