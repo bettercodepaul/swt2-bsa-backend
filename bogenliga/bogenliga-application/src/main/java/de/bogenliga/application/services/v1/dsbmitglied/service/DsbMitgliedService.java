@@ -129,7 +129,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamId' request with ID '{}'", id );
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
