@@ -155,7 +155,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
         }
         String id;
         id = new String(characters);
-        if (findByPhysischeBildschirmId(id) == null) {
+        if (anzeigenDAO.findByPhysischeBildschirmId(id) != null) {
+            // id already exists -> try again
             return generatePhysischeBildschirmId();
         }
         return id;
