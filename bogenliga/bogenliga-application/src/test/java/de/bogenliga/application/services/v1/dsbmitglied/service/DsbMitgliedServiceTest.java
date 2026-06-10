@@ -152,6 +152,57 @@ public class DsbMitgliedServiceTest {
     }
 
     @Test
+    public void findAllInVerein() {
+        // prepare test data: one member in the same Verein as the user and one in a different Verein
+        final DsbMitgliedDO sameVerein = getDsbMitgliedDO();
+        final DsbMitgliedDO otherVerein = new DsbMitgliedDO(
+                ID + 1,
+                VORNAME,
+                NACHNAME,
+                GEBURTSDATUM,
+                NATIONALITAET,
+                MITGLIEDSNUMMER,
+                VEREINSID + 1,
+                VEREINNAME,
+                USERID,
+                KAMPFRICHTER,
+                BEITRITTSDATUM
+        );
+
+        final List<DsbMitgliedDO> dsbMitgliedDOList = List.of(sameVerein, otherVerein);
+
+        // Create UserDO mock: user belongs to 'sameVerein' (via dsbMitgliedId -> ID)
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        // configure mocks for components
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(sameVerein);
+        when(dsbMitgliedComponent.findAll()).thenReturn(dsbMitgliedDOList);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER but has CAN_MODIFY_MY_VEREIN
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MY_VEREIN)).thenReturn(true);
+
+        // call test method
+        final List<DsbMitgliedDTO> actual = underTest.findAll(principal);
+
+        // assert result: only members from the user's verein are returned
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMitgliedDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getVereinsId()).isEqualTo(sameVerein.getVereinsId());
+
+        // verify invocations
+        verify(userComponent).findById(USER);
+        verify(dsbMitgliedComponent).findById(ID);
+        verify(dsbMitgliedComponent).findAll();
+    }
+
+    @Test
     public void findAllByTeamId() {
         // prepare test data
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
