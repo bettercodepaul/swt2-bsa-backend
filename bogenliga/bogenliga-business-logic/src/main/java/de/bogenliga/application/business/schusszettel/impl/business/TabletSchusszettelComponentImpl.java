@@ -115,7 +115,7 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
 
         // Let session runtime handle state evaluation
         runtime.checkAgainstDatabase();
-        
+
         if (STATUS_WARTE.equals(runtime.getCurrentState())) {
             SessionRuntime opponentRuntime = runtime.loadOpponentSession();
             if (runtime.evaluateWithOpponentWAITstate(opponentRuntime != null ? opponentRuntime.getSession() : null)) {
@@ -131,6 +131,18 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // Build response using state objects
         TabletSchusszettelDO result = buildBaseResponse(teamId, runtime);
         enrichResponseByState(runtime, result);
+
+        // eigenesTeamMatchId wird erst im State-Enrichment gesetzt
+        if (result.getEigenesTeamMatchId() != null) {
+            try {
+                final MatchDO ownMatch = matchComponent.findById(result.getEigenesTeamMatchId());
+                if (ownMatch != null) {
+                    result.setEigenesTeamScheibennummer(ownMatch.getMatchScheibennummer());
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Could not load own team Scheibennummer for matchId={}", result.getEigenesTeamMatchId(), e);
+            }
+        }
 
         return result;
     }
