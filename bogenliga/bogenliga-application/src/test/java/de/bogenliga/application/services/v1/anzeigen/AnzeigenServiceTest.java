@@ -113,28 +113,27 @@ public class AnzeigenServiceTest {
 
     @Test
     public void create_withValidData_shouldReturnSavedId() {
-        long inputWettkampfId = 1337L;
-        AnzeigenDO savedDO = new AnzeigenDO(VALID_ID, "Screen_01", "Tabelle", 1337L, 1);
+        Long inputId = 1337L;
+        AnzeigenDO savedDO = new AnzeigenDO(VALID_ID, null, "Tabelle", 1337L, 1);
 
-        when(anzeigenComponent.create(any(AnzeigenDO.class), anyLong(), anyLong())).thenReturn(savedDO);
+        when(anzeigenComponent.create(any(AnzeigenDO.class), anyLong())).thenReturn(savedDO);
 
-        long resultId = underTest.create(inputWettkampfId, principal);
+        long resultId = underTest.create(inputId, principal);
 
         assertThat(resultId).isEqualTo(VALID_ID);
 
-        verify(anzeigenComponent).create(anzeigenDOCaptor.capture(), userIdCaptor.capture(), );
+        verify(anzeigenComponent).create(anzeigenDOCaptor.capture(), userIdCaptor.capture());
 
         AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
         assertThat(capturedDO).isNotNull();
-        assertThat(capturedDO.getPhysischeBildschirmId()).isEqualTo("Screen_01");
         assertThat(capturedDO.getWettkampfId()).isEqualTo(1337L);
     }
 
     @Test
-    public void create_withNullDTO_shouldThrowException() {
-        long inputWettkampfId = 1337L;
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.create(inputWettkampfId, principal));
+    public void create_withNull_shouldThrowException() {
+        assertThatExceptionOfType(de.bogenliga.application.common.errorhandling.exception.BusinessException.class)
+                .isThrownBy(() -> underTest.create(null, principal))
+                .withMessageContaining("Wettkampf ID must not be null.");
 
         verifyZeroInteractions(anzeigenComponent);
     }
