@@ -163,7 +163,7 @@ public class AnzeigenServiceTest {
         AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
         assertThat(capturedDO).isNotNull();
         assertThat(capturedDO.getPhysischeBildschirmId()).isEqualTo("Screen_01");
-        assertThat(capturedDO.getVeranstaltungsId()).isEqualTo(1337L);
+        assertThat(capturedDO.getWettkampfId()).isEqualTo(1337L);
 
         assertThat(userIdCaptor.getValue()).isEqualTo(99L);
     }
