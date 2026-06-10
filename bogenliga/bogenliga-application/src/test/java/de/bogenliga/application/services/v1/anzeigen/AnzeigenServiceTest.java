@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
+
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
 import de.bogenliga.application.services.v1.wettkampf.service.AnzeigenService;
 import org.junit.Before;
@@ -136,5 +137,34 @@ public class AnzeigenServiceTest {
                 .withMessageContaining("Wettkampf ID must not be null.");
 
         verifyZeroInteractions(anzeigenComponent);
+    }
+
+    @Test
+    public void update_withNullDTO_shouldThrowException() {
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> underTest.update(null, principal));
+
+        verifyZeroInteractions(anzeigenComponent);
+
+    }
+
+    @Test
+    public void update_withValidData_shouldReturnUpdatedId() {
+        AnzeigenDTO inputDTO = new AnzeigenDTO(null, "Screen_01", "Tabelle", 1337L, 1);
+        AnzeigenDO updatedDO = new AnzeigenDO(VALID_ID, "Screen_01", "Tabelle", 1337L, 1);
+
+        when(anzeigenComponent.update(any(AnzeigenDO.class), anyLong())).thenReturn(updatedDO);
+
+        AnzeigenDTO resultId = underTest.update(inputDTO, principal);
+
+        assertThat(resultId.getId()).isEqualTo(VALID_ID);
+
+        verify(anzeigenComponent).update(anzeigenDOCaptor.capture(), userIdCaptor.capture());
+
+        AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
+        assertThat(capturedDO).isNotNull();
+        assertThat(capturedDO.getPhysischeBildschirmId()).isEqualTo("Screen_01");
+        assertThat(capturedDO.getWettkampfId()).isEqualTo(1337L);
+
+        assertThat(userIdCaptor.getValue()).isEqualTo(99L);
     }
 }
