@@ -8,7 +8,6 @@ import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.wettkampf.mapper.AnzeigenDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
-import javax.naming.NoPermissionException;
+
 
 @RestController
 @RequestMapping("v1/anzeigen")
@@ -28,7 +27,7 @@ public class AnzeigenService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AnzeigenService.class);
 
     private final AnzeigenComponent anzeigenComponent;
-    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
 
 
     @Autowired
@@ -121,12 +120,12 @@ public class AnzeigenService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
-    public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) throws NoPermissionException {
+    public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
 
         LOG.debug("Received 'update' request with id '{}'", anzeigenDTO.getId());
 
 
-        AnzeigenDO anzeigenDO = this.anzeigenComponent.findById(anzeigenDTO.getId());
+
 
 
         final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
