@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.configuration.service;
 import java.security.Principal;
 import java.util.List;
 
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +109,7 @@ public class ConfigurationService implements ServiceFacade {
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ConfigurationDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 

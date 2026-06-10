@@ -9,7 +9,7 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
     private Long id;
     private String physischeBildschirmId;
     private String tableTyp;
-    private Long veranstaltungsId;
+    private Long wettkampfId;
     private int aktuellesMatch;
 
     public Long getId() {
@@ -33,11 +33,11 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
         this.tableTyp = tableTyp;
     }
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getWettkampfId() {
+        return wettkampfId;
     }
-    public void setVeranstaltungsId(Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
     }
 
     public int getAktuellesMatch() {
