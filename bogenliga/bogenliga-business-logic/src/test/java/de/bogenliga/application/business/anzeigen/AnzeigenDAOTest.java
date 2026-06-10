@@ -57,16 +57,16 @@ public class AnzeigenDAOTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
-    public void testFindByVeranstaltungsId() {
+    public void testFindByWettkampfId() {
         // 1. Vorbereitung
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // 2. Ausführung
-        final List<AnzeigenBE> actual = underTest.findByVeranstaltungsId(1L);
+        final List<AnzeigenBE> actual = underTest.findByWettkampfId(1L);
 
         // 3. Überprüfung
         assertThat(actual).isNotNull().hasSize(1);
-        assertThat(actual.get(0).getVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(actual.get(0).getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
 
         // Auch beim Verify nutzen wir das offene any() für die Varargs
         verify(basicDao).selectEntityList(any(), any(), any());
