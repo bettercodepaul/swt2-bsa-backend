@@ -5,6 +5,7 @@ import de.bogenliga.application.business.wettkampf.impl.business.AnzeigenCompone
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -105,6 +107,21 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
+    public void testFindByPhysischeBildschirmId() {
+        final String physischeBildschirmId = "-";
+
+        final AnzeigenBE expectedAnzeigenBE = new AnzeigenBE();
+        when(anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId)).thenReturn(expectedAnzeigenBE)
+                .thenReturn(null);
+
+        final AnzeigenDO actual = underTest.findByPhysischeBildschirmId(physischeBildschirmId);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByPhysischeBildschirmId(physischeBildschirmId));
+        assertNotNull("Result must not be null", actual);
+    }
+
+    @Test
     public void testCreate() {
         // 1. Vorbereitung (Gegeneinander ausgetauschte Daten vorbereiten)
         AnzeigenDO inputDO = getAnzeigenDO();
@@ -157,5 +174,21 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         // Da die Methode meist void ist, prüfen wir stattdessen mit Mockito,
         // ob das DAO auch wirklich mit den korrekten Parametern aufgerufen wurde.
         org.mockito.Mockito.verify(anzeigenDAO).delete(any(AnzeigenBE.class), org.mockito.ArgumentMatchers.eq(4L));
+    }
+
+    @Test
+    public void testGeneratePhysischeBildschirmId() {
+        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+
+        final String id = underTest.generatePhysischeBildschirmId();
+        final char[] characters = id.toCharArray();
+
+        assertThat(id.length() == 4 ).isTrue();
+        assertThat(validCharacters).contains(String.valueOf(characters[0]));
+        assertThat(validCharacters).contains(String.valueOf(characters[1]));
+        assertThat(validCharacters).contains(String.valueOf(characters[2]));
+        assertThat(validCharacters).contains(String.valueOf(characters[3]));
     }
 }

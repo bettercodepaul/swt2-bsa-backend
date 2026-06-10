@@ -76,6 +76,13 @@ public class AnzeigenDAO implements DataAccessObject {
             .orderBy(ANZEIGEN_TABLE_ID)
             .compose().toString();
 
+    private static final String FIND_BY_PHYSISCHE_BILDSCHIRM_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID)
+            .orderBy(ANZEIGEN_TABLE_ID)
+            .compose().toString();
+
     /**
      * Return a specific anzeige.
      *
@@ -92,6 +99,14 @@ public class AnzeigenDAO implements DataAccessObject {
      */
     public List<AnzeigenBE> findByWettkampfId(Long wettkampfId) {
         return basicDao.selectEntityList(ANZEIGE, FIND_BY_WETTKAMPF_ID, wettkampfId);
+    }
+    /**
+     * Return all entries with specific physischeBildschirmId.
+     *
+     * @return anzeige with this physischeBildschrimId; null if no match is found.
+     */
+    public AnzeigenBE findByPhysischeBildschirmId(String physischeBildschirmId) {
+        return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_PHYSISCHE_BILDSCHIRM_ID, physischeBildschirmId);
     }
     /**
      * Return all entries.

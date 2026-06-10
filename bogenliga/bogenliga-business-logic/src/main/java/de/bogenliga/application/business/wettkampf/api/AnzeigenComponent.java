@@ -24,6 +24,13 @@ public interface AnzeigenComponent {
     List<AnzeigenDO> findByWettkampfId(Long wettkampfId);
 
     /**
+     * Return a single anzeige by unique physischeBildschirmId
+     * @param physischeBildschirmId The physischeBilschirmId to search for.
+     * @return single anzeigenDO
+     */
+    AnzeigenDO findByPhysischeBildschirmId(String physischeBildschirmId);
+
+    /**
      * Create a new anzeige in the database.
      *
      * @param anzeigenDO the new anzeigenDO
@@ -51,6 +58,12 @@ public interface AnzeigenComponent {
      * @param currentMemberId id of the member currently updating the anzeige
      */
     void delete(AnzeigenDO anzeigenDO, Long currentMemberId);
+
+    /**
+     * Generate a randomized, alphanumeric four character id.
+     * @return The generated id.
+     */
+    String generatePhysischeBildschirmId();
 }
 
 
