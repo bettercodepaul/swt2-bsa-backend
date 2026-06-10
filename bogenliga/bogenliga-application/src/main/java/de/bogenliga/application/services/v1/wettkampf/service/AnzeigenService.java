@@ -18,6 +18,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
+
+
 @RestController
 @RequestMapping("v1/anzeigen")
 public class AnzeigenService implements ServiceFacade {
@@ -25,6 +27,7 @@ public class AnzeigenService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AnzeigenService.class);
 
     private final AnzeigenComponent anzeigenComponent;
+
 
 
     @Autowired
@@ -105,5 +108,35 @@ public class AnzeigenService implements ServiceFacade {
 
         return savedAnzeigenDTO.getId();
     }
+
+    /**
+     * update-method()  changes the chosen Wettkampf entry in the Database
+     *
+     * @param anzeigenDTO Anzeige mit zu aktualiserenden Daten
+     * @param principal ändernder User
+     *
+     * @return aktualisierter anzeigenDTO
+     */
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
+
+        LOG.debug("Received 'update' request with id '{}'", anzeigenDTO.getId());
+
+
+
+
+
+        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final AnzeigenDO updatedAnzeigenDO = anzeigenComponent.update(newAnzeigenDO, userId);
+
+
+        return AnzeigenDTOMapper.toDTO.apply(updatedAnzeigenDO);
+    }
+
 
 }
