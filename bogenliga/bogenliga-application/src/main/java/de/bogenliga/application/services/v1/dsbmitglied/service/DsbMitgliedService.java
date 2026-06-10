@@ -2,9 +2,13 @@ package de.bogenliga.application.services.v1.dsbmitglied.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +65,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final UserComponent userComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
@@ -68,11 +73,15 @@ public class DsbMitgliedService implements ServiceFacade {
      * Constructor with dependency injection
      *
      * @param dsbMitgliedComponent to handle the database CRUD requests
+     * @param userComponent to handle user requests
+     * @param requiresOnePermissionAspect for permission checks
      */
     @Autowired
     public DsbMitgliedService(final DsbMitgliedComponent dsbMitgliedComponent,
+                              final UserComponent userComponent,
                               final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.userComponent = userComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
@@ -99,16 +108,28 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
-    public List<DsbMitgliedDTO> findAll() {
-        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public List<DsbMitgliedDTO> findAll(final Principal principal) {
+        final long userId = UserProvider.getCurrentUserId(principal);
+        UserDO userDO = this.userComponent.findById(userId);
+        var vereinsId = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId()).getVereinsId();
+        final List<DsbMitgliedDO> dsbMitgliedDOList;
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)) // only return members of the same club
+        {
+            dsbMitgliedDOList = dsbMitgliedComponent.findAll().stream().filter(dsbMitgliedDO -> Objects.equals(dsbMitgliedDO.getVereinsId(), vereinsId)).collect(Collectors.toList());
+        }
+        else
+        {
+            dsbMitgliedDOList = dsbMitgliedComponent.findAll();
+        }
+
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamId' request with ID '{}'", id );
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
