@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
@@ -31,6 +32,7 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
     private final AnzeigenDAO anzeigenDAO;
 
+    private final SecureRandom random = new SecureRandom();
 
     /**
      * Constructor
@@ -73,6 +75,19 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
         }
 
         return anzeigenBEList.stream().map(AnzeigenMapper.toAnzeigenDO).toList();
+    }
+
+
+    @Override
+    public AnzeigenDO findByPhysischeBildschirmId(String physischeBildschirmId) {
+        final AnzeigenBE anzeigenBE = anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId);
+
+        if (anzeigenBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found for PhysischeBildschirmID '%s'", physischeBildschirmId));
+        }
+
+        return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
     }
 
 
@@ -125,6 +140,25 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     public void delete(AnzeigenDO anzeigenDO, Long currentUserId) {
         AnzeigenBE anzeigenBE = AnzeigenMapper.toAnzeigenBE.apply(anzeigenDO);
         anzeigenDAO.delete(anzeigenBE, currentUserId);
+    }
+
+    @Override
+    public String generatePhysischeBildschirmId() {
+        // Alpha-numeric characters
+        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+        char[] characters = new char[4];
+        for (int i = 0; i < characters.length; i++) {
+            final int characterInt = random.nextInt(validCharacters.length());
+            characters[i] = validCharacters.charAt(characterInt);
+        }
+        String id;
+        id = new String(characters);
+        if (anzeigenDAO.findByPhysischeBildschirmId(id) != null) {
+            return generatePhysischeBildschirmId();
+        }
+        return id;
     }
 }
 
