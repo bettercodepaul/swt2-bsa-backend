@@ -27,10 +27,12 @@ public class TabletSchusszettelDTO {
     private List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen;
     private WettkampfInfoDTO wettkampfInfo;
     private Integer currentPasseNumber;
+    private Integer eigenesTeamMatchNr;
     
     // Match-IDs für Frontend-Navigation
     private Long eigenesTeamMatchId;
     private Long gegnerischesTeamMatchId;
+    private Long eigenesTeamScheibennummer;
 
     // Getter/Setter
     public TabletSchusszettelStatus getStatus() { return status; }
@@ -65,11 +67,17 @@ public class TabletSchusszettelDTO {
     public Integer getCurrentPasseNumber() { return currentPasseNumber; }
     public void setCurrentPasseNumber(Integer currentPasseNumber) { this.currentPasseNumber = currentPasseNumber; }
 
+    public Integer getEigenesTeamMatchNr() { return eigenesTeamMatchNr; }
+    public void setEigenesTeamMatchNr(Integer eigenesTeamMatchNr) { this.eigenesTeamMatchNr = eigenesTeamMatchNr; }
+
     public Long getEigenesTeamMatchId() { return eigenesTeamMatchId; }
     public void setEigenesTeamMatchId(Long eigenesTeamMatchId) { this.eigenesTeamMatchId = eigenesTeamMatchId; }
 
     public Long getGegnerischesTeamMatchId() { return gegnerischesTeamMatchId; }
     public void setGegnerischesTeamMatchId(Long gegnerischesTeamMatchId) { this.gegnerischesTeamMatchId = gegnerischesTeamMatchId; }
+
+    public Long getEigenesTeamScheibennummer() { return eigenesTeamScheibennummer; }
+    public void setEigenesTeamScheibennummer(Long eigenesTeamScheibennummer) { this.eigenesTeamScheibennummer = eigenesTeamScheibennummer; }
 
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske darstellen.
