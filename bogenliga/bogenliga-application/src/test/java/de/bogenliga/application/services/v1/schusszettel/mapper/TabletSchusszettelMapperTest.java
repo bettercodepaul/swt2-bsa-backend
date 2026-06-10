@@ -97,8 +97,8 @@ public class TabletSchusszettelMapperTest {
 
         // Match Numbers
         assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(1);
-        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(200L);
-        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(201L);
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(111L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(222L);
 
         // Satz-Ergebnis
         assertThat(dto.getSatzErgebnisse()).hasSize(1);
@@ -187,6 +187,9 @@ public class TabletSchusszettelMapperTest {
         assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(5);
         assertThat(dto.getEigenesTeamMatchId()).isEqualTo(500L);
         assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(501L);
+    }
+
+    @Test
     public void testFromDTO_mapsScheibennummerAndIds() {
         TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
         dto.setStatus(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE);
