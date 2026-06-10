@@ -16,7 +16,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
@@ -57,6 +60,9 @@ public class DsbMitgliedServiceTest {
 
     @Mock
     private DsbMitgliedComponent dsbMitgliedComponent;
+
+    @Mock
+    private UserComponent userComponent;
 
     @Mock
     private Principal principal;
@@ -117,11 +123,18 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
 
-        // configure mocks
+        // Create UserDO mock
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        // configure mocks for the new UserComponent dependency
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
         when(dsbMitgliedComponent.findAll()).thenReturn(dsbMitgliedDOList);
 
         // call test method
-        final List<DsbMitgliedDTO> actual = underTest.findAll();
+        final List<DsbMitgliedDTO> actual = underTest.findAll(principal);
 
         // assert result
         assertThat(actual).isNotNull().hasSize(1);
@@ -133,9 +146,61 @@ public class DsbMitgliedServiceTest {
         assertThat(actualDTO.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
 
         // verify invocations
+        verify(userComponent).findById(USER);
+        verify(dsbMitgliedComponent).findById(ID);
         verify(dsbMitgliedComponent).findAll();
     }
 
+    @Test
+    public void findAllInVerein() {
+        // prepare test data: one member in the same Verein as the user and one in a different Verein
+        final DsbMitgliedDO sameVerein = getDsbMitgliedDO();
+        final DsbMitgliedDO otherVerein = new DsbMitgliedDO(
+                ID + 1,
+                VORNAME,
+                NACHNAME,
+                GEBURTSDATUM,
+                NATIONALITAET,
+                MITGLIEDSNUMMER,
+                VEREINSID + 1,
+                VEREINNAME,
+                USERID,
+                KAMPFRICHTER,
+                BEITRITTSDATUM
+        );
+
+        final List<DsbMitgliedDO> dsbMitgliedDOList = List.of(sameVerein, otherVerein);
+
+        // Create UserDO mock: user belongs to 'sameVerein' (via dsbMitgliedId -> ID)
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        // configure mocks for components
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(sameVerein);
+        when(dsbMitgliedComponent.findAll()).thenReturn(dsbMitgliedDOList);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER but has CAN_MODIFY_MY_VEREIN
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MY_VEREIN)).thenReturn(true);
+
+        // call test method
+        final List<DsbMitgliedDTO> actual = underTest.findAll(principal);
+
+        // assert result: only members from the user's verein are returned
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMitgliedDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getVereinsId()).isEqualTo(sameVerein.getVereinsId());
+
+        // verify invocations
+        verify(userComponent).findById(USER);
+        verify(dsbMitgliedComponent).findById(ID);
+        verify(dsbMitgliedComponent).findAll();
+    }
 
     @Test
     public void findAllByTeamId() {
@@ -318,11 +383,21 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
-        // configure mocks
+        // configure mocks for permission checks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER))
+            .thenReturn(true);
+
+        // configure mocks for dsbMitgliedComponent
         when(dsbMitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
+        DsbMitgliedDTO actual;
         // call test method
-        final DsbMitgliedDTO actual = underTest.create(input, principal);
+        try {
+            actual = underTest.create(input, principal);
+        }
+        catch (NoPermissionException e) {
+            actual = null;
+        }
 
         // assert result
         assertThat(actual).isNotNull();
@@ -339,6 +414,61 @@ public class DsbMitgliedServiceTest {
         assertThat(createdDsbMitglied.getVorname()).isEqualTo(input.getVorname());
     }
 
+    @Test
+    public void createWithCANMODIFYMYVEREIN(){
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+        final DsbMitgliedDO expected = getDsbMitgliedDO();
+
+        // configure mocks for permission checks
+        // The service checks hasSpecificPermissionSportleiter(...) for CAN_MODIFY_MY_VEREIN
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, input.getVereinsId()))
+                .thenReturn(true);
+
+        // configure mocks for dsbMitgliedComponent
+        when(dsbMitgliedComponent.create(any(), anyLong())).thenReturn(expected);
+
+        DsbMitgliedDTO actual;
+        // call test method
+        try {
+            actual = underTest.create(input, principal);
+        }
+        catch (NoPermissionException e) {
+            actual = null;
+        }
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getVorname()).isEqualTo(input.getVorname());
+
+        // verify invocations
+        verify(dsbMitgliedComponent).create(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedDO createdDsbMitglied = dsbMitgliedVOArgumentCaptor.getValue();
+
+        assertThat(createdDsbMitglied).isNotNull();
+        assertThat(createdDsbMitglied.getId()).isEqualTo(input.getId());
+        assertThat(createdDsbMitglied.getVorname()).isEqualTo(input.getVorname());
+    }
+
+    @Test
+    public void createNoPermission() {
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+
+        // configure mocks for permission checks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER))
+            .thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, input.getVereinsId()))
+                .thenReturn(false);
+
+        // call test method and assert exception
+        assertThatExceptionOfType(NoPermissionException.class)
+            .isThrownBy(() -> underTest.create(input, principal));
+    }
 
     @Test
     public void update() {

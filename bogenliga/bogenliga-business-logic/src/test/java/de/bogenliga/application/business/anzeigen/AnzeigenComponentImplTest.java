@@ -57,7 +57,7 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         );
         valuesToMethodNames.put(
                 "getVeranstaltungsId",
-                expectedBE.getVeranstaltungsId()
+                expectedBE.getWettkampfId()
         );
         valuesToMethodNames.put(
                 "getAktuellesMatch",
@@ -66,11 +66,11 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
-    public void testFindByVeranstaltungsIdRecordExists() {
+    public void testFindByWettkampfIdRecordExists() {
         final List<AnzeigenBE> expectedBEList = Collections.singletonList(expectedBE);
-        when(anzeigenDAO.findByVeranstaltungsId(1L)).thenReturn(expectedBEList);
+        when(anzeigenDAO.findByWettkampfId(1L)).thenReturn(expectedBEList);
 
-        List<AnzeigenDO> result = underTest.findByVeranstaltungsId(1L);
+        List<AnzeigenDO> result = underTest.findByWettkampfId(1L);
 
         // Check that Optional contains a value
         assertThat(result).hasSize(1);
@@ -78,16 +78,16 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         assertThat(anzeigenDO.getId()).isEqualTo(expectedBE.getId());
         assertThat(anzeigenDO.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
         assertThat(anzeigenDO.getTableTyp()).isEqualTo(expectedBE.getTableTyp());
-        assertThat(anzeigenDO.getVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(anzeigenDO.getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
         assertThat(anzeigenDO.getAktuellesMatch()).isEqualTo(expectedBE.getAktuellesMatch());
     }
 
 
     @Test
-    public void testFindByVeranstaltungsIdRecordNotExists() {
+    public void testFindByWettkampfIdRecordNotExists() {
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenThrow(new RuntimeException("Record not found"));
 
-        List<AnzeigenDO> emptyResult = underTest.findByVeranstaltungsId(999L);
+        List<AnzeigenDO> emptyResult = underTest.findByWettkampfId(999L);
         assertThat(emptyResult.isEmpty()).isTrue();
     }
 
@@ -137,7 +137,7 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         assertThat(resultDO.getId()).isEqualTo(expectedBE.getId());
         assertThat(resultDO.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
         assertThat(resultDO.getTableTyp()).isEqualTo(expectedBE.getTableTyp());
-        assertThat(resultDO.getVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(resultDO.getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
         assertThat(resultDO.getAktuellesMatch()).isEqualTo(expectedBE.getAktuellesMatch());
     }
 
