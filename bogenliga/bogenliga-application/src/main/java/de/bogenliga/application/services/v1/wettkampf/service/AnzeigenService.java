@@ -93,6 +93,7 @@ public class AnzeigenService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN})
     public long create(@RequestBody final Long wettkampfId, final Principal principal) {
 
+        Preconditions.checkNotNull(wettkampfId, "Wettkampf ID must not be null.");
         final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(new AnzeigenDTO());
         final long userId = UserProvider.getCurrentUserId(principal);
 
