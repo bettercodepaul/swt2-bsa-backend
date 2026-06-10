@@ -27,6 +27,7 @@ public class TabletSchusszettelDTO {
     private List<VerfuegbarerSchuetzeDTO> verfuegbareSchuetzen;
     private WettkampfInfoDTO wettkampfInfo;
     private Integer currentPasseNumber;
+    private Integer eigenesTeamMatchNr;
     
     // Match-IDs für Frontend-Navigation
     private Long eigenesTeamMatchId;
@@ -65,6 +66,9 @@ public class TabletSchusszettelDTO {
 
     public Integer getCurrentPasseNumber() { return currentPasseNumber; }
     public void setCurrentPasseNumber(Integer currentPasseNumber) { this.currentPasseNumber = currentPasseNumber; }
+
+    public Integer getEigenesTeamMatchNr() { return eigenesTeamMatchNr; }
+    public void setEigenesTeamMatchNr(Integer eigenesTeamMatchNr) { this.eigenesTeamMatchNr = eigenesTeamMatchNr; }
 
     public Long getEigenesTeamMatchId() { return eigenesTeamMatchId; }
     public void setEigenesTeamMatchId(Long eigenesTeamMatchId) { this.eigenesTeamMatchId = eigenesTeamMatchId; }

@@ -254,6 +254,10 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         // Basic match data with actual team names
         result.setEigenesTeam(new TeamInfoDO(teamId, getTeamName(teamId)));
         result.setGegnerischesTeam(new TeamInfoDO(runtime.getOpponentTeamId(), getTeamName(runtime.getOpponentTeamId())));
+
+        // Load match numbers for frontend navigation over matchComponent
+        loadAndSetMatchNumbers(result, runtime);
+
         result.setSatzErgebnisse(Collections.emptyList());
         result.setSchuetzenMatchPunkte(Collections.emptyList());
         result.setMatchErgebnis(Collections.emptyList());
@@ -273,6 +277,27 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
             return "Team " + teamId; // Fallback to technical name
         }
     }
+
+    private void loadAndSetMatchNumbers(TabletSchusszettelDO result, SessionRuntime runtime) {
+        try {
+            // Load eigenes Team Match-Nr
+            long eigenesTeamMatchId = runtime.getCurrentMatchId();
+            if (eigenesTeamMatchId > 0) {
+                MatchDO eigenesTeamMatch = matchComponent.findById(eigenesTeamMatchId);
+                if (eigenesTeamMatch != null && eigenesTeamMatch.getNr() != null) {
+                    result.setEigenesTeamMatchNr(Math.toIntExact(eigenesTeamMatch.getNr()));
+                } else {
+                    result.setEigenesTeamMatchNr(null);
+                }
+            } else {
+                result.setEigenesTeamMatchNr(null);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Match Nummern konnten nicht geladen werden: {}", e.getMessage());
+            result.setEigenesTeamMatchNr(null);
+        }
+    }
+
 
     /**
      * Enriches response with state-specific data using state objects.
