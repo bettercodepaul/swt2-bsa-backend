@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
 import java.sql.Date;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -207,6 +208,24 @@ public class DsbMannschaftServiceTest {
         verify(dsbMannschaftComponent).findAll();
     }
 
+    @Test
+    public void findAllSportjahre() {
+        // prepare test data
+        final List<Long> expectedSportjahre = List.of(2026L, 2025L, 2024L);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllSportjahre()).thenReturn(expectedSportjahre);
+
+        // call test method
+        final List<Long> actual = underTest.findAllSportjahre();
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(3);
+        assertThat(actual).containsExactly(2026L, 2025L, 2024L);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllSportjahre();
+    }
 
     @Test
     public void findAllByVereinsId() {
@@ -214,11 +233,14 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
+        final int currentYear = Year.now().getValue();
+        dsbMannschaftDO.setSportjahr( (long) currentYear);
+
         // configure mocks
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID);
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, currentYear);
 
         //assert result
         assertThat(actual).isNotNull().hasSize(1);
@@ -232,6 +254,78 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getSportjahr()).isEqualTo(dsbMannschaftDO.getSportjahr());
 
         //verify invocations
+        verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
+    }
+
+    @Test
+    public void findAllByVereinsId_OnlyMatchingSportjahr() {
+        // prepare test data
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        dsbMannschaftDO.setSportjahr(2019L);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, 2018);
+
+        // assert result
+        assertThat(actual).isNotNull().isEmpty();
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
+    }
+
+    @Test
+    public void findAllByVereinsId_filtersMannschaftenBySportjahr() {
+        // prepare test data
+        final DsbMannschaftDO matching = getDsbMannschaftDO();
+        matching.setId(1L);
+        matching.setSportjahr(2024L);
+
+        final DsbMannschaftDO nonMatching = getDsbMannschaftDO();
+        nonMatching.setId(2L);
+        nonMatching.setSportjahr(2023L);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList = java.util.Arrays.asList(matching, nonMatching);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, 2024);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+        assertThat(actual.get(0).getId()).isEqualTo(1L);
+        assertThat(actual.get(0).getSportjahr()).isEqualTo(2024L);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
+    }
+
+    @Test
+    public void findAllByVereinsId_usesCurrentYearWhenYearIsNull() {
+        // prepare test data
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final int currentYear = java.time.Year.now().getValue();
+        dsbMannschaftDO.setSportjahr((long) currentYear);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
+
+        // call test method
+        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID, null);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+        assertThat(actual.get(0).getSportjahr()).isEqualTo((long) currentYear);
+
+        // verify invocations
         verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
     }
 
