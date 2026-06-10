@@ -5,6 +5,7 @@ import de.bogenliga.application.business.wettkampf.impl.business.AnzeigenCompone
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -108,13 +110,14 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
     public void testFindByPhysischeBildschirmId() {
         final String physischeBildschirmId = "-";
 
-        // prepare DAO response
         final AnzeigenBE expectedAnzeigenBE = new AnzeigenBE();
-        when(anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId)).thenReturn(expectedAnzeigenBE);
+        when(anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId)).thenReturn(expectedAnzeigenBE)
+                .thenReturn(null);
 
-        // call method under test
         final AnzeigenDO actual = underTest.findByPhysischeBildschirmId(physischeBildschirmId);
-        // assert result and interaction
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByPhysischeBildschirmId(physischeBildschirmId));
         assertNotNull("Result must not be null", actual);
     }
 
