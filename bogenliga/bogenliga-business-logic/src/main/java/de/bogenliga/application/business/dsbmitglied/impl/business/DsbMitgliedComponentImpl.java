@@ -145,7 +145,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         final DsbMitgliedWithoutVereinsnameBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedWithoutVereinsnameBE.apply(dsbMitgliedDO);
 
         DsbMitgliedWithoutVereinsnameBE updatedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
-
+        
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
         if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
             UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
@@ -154,9 +154,9 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
                 updatedDsbMitgliedBE = dsbMitgliedDAO.update(updatedDsbMitgliedBE, currentDsbMitgliedId);
             }
         }
-
+        
         DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDOWithoutVereinsname.apply(updatedDsbMitgliedBE);
-
+        
         // Null-safe license logic: explicitly check for Boolean.TRUE/FALSE to handle null values
         boolean isKampfrichterFalse = Boolean.FALSE.equals(dsbMitgliedDO.isKampfrichter());
         boolean isKampfrichterTrue = Boolean.TRUE.equals(dsbMitgliedDO.isKampfrichter());
