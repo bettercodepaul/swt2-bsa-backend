@@ -47,8 +47,6 @@ public class TabletSchusszettelMapperTest {
 
         // Match Numbers
         doObj.setEigenesTeamMatchNr(1);
-        doObj.setEigenesTeamMatchId(200L);
-        doObj.setGegnerischesTeamMatchId(201L);
 
         // Satz-Ergebnisse
         SatzErgebnisDO satz = new SatzErgebnisDO();
