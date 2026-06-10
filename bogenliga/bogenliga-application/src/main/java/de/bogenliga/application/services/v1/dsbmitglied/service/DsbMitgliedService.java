@@ -116,7 +116,7 @@ public class DsbMitgliedService implements ServiceFacade {
         final List<DsbMitgliedDO> dsbMitgliedDOList;
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)) // only return members of the same club
         {
-            dsbMitgliedDOList = dsbMitgliedComponent.findAll().stream().filter(dsbMitgliedDO -> Objects.equals(dsbMitgliedDO.getVereinsId(), vereinsId)).collect(Collectors.toList());
+            dsbMitgliedDOList = dsbMitgliedComponent.findAll().stream().filter(dsbMitgliedDO -> Objects.equals(dsbMitgliedDO.getVereinsId(), vereinsId)).toList();
         }
         else
         {
