@@ -45,12 +45,16 @@ public class TabletSchusszettelMapperTest {
         doObj.setEigenesTeam(new TeamInfoDO(TEAM_ID, TEAM_NAME));
         doObj.setGegnerischesTeam(new TeamInfoDO(99L, "Gegner"));
 
+        // Match Numbers
+        doObj.setEigenesTeamMatchNr(1);
+
         // Satz-Ergebnisse
         SatzErgebnisDO satz = new SatzErgebnisDO();
         satz.setSatzNr(1);
         satz.setTeam1Punkte(55);
         satz.setTeam2Punkte(53);
         doObj.setSatzErgebnisse(Collections.singletonList(satz));
+
 
         // Schützenpunkte
         SchuetzeMatchPunkteDO matchPunkte = new SchuetzeMatchPunkteDO(10L, 60);
@@ -72,6 +76,10 @@ public class TabletSchusszettelMapperTest {
         WettkampfInfoDO wettkampfInfo = new WettkampfInfoDO(1L, 1L, null, "10:00", "Stadion", "Info", "Straße", "12345",
                 2L, "Veranstaltung", 2023L, "Liga", "Wettkampftyp");
         doObj.setWettkampfInfo(wettkampfInfo);
+
+        doObj.setEigenesTeamMatchId(111L);
+        doObj.setGegnerischesTeamMatchId(222L);
+        doObj.setEigenesTeamScheibennummer(7L);
     }
 
     @Test
@@ -84,6 +92,11 @@ public class TabletSchusszettelMapperTest {
         assertThat(dto.getStatus()).isEqualTo(TabletSchusszettelDTO.TabletSchusszettelStatus.SATZEINGABE);
         assertThat(dto.getEigenesTeam().getTeamId()).isEqualTo(TEAM_ID);
         assertThat(dto.getEigenesTeam().getTeamName()).isEqualTo(TEAM_NAME);
+
+        // Match Numbers
+        assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(1);
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(111L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(222L);
 
         // Satz-Ergebnis
         assertThat(dto.getSatzErgebnisse()).hasSize(1);
@@ -104,6 +117,10 @@ public class TabletSchusszettelMapperTest {
         // Verfügbare Schützen
         assertThat(dto.getVerfuegbareSchuetzen()).hasSize(1);
         assertThat(dto.getVerfuegbareSchuetzen().get(0).getName()).isEqualTo("Anna Schmidt");
+
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(111L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(222L);
+        assertThat(dto.getEigenesTeamScheibennummer()).isEqualTo(7L);
     }
 
     @Test
@@ -134,5 +151,97 @@ public class TabletSchusszettelMapperTest {
         assertThat(dto.getSchuetzeStammDaten()).isEmpty();
         assertThat(dto.getMatchErgebnis()).isEmpty();
         assertThat(dto.getVerfuegbareSchuetzen()).isEmpty();
+    }
+
+    @Test
+    public void testToDTO_matchNumberIsNull() {
+        // Arrange: DO mit null Match-Nummer
+        doObj.setEigenesTeamMatchNr(null);
+        doObj.setEigenesTeamMatchId(null);
+        doObj.setGegnerischesTeamMatchId(null);
+
+        // Act
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+
+        // Assert
+        assertThat(dto).isNotNull();
+        assertThat(dto.getEigenesTeamMatchNr()).isNull();
+        assertThat(dto.getEigenesTeamMatchId()).isNull();
+        assertThat(dto.getGegnerischesTeamMatchId()).isNull();
+    }
+
+    @Test
+    public void testToDTO_matchNumberIsPresent() {
+        // Arrange: DO mit verschiedenen Match-Nummern
+        doObj.setEigenesTeamMatchNr(5);
+        doObj.setEigenesTeamMatchId(500L);
+        doObj.setGegnerischesTeamMatchId(501L);
+
+        // Act
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+
+        // Assert
+        assertThat(dto).isNotNull();
+        assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(5);
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(500L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(501L);
+    }
+
+    @Test
+    public void testFromDTO_mapsScheibennummerAndIds() {
+        TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
+        dto.setStatus(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE);
+        dto.setEigenesTeamMatchId(123L);
+        dto.setGegnerischesTeamMatchId(456L);
+        dto.setEigenesTeamScheibennummer(9L);
+
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(mapped).isNotNull();
+        assertThat(mapped.getStatus()).isEqualTo(TabletSchusszettelDO.TabletSchusszettelStatus.WARTE);
+        assertThat(mapped.getEigenesTeamMatchId()).isEqualTo(123L);
+        assertThat(mapped.getGegnerischesTeamMatchId()).isEqualTo(456L);
+        assertThat(mapped.getEigenesTeamScheibennummer()).isEqualTo(9L);
+    }
+
+    @Test
+    public void testFromDTO_nullStatus_defaultsToNotAllowed() {
+        TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
+        dto.setStatus(null);
+
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(mapped).isNotNull();
+        assertThat(mapped.getStatus()).isEqualTo(TabletSchusszettelDO.TabletSchusszettelStatus.NOT_ALLOWED);
+    }
+
+    @Test
+    public void testFromDTO_nullInput_returnsNull() {
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(null);
+
+        assertThat(mapped).isNull();
+    }
+
+    @Test
+    public void testRoundTrip_preservesScheibennummer() {
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+        TabletSchusszettelDO roundTrip = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(roundTrip).isNotNull();
+        assertThat(roundTrip.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        assertThat(roundTrip.getEigenesTeamMatchId()).isEqualTo(111L);
+        assertThat(roundTrip.getGegnerischesTeamMatchId()).isEqualTo(222L);
+    }
+
+    @Test
+    public void testFromDTO_nullScheibennummer_isPreserved() {
+        TabletSchusszettelDTO dto = new TabletSchusszettelDTO();
+        dto.setStatus(TabletSchusszettelDTO.TabletSchusszettelStatus.WARTE);
+        dto.setEigenesTeamScheibennummer(null);
+
+        TabletSchusszettelDO mapped = TabletSchusszettelMapper.fromDTO(dto);
+
+        assertThat(mapped).isNotNull();
+        assertThat(mapped.getEigenesTeamScheibennummer()).isNull();
     }
 }

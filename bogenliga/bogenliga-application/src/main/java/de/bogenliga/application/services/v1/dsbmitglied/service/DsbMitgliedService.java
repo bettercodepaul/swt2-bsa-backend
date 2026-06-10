@@ -2,9 +2,13 @@ package de.bogenliga.application.services.v1.dsbmitglied.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +65,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final UserComponent userComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
@@ -68,11 +73,15 @@ public class DsbMitgliedService implements ServiceFacade {
      * Constructor with dependency injection
      *
      * @param dsbMitgliedComponent to handle the database CRUD requests
+     * @param userComponent to handle user requests
+     * @param requiresOnePermissionAspect for permission checks
      */
     @Autowired
     public DsbMitgliedService(final DsbMitgliedComponent dsbMitgliedComponent,
+                              final UserComponent userComponent,
                               final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.userComponent = userComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
@@ -99,9 +108,21 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
-    public List<DsbMitgliedDTO> findAll() {
-        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public List<DsbMitgliedDTO> findAll(final Principal principal) {
+        final long userId = UserProvider.getCurrentUserId(principal);
+        UserDO userDO = this.userComponent.findById(userId);
+        var vereinsId = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId()).getVereinsId();
+        final List<DsbMitgliedDO> dsbMitgliedDOList;
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)) // only return members of the same club
+        {
+            dsbMitgliedDOList = dsbMitgliedComponent.findAll().stream().filter(dsbMitgliedDO -> Objects.equals(dsbMitgliedDO.getVereinsId(), vereinsId)).toList();
+        }
+        else
+        {
+            dsbMitgliedDOList = dsbMitgliedComponent.findAll();
+        }
+
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -221,18 +242,28 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER})
-    public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
-        checkPreconditions(dsbMitgliedDTO);
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) throws NoPermissionException {
 
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+        if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER)
+                || this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER)
+                || this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMitgliedDTO.getVereinsId()))
+        {
+            checkPreconditions(dsbMitgliedDTO);
+
+            if(LOG.isDebugEnabled()) {
+                LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+            }
+            final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
+            final long userId = UserProvider.getCurrentUserId(principal);
+            final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
+
+            return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
         }
-        final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-        final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
-
-        return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
+        else
+        {
+            throw new NoPermissionException();
+        }
     }
 
 

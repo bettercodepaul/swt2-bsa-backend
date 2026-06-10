@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.disziplin.service;
 
 import java.util.List;
 
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.disziplin.mapper.DisziplinDTOMapper;
 import de.bogenliga.application.services.v1.disziplin.model.DisziplinDTO;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 
 /**
  * I´m a REST resource and handle Disziplin get and getbyID requests over the HTTP protocol.
@@ -45,7 +45,7 @@ public class DisziplinService implements ServiceFacade {
      * @return list of {@link DisziplinDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<DisziplinDTO> findAll() {
         final List<DisziplinDO> disziplinDOList = disziplinComponent.findAll();
         LOG.debug("Received Disziplin request");
@@ -59,7 +59,7 @@ public class DisziplinService implements ServiceFacade {
      * @return list of {@link DisziplinDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN, UserPermission.CAN_READ_SYSTEMDATEN_SPORTLEITER})
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public DisziplinDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
