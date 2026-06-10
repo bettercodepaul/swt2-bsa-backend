@@ -57,6 +57,7 @@ public class TabletSchusszettelMapperTest {
         satz.setTeam2Punkte(53);
         doObj.setSatzErgebnisse(Collections.singletonList(satz));
 
+
         // Schützenpunkte
         SchuetzeMatchPunkteDO matchPunkte = new SchuetzeMatchPunkteDO(10L, 60);
         doObj.setSchuetzenMatchPunkte(Collections.singletonList(matchPunkte));
