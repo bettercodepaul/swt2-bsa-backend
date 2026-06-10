@@ -91,18 +91,18 @@ public class AnzeigenServiceTest {
 
 
     @Test
-    public void findByVeranstaltungsId_withValidId_shouldReturnListOfDTOs() {
+    public void findByWettkampfId_withValidId_shouldReturnListOfDTOs() {
 
         List<AnzeigenDO> doList = List.of(anzeigenDO);
-        when(anzeigenComponent.findByVeranstaltungsId(VERANSTALTUNGS_ID)).thenReturn(doList);
+        when(anzeigenComponent.findByWettkampfId(VERANSTALTUNGS_ID)).thenReturn(doList);
 
-        List<AnzeigenDTO> result = underTest.findByVeranstaltungsId(VERANSTALTUNGS_ID);
+        List<AnzeigenDTO> result = underTest.findByWettkampfId(VERANSTALTUNGS_ID);
 
         assertThat(result)
                 .isNotNull()
                 .hasSize(1);
 
-        verify(anzeigenComponent).findByVeranstaltungsId(VERANSTALTUNGS_ID);
+        verify(anzeigenComponent).findByWettkampfId(VERANSTALTUNGS_ID);
     }
 
     @Captor
@@ -113,12 +113,12 @@ public class AnzeigenServiceTest {
 
     @Test
     public void create_withValidData_shouldReturnSavedId() {
-        AnzeigenDTO inputDTO = new AnzeigenDTO(null, "Screen_01", "Tabelle", 1337L, 1);
-        AnzeigenDO savedDO = new AnzeigenDO(VALID_ID, "Screen_01", "Tabelle", 1337L, 1);
+        Long inputId = 1337L;
+        AnzeigenDO savedDO = new AnzeigenDO(VALID_ID, null, "Tabelle", 1337L, 1);
 
         when(anzeigenComponent.create(any(AnzeigenDO.class), anyLong())).thenReturn(savedDO);
 
-        long resultId = underTest.create(inputDTO, principal);
+        long resultId = underTest.create(inputId, principal);
 
         assertThat(resultId).isEqualTo(VALID_ID);
 
@@ -126,14 +126,14 @@ public class AnzeigenServiceTest {
 
         AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
         assertThat(capturedDO).isNotNull();
-        assertThat(capturedDO.getPhysischeBildschirmId()).isEqualTo("Screen_01");
-        assertThat(capturedDO.getVeranstaltungsId()).isEqualTo(1337L);
+        assertThat(capturedDO.getWettkampfId()).isEqualTo(1337L);
     }
 
     @Test
-    public void create_withNullDTO_shouldThrowException() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.create(null, principal));
+    public void create_withNull_shouldThrowException() {
+        assertThatExceptionOfType(de.bogenliga.application.common.errorhandling.exception.BusinessException.class)
+                .isThrownBy(() -> underTest.create(null, principal))
+                .withMessageContaining("Wettkampf ID must not be null.");
 
         verifyZeroInteractions(anzeigenComponent);
     }

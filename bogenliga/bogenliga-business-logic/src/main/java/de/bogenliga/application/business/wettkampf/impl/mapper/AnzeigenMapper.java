@@ -19,10 +19,10 @@ public class AnzeigenMapper {
         final Long id = anzeigenBE.getId();
         final String physischeBildschirmId = anzeigenBE.getPhysischeBildschirmId();
         final String tableTyp = anzeigenBE.getTableTyp();
-        final Long veranstaltungsId = anzeigenBE.getVeranstaltungsId();
+        final Long wettkampfId = anzeigenBE.getWettkampfId();
         final int aktuellesMatch = anzeigenBE.getAktuellesMatch();
 
-        return new AnzeigenDO(id, physischeBildschirmId, tableTyp, veranstaltungsId, aktuellesMatch,
+        return new AnzeigenDO(id, physischeBildschirmId, tableTyp, wettkampfId, aktuellesMatch,
                 createdAtUtc,
                 anzeigenBE.getCreatedByUserId(),
                 lastModifiedUtc,
@@ -39,7 +39,7 @@ public class AnzeigenMapper {
         anzeigenBE.setId(anzeigenDO.getId());
         anzeigenBE.setPhysischeBildschirmId(anzeigenDO.getPhysischeBildschirmId());
         anzeigenBE.setTableTyp(anzeigenDO.getTableTyp());
-        anzeigenBE.setVeranstaltungsId(anzeigenDO.getVeranstaltungsId());
+        anzeigenBE.setWettkampfId(anzeigenDO.getWettkampfId());
         anzeigenBE.setAktuellesMatch(anzeigenDO.getAktuellesMatch());
 
         anzeigenBE.setCreatedAtUtc(createdAtUtcTimestamp);
