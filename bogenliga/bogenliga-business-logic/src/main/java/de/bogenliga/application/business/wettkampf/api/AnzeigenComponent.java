@@ -31,7 +31,7 @@ public interface AnzeigenComponent {
      *
      * @return persisted version of the anzeige
      */
-    AnzeigenDO create(AnzeigenDO anzeigenDO, final Long currentUserId, Long wettkampfId);
+    AnzeigenDO create(AnzeigenDO anzeigenDO, final Long currentUserId);
 
     /**
      * Update an existing anzeige. The anzeige is identified by the id's set in anzeigenDO.

@@ -77,10 +77,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
 
     @Override
-    public AnzeigenDO create(AnzeigenDO anzeigenDO, Long currentUserId, Long wettkampfId) {
+    public AnzeigenDO create(AnzeigenDO anzeigenDO, Long currentUserId) {
         this.checkAnzeigen(anzeigenDO);
-        //Füge die wettkampfId direkt beim erstellen des Datenbankeintrags hinzu
-        anzeigenDO.setWettkampfId(wettkampfId);
         AnzeigenBE anzeigenBE = anzeigenDAO.create(AnzeigenMapper.toAnzeigenBE.apply(anzeigenDO), currentUserId);
         return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
     }

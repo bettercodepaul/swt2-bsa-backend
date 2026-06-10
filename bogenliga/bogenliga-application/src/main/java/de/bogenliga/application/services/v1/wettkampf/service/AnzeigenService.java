@@ -92,11 +92,13 @@ public class AnzeigenService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN})
     public long create(@RequestBody final Long wettkampfId, final Principal principal) {
-
+        Preconditions.checkNotNull(wettkampfId, "Wettkampf ID must not be null.");
         final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(new AnzeigenDTO());
         final Long userId = UserProvider.getCurrentUserId(principal);
+        //Füge die wettkampfId hinzu
+        newAnzeigenDO.setWettkampfId(wettkampfId);
 
-        final AnzeigenDO savedAnzeigenDO = anzeigenComponent.create(newAnzeigenDO, userId, wettkampfId);
+        final AnzeigenDO savedAnzeigenDO = anzeigenComponent.create(newAnzeigenDO, userId);
 
         final AnzeigenDTO savedAnzeigenDTO = AnzeigenDTOMapper.toDTO.apply(savedAnzeigenDO);
 
