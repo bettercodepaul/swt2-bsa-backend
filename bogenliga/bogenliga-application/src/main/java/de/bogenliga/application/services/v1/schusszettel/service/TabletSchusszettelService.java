@@ -133,7 +133,7 @@ public class TabletSchusszettelService {
      * Re-tokenizes the schusszettel for a given wettkampf and team.
      * Exception handling is centralized in CustomizedResponseEntityExceptionHandler.
      */
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_ORT})
     @PostMapping("/tokenize")
     public ResponseEntity<Map<String, String>> reTokenize(
             @RequestParam Long wettkampfid,
