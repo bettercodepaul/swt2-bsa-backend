@@ -73,6 +73,23 @@ public class AnzeigenDAOTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
+    public void testFindByPhysischeBildschirmId() {
+        // 1. Vorbereitung (Mocking von basicDao)
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // 2. Ausführung
+        final AnzeigenBE actual = underTest.findByPhysischeBildschirmId("abcd");
+
+        // 3. Überprüfung
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
+        assertThat(actual.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
+
+        // Verifizieren, dass das BasicDAO mit der richtigen Query und ID aufgerufen wurde
+        verify(basicDao).selectSingleEntity(any(), any(), eq("abcd"));
+    }
+
+    @Test
     public void testFindAll() {
         // 1. Vorbereitung
         when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
