@@ -45,6 +45,7 @@ public class TabletSchusszettelMapper {
         dto.setCurrentPasseNumber(doObj.getCurrentPasseNumber());
         dto.setEigenesTeamMatchId(doObj.getEigenesTeamMatchId());
         dto.setGegnerischesTeamMatchId(doObj.getGegnerischesTeamMatchId());
+        dto.setEigenesTeamScheibennummer(doObj.getEigenesTeamScheibennummer());
         return dto;
     }
 
@@ -133,6 +134,7 @@ public class TabletSchusszettelMapper {
         doObj.setCurrentPasseNumber(dto.getCurrentPasseNumber());
         doObj.setEigenesTeamMatchId(dto.getEigenesTeamMatchId());
         doObj.setGegnerischesTeamMatchId(dto.getGegnerischesTeamMatchId());
+        doObj.setEigenesTeamScheibennummer(dto.getEigenesTeamScheibennummer());
 
         return doObj;
     }

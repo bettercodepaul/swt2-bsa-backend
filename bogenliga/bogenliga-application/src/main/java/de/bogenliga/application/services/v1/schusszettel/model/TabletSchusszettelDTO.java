@@ -31,6 +31,7 @@ public class TabletSchusszettelDTO {
     // Match-IDs für Frontend-Navigation
     private Long eigenesTeamMatchId;
     private Long gegnerischesTeamMatchId;
+    private Long eigenesTeamScheibennummer;
 
     // Getter/Setter
     public TabletSchusszettelStatus getStatus() { return status; }
@@ -70,6 +71,9 @@ public class TabletSchusszettelDTO {
 
     public Long getGegnerischesTeamMatchId() { return gegnerischesTeamMatchId; }
     public void setGegnerischesTeamMatchId(Long gegnerischesTeamMatchId) { this.gegnerischesTeamMatchId = gegnerischesTeamMatchId; }
+
+    public Long getEigenesTeamScheibennummer() { return eigenesTeamScheibennummer; }
+    public void setEigenesTeamScheibennummer(Long eigenesTeamScheibennummer) { this.eigenesTeamScheibennummer = eigenesTeamScheibennummer; }
 
     /**
      * Statuswerte, die den aktuellen Zustand der Tablet-Eingabemaske darstellen.

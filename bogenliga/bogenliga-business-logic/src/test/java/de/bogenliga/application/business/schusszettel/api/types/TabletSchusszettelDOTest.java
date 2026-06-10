@@ -29,7 +29,8 @@ public class TabletSchusszettelDOTest {
         tablet.setCurrentPasseNumber(1);
         tablet.setEigenesTeamMatchId(100L);
         tablet.setGegnerischesTeamMatchId(200L);
-        
+        tablet.setEigenesTeamScheibennummer(12L);
+
         // Cover all getters
         TabletSchusszettelStatus status = tablet.getStatus();
         TeamInfoDO eigenesTeam = tablet.getEigenesTeam();
@@ -43,12 +44,14 @@ public class TabletSchusszettelDOTest {
         Integer currentPasseNumber = tablet.getCurrentPasseNumber();
         Long eigenesTeamMatchId = tablet.getEigenesTeamMatchId();
         Long gegnerischesTeamMatchId = tablet.getGegnerischesTeamMatchId();
-        
+        Long eigenesTeamScheibennummer = tablet.getEigenesTeamScheibennummer();
+
         // Basic assertions
         assertThat(tablet).isNotNull();
         assertThat(status).isEqualTo(TabletSchusszettelStatus.SCHUETZENMELDUNG);
         assertThat(currentPasseNumber).isEqualTo(1);
         assertThat(eigenesTeamMatchId).isEqualTo(100L);
         assertThat(gegnerischesTeamMatchId).isEqualTo(200L);
+        assertThat(eigenesTeamScheibennummer).isEqualTo(12L);
     }
 }
