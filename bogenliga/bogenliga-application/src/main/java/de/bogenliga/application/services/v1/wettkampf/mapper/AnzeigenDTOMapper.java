@@ -11,20 +11,20 @@ public final class AnzeigenDTOMapper implements DataTransferObjectMapper {
         final Long id = anzeigenDO.getId();
         final String physischeBildschirmId = anzeigenDO.getPhysischeBildschirmId();
         final String tableTyp = anzeigenDO.getTableTyp();
-        final Long veranstaltungsId = anzeigenDO.getVeranstaltungsId();
+        final Long wettkampfId = anzeigenDO.getWettkampfId();
         final int aktuellesMatch = anzeigenDO.getAktuellesMatch();
 
-        return new AnzeigenDTO(id, physischeBildschirmId, tableTyp, veranstaltungsId, aktuellesMatch);
+        return new AnzeigenDTO(id, physischeBildschirmId, tableTyp, wettkampfId, aktuellesMatch);
     };
 
     public static final Function<AnzeigenDTO, AnzeigenDO> toDO = anzeigenDTO -> {
         final Long id = anzeigenDTO.getId();
         final String physischeBildschirmId = anzeigenDTO.getPhysischeBildschirmId();
         final String tableTyp = anzeigenDTO.getTableTyp();
-        final Long veranstaltungsId = anzeigenDTO.getVeranstaltungsId();
+        final Long wettkampfId = anzeigenDTO.getWettkampfId();
         final int aktuellesMatch = anzeigenDTO.getAktuellesMatch();
 
-        return new AnzeigenDO(id, physischeBildschirmId, tableTyp, veranstaltungsId, aktuellesMatch);
+        return new AnzeigenDO(id, physischeBildschirmId, tableTyp, wettkampfId, aktuellesMatch);
     };
 
     private AnzeigenDTOMapper() {
