@@ -45,7 +45,8 @@ public class TabletSchusszettelDOTest {
         Integer eigenesTeamMatchNr = tablet.getEigenesTeamMatchNr();
         Long eigenesTeamMatchId = tablet.getEigenesTeamMatchId();
         Long gegnerischesTeamMatchId = tablet.getGegnerischesTeamMatchId();
-        
+
+
         // Basic assertions
         assertThat(tablet).isNotNull();
         assertThat(status).isEqualTo(TabletSchusszettelStatus.SCHUETZENMELDUNG);
