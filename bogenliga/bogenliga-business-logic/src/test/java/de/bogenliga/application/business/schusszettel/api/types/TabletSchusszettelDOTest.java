@@ -27,6 +27,7 @@ public class TabletSchusszettelDOTest {
         tablet.setVerfuegbareSchuetzen(Arrays.asList(new VerfuegbarerSchuetzeDO()));
         tablet.setWettkampfInfo(new WettkampfInfoDO());
         tablet.setCurrentPasseNumber(1);
+        tablet.setEigenesTeamMatchNr(3);
         tablet.setEigenesTeamMatchId(100L);
         tablet.setGegnerischesTeamMatchId(200L);
         
@@ -41,6 +42,7 @@ public class TabletSchusszettelDOTest {
         List<VerfuegbarerSchuetzeDO> verfuegbareSchuetzen = tablet.getVerfuegbareSchuetzen();
         WettkampfInfoDO wettkampfInfo = tablet.getWettkampfInfo();
         Integer currentPasseNumber = tablet.getCurrentPasseNumber();
+        Integer eigenesTeamMatchNr = tablet.getEigenesTeamMatchNr();
         Long eigenesTeamMatchId = tablet.getEigenesTeamMatchId();
         Long gegnerischesTeamMatchId = tablet.getGegnerischesTeamMatchId();
         
@@ -48,6 +50,7 @@ public class TabletSchusszettelDOTest {
         assertThat(tablet).isNotNull();
         assertThat(status).isEqualTo(TabletSchusszettelStatus.SCHUETZENMELDUNG);
         assertThat(currentPasseNumber).isEqualTo(1);
+        assertThat(eigenesTeamMatchNr).isEqualTo(3);
         assertThat(eigenesTeamMatchId).isEqualTo(100L);
         assertThat(gegnerischesTeamMatchId).isEqualTo(200L);
     }

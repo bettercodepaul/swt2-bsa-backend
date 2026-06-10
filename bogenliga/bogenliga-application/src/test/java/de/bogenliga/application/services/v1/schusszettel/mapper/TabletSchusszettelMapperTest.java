@@ -45,6 +45,11 @@ public class TabletSchusszettelMapperTest {
         doObj.setEigenesTeam(new TeamInfoDO(TEAM_ID, TEAM_NAME));
         doObj.setGegnerischesTeam(new TeamInfoDO(99L, "Gegner"));
 
+        // Match Numbers
+        doObj.setEigenesTeamMatchNr(1);
+        doObj.setEigenesTeamMatchId(200L);
+        doObj.setGegnerischesTeamMatchId(201L);
+
         // Satz-Ergebnisse
         SatzErgebnisDO satz = new SatzErgebnisDO();
         satz.setSatzNr(1);
@@ -84,6 +89,11 @@ public class TabletSchusszettelMapperTest {
         assertThat(dto.getStatus()).isEqualTo(TabletSchusszettelDTO.TabletSchusszettelStatus.SATZEINGABE);
         assertThat(dto.getEigenesTeam().getTeamId()).isEqualTo(TEAM_ID);
         assertThat(dto.getEigenesTeam().getTeamName()).isEqualTo(TEAM_NAME);
+
+        // Match Numbers
+        assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(1);
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(200L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(201L);
 
         // Satz-Ergebnis
         assertThat(dto.getSatzErgebnisse()).hasSize(1);
@@ -134,5 +144,39 @@ public class TabletSchusszettelMapperTest {
         assertThat(dto.getSchuetzeStammDaten()).isEmpty();
         assertThat(dto.getMatchErgebnis()).isEmpty();
         assertThat(dto.getVerfuegbareSchuetzen()).isEmpty();
+    }
+
+    @Test
+    public void testToDTO_matchNumberIsNull() {
+        // Arrange: DO mit null Match-Nummer
+        doObj.setEigenesTeamMatchNr(null);
+        doObj.setEigenesTeamMatchId(null);
+        doObj.setGegnerischesTeamMatchId(null);
+
+        // Act
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+
+        // Assert
+        assertThat(dto).isNotNull();
+        assertThat(dto.getEigenesTeamMatchNr()).isNull();
+        assertThat(dto.getEigenesTeamMatchId()).isNull();
+        assertThat(dto.getGegnerischesTeamMatchId()).isNull();
+    }
+
+    @Test
+    public void testToDTO_matchNumberIsPresent() {
+        // Arrange: DO mit verschiedenen Match-Nummern
+        doObj.setEigenesTeamMatchNr(5);
+        doObj.setEigenesTeamMatchId(500L);
+        doObj.setGegnerischesTeamMatchId(501L);
+
+        // Act
+        TabletSchusszettelDTO dto = TabletSchusszettelMapper.toDTO(doObj);
+
+        // Assert
+        assertThat(dto).isNotNull();
+        assertThat(dto.getEigenesTeamMatchNr()).isEqualTo(5);
+        assertThat(dto.getEigenesTeamMatchId()).isEqualTo(500L);
+        assertThat(dto.getGegnerischesTeamMatchId()).isEqualTo(501L);
     }
 }
