@@ -65,6 +65,10 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
     // State constant for synchronization
     private static final String STATUS_WARTE = State.STATUS_WARTE;
 
+    // Tablet sessions are token-based and have no logged-in user; persisted
+    // changes are attributed to the system user (id 0, see test data created_by)
+    private static final long SYSTEM_USER_ID = 0L;
+
     // Essential components for delegation to state objects
     private final TabletSchusszettelDAO sessionDAO;
     private final PasseComponent passeComponent;
@@ -327,12 +331,21 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
      */
     void updateMatchScoresAfterSetCompletion(long matchId, long teamId, long opponentTeamId) {
         try {
-            
+            // Each team of a Begegnung has its own match row - the opponent's passes are
+            // stored under the opponent's match id, not under our matchId.
+            MatchDO teamMatch = matchComponent.findById(matchId);
+            if (teamMatch == null) {
+                return;
+            }
+            MatchDO opponentMatch = findOpponentMatch(teamMatch, opponentTeamId);
+
             // 1. Calculate set winner using existing business logic
             // Get all passe records for current match to determine set results
             List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
-            List<PasseDO> opponentPasses = passeComponent.findByMannschaftMatchId(opponentTeamId, matchId);
-            
+            List<PasseDO> opponentPasses = opponentMatch != null
+                ? passeComponent.findByMannschaftMatchId(opponentTeamId, opponentMatch.getId())
+                : Collections.emptyList();
+
             // Calculate satzpunkte for each completed set
             int teamSatzpunkte = 0;
             int opponentSatzpunkte = 0;
@@ -344,17 +357,19 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                 .collect(Collectors.groupingBy(p -> p.getPasseLfdnr().intValue()));
             
             // Calculate score for each completed set (max 5 sets)
+            int completedSets = 0;
             for (int setNumber = 1; setNumber <= 5; setNumber++) {
                 List<PasseDO> teamSetPasses = teamPassesBySet.get(setNumber);
                 List<PasseDO> opponentSetPasses = opponentPassesBySet.get(setNumber);
-                
-                if (teamSetPasses != null && opponentSetPasses != null && 
+
+                if (teamSetPasses != null && opponentSetPasses != null &&
                     teamSetPasses.size() >= 3 && opponentSetPasses.size() >= 3) {
-                    
+                    completedSets++;
+
                     // Calculate total score for this set
                     int teamSetScore = calculateSetScore(teamSetPasses);
                     int opponentSetScore = calculateSetScore(opponentSetPasses);
-                    
+
                     // Award satzpunkte according to archery rules
                     if (teamSetScore > opponentSetScore) {
                         teamSatzpunkte += 2; // Winner gets 2 points
@@ -367,59 +382,67 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
                     }
                 }
             }
-            
+
             // 2. Update match.satzpunkte via MatchComponent.update()
-            // Get current match data
-            MatchDO teamMatch = matchComponent.findById(matchId);
-            if (teamMatch != null) {
-                // Update satzpunkte using proper DO methods
-                teamMatch.setSatzpunkte((long) teamSatzpunkte);
-                
-                // 3. Set Matchpunkte when team reaches 6+ Satzpunkte (match win condition)
-                if (teamSatzpunkte >= 6) {
-                    teamMatch.setMatchpunkte(2L); // Winner gets 2 match points
-                    LOGGER.info("Team {} won match {} with {} satzpunkte", teamId, matchId, teamSatzpunkte);
-                } else if (opponentSatzpunkte >= 6) {
-                    teamMatch.setMatchpunkte(0L); // Loser gets 0 match points
-                    LOGGER.info("Team {} lost match {} with {} satzpunkte (opponent: {})", 
-                               teamId, matchId, teamSatzpunkte, opponentSatzpunkte);
-                }
-                
-                // Update the match in database
-                matchComponent.update(teamMatch, -1L);
-                
-                // Also update opponent's match record
-                if (opponentTeamId > 0) {
-                    // Find opponent's match record using proper DO methods
-                    List<MatchDO> opponentMatches = matchComponent.findByWettkampfId(teamMatch.getWettkampfId()).stream()
-                        .filter(m -> m.getMannschaftId().equals(opponentTeamId) && 
-                                    m.getNr().equals(teamMatch.getNr()))
-                        .toList();
-                    
-                    if (!opponentMatches.isEmpty()) {
-                        MatchDO opponentMatch = opponentMatches.get(0);
-                        opponentMatch.setSatzpunkte((long) opponentSatzpunkte);
-                        
-                        if (opponentSatzpunkte >= 6) {
-                            opponentMatch.setMatchpunkte(2L); // Winner gets 2 match points
-                        } else if (teamSatzpunkte >= 6) {
-                            opponentMatch.setMatchpunkte(0L); // Loser gets 0 match points
-                        }
-                        
-                        matchComponent.update(opponentMatch, -1L);
-                    }
-                }
+            teamMatch.setSatzpunkte((long) teamSatzpunkte);
+
+            // 3. Set Matchpunkte once the match is decided (6+ Satzpunkte or 5:5 after 5 sets)
+            if (teamSatzpunkte >= 6) {
+                teamMatch.setMatchpunkte(2L); // Winner gets 2 match points
+                LOGGER.info("Team {} won match {} with {} satzpunkte", teamId, matchId, teamSatzpunkte);
+            } else if (opponentSatzpunkte >= 6) {
+                teamMatch.setMatchpunkte(0L); // Loser gets 0 match points
+                LOGGER.info("Team {} lost match {} with {} satzpunkte (opponent: {})",
+                           teamId, matchId, teamSatzpunkte, opponentSatzpunkte);
+            } else if (completedSets >= 5 && teamSatzpunkte == opponentSatzpunkte) {
+                teamMatch.setMatchpunkte(1L); // 5:5 draw - both teams get 1 match point
             }
-            
+
+            // Update the match in database
+            // System-User 0 verwenden: MatchComponentImpl.update() lehnt negative
+            // User-IDs per Precondition ab, die Exception wuerde hier still
+            // verschluckt und die Satzpunkte blieben dauerhaft NULL.
+            matchComponent.update(teamMatch, SYSTEM_USER_ID);
+
+            // Also update opponent's match record
+            if (opponentMatch != null) {
+                opponentMatch.setSatzpunkte((long) opponentSatzpunkte);
+
+                if (opponentSatzpunkte >= 6) {
+                    opponentMatch.setMatchpunkte(2L); // Winner gets 2 match points
+                } else if (teamSatzpunkte >= 6) {
+                    opponentMatch.setMatchpunkte(0L); // Loser gets 0 match points
+                } else if (completedSets >= 5 && teamSatzpunkte == opponentSatzpunkte) {
+                    opponentMatch.setMatchpunkte(1L); // 5:5 draw - both teams get 1 match point
+                }
+
+                matchComponent.update(opponentMatch, SYSTEM_USER_ID);
+            }
+
             // 4. LigamatchBE view will now reflect correct scores
-            LOGGER.info("Match scores updated: Team {} = {} satzpunkte, Opponent {} = {} satzpunkte", 
+            LOGGER.info("Match scores updated: Team {} = {} satzpunkte, Opponent {} = {} satzpunkte",
                        teamId, teamSatzpunkte, opponentTeamId, opponentSatzpunkte);
-            
+
         } catch (Exception e) {
             // Don't throw exception here - score update failure shouldn't break the workflow
+            LOGGER.error("Error updating match scores for match {}: {}", matchId, e.getMessage());
         }
     }
-    
+
+    /**
+     * Finds the opponent's own match row (same Wettkampf, same Match-Nr, opponent team).
+     */
+    private MatchDO findOpponentMatch(MatchDO teamMatch, long opponentTeamId) {
+        if (opponentTeamId <= 0) {
+            return null;
+        }
+        return matchComponent.findByWettkampfId(teamMatch.getWettkampfId()).stream()
+            .filter(m -> m.getMannschaftId() != null && m.getMannschaftId().equals(opponentTeamId)
+                && m.getNr() != null && m.getNr().equals(teamMatch.getNr()))
+            .findFirst()
+            .orElse(null);
+    }
+
     /**
      * Calculate total score for a set (3 shooters, 2-3 arrows each).
      * Uses proper PasseDO methods for accessing arrow scores.
