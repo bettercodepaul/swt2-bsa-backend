@@ -17,9 +17,11 @@ import org.springframework.http.ResponseEntity;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterSessionDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterSessionEntity;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
@@ -331,6 +333,79 @@ public class KampfrichterSessionServiceTest {
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.updateStrafpunkte(WETTKAMPF_ID, VALID_TOKEN, req));
+    }
+
+    // ── loadSchuetzen ─────────────────────────────────────────────────────────
+
+    @Test
+    public void getMatches_includesSchuetzenWithRueckennummerAndName() {
+        when(sessionDAO.findByWettkampfIdAndToken(WETTKAMPF_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(sessionEntity(VALID_TOKEN)));
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(matchDO()));
+        when(tabletSessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(sessionForTeam(MANNSCHAFT_ID, "SCHUETZENMELDUNG")));
+        when(mannschaftComponent.findById(MANNSCHAFT_ID)).thenReturn(mannschaft("Team X"));
+
+        MannschaftsmitgliedDO mitglied = new MannschaftsmitgliedDO(
+                1L, MANNSCHAFT_ID, 99L, 1, null, null, null, null, null, null, null, 5L);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(MANNSCHAFT_ID))
+                .thenReturn(List.of(mitglied));
+
+        DsbMitgliedDO dsbMitglied = new DsbMitgliedDO();
+        dsbMitglied.setId(99L);
+        dsbMitglied.setVorname("Max");
+        dsbMitglied.setNachname("Mustermann");
+        when(dsbMitgliedComponent.findById(99L)).thenReturn(dsbMitglied);
+
+        KampfrichterMatchDTO dto =
+                underTest.getMatches(WETTKAMPF_ID, VALID_TOKEN).getBody().get(0);
+
+        assertThat(dto.getSchuetzen()).hasSize(1);
+        assertThat(dto.getSchuetzen().get(0).getRueckennummer()).isEqualTo(5);
+        assertThat(dto.getSchuetzen().get(0).getVorname()).isEqualTo("Max");
+        assertThat(dto.getSchuetzen().get(0).getNachname()).isEqualTo("Mustermann");
+    }
+
+    @Test
+    public void getMatches_returnsEmptySchuetzenListWhenMannschaftIdIsNull() {
+        when(sessionDAO.findByWettkampfIdAndToken(WETTKAMPF_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(sessionEntity(VALID_TOKEN)));
+
+        MatchDO matchWithNullMannschaft = matchDO();
+        matchWithNullMannschaft.setMannschaftId(null);
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(matchWithNullMannschaft));
+        when(tabletSessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.emptyList());
+
+        KampfrichterMatchDTO dto =
+                underTest.getMatches(WETTKAMPF_ID, VALID_TOKEN).getBody().get(0);
+
+        assertThat(dto.getSchuetzen()).isEmpty();
+    }
+
+    @Test
+    public void getMatches_returnsEmptySchuetzenListWhenDsbMitgliedThrows() {
+        when(sessionDAO.findByWettkampfIdAndToken(WETTKAMPF_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(sessionEntity(VALID_TOKEN)));
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(matchDO()));
+        when(tabletSessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(sessionForTeam(MANNSCHAFT_ID, "SCHUETZENMELDUNG")));
+        when(mannschaftComponent.findById(MANNSCHAFT_ID)).thenReturn(mannschaft("Team Y"));
+
+        MannschaftsmitgliedDO mitglied = new MannschaftsmitgliedDO(
+                1L, MANNSCHAFT_ID, 99L, 1, null, null, null, null, null, null, null, 2L);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(MANNSCHAFT_ID))
+                .thenReturn(List.of(mitglied));
+        when(dsbMitgliedComponent.findById(99L))
+                .thenThrow(new RuntimeException("DB unavailable"));
+
+        KampfrichterMatchDTO dto =
+                underTest.getMatches(WETTKAMPF_ID, VALID_TOKEN).getBody().get(0);
+
+        assertThat(dto.getSchuetzen()).isEmpty();
     }
 
     // ── KampfrichterMatchDTO field coverage ───────────────────────────────────
