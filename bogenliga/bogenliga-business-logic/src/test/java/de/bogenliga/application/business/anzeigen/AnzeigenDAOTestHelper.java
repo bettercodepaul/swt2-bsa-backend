@@ -38,7 +38,7 @@ public class AnzeigenDAOTestHelper {
         expectedAnzeigenBE.setId(ANZEIGEN_ID);
         expectedAnzeigenBE.setPhysischeBildschirmId(ANZEIGEN_PHYSISCHE_BILDSCHIRM_ID);
         expectedAnzeigenBE.setTableTyp(ANZEIGEN_TABLE_TYP);
-        expectedAnzeigenBE.setVeranstaltungsId(ANZEIGEN_VERANSTALTUNGS_ID);
+        expectedAnzeigenBE.setWettkampfId(ANZEIGEN_VERANSTALTUNGS_ID);
         expectedAnzeigenBE.setAktuellesMatch(ANZEIGEN_AKTUELLES_MATCH);
 
         expectedAnzeigenBE.setLastModifiedByUserId(USER);

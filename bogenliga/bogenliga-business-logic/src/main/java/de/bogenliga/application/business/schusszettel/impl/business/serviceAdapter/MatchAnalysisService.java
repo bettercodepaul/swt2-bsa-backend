@@ -339,6 +339,54 @@ public class MatchAnalysisService {
                (passe.getPfeil3() != null && passe.getPfeil3() > 0);
     }
 
+    private long calculateSatzpunkteFromPasses(long matchId, long teamId, long opponentTeamId) {
+        List<PasseDO> teamPasses = passeComponent.findByMannschaftMatchId(teamId, matchId);
+        List<PasseDO> opponentPasses = passeComponent.findByMannschaftMatchId(opponentTeamId, matchId);
+
+        long teamSatzpunkte = 0;
+
+        for (int passeNr = 1; passeNr <= MAX_SETS_PER_MATCH; passeNr++) {
+            final int currentPasse = passeNr;
+
+            List<PasseDO> teamSet = teamPasses.stream()
+                    .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr().intValue() == currentPasse)
+                    .filter(this::hasActualScores)
+                    .toList();
+
+            List<PasseDO> opponentSet = opponentPasses.stream()
+                    .filter(p -> p.getPasseLfdnr() != null && p.getPasseLfdnr().intValue() == currentPasse)
+                    .filter(this::hasActualScores)
+                    .toList();
+
+            if (teamSet.size() < 3 || opponentSet.size() < 3) {
+                break;
+            }
+
+            int teamScore = calculateSetScore(teamSet);
+            int opponentScore = calculateSetScore(opponentSet);
+
+            if (teamScore > opponentScore) {
+                teamSatzpunkte += 2;
+            } else if (teamScore == opponentScore) {
+                teamSatzpunkte += 1;
+            }
+        }
+
+        return teamSatzpunkte;
+    }
+
+    private int calculateSetScore(List<PasseDO> passes) {
+        return passes.stream()
+                .mapToInt(p -> {
+                    int score = 0;
+                    if (p.getPfeil1() != null) score += p.getPfeil1();
+                    if (p.getPfeil2() != null) score += p.getPfeil2();
+                    if (p.getPfeil3() != null) score += p.getPfeil3();
+                    return score;
+                })
+                .sum();
+    }
+
     /**
      * Finds opponent team ID using LigamatchBE structure.
      */
@@ -410,7 +458,16 @@ public class MatchAnalysisService {
             }
             
             // RULE 1: Standard completion - either team reaches 6+ Satzpunkte
-            boolean completeByScore = satzpunkte >= MATCH_POINTS_TO_WIN || opponentSatzpunkte >= MATCH_POINTS_TO_WIN;
+            long calculatedTeamSatzpunkte = calculateSatzpunkteFromPasses(matchId, team1Id, team2Id);
+            long calculatedOpponentSatzpunkte = calculateSatzpunkteFromPasses(matchId, team2Id, team1Id);
+
+            long effectiveTeamSatzpunkte = Math.max(satzpunkte, calculatedTeamSatzpunkte);
+            long effectiveOpponentSatzpunkte = Math.max(opponentSatzpunkte, calculatedOpponentSatzpunkte);
+
+// RULE 1: Standard completion - either team reaches 6+ Satzpunkte
+            boolean completeByScore =
+                    effectiveTeamSatzpunkte >= MATCH_POINTS_TO_WIN
+                            || effectiveOpponentSatzpunkte >= MATCH_POINTS_TO_WIN;
             
             // RULE 2: CRITICAL FIX - Match complete when either team finished all possible passes
             boolean completeByMaxPasses = false;
@@ -430,9 +487,9 @@ public class MatchAnalysisService {
             }
             
             boolean complete = completeByScore || completeByMaxPasses;
-            
-            LOGGER.debug("Infrastructure-based completion check: match={}, team={}pts, opponent={}pts, completeByScore={}, completeByMaxPasses={}, complete={}", 
-                        matchId, satzpunkte, opponentSatzpunkte, completeByScore, completeByMaxPasses, complete);
+
+            LOGGER.debug("Infrastructure-based completion check: match={}, team={}pts, opponent={}pts, completeByScore={}, completeByMaxPasses={}, complete={}",
+                    matchId, effectiveTeamSatzpunkte, effectiveOpponentSatzpunkte, completeByScore, completeByMaxPasses, complete);
             
             return complete;
             

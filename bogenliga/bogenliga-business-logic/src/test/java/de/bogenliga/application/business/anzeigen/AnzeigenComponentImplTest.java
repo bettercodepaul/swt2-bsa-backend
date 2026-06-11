@@ -5,6 +5,7 @@ import de.bogenliga.application.business.wettkampf.impl.business.AnzeigenCompone
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,7 +57,7 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         );
         valuesToMethodNames.put(
                 "getVeranstaltungsId",
-                expectedBE.getVeranstaltungsId()
+                expectedBE.getWettkampfId()
         );
         valuesToMethodNames.put(
                 "getAktuellesMatch",
@@ -64,11 +66,11 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
-    public void testFindByVeranstaltungsIdRecordExists() {
+    public void testFindByWettkampfIdRecordExists() {
         final List<AnzeigenBE> expectedBEList = Collections.singletonList(expectedBE);
-        when(anzeigenDAO.findByVeranstaltungsId(1L)).thenReturn(expectedBEList);
+        when(anzeigenDAO.findByWettkampfId(1L)).thenReturn(expectedBEList);
 
-        List<AnzeigenDO> result = underTest.findByVeranstaltungsId(1L);
+        List<AnzeigenDO> result = underTest.findByWettkampfId(1L);
 
         // Check that Optional contains a value
         assertThat(result).hasSize(1);
@@ -76,16 +78,16 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         assertThat(anzeigenDO.getId()).isEqualTo(expectedBE.getId());
         assertThat(anzeigenDO.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
         assertThat(anzeigenDO.getTableTyp()).isEqualTo(expectedBE.getTableTyp());
-        assertThat(anzeigenDO.getVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(anzeigenDO.getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
         assertThat(anzeigenDO.getAktuellesMatch()).isEqualTo(expectedBE.getAktuellesMatch());
     }
 
 
     @Test
-    public void testFindByVeranstaltungsIdRecordNotExists() {
+    public void testFindByWettkampfIdRecordNotExists() {
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenThrow(new RuntimeException("Record not found"));
 
-        List<AnzeigenDO> emptyResult = underTest.findByVeranstaltungsId(999L);
+        List<AnzeigenDO> emptyResult = underTest.findByWettkampfId(999L);
         assertThat(emptyResult.isEmpty()).isTrue();
     }
 
@@ -105,6 +107,21 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
     }
 
     @Test
+    public void testFindByPhysischeBildschirmId() {
+        final String physischeBildschirmId = "-";
+
+        final AnzeigenBE expectedAnzeigenBE = new AnzeigenBE();
+        when(anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId)).thenReturn(expectedAnzeigenBE)
+                .thenReturn(null);
+
+        final AnzeigenDO actual = underTest.findByPhysischeBildschirmId(physischeBildschirmId);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByPhysischeBildschirmId(physischeBildschirmId));
+        assertNotNull("Result must not be null", actual);
+    }
+
+    @Test
     public void testCreate() {
         // 1. Vorbereitung (Gegeneinander ausgetauschte Daten vorbereiten)
         AnzeigenDO inputDO = getAnzeigenDO();
@@ -120,7 +137,7 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         assertThat(resultDO.getId()).isEqualTo(expectedBE.getId());
         assertThat(resultDO.getPhysischeBildschirmId()).isEqualTo(expectedBE.getPhysischeBildschirmId());
         assertThat(resultDO.getTableTyp()).isEqualTo(expectedBE.getTableTyp());
-        assertThat(resultDO.getVeranstaltungsId()).isEqualTo(expectedBE.getVeranstaltungsId());
+        assertThat(resultDO.getWettkampfId()).isEqualTo(expectedBE.getWettkampfId());
         assertThat(resultDO.getAktuellesMatch()).isEqualTo(expectedBE.getAktuellesMatch());
     }
 
@@ -157,5 +174,21 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
         // Da die Methode meist void ist, prüfen wir stattdessen mit Mockito,
         // ob das DAO auch wirklich mit den korrekten Parametern aufgerufen wurde.
         org.mockito.Mockito.verify(anzeigenDAO).delete(any(AnzeigenBE.class), org.mockito.ArgumentMatchers.eq(4L));
+    }
+
+    @Test
+    public void testGeneratePhysischeBildschirmId() {
+        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+
+        final String id = underTest.generatePhysischeBildschirmId();
+        final char[] characters = id.toCharArray();
+
+        assertThat(id.length() == 4 ).isTrue();
+        assertThat(validCharacters).contains(String.valueOf(characters[0]));
+        assertThat(validCharacters).contains(String.valueOf(characters[1]));
+        assertThat(validCharacters).contains(String.valueOf(characters[2]));
+        assertThat(validCharacters).contains(String.valueOf(characters[3]));
     }
 }
