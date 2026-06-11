@@ -16,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterSessionDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterSessionEntity;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
@@ -36,11 +38,13 @@ public class KampfrichterSessionServiceTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock private KampfrichterSessionDAO sessionDAO;
-    @Mock private MatchComponent         matchComponent;
-    @Mock private DsbMannschaftComponent mannschaftComponent;
-    @Mock private TabletSchusszettelDAO  tabletSessionDAO;
-    @Mock private Principal              principal;
+    @Mock private KampfrichterSessionDAO     sessionDAO;
+    @Mock private MatchComponent             matchComponent;
+    @Mock private DsbMannschaftComponent     mannschaftComponent;
+    @Mock private TabletSchusszettelDAO      tabletSessionDAO;
+    @Mock private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    @Mock private DsbMitgliedComponent       dsbMitgliedComponent;
+    @Mock private Principal                  principal;
 
     private KampfrichterSessionService underTest;
 
@@ -91,8 +95,10 @@ public class KampfrichterSessionServiceTest {
     @Before
     public void setUp() {
         when(principal.getName()).thenReturn("1");
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(any())).thenReturn(Collections.emptyList());
         underTest = new KampfrichterSessionService(
-                sessionDAO, matchComponent, mannschaftComponent, tabletSessionDAO);
+                sessionDAO, matchComponent, mannschaftComponent, tabletSessionDAO,
+                mannschaftsmitgliedComponent, dsbMitgliedComponent);
     }
 
     // ── getOrCreateToken ──────────────────────────────────────────────────────
