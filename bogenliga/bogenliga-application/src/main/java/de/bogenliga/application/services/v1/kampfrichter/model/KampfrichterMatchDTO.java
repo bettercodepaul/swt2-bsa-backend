@@ -1,6 +1,9 @@
 package de.bogenliga.application.services.v1.kampfrichter.model;
 
 import de.bogenliga.application.common.service.types.DataTransferObject;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeStammdatenDTO;
+
+import java.util.List;
 
 public class KampfrichterMatchDTO implements DataTransferObject {
 
@@ -16,6 +19,7 @@ public class KampfrichterMatchDTO implements DataTransferObject {
     private Long strafPunkteSatz4;
     private Long strafPunkteSatz5;
     private String sessionStatus;
+    private List<SchuetzeStammdatenDTO> schuetzen;
 
     public Long getMatchId() { return matchId; }
     public void setMatchId(Long matchId) { this.matchId = matchId; }
@@ -52,4 +56,7 @@ public class KampfrichterMatchDTO implements DataTransferObject {
 
     public String getSessionStatus() { return sessionStatus; }
     public void setSessionStatus(String sessionStatus) { this.sessionStatus = sessionStatus; }
+
+    public List<SchuetzeStammdatenDTO> getSchuetzen() { return schuetzen; }
+    public void setSchuetzen(List<SchuetzeStammdatenDTO> schuetzen) { this.schuetzen = schuetzen; }
 }

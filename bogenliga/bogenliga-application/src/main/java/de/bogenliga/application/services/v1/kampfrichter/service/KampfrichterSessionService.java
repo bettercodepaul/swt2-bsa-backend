@@ -14,6 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.services.v1.schusszettel.model.inside.SchuetzeStammdatenDTO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterSessionDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterSessionEntity;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -38,16 +43,22 @@ public class KampfrichterSessionService {
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final TabletSchusszettelDAO tabletSessionDAO;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
 
     @Autowired
     public KampfrichterSessionService(KampfrichterSessionDAO sessionDAO,
                                       MatchComponent matchComponent,
                                       DsbMannschaftComponent mannschaftComponent,
-                                      TabletSchusszettelDAO tabletSessionDAO) {
+                                      TabletSchusszettelDAO tabletSessionDAO,
+                                      MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                      DsbMitgliedComponent dsbMitgliedComponent) {
         this.sessionDAO = sessionDAO;
         this.matchComponent = matchComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.tabletSessionDAO = tabletSessionDAO;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
 
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
@@ -126,6 +137,7 @@ public class KampfrichterSessionService {
                     dto.setStrafPunkteSatz4(match.getStrafPunkteSatz4());
                     dto.setStrafPunkteSatz5(match.getStrafPunkteSatz5());
                     dto.setSessionStatus(teamStatusMap.getOrDefault(match.getMannschaftId(), "UNBEKANNT"));
+                    dto.setSchuetzen(loadSchuetzen(match.getMannschaftId()));
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -161,6 +173,28 @@ public class KampfrichterSessionService {
     private void validateToken(Long wettkampfid, String token) {
         sessionDAO.findByWettkampfIdAndToken(wettkampfid, token)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_OFFLINE_TOKEN, "Ungültiger Token"));
+    }
+
+    private List<SchuetzeStammdatenDTO> loadSchuetzen(Long mannschaftId) {
+        if (mannschaftId == null) {
+            return List.of();
+        }
+        try {
+            return mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftId).stream()
+                    .map(m -> {
+                        DsbMitgliedDO mitglied = dsbMitgliedComponent.findById(m.getDsbMitgliedId());
+                        SchuetzeStammdatenDTO dto = new SchuetzeStammdatenDTO();
+                        dto.setSchuetzenId(mitglied.getId());
+                        dto.setRueckennummer(Math.toIntExact(m.getRueckennummer()));
+                        dto.setVorname(mitglied.getVorname());
+                        dto.setNachname(mitglied.getNachname());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOGGER.warn("Could not load Schuetzen for mannschaftId={}: {}", mannschaftId, e.getMessage());
+            return List.of();
+        }
     }
 
     private String resolveMannschaftName(Long mannschaftId) {
