@@ -3,7 +3,6 @@ package de.bogenliga.application.business.schusszettel.impl.business.domain.stat
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
@@ -35,7 +34,6 @@ public class Satzeingabe extends State {
     private static final Logger LOGGER = LoggerFactory.getLogger(Satzeingabe.class);
     private static final int SHOOTERS_PER_TEAM = 3;
     private static final int ARROWS_PER_SHOOTER = 2;
-    private static final int MATCH_POINTS_TO_WIN = 6;
     
     @Override
     public boolean isValidState(StateContext context) {
@@ -170,10 +168,10 @@ public class Satzeingabe extends State {
         try {
             // Create passes with scores
             createPassesWithScores(context, eingabe);
-            
-            // Update match scores for database consistency
-            updateMatchScoresAfterSetCompletion(context);
-            
+
+            // Match scores (Satzpunkte/Matchpunkte) are recalculated centrally in
+            // TabletSchusszettelComponentImpl.updateMatchScoresAfterSetCompletion after this operation.
+
             // Transition to WARTE
             context.updateSessionStatus(STATUS_WARTE);
             
@@ -311,6 +309,7 @@ public class Satzeingabe extends State {
     }
     
     /**
+<<<<<<< HEAD
      * Updates match scores in database for consistency with LigamatchBE.
      * CRITICAL FIX: Uses team-specific passe calculation for score updates.
      */
@@ -408,6 +407,8 @@ public class Satzeingabe extends State {
     }
     
     /**
+=======
+>>>>>>> 54029932cf879305a85cc002a4efcdbf8207e3fe
      * Validates arrow values are within valid range (0-10).
      */
     private void validateArrowValues(StateContext context, SchuetzenSatzDO satz) {
