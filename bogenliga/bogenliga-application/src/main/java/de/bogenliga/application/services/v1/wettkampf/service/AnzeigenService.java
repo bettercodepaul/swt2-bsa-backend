@@ -66,7 +66,7 @@ public class AnzeigenService implements ServiceFacade {
      *
      * @return list of {@link AnzeigenDTO} as JSON
      */
-    @GetMapping(value = "{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byVeranstaltungId/{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
     public List<AnzeigenDTO> findByVeranstaltungsId(@PathVariable("veranstaltungsId") final long veranstaltungsId) {
         Preconditions.checkArgument(veranstaltungsId > 0, "ID must not be negative.");
