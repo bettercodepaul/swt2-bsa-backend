@@ -18,6 +18,8 @@ import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterSessi
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterSessionEntity;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.schusszettel.impl.dao.TabletSchusszettelDAO;
+import de.bogenliga.application.business.schusszettel.impl.entity.TabletSchusszettelEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.UserProvider;
@@ -35,14 +37,17 @@ public class KampfrichterSessionService {
     private final KampfrichterSessionDAO sessionDAO;
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent mannschaftComponent;
+    private final TabletSchusszettelDAO tabletSessionDAO;
 
     @Autowired
     public KampfrichterSessionService(KampfrichterSessionDAO sessionDAO,
                                       MatchComponent matchComponent,
-                                      DsbMannschaftComponent mannschaftComponent) {
+                                      DsbMannschaftComponent mannschaftComponent,
+                                      TabletSchusszettelDAO tabletSessionDAO) {
         this.sessionDAO = sessionDAO;
         this.matchComponent = matchComponent;
         this.mannschaftComponent = mannschaftComponent;
+        this.tabletSessionDAO = tabletSessionDAO;
     }
 
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
@@ -97,6 +102,15 @@ public class KampfrichterSessionService {
 
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfid);
 
+        // Load all tablet sessions once to enrich each match with meldung status
+        Map<Long, String> teamStatusMap = tabletSessionDAO.findByWettkampfId(wettkampfid).stream()
+                .filter(s -> s.getTeamId() != null && s.getStatus() != null)
+                .collect(Collectors.toMap(
+                        TabletSchusszettelEntity::getTeamId,
+                        TabletSchusszettelEntity::getStatus,
+                        (a, b) -> a
+                ));
+
         List<KampfrichterMatchDTO> result = matches.stream()
                 .map(match -> {
                     KampfrichterMatchDTO dto = new KampfrichterMatchDTO();
@@ -111,6 +125,7 @@ public class KampfrichterSessionService {
                     dto.setStrafPunkteSatz3(match.getStrafPunkteSatz3());
                     dto.setStrafPunkteSatz4(match.getStrafPunkteSatz4());
                     dto.setStrafPunkteSatz5(match.getStrafPunkteSatz5());
+                    dto.setSessionStatus(teamStatusMap.getOrDefault(match.getMannschaftId(), "UNBEKANNT"));
                     return dto;
                 })
                 .collect(Collectors.toList());

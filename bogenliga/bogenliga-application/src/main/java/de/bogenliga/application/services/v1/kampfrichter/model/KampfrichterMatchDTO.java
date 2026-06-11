@@ -15,6 +15,7 @@ public class KampfrichterMatchDTO implements DataTransferObject {
     private Long strafPunkteSatz3;
     private Long strafPunkteSatz4;
     private Long strafPunkteSatz5;
+    private String sessionStatus;
 
     public Long getMatchId() { return matchId; }
     public void setMatchId(Long matchId) { this.matchId = matchId; }
@@ -48,4 +49,7 @@ public class KampfrichterMatchDTO implements DataTransferObject {
 
     public Long getStrafPunkteSatz5() { return strafPunkteSatz5; }
     public void setStrafPunkteSatz5(Long strafPunkteSatz5) { this.strafPunkteSatz5 = strafPunkteSatz5; }
+
+    public String getSessionStatus() { return sessionStatus; }
+    public void setSessionStatus(String sessionStatus) { this.sessionStatus = sessionStatus; }
 }
