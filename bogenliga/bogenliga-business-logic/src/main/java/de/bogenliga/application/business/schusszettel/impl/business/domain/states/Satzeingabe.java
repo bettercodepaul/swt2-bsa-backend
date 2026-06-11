@@ -316,64 +316,60 @@ public class Satzeingabe extends State {
      */
     private void updateMatchScoresAfterSetCompletion(StateContext context) {
         try {
-            // CRITICAL FIX: Get the actual passe number this team just completed
             long matchId = context.getCurrentMatchId();
+            long opponentMatchId = context.getOpponentMatchId();
             long teamId = context.getTeamId();
             long opponentTeamId = context.getOpponentTeamId();
-            
-            // Get the passe number this team just completed (highest complete passe)
+
             int teamCompletedPasse = context.getMatchAnalysisService()
                 .getNextPasseNumberForTeam(matchId, teamId) - 1;
-            
+
             LOGGER.debug("Updating match scores for team {} after completing passe {}", teamId, teamCompletedPasse);
-            
-            // Only process if this team actually completed a passe
+
             if (teamCompletedPasse <= 0) {
                 LOGGER.debug("Team {} has not completed any passes yet - skipping score update", teamId);
                 return;
             }
-            
-            // Get passes for completed set from both teams
+
             List<PasseDO> teamPasses = context.getAllMatchPasses().stream()
                 .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
                 .toList();
-                
+
             List<PasseDO> oppPasses = context.getPasseComponent()
-                .findByMannschaftMatchId(opponentTeamId, matchId).stream()
+                .findByMannschaftMatchId(opponentTeamId, opponentMatchId).stream()
                 .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
                 .toList();
-            
-            // Only update if both teams have completed the set (3 shooters each)
+
             if (teamPasses.size() >= SHOOTERS_PER_TEAM && oppPasses.size() >= SHOOTERS_PER_TEAM) {
                 int teamSetPoints = calculateSetPoints(teamPasses);
                 int oppSetPoints = calculateSetPoints(oppPasses);
-                
-                // Calculate Satzpunkte using official archery rules
+
                 int teamSatzpunkte;
                 int oppSatzpunkte;
-                
+
                 if (teamSetPoints > oppSetPoints) {
-                    teamSatzpunkte = 2; // Winner gets 2 Satzpunkte
-                    oppSatzpunkte = 0;  // Loser gets 0 Satzpunkte
+                    teamSatzpunkte = 2;
+                    oppSatzpunkte = 0;
                 } else if (oppSetPoints > teamSetPoints) {
-                    teamSatzpunkte = 0; // Loser gets 0 Satzpunkte
-                    oppSatzpunkte = 2;  // Winner gets 2 Satzpunkte
+                    teamSatzpunkte = 0;
+                    oppSatzpunkte = 2;
                 } else {
-                    teamSatzpunkte = 1; // Tie: both teams get 1 Satzpunkt
+                    teamSatzpunkte = 1;
                     oppSatzpunkte = 1;
                 }
-                
-                // Update match scores
+
                 updateTeamMatchScores(context, matchId, teamId, teamSatzpunkte);
-                updateTeamMatchScores(context, matchId, opponentTeamId, oppSatzpunkte);
-                
+                updateTeamMatchScores(context, opponentMatchId, opponentTeamId, oppSatzpunkte);
+
                 LOGGER.info("Updated match scores: Team {} (+{} Satzpunkte), Opponent {} (+{} Satzpunkte) for set {}",
                            teamId, teamSatzpunkte, opponentTeamId, oppSatzpunkte, teamCompletedPasse);
+            } else {
+                LOGGER.debug("Set {} not complete for both teams yet (team={} passes, opp={} passes) - skipping score update",
+                           teamCompletedPasse, teamPasses.size(), oppPasses.size());
             }
-            
+
         } catch (Exception e) {
             LOGGER.error("Error updating match scores: {}", e.getMessage());
-            // Don't throw - score calculation failure shouldn't break session progression
         }
     }
     
