@@ -761,6 +761,60 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
+    public void delete_meldedeadline_ueberschritten_exception() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() - 24L * 60L * 60L * 1000L)
+        ); // gestern
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // assert
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(ID, principal))
+                .withMessageContaining("Meldedeadline");
+
+        // verify
+        verify(dsbMannschaftComponent).findById(ID);
+        verify(veranstaltungComponent).findById(VERANSTALTUNG_ID);
+        verify(dsbMannschaftComponent, never()).delete(any(), anyLong());
+    }
+
+    @Test
+    public void delete_vor_meldedeadline_erlaubt() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L)
+        ); // morgen
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // act
+        underTest.delete(ID, principal);
+
+        // verify
+        verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(deletedDsbMannschaft).isNotNull();
+        assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
+    }
+
+    @Test
     public void delete_nicht_geplant_exception() {
         // prepare test data
         final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
