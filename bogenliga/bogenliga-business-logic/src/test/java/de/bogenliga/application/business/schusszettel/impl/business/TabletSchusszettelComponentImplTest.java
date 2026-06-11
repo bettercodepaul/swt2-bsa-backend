@@ -265,12 +265,49 @@ public class TabletSchusszettelComponentImplTest {
         
         try {
             component.submitSatz(50L, 100L, "test-token-123456789012345", satzEingabe);
-            verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(-1L));
+            verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(0L));
         } catch (Exception e) {
             // Expected - just covering the code path
         }
     }
     
+    @Test
+    public void updateMatchScoresAfterSetCompletion_opponentPassesViaOwnMatchRow_matchEndsAtSixSatzpunkte() {
+        // Regression: Gegner-Pässe hängen an der Match-Zeile des Gegners (id 201),
+        // nicht an der eigenen (id 200). Vorher wurden sie mit der eigenen Match-ID
+        // gesucht, nie gefunden und die Satzpunkte blieben 0 - das Match endete nie.
+        MatchDO opponentMatch = new MatchDO();
+        opponentMatch.setId(201L);
+        opponentMatch.setWettkampfId(50L);
+        opponentMatch.setMannschaftId(101L);
+        opponentMatch.setNr(1L);
+        opponentMatch.setSatzpunkte(0L);
+        opponentMatch.setMatchpunkte(0L);
+
+        when(mockMatchComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch, opponentMatch));
+
+        // 3 abgeschlossene Saetze, eigenes Team gewinnt jeden -> 6:0 Satzpunkte
+        List<PasseDO> teamPasses = new ArrayList<>();
+        List<PasseDO> opponentPasses = new ArrayList<>();
+        for (int set = 1; set <= 3; set++) {
+            teamPasses.addAll(createTestPasses(100L, 200L, set, 10, 9, 8));
+            opponentPasses.addAll(createTestPasses(101L, 201L, set, 5, 4, 3));
+        }
+        when(mockPasseComponent.findByMannschaftMatchId(100L, 200L)).thenReturn(teamPasses);
+        when(mockPasseComponent.findByMannschaftMatchId(101L, 201L)).thenReturn(opponentPasses);
+
+        component.updateMatchScoresAfterSetCompletion(200L, 100L, 101L);
+
+        assertThat(testMatch.getSatzpunkte()).isEqualTo(6L);
+        assertThat(testMatch.getMatchpunkte()).isEqualTo(2L);
+        assertThat(opponentMatch.getSatzpunkte()).isEqualTo(0L);
+        assertThat(opponentMatch.getMatchpunkte()).isEqualTo(0L);
+        // System-User 0: negative User-IDs werden von MatchComponentImpl.update()
+        // per Precondition abgelehnt (Satzpunkte wuerden sonst nie gespeichert)
+        verify(mockMatchComponent).update(testMatch, 0L);
+        verify(mockMatchComponent).update(opponentMatch, 0L);
+    }
+
     @Test
     public void calculateSetScore_sumsAllArrows() {
         List<PasseDO> passes = createTestPasses(100L, 200L, 1, 10, 9, 8);

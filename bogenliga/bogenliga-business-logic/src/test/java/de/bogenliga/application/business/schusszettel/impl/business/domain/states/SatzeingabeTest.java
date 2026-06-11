@@ -316,37 +316,13 @@ public class SatzeingabeTest {
     }
 
     @Test
-    public void updateMatchScoresAfterSetCompletion_bothTeamsComplete_updatesScores() {
-        List<PasseDO> opponentPasses = Arrays.asList(
-            createPass(4L, 101L, 301L, 1, 104L, 8, 7, 6),
-            createPass(5L, 101L, 301L, 1, 105L, 7, 6, 5),
-            createPass(6L, 101L, 301L, 1, 106L, 6, 5, 4)
-        );
-        when(mockPasseComponent.findByMannschaftMatchId(101L, 300L)).thenReturn(opponentPasses);
-        
+    public void handlePostOperation_doesNotUpdateMatchScores_scoresAreUpdatedCentrally() {
+        // Satzpunkte/Matchpunkte werden zentral in TabletSchusszettelComponentImpl
+        // nach der Satzeingabe neu berechnet - der State selbst schreibt keine Match-Scores mehr.
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
-        verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(0L));
-    }
 
-    @Test
-    public void updateMatchScoresAfterSetCompletion_teamCompletedNoPasses_skipsUpdate() {
-        when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L)).thenReturn(1);
-        
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void updateMatchScoresAfterSetCompletion_exceptionInUpdate_continuesGracefully() {
-        when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L))
-            .thenThrow(new RuntimeException("DB error"));
-
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        // The method may return false due to exceptions in the complex logic
-        // Just verify it doesn't throw exceptions and executes the path
-        assertThat(result == true || !result).isTrue();
+        verify(mockMatchComponent, never()).update(any(MatchDO.class), anyLong());
     }
 
     @Test
@@ -434,32 +410,6 @@ public class SatzeingabeTest {
     @Test
     public void calculateSetPoints_validPasses_returnsCorrectScore() {
         // Indirect test through score update functionality
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void updateTeamMatchScores_validMatch_updatesSuccessfully() {
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-        
-        verify(mockMatchComponent, atLeastOnce()).findById(300L);
-    }
-
-    @Test
-    public void updateTeamMatchScores_matchNotFound_continuesGracefully() {
-        when(mockMatchComponent.findById(300L)).thenReturn(null);
-
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        // The method may return false due to exceptions when match is not found
-        // Just verify it doesn't throw exceptions and executes the path
-        assertThat(result == true || result == false).isTrue();
-    }
-
-    @Test
-    public void updateTeamMatchScores_exceptionInUpdate_continuesGracefully() {
-        doThrow(new RuntimeException("DB error")).when(mockMatchComponent).update(any(MatchDO.class), anyLong());
-        
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
     }
