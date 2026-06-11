@@ -246,6 +246,22 @@ public class KampfrichterSessionServiceTest {
     }
 
     @Test
+    public void getMatches_returnsEmptyMannschaftNameWhenComponentReturnsNull() {
+        when(sessionDAO.findByWettkampfIdAndToken(WETTKAMPF_ID, VALID_TOKEN))
+                .thenReturn(Optional.of(sessionEntity(VALID_TOKEN)));
+        when(matchComponent.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(List.of(matchDO()));
+        when(tabletSessionDAO.findByWettkampfId(WETTKAMPF_ID))
+                .thenReturn(Collections.emptyList());
+        when(mannschaftComponent.findById(MANNSCHAFT_ID)).thenReturn(null);
+
+        KampfrichterMatchDTO dto =
+                underTest.getMatches(WETTKAMPF_ID, VALID_TOKEN).getBody().get(0);
+
+        assertThat(dto.getMannschaftName()).isEqualTo("");
+    }
+
+    @Test
     public void getMatches_handlesMissingMannschaftNameGracefully() {
         when(sessionDAO.findByWettkampfIdAndToken(WETTKAMPF_ID, VALID_TOKEN))
                 .thenReturn(Optional.of(sessionEntity(VALID_TOKEN)));
