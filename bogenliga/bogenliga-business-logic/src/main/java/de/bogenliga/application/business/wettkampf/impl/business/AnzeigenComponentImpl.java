@@ -8,7 +8,6 @@ import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
 import de.bogenliga.application.business.wettkampf.impl.mapper.AnzeigenMapper;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
