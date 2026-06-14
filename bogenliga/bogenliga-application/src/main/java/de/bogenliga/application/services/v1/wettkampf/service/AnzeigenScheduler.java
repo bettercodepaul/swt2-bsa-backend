@@ -18,7 +18,7 @@ public class AnzeigenScheduler {
 
         @Scheduled(cron = "0 0 2 * * *") // Jede Nacht um 2 Uhr
         public void cleanUpAnzeigen() {
-            // 0L = Systemuser
-            anzeigenComponent.deleteAll(0L);
+            System.out.println("Schedule is gelaufen");
+            anzeigenComponent.deleteAll();
         }
     }
