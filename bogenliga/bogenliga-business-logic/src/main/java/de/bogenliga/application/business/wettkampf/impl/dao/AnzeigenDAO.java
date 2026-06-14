@@ -153,4 +153,13 @@ public class AnzeigenDAO implements DataAccessObject {
         basicDao.setModificationAttributes(anzeigenBE, currentUserId);
         basicDao.deleteEntity(ANZEIGE, anzeigenBE, ANZEIGEN_BE_ID);
     }
+
+    /**
+     * Clears the anzeigen database which is usually scheduled at night
+     * For security reasons, there is no basicDAO implementation of deleteAll since it could wipe other tables
+     */
+    public void deleteAll() {
+        final String clear_anzeigen_database_sql = "DELETE FROM anzeigen";
+        basicDao.executeQuery(clear_anzeigen_database_sql);
+    }
 }

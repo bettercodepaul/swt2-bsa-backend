@@ -60,9 +60,9 @@ public interface AnzeigenComponent {
     void delete(AnzeigenDO anzeigenDO, Long currentMemberId);
 
     /**
-     * Delete all existing anzeige.
+     * Wiping anzeigen table.
      */
-    void deleteAll(Long currentMemberId);
+    void deleteAll();
 
     /**
      * Generate a randomized, alphanumeric four character id.

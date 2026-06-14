@@ -8,6 +8,7 @@ import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.AnzeigenDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.AnzeigenBE;
 import de.bogenliga.application.business.wettkampf.impl.mapper.AnzeigenMapper;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -143,8 +144,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
-    public void deleteAll(Long currentUserId) {
-        // TODO deleteAll
+    public void deleteAll() {
+        anzeigenDAO.deleteAll();
     }
 
     @Override
