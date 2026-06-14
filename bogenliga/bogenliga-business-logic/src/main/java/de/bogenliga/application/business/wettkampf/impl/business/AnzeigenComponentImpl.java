@@ -143,6 +143,11 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
+    public void deleteAll() {
+        // TODO deleteAll
+    }
+
+    @Override
     public String generatePhysischeBildschirmId() {
         // Alpha-numeric characters
         final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
