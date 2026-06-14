@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
-import de.bogenliga.application.common.service.UserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
