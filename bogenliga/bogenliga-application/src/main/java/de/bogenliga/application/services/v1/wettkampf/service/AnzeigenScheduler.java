@@ -5,11 +5,13 @@ import de.bogenliga.application.common.service.UserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import java.util.logging.Logger;
 
 @Component
 public class AnzeigenScheduler {
 
         private final AnzeigenComponent anzeigenComponent;
+        private final Logger logger = Logger.getLogger(getClass().getName());
 
         @Autowired
         public AnzeigenScheduler(AnzeigenComponent anzeigenComponent) {
@@ -18,7 +20,7 @@ public class AnzeigenScheduler {
 
         @Scheduled(cron = "0 0 2 * * *") // Jede Nacht um 2 Uhr
         public void cleanUpAnzeigen() {
-            System.out.println("Schedule is gelaufen");
+            logger.info("Initiating Anzeigen cleanup.");
             anzeigenComponent.deleteAll();
         }
     }
