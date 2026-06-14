@@ -156,7 +156,7 @@ public class AnzeigenDAO implements DataAccessObject {
 
     /**
      * Clears the anzeigen database which is usually scheduled at night
-     * For security reasons, there is no basicDAO implementation of deleteAll since it could wipe other tables
+     * For security reasons, there is no basicDAO implementation of deleteAll since it could wipe other tables by accident
      */
     public void deleteAll() {
         final String clear_anzeigen_database_sql = "DELETE FROM anzeigen";
