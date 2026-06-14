@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
+import de.bogenliga.application.common.service.UserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class AnzeigenScheduler {
 
         @Scheduled(cron = "0 0 2 * * *") // Jede Nacht um 2 Uhr
         public void cleanUpAnzeigen() {
-            anzeigenComponent.deleteAll();
+            // 0L = Systemuser
+            anzeigenComponent.deleteAll(0L);
         }
     }

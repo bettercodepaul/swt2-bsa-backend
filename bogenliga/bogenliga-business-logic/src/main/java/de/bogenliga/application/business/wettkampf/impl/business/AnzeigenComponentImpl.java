@@ -143,7 +143,7 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll(Long currentUserId) {
         // TODO deleteAll
     }
 

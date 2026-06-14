@@ -62,7 +62,7 @@ public interface AnzeigenComponent {
     /**
      * Delete all existing anzeige.
      */
-    void deleteAll();
+    void deleteAll(Long currentMemberId);
 
     /**
      * Generate a randomized, alphanumeric four character id.
