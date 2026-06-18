@@ -138,5 +138,14 @@ public class AnzeigenService implements ServiceFacade {
         return AnzeigenDTOMapper.toDTO.apply(updatedAnzeigenDO);
     }
 
+    @PutMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    public String getNewPhysischeBildschirmID(@RequestBody final Principal principal) {
+        return anzeigenComponent.generatePhysischeBildschirmId();
+    }
+
+
+
 
 }
