@@ -143,8 +143,7 @@ public class AnzeigenService implements ServiceFacade {
     @GetMapping(
             value = "getNewPhysischeBildschirmID",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
-    public Map<String, String> getNewPhysischeBildschirmID(final Principal principal) {
+    public Map<String, String> getNewPhysischeBildschirmID() {
         String randomId = anzeigenComponent.generatePhysischeBildschirmId();
         return Collections.singletonMap("id", randomId);
     }
