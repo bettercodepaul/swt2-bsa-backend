@@ -169,6 +169,31 @@ public class AnzeigenServiceTest {
     }
 
     @Test
+    public void getNewPhysischeBildschirmID_shouldReturnGeneratedIdInMap() {
+        final String generatedId = "Ab1C";
+        when(anzeigenComponent.generatePhysischeBildschirmId()).thenReturn(generatedId);
+
+        java.util.Map<String, String> result = underTest.getNewPhysischeBildschirmID();
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(1)
+                .containsEntry("id", generatedId);
+
+        verify(anzeigenComponent).generatePhysischeBildschirmId();
+    }
+
+    @Test
+    public void getNewPhysischeBildschirmID_shouldDelegateToComponent() {
+        when(anzeigenComponent.generatePhysischeBildschirmId()).thenReturn("Z9z0");
+
+        underTest.getNewPhysischeBildschirmID();
+
+        verify(anzeigenComponent, times(1)).generatePhysischeBildschirmId();
+        verifyNoMoreInteractions(anzeigenComponent);
+    }
+
+    @Test
     public void delete_withValidId_shouldCallComponentDelete() {
 
         when(anzeigenComponent.findById(VALID_ID)).thenReturn(anzeigenDO);
