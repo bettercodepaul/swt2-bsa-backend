@@ -147,7 +147,7 @@ public class AnzeigenService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
-    public void delete(@PathVariable final long id, final Principal principal) {
+    public void delete(@PathVariable final Long id, final Principal principal) {
         Preconditions.checkNotNull(id, "ID must not be null.");
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
