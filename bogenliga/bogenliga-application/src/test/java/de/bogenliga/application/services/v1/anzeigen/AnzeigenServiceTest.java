@@ -167,4 +167,28 @@ public class AnzeigenServiceTest {
 
         assertThat(userIdCaptor.getValue()).isEqualTo(99L);
     }
+
+    @Test
+    public void delete_withValidId_shouldCallComponentDelete() {
+
+        when(anzeigenComponent.findById(VALID_ID)).thenReturn(anzeigenDO);
+
+        underTest.delete(VALID_ID, principal);
+
+        verify(anzeigenComponent).findById(VALID_ID);
+        verify(anzeigenComponent).delete(anzeigenDOCaptor.capture(), userIdCaptor.capture());
+
+        AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
+        assertThat(capturedDO).isEqualTo(anzeigenDO);
+        assertThat(userIdCaptor.getValue()).isEqualTo(99L);
+    }
+
+    @Test
+    public void delete_withInvalidId_shouldThrowException() {
+        assertThatExceptionOfType(de.bogenliga.application.common.errorhandling.exception.BusinessException.class)
+                .isThrownBy(() -> underTest.delete(null, principal))
+                .withMessageContaining("ID must not be null.");
+
+        verifyZeroInteractions(anzeigenComponent);
+    }
 }
