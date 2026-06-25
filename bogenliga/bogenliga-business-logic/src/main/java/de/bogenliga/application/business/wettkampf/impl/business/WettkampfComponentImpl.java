@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -532,24 +533,33 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstaltungsId); // Use VeranstaltungComponent
 
         long wettkampfid = wettkaempfe.get(0).getId();
+        doc.setMargins(10, 10, 10, 10);
+        doc.setFontSize(6.0f);
 
-        doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag + ". Bogenligawettkampf / " + selectedVeranstaltung.getVeranstaltungName()).setBold());
-        doc.setFontSize(9.2f);
-        doc.add(new Paragraph("am " + wettkaempfe.get(0).getDatum()));
-        doc.add(new Paragraph("in " + wettkaempfe.get(0).getWettkampfPlz() + ", " + wettkaempfe.get(0).getWettkampfOrtsname()
-                + ", " + wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
-        Table table = new Table(new float[]{100, 20, 20, 20, 20, 20, 100, 20, 20, 20, 20, 20, 50, 50});
+        doc.setFontSize(12.0f);
+        doc.add(new Paragraph(wettkampftag + ". Wettkampftag – " + selectedVeranstaltung.getVeranstaltungName()).setBold());
+        doc.setFontSize(6.0f);
+        Table table = new Table(new float[]{125, 14, 14, 14, 14, 14, 125, 14, 14, 14, 14, 14, 40, 28});
+        table.setWidth(575);
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         satzToTable(table);
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         satzToTable(table);
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
+        table.addCell(new Cell()
+                .setBorder(Border.NO_BORDER)
+                .setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                .setPaddingLeft(15)
+                .add(new Paragraph("SP").setBold()));
+
+        table.addCell(new Cell()
+                .setBorder(Border.NO_BORDER)
+                .setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                .add(new Paragraph("MP").setBold()));
 
         for(int i=0 ; i<14 ; i++)
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
 
+        int matchBlockCounter = 1;
         for(WettkampfBE wettkampf : wettkaempfe)
         {
             List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampf.getId()));
@@ -558,6 +568,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             int count = 1;
             List<PasseDO> passen = passeComponent.findByWettkampfId(wettkampf.getId());
 
+            table.addCell(new Cell(1, 14)
+                    .setBorder(Border.NO_BORDER)
+                    .setBackgroundColor(com.itextpdf.kernel.colors.ColorConstants.LIGHT_GRAY)
+                    .add(new Paragraph("MATCH " + matchBlockCounter).setBold()));
             for(MatchDO match : matches)
             {
                 table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(nameMappingComponent.getMannschaftsnameForMannschaftId(match.getMannschaftId()))));
@@ -574,15 +588,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 alt = match;
                 count ++;
             }
-
+            matchBlockCounter++;
         }
 
         doc.add(table);
 
         //Ligatabelle vorbereiten
-        doc.add(new Paragraph(""));
-        doc.add(new Paragraph("Tabelle").setFontSize(20.0f).setBold());
-        doc.add(new Paragraph(""));
+        doc.add(new Paragraph("Tabelle").setFontSize(9.0f).setBold());
         //ligatabelle hinzufügen
         doc.add(getLigatabelleAsTable(wettkampfid));
     }
@@ -597,6 +609,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public List<MatchDO> sortForDisplay(List<MatchDO> matches)
     {
         List<MatchDO> matches2 = new ArrayList<>();
+
 
         for(MatchDO match : matches)
         {
@@ -664,12 +677,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public Table getLigatabelleAsTable(long wettkampfid)
     {
         List<LigatabelleDO> tabelle = ligatabelleComponent.getLigatabelleWettkampf(wettkampfid);
-        Table table2 = new Table(new float[]{20, 120, 40, 40, 40});
+        Table table2 = new Table(new float[]{20, 180, 50, 50});
+        table2.setWidth(300);
         table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
-        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Manschaft")));
-        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Sätze")));
-        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Differenz")));
-        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Punkte")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("MANNSCHAFT").setBold()));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("DIFFERENZ").setBold()));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("PUNKTE").setBold()));
 
         for(int i=0 ; i<5 ; i++)
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
@@ -689,7 +702,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     {
         for(int i = 1; i<=5; i++)
         {
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("S"+i)));
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .add(new Paragraph("S" + i).setBold()));
         }
     }
 
