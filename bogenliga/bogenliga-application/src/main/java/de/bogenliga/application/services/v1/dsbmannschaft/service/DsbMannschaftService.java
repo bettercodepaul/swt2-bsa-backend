@@ -71,6 +71,8 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String ERROR_MSG_PLATZHALTER_NO_PERMISSION = "Sie haben keine Berechtigung für diese Aktion.";
     private static final String ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION = "Löschen einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
     private static final String ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION = "Ändern einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
+    private static final String ERROR_MSG_VERANSTALTUNG_LAUFEND = "Die Veranstaltung ist in der Phase 'Laufend'. Teilnehmende Mannschaften können in dieser Phase nicht hinzugefügt, geändert oder entfernt werden.";
+    private static final String VERANSTALTUNG_PHASE_LAUFEND = "Laufend";
 
     MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
@@ -334,6 +336,9 @@ public class DsbMannschaftService implements ServiceFacade {
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
+            // Bei laufender Veranstaltung duerfen keine Mannschaften (auch keine Platzhalter) angelegt werden.
+            assertVeranstaltungNotLaufend(dsbMannschaftDTO.getVeranstaltungId());
+
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
             if(dsbMannschaftDTO.getVereinId().equals(PLATZHALTER_VEREIN_ID)) {
@@ -531,6 +536,8 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
+        // Bei laufender Veranstaltung duerfen keine Mannschaften zugeordnet werden.
+        assertVeranstaltungNotLaufend(veranstaltungsId);
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
@@ -556,6 +563,9 @@ public class DsbMannschaftService implements ServiceFacade {
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
 
+        // Bei laufender Veranstaltung darf die Zuordnung der Mannschaft nicht entfernt werden.
+        assertVeranstaltungNotLaufend(dsbMannschaftDO.getVeranstaltungId());
+
         // Prüfen, ob die Veranstaltung in der Phase "geplant" ist -
         // nur dann können wir löschen, ohne dass Daten verloren gehen könnten...
         // das Sportjahr wird immer parallel gelöscht/gesetzt
@@ -568,6 +578,26 @@ public class DsbMannschaftService implements ServiceFacade {
                 DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
                 LOG.debug("Mannschaft '{}'  aus Veranstaltung mit id '{}' entfernt.", neueMannschaft.getName(), veranstaltungDO.getVeranstaltungID());
             }
+        }
+    }
+
+    /**
+     * Stellt sicher, dass die Veranstaltung nicht in der Phase 'Laufend' ist.
+     * In dieser Phase duerfen teilnehmende Mannschaften weder hinzugefuegt noch
+     * entfernt oder umsortiert werden (serverseitige Absicherung der UI-Sperre
+     * aus Ticket swt2#2157, vgl. swt2#2229). Bei {@code null} (keine Veranstaltung
+     * zugeordnet) passiert nichts.
+     *
+     * @param veranstaltungsId id der zu pruefenden Veranstaltung (darf null sein)
+     * @throws BusinessException wenn die Veranstaltung in der Phase 'Laufend' ist
+     */
+    private void assertVeranstaltungNotLaufend(final Long veranstaltungsId) {
+        if (veranstaltungsId == null) {
+            return;
+        }
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
+        if (veranstaltungDO != null && VERANSTALTUNG_PHASE_LAUFEND.equals(veranstaltungDO.getVeranstaltungPhase())) {
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERROR_MSG_VERANSTALTUNG_LAUFEND);
         }
     }
 
