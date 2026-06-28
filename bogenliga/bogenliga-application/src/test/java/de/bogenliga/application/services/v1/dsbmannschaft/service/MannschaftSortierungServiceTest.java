@@ -1,7 +1,10 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
 import org.junit.Before;
@@ -45,6 +48,12 @@ public class MannschaftSortierungServiceTest {
     private DsbMannschaftSortierungComponent mannschaftSortierungComponent;
 
     @Mock
+    private DsbMannschaftComponent dsbMannschaftComponent;
+
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+
+    @Mock
     private Principal principal;
 
     @InjectMocks
@@ -73,6 +82,13 @@ public class MannschaftSortierungServiceTest {
     }
 
 
+    private static VeranstaltungDO getVeranstaltungDO(final String phase) {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase(phase);
+        return veranstaltungDO;
+    }
+
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(USER));
@@ -87,6 +103,8 @@ public class MannschaftSortierungServiceTest {
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(ID)).thenReturn(getDsbMannschaftDO());
+        when(veranstaltungComponent.findById(DB_VERANSTALTUNG_ID)).thenReturn(getVeranstaltungDO("Geplant"));
         when(mannschaftSortierungComponent.updateSortierung(any(), anyLong())).thenReturn(expected);
 
         // call test method
@@ -105,6 +123,24 @@ public class MannschaftSortierungServiceTest {
         assertThat(updatedDsbMannschaft).isNotNull();
         assertThat(updatedDsbMannschaft.getId()).isEqualTo(inputDTO.getId());
         assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(inputDTO.getSortierung());
+    }
+
+    @Test
+    public void update_VeranstaltungLaufend_expectException() {
+        // prepare test data
+        final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
+
+        // configure mocks: Mannschaft gehoert zu einer laufenden Veranstaltung
+        when(dsbMannschaftComponent.findById(ID)).thenReturn(getDsbMannschaftDO());
+        when(veranstaltungComponent.findById(DB_VERANSTALTUNG_ID)).thenReturn(getVeranstaltungDO("Laufend"));
+
+        // call test method + assert: bei laufender Veranstaltung wird abgelehnt
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inputDTO, principal))
+                .withMessageContaining("Laufend");
+
+        // der Tabellenplatz darf NICHT gespeichert werden
+        verifyZeroInteractions(mannschaftSortierungComponent);
     }
 
     @Test
