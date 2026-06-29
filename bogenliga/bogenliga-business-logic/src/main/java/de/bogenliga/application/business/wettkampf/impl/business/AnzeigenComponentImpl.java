@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
-import java.security.SecureRandom;
 import java.util.List;
+import java.util.UUID;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
@@ -31,8 +31,6 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
             "aktuellesMatch");
 
     private final AnzeigenDAO anzeigenDAO;
-
-    private final SecureRandom random = new SecureRandom();
 
     /**
      * Constructor
@@ -144,21 +142,7 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
     @Override
     public String generatePhysischeBildschirmId() {
-        // Alpha-numeric characters
-        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                "abcdefghijklmnopqrstuvwxyz" +
-                "0123456789";
-        char[] characters = new char[4];
-        for (int i = 0; i < characters.length; i++) {
-            final int characterInt = random.nextInt(validCharacters.length());
-            characters[i] = validCharacters.charAt(characterInt);
-        }
-        String id;
-        id = new String(characters);
-        if (anzeigenDAO.findByPhysischeBildschirmId(id) != null) {
-            return generatePhysischeBildschirmId();
-        }
-        return id;
+        return UUID.randomUUID().toString().substring(0, 4);
     }
 }
 
