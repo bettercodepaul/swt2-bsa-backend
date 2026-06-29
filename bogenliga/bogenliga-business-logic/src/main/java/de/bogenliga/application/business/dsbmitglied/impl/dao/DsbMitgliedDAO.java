@@ -105,9 +105,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
     private static final String FIND_ALL_NOT_IN_TEAM_ID =
             "SELECT * FROM dsb_mitglied " +
-                    "WHERE dsb_mitglied_id NOT IN (SELECT mannschaftsmitglied_dsb_mitglied_id " +
-                    "FROM mannschaftsmitglied " +
-                    "WHERE mannschaftsmitglied_mannschaft_id = ?) and dsb_mitglied_verein_id = ?";
+                    "WHERE dsb_mitglied_id NOT IN (" +
+                    "    SELECT mannschaftsmitglied_dsb_mitglied_id " +
+                    "    FROM mannschaftsmitglied " +
+                    "    JOIN mannschaft ON mannschaftsmitglied_mannschaft_id = mannschaft_id " +
+                    "    WHERE mannschaft_sportjahr = (SELECT mannschaft_sportjahr FROM mannschaft WHERE mannschaft_id = ?)" +
+                    ") and dsb_mitglied_verein_id = ?";
+
 
     private final BasicDAO basicDao;
 
