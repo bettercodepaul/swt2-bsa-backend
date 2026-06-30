@@ -98,6 +98,21 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
 
+    /** Numerischer Phasenwert fuer 'Laufend' (zentral aus {@link VeranstaltungPhase}). */
+    private static final int PHASE_LAUFEND = new VeranstaltungPhase().getPhaseAsInt(VeranstaltungPhase.Phase.LAUFEND);
+
+    @Override
+    public boolean isVeranstaltungLaufend(final long veranstaltungId) {
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
+        // Direkt auf der BE den numerischen Phasenwert vergleichen (robuster als das
+        // String-Label). Null-safe: existiert die Veranstaltung nicht, ist sie nicht 'Laufend'.
+        final VeranstaltungBEext result = veranstaltungDAOext.findById(veranstaltungId);
+        return result != null
+                && result.getVeranstaltungPhase() != null
+                && result.getVeranstaltungPhase() == PHASE_LAUFEND;
+    }
+
     @Override
     public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
         Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);

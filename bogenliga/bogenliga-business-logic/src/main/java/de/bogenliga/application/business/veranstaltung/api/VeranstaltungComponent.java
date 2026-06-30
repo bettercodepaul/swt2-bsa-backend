@@ -135,4 +135,14 @@ public interface VeranstaltungComponent extends ComponentFacade {
     VeranstaltungDO setPhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );
 
 
+    /**
+     * Prueft fachlich, ob sich eine Veranstaltung in der Phase 'Laufend' befindet.
+     * Verglichen wird der numerische Phasenwert (robuster als das String-Label).
+     * Existiert die Veranstaltung nicht, wird {@code false} geliefert.
+     *
+     * @param veranstaltungId id der zu pruefenden Veranstaltung
+     * @return {@code true}, wenn die Veranstaltung in der Phase 'Laufend' ist
+     */
+    boolean isVeranstaltungLaufend(final long veranstaltungId);
+
 }

@@ -72,7 +72,6 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION = "Löschen einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
     private static final String ERROR_MSG_UPDATE_MANNSCHAFT_NO_PERMISSION = "Ändern einer Mannschaft ist nur mit entsprechender Berechtigung erlaubt.";
     private static final String ERROR_MSG_VERANSTALTUNG_LAUFEND = "Die Veranstaltung ist in der Phase 'Laufend'. Teilnehmende Mannschaften können in dieser Phase nicht hinzugefügt, geändert oder entfernt werden.";
-    private static final String VERANSTALTUNG_PHASE_LAUFEND = "Laufend";
 
     MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
@@ -592,11 +591,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * @throws BusinessException wenn die Veranstaltung in der Phase 'Laufend' ist
      */
     private void assertVeranstaltungNotLaufend(final Long veranstaltungsId) {
-        if (veranstaltungsId == null) {
-            return;
-        }
-        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
-        if (veranstaltungDO != null && VERANSTALTUNG_PHASE_LAUFEND.equals(veranstaltungDO.getVeranstaltungPhase())) {
+        if (veranstaltungsId != null && veranstaltungComponent.isVeranstaltungLaufend(veranstaltungsId)) {
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERROR_MSG_VERANSTALTUNG_LAUFEND);
         }
     }
