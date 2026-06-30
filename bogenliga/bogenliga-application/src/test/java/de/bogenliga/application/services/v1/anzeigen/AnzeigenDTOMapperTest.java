@@ -25,7 +25,7 @@ public class AnzeigenDTOMapperTest {
         assertThat(result.getId()).isEqualTo(ID);
         assertThat(result.getPhysischeBildschirmId()).isEqualTo(BILD_ID);
         assertThat(result.getTableTyp()).isEqualTo(TABLE_TYP);
-        assertThat(result.getVeranstaltungsId()).isEqualTo(VERANSTALTUNG_ID);
+        assertThat(result.getWettkampfId()).isEqualTo(VERANSTALTUNG_ID);
         assertThat(result.getAktuellesMatch()).isEqualTo(AKTUELLES_MATCH);
     }
 
@@ -39,7 +39,7 @@ public class AnzeigenDTOMapperTest {
         assertThat(result.getId()).isEqualTo(ID);
         assertThat(result.getPhysischeBildschirmId()).isEqualTo(BILD_ID);
         assertThat(result.getTableTyp()).isEqualTo(TABLE_TYP);
-        assertThat(result.getVeranstaltungsId()).isEqualTo(VERANSTALTUNG_ID);
+        assertThat(result.getWettkampfId()).isEqualTo(VERANSTALTUNG_ID);
         assertThat(result.getAktuellesMatch()).isEqualTo(AKTUELLES_MATCH);
     }
 }

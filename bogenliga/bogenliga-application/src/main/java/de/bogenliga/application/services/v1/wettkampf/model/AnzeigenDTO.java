@@ -3,26 +3,26 @@ package de.bogenliga.application.services.v1.wettkampf.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class AnzeigenDTO implements DataTransferObject {
-    //TODO serialVersionUID
+    private static final long serialVersionUID = 5493029943811486806L;
 
     private Long id;
     private String physischeBildschirmId;
     private String tableTyp;
-    private Long veranstaltungsId;
+    private Long wettkampfId;
     private int aktuellesMatch;
 
     public AnzeigenDTO() {
         this.physischeBildschirmId = null;
         this.tableTyp = "Tabelle";
-        this.veranstaltungsId = null;
+        this.wettkampfId = null;
         this.aktuellesMatch = 1;
     }
 
-    public AnzeigenDTO(Long id, String physischeBildschirmId, String tableTyp, Long veranstaltungsId, int aktuellesMatch) {
+    public AnzeigenDTO(Long id, String physischeBildschirmId, String tableTyp, Long wettkampfId, int aktuellesMatch) {
         this.id = id;
         this.physischeBildschirmId = physischeBildschirmId;
         this.tableTyp = tableTyp;
-        this.veranstaltungsId = veranstaltungsId;
+        this.wettkampfId = wettkampfId;
         this.aktuellesMatch = aktuellesMatch;
     }
 
@@ -42,12 +42,12 @@ public class AnzeigenDTO implements DataTransferObject {
         this.tableTyp = tableTyp;
     }
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getWettkampfId() {
+        return wettkampfId;
     }
 
-    public void setVeranstaltungsId(Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
     }
 
     public Long getId() {
