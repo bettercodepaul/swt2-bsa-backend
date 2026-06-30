@@ -873,10 +873,11 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO mannschaftDO = getDsbMannschaftDO();
         final long inputVeranstaltungsId = 222L;
 
-        // configure mocks
+        // configure mocks (assign laedt das Veranstaltungs-DO einmal und prueft darauf)
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
-        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+        when(veranstaltungComponent.isVeranstaltungLaufend(any(VeranstaltungDO.class))).thenReturn(true);
 
         // call + assert: bei laufender Veranstaltung wird die Zuordnung abgelehnt
         assertThatExceptionOfType(BusinessException.class)
