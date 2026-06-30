@@ -1,7 +1,9 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
@@ -18,6 +20,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
+
+
 @RestController
 @RequestMapping("v1/anzeigen")
 public class AnzeigenService implements ServiceFacade {
@@ -25,6 +29,7 @@ public class AnzeigenService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AnzeigenService.class);
 
     private final AnzeigenComponent anzeigenComponent;
+
 
 
     @Autowired
@@ -68,7 +73,7 @@ public class AnzeigenService implements ServiceFacade {
      *
      * @return list of {@link AnzeigenDTO} as JSON
      */
-    @GetMapping(value = "{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byWettkampfId/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
     public List<AnzeigenDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
         Preconditions.checkArgument(wettkampfId > 0, "ID must not be negative.");
@@ -105,5 +110,63 @@ public class AnzeigenService implements ServiceFacade {
 
         return savedAnzeigenDTO.getId();
     }
+
+    /**
+     * update-method() changes the chosen Anzeige entry in the Database
+     *
+     * @param anzeigenDTO Anzeige mit zu aktualisierenden Daten
+     * @param principal ändernder User
+     *
+     * @return aktualisierter anzeigenDTO
+     */
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
+
+        LOG.debug("Received 'update' request with id '{}'", anzeigenDTO.getId());
+
+
+
+
+
+        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final AnzeigenDO updatedAnzeigenDO = anzeigenComponent.update(newAnzeigenDO, userId);
+
+
+        return AnzeigenDTOMapper.toDTO.apply(updatedAnzeigenDO);
+    }
+
+    @GetMapping(
+            value = "getNewPhysischeBildschirmID",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> getNewPhysischeBildschirmID() {
+        String randomId = anzeigenComponent.generatePhysischeBildschirmId();
+        return Collections.singletonMap("id", randomId);
+    }
+
+    /**
+     * delete-method() deletes the chosen Anzeige entry in the Database
+     *
+     * @param id id der zu löschenden Anzeige
+     * @param principal Auftrag gebender User
+     *
+     */
+    @DeleteMapping(value = "{id}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    public void delete(@PathVariable final Long id, final Principal principal) {
+        Preconditions.checkNotNull(id, "ID must not be null.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+        final AnzeigenDO anzeigenDO = anzeigenComponent.findById(id);
+
+        anzeigenComponent.delete(anzeigenDO, userId);
+    }
+
 
 }

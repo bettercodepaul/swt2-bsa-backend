@@ -110,7 +110,7 @@ public class WettkampfDAO implements DataAccessObject {
             SELECT +
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_veranstaltung_id = ?" +
-                    " order by wettkampf_tag";
+                    " order by wettkampf_tag, wettkampf_datum";
 
     private static final String FIND_WT0_BY_VERANSTALTUNG_ID =
             SELECT +
