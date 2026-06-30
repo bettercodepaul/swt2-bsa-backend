@@ -872,13 +872,11 @@ public class DsbMannschaftServiceTest {
         // Prepare test data: Ziel-Veranstaltung ist 'Laufend'
         final DsbMannschaftDO mannschaftDO = getDsbMannschaftDO();
         final long inputVeranstaltungsId = 222L;
-        final VeranstaltungDO laufendVeranstaltung = getVeranstaltungDO();
-        laufendVeranstaltung.setVeranstaltungPhase("Laufend");
 
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(laufendVeranstaltung);
+        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
 
         // call + assert: bei laufender Veranstaltung wird die Zuordnung abgelehnt
         assertThatExceptionOfType(BusinessException.class)
@@ -894,12 +892,10 @@ public class DsbMannschaftServiceTest {
         // Prepare test data: Mannschaft gehoert zu einer laufenden Veranstaltung
         final DsbMannschaftDO mannschaftDO = getDsbMannschaftDO();
         mannschaftDO.setVeranstaltungId(222L);
-        final VeranstaltungDO laufendVeranstaltung = getVeranstaltungDO();
-        laufendVeranstaltung.setVeranstaltungPhase("Laufend");
 
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(laufendVeranstaltung);
+        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
 
         // call + assert: bei laufender Veranstaltung wird das Entfernen abgelehnt
         assertThatExceptionOfType(BusinessException.class)
@@ -914,12 +910,10 @@ public class DsbMannschaftServiceTest {
         // Prepare test data: Ziel-Veranstaltung ist 'Laufend'
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         input.setVeranstaltungId(222L);
-        final VeranstaltungDO laufendVeranstaltung = getVeranstaltungDO();
-        laufendVeranstaltung.setVeranstaltungPhase("Laufend");
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(laufendVeranstaltung);
+        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
 
         // call + assert: bei laufender Veranstaltung wird das Anlegen abgelehnt
         assertThatExceptionOfType(BusinessException.class)
