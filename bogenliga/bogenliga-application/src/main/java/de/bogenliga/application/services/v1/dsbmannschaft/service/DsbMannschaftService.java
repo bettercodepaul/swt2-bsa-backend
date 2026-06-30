@@ -50,7 +50,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
+    private static final String ERROR_MSG_VERANSTALTUNG_FULL = "Die Veranstaltung hat ihre maximale Kapazität erreicht. Es kann keine weitere Mannschaft hinzugefügt werden.";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
     private static final String PRECONDITION_MSG_WRONG_YEAR = "Year has to be a valid year.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
@@ -364,9 +364,9 @@ public class DsbMannschaftService implements ServiceFacade {
                 }
 
 
-                Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
-
-                        , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+                if (actualMannschaftInVeranstaltungCount.size() >= veranstaltungsgroesse) {
+                    throw new BusinessException(ErrorCode.VERANSTALTUNG_MAX_CAPACITY_ERROR, ERROR_MSG_VERANSTALTUNG_FULL);
+                }
             }
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
@@ -645,8 +645,9 @@ public class DsbMannschaftService implements ServiceFacade {
             if(veranstaltungDO != null) {
                 veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
             }
-            Preconditions.checkArgument(mannschaftenInZielveranstaltung.size() < veranstaltungsgroesse
-                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+            if (mannschaftenInZielveranstaltung.size() >= veranstaltungsgroesse) {
+                throw new BusinessException(ErrorCode.VERANSTALTUNG_MAX_CAPACITY_ERROR, ERROR_MSG_VERANSTALTUNG_FULL);
+            }
         }
 
 
