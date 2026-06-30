@@ -3,9 +3,10 @@ package de.bogenliga.application.services.v1.wettkampf.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class AnzeigenMatchDTO implements DataTransferObject {
-    private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 5036117832594594995L;
 
     private int matchNr;
+    private String verein1;
     private String verein2;
     private Integer[] schuesseVerein1;
     private Integer[] schuesseVerein2;
@@ -53,8 +54,6 @@ public class AnzeigenMatchDTO implements DataTransferObject {
     public void setVerein1(String verein1) {
         this.verein1 = verein1;
     }
-
-    private String verein1;
 
     public String getVerein2() {
         return verein2;
