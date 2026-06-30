@@ -178,9 +178,7 @@ public class AnzeigenComponentImplTest extends AnzeigenDAOTestHelper {
 
     @Test
     public void testGeneratePhysischeBildschirmId() {
-        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                "abcdefghijklmnopqrstuvwxyz" +
-                "0123456789";
+        final String validCharacters = "0123456789abcdef";
 
         final String id = underTest.generatePhysischeBildschirmId();
         final char[] characters = id.toCharArray();
