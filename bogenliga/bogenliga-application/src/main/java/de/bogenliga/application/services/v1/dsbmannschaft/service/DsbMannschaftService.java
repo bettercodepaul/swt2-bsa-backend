@@ -535,11 +535,11 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
-        // Bei laufender Veranstaltung duerfen keine Mannschaften zugeordnet werden.
-        assertVeranstaltungNotLaufend(veranstaltungsId);
-
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
+        // Bei laufender Veranstaltung duerfen keine Mannschaften zugeordnet werden
+        // (Pruefung auf dem bereits geladenen DO -> kein erneutes findById).
+        assertVeranstaltungNotLaufend(veranstaltungDO);
         dsbMannschaftDO.setSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
 
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.update(dsbMannschaftDO, userId);
@@ -592,6 +592,13 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     private void assertVeranstaltungNotLaufend(final Long veranstaltungsId) {
         if (veranstaltungsId != null && veranstaltungComponent.isVeranstaltungLaufend(veranstaltungsId)) {
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERROR_MSG_VERANSTALTUNG_LAUFEND);
+        }
+    }
+
+    /** Variante fuer eine bereits geladene Veranstaltung (vermeidet erneutes findById). */
+    private void assertVeranstaltungNotLaufend(final VeranstaltungDO veranstaltung) {
+        if (veranstaltungComponent.isVeranstaltungLaufend(veranstaltung)) {
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERROR_MSG_VERANSTALTUNG_LAUFEND);
         }
     }

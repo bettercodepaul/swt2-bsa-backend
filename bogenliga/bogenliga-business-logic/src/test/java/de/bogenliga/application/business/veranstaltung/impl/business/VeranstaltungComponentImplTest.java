@@ -1012,4 +1012,25 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
         assertThat(underTest.isVeranstaltungLaufend(VERANSTALTUNG_ID)).isFalse();
     }
 
+    @Test
+    public void isVeranstaltungLaufend_byDO_laufend_true() {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE_LAUFEND_NAME); // "Laufend"
+
+        assertThat(underTest.isVeranstaltungLaufend(veranstaltungDO)).isTrue();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_byDO_geplant_false() {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE_GEPLANT); // "Geplant"
+
+        assertThat(underTest.isVeranstaltungLaufend(veranstaltungDO)).isFalse();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_byDO_null_false() {
+        assertThat(underTest.isVeranstaltungLaufend((VeranstaltungDO) null)).isFalse();
+    }
+
 }
