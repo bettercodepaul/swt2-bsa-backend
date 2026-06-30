@@ -85,9 +85,17 @@ public class Warte extends State {
                 return forceOpponentAdvancement(context, opponent, "Current team ahead - helping opponent catch up");
             }
 
-            // CASE: Opponent in different state but same/lower passe - check if we should wait or progress  
+            // CASE: Opponent in different state but same/lower passe
             if (!STATUS_WARTE.equals(opponent.getStatus())) {
-                // Opponent not also in WARTE
+                // If opponent is definitively done with the current match, allow unilateral progression
+                boolean opponentFinishedMatch = STATUS_MATCH_ENDE.equals(opponent.getStatus())
+                        || STATUS_WETTKAMPF_ENDE.equals(opponent.getStatus());
+                if (opponentFinishedMatch) {
+                    LOGGER.warn("RECOVERY: Opponent {} already in {} while team {} stuck in WARTE - progressing unilaterally",
+                            opponent.getTeamId(), opponent.getStatus(), context.getTeamId());
+                    return attemptStateProgression(context, "Recovery: opponent already advanced");
+                }
+                // Opponent not yet in WARTE and not done - keep waiting
                 LOGGER.info("Team {} waiting for opponent {} to reach WARTE state, same passe",
                         context.getTeamId(), opponent.getTeamId());
                 return false;

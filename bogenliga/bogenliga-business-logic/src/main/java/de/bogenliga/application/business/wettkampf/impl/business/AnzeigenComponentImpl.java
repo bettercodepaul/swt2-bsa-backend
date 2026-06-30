@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
@@ -24,13 +25,14 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
             "anzeigenBildschirmID");
     public static final String PRECONDITION_MSG_CURRENT_TABLE_TYP = String.format(PRECONDITION_MSG_TEMPLATE,
             "anzeigenTableTyp");
-    public static final String PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID = String.format(PRECONDITION_MSG_TEMPLATE,
-            "anzeigenVeranstaltungsID");
+    public static final String PRECONDITION_MSG_CURRENT_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            "anzeigenWettkampfID");
     public static final String PRECONDITION_MSG_CURRENT_AKTUELLES_MATCH = String.format(PRECONDITION_MSG_TEMPLATE,
             "aktuellesMatch");
 
     private final AnzeigenDAO anzeigenDAO;
 
+    private final SecureRandom random = new SecureRandom();
 
     /**
      * Constructor
@@ -64,12 +66,12 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
-    public List<AnzeigenDO> findByVeranstaltungsId(Long veranstaltungsId) {
-        final List<AnzeigenBE> anzeigenBEList = anzeigenDAO.findByVeranstaltungsId(veranstaltungsId);
+    public List<AnzeigenDO> findByWettkampfId(Long wettkampfId) {
+        final List<AnzeigenBE> anzeigenBEList = anzeigenDAO.findByWettkampfId(wettkampfId);
 
         if (anzeigenBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No match found for ID '%s'", veranstaltungsId));
+                    String.format("No match found for ID '%s'", wettkampfId));
         }
 
         return anzeigenBEList.stream().map(AnzeigenMapper.toAnzeigenDO).toList();
@@ -77,9 +79,22 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
 
     @Override
+    public AnzeigenDO findByPhysischeBildschirmId(String physischeBildschirmId) {
+        final AnzeigenBE anzeigenBE = anzeigenDAO.findByPhysischeBildschirmId(physischeBildschirmId);
+
+        if (anzeigenBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found for PhysischeBildschirmID '%s'", physischeBildschirmId));
+        }
+
+        return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
+    }
+
+
+    @Override
     public AnzeigenDO create(AnzeigenDO anzeigenDO, Long currentUserId) {
         this.checkAnzeigen(anzeigenDO);
-
+        //Füge die wettkampfId direkt beim erstellen des Datenbankeintrags hinzu
         AnzeigenBE anzeigenBE = anzeigenDAO.create(AnzeigenMapper.toAnzeigenBE.apply(anzeigenDO), currentUserId);
         return AnzeigenMapper.toAnzeigenDO.apply(anzeigenBE);
     }
@@ -115,8 +130,8 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
 
         Preconditions.checkArgument(anzeigenDO.getAktuellesMatch() > 0, PRECONDITION_MSG_CURRENT_AKTUELLES_MATCH);
 
-        if(anzeigenDO.getVeranstaltungsId() != null) {
-            Preconditions.checkArgument(anzeigenDO.getVeranstaltungsId() >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNGS_ID);
+        if(anzeigenDO.getWettkampfId() != null) {
+            Preconditions.checkArgument(anzeigenDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_WETTKAMPF_ID);
         }
     }
 
@@ -125,6 +140,30 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     public void delete(AnzeigenDO anzeigenDO, Long currentUserId) {
         AnzeigenBE anzeigenBE = AnzeigenMapper.toAnzeigenBE.apply(anzeigenDO);
         anzeigenDAO.delete(anzeigenBE, currentUserId);
+    }
+
+    @Override
+    public void deleteAll() {
+        anzeigenDAO.deleteAll();
+    }
+
+    @Override
+    public String generatePhysischeBildschirmId() {
+        // Alpha-numeric characters
+        final String validCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+        char[] characters = new char[4];
+        for (int i = 0; i < characters.length; i++) {
+            final int characterInt = random.nextInt(validCharacters.length());
+            characters[i] = validCharacters.charAt(characterInt);
+        }
+        String id;
+        id = new String(characters);
+        if (anzeigenDAO.findByPhysischeBildschirmId(id) != null) {
+            return generatePhysischeBildschirmId();
+        }
+        return id;
     }
 }
 

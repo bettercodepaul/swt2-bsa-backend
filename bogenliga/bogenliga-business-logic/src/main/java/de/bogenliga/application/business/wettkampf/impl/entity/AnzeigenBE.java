@@ -4,12 +4,12 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
-    //TODO serialVersionUID
+    private static final long serialVersionUID = 6461616051924323086L;
 
     private Long id;
     private String physischeBildschirmId;
     private String tableTyp;
-    private Long veranstaltungsId;
+    private Long wettkampfId;
     private int aktuellesMatch;
 
     public Long getId() {
@@ -33,11 +33,11 @@ public class AnzeigenBE extends CommonBusinessEntity implements BusinessEntity {
         this.tableTyp = tableTyp;
     }
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getWettkampfId() {
+        return wettkampfId;
     }
-    public void setVeranstaltungsId(Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
     }
 
     public int getAktuellesMatch() {
