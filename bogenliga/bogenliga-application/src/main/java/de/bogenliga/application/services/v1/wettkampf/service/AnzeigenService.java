@@ -171,5 +171,20 @@ public class AnzeigenService implements ServiceFacade {
         anzeigenComponent.delete(anzeigenDO, userId);
     }
 
+    /**
+     * I return the Anzeigen entry of the database with a specific physische Bildschirm id.
+     *
+     * @return list of {@link AnzeigenDTO} as JSON
+     */
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    public AnzeigenDTO findByPhysischeBildschirmId(@PathVariable("id") final String id) {
+        Preconditions.checkArgument(id.length() ==  4, "ID must be four characters long.");
+
+        LOG.debug("Receive 'findByPhysischeBildschirmId' request with id '{}'", id);
+
+        final AnzeigenDO anzeigenDO = anzeigenComponent.findByPhysischeBildschirmId(id);
+        return AnzeigenDTOMapper.toDTO.apply(anzeigenDO);
+    }
 
 }
