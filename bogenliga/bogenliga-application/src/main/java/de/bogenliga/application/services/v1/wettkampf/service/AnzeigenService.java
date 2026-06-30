@@ -20,7 +20,10 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
-
+/* Diese Api sollte von Ausrichtern, Ligaleitern und Admins verwendet werden können,
+   kann (Stand SoSe 2026), aber leider nur von Ligaleitern und Admins verwendet werden.
+   Die entsprechenden Permissions für die Ausrichter müssen in Zukunft erstellt,
+   und hier hinzugefügt werden*/
 
 @RestController
 @RequestMapping("v1/anzeigen")
