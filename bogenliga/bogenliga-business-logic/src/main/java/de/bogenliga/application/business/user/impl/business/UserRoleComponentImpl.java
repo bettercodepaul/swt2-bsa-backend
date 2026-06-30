@@ -125,7 +125,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         for (UserRoleExtBE i: allUsers) {
-            if( i.getRoleId().equals(roleId)){
+            if(i.getRoleId() != null && i.getRoleId().equals(roleId)){
                 allUsersOfRole.add(UserRoleMapper.extToUserRoleDO.apply(i));
             }
         }

@@ -167,4 +167,53 @@ public class AnzeigenServiceTest {
 
         assertThat(userIdCaptor.getValue()).isEqualTo(99L);
     }
+
+    @Test
+    public void getNewPhysischeBildschirmID_shouldReturnGeneratedIdInMap() {
+        final String generatedId = "Ab1C";
+        when(anzeigenComponent.generatePhysischeBildschirmId()).thenReturn(generatedId);
+
+        java.util.Map<String, String> result = underTest.getNewPhysischeBildschirmID();
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(1)
+                .containsEntry("id", generatedId);
+
+        verify(anzeigenComponent).generatePhysischeBildschirmId();
+    }
+
+    @Test
+    public void getNewPhysischeBildschirmID_shouldDelegateToComponent() {
+        when(anzeigenComponent.generatePhysischeBildschirmId()).thenReturn("Z9z0");
+
+        underTest.getNewPhysischeBildschirmID();
+
+        verify(anzeigenComponent, times(1)).generatePhysischeBildschirmId();
+        verifyNoMoreInteractions(anzeigenComponent);
+    }
+
+    @Test
+    public void delete_withValidId_shouldCallComponentDelete() {
+
+        when(anzeigenComponent.findById(VALID_ID)).thenReturn(anzeigenDO);
+
+        underTest.delete(VALID_ID, principal);
+
+        verify(anzeigenComponent).findById(VALID_ID);
+        verify(anzeigenComponent).delete(anzeigenDOCaptor.capture(), userIdCaptor.capture());
+
+        AnzeigenDO capturedDO = anzeigenDOCaptor.getValue();
+        assertThat(capturedDO).isEqualTo(anzeigenDO);
+        assertThat(userIdCaptor.getValue()).isEqualTo(99L);
+    }
+
+    @Test
+    public void delete_withInvalidId_shouldThrowException() {
+        assertThatExceptionOfType(de.bogenliga.application.common.errorhandling.exception.BusinessException.class)
+                .isThrownBy(() -> underTest.delete(null, principal))
+                .withMessageContaining("ID must not be null.");
+
+        verifyZeroInteractions(anzeigenComponent);
+    }
 }

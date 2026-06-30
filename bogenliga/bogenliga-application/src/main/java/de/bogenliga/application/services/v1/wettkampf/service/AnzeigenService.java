@@ -1,7 +1,9 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
@@ -110,9 +112,9 @@ public class AnzeigenService implements ServiceFacade {
     }
 
     /**
-     * update-method()  changes the chosen Wettkampf entry in the Database
+     * update-method() changes the chosen Anzeige entry in the Database
      *
-     * @param anzeigenDTO Anzeige mit zu aktualiserenden Daten
+     * @param anzeigenDTO Anzeige mit zu aktualisierenden Daten
      * @param principal ändernder User
      *
      * @return aktualisierter anzeigenDTO
@@ -136,6 +138,34 @@ public class AnzeigenService implements ServiceFacade {
 
 
         return AnzeigenDTOMapper.toDTO.apply(updatedAnzeigenDO);
+    }
+
+    @GetMapping(
+            value = "getNewPhysischeBildschirmID",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> getNewPhysischeBildschirmID() {
+        String randomId = anzeigenComponent.generatePhysischeBildschirmId();
+        return Collections.singletonMap("id", randomId);
+    }
+
+    /**
+     * delete-method() deletes the chosen Anzeige entry in the Database
+     *
+     * @param id id der zu löschenden Anzeige
+     * @param principal Auftrag gebender User
+     *
+     */
+    @DeleteMapping(value = "{id}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    public void delete(@PathVariable final Long id, final Principal principal) {
+        Preconditions.checkNotNull(id, "ID must not be null.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+        final AnzeigenDO anzeigenDO = anzeigenComponent.findById(id);
+
+        anzeigenComponent.delete(anzeigenDO, userId);
     }
 
 
