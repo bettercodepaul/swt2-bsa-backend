@@ -145,4 +145,13 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
     boolean isVeranstaltungLaufend(final long veranstaltungId);
 
+    /**
+     * Wie {@link #isVeranstaltungLaufend(long)}, jedoch fuer eine bereits geladene
+     * Veranstaltung – vermeidet ein erneutes Laden, wenn das DO schon vorliegt.
+     *
+     * @param veranstaltung bereits geladene Veranstaltung (darf null sein)
+     * @return {@code true}, wenn die Veranstaltung in der Phase 'Laufend' ist
+     */
+    boolean isVeranstaltungLaufend(final VeranstaltungDO veranstaltung);
+
 }
