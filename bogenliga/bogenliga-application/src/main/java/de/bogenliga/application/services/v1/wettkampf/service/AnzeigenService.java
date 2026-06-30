@@ -61,7 +61,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public AnzeigenDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
