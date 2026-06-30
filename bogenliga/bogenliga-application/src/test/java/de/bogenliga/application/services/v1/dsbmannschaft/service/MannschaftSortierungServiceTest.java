@@ -136,6 +136,30 @@ public class MannschaftSortierungServiceTest {
     }
 
     @Test
+    public void update_OhneVeranstaltung_laeuftDurch() {
+        // Mannschaft ohne zugeordnete Veranstaltung (veranstaltungId == null):
+        // die Phasenpruefung wird uebersprungen und das Update laeuft durch.
+        final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        final DsbMannschaftDO mannschaftOhneVeranstaltung = getDsbMannschaftDO();
+        mannschaftOhneVeranstaltung.setVeranstaltungId(null);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(ID)).thenReturn(mannschaftOhneVeranstaltung);
+        when(mannschaftSortierungComponent.updateSortierung(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final MannschaftSortierungDTO actual = underTest.update(inputDTO, principal);
+
+        // assert: updateSortierung wurde ausgefuehrt, keine Phasenpruefung noetig
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(inputDTO.getId());
+        verify(mannschaftSortierungComponent).updateSortierung(any(), anyLong());
+        verify(veranstaltungComponent, never()).isVeranstaltungLaufend(anyLong());
+    }
+
+    @Test
     public void update_WrongValueSortierung_expectException() {
         // prepare test data
         final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
