@@ -4,7 +4,6 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -31,7 +30,6 @@ public class MannschaftSortierungService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaft-ID must not be null or less than 0";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_SORTIERUNG = "DsbMannschaft-Sortierung must not be null or less than 0";
     private static final String ERROR_MSG_VERANSTALTUNG_LAUFEND = "Die Veranstaltung ist in der Phase 'Laufend'. Der Tabellenplatz teilnehmender Mannschaften kann in dieser Phase nicht geändert werden.";
-    private static final String VERANSTALTUNG_PHASE_LAUFEND = "Laufend";
 
     private static final Logger LOG = LoggerFactory.getLogger(MannschaftSortierungService.class);
 
@@ -95,11 +93,7 @@ public class MannschaftSortierungService implements ServiceFacade {
      * @throws BusinessException wenn die Veranstaltung in der Phase 'Laufend' ist
      */
     private void assertVeranstaltungNotLaufend(final Long veranstaltungsId) {
-        if (veranstaltungsId == null) {
-            return;
-        }
-        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungsId);
-        if (veranstaltungDO != null && VERANSTALTUNG_PHASE_LAUFEND.equals(veranstaltungDO.getVeranstaltungPhase())) {
+        if (veranstaltungsId != null && veranstaltungComponent.isVeranstaltungLaufend(veranstaltungsId)) {
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERROR_MSG_VERANSTALTUNG_LAUFEND);
         }
     }
