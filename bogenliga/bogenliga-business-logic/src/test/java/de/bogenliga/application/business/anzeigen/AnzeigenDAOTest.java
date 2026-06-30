@@ -146,4 +146,13 @@ public class AnzeigenDAOTest extends AnzeigenDAOTestHelper {
         verify(basicDao).setModificationAttributes(expectedBE, USER_ID);
         verify(basicDao).deleteEntity(any(), eq(expectedBE), eq("id"));
     }
+
+    @Test
+    public void testDeleteAll() {
+        // 1. Ausführung via AnzeigenDAO
+        underTest.deleteAll();
+
+        // 2. Verifizierung, dass basicDAO dadurch korrekt aufgerufen wurde
+        verify(basicDao).executeQuery("DELETE FROM anzeigen");
+    }
 }

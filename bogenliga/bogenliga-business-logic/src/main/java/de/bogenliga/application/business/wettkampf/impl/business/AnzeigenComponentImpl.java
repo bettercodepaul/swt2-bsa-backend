@@ -141,6 +141,11 @@ public class AnzeigenComponentImpl implements AnzeigenComponent {
     }
 
     @Override
+    public void deleteAll() {
+        anzeigenDAO.deleteAll();
+    }
+
+    @Override
     public String generatePhysischeBildschirmId() {
         return UUID.randomUUID().toString().substring(0, 4);
     }

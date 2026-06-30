@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.wettkampf.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class AnzeigenDTO implements DataTransferObject {
-    //TODO serialVersionUID
+    private static final long serialVersionUID = 5493029943811486806L;
 
     private Long id;
     private String physischeBildschirmId;

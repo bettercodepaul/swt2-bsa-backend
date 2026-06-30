@@ -6,8 +6,7 @@ import de.bogenliga.application.common.component.types.DataObject;
 import java.time.OffsetDateTime;
 
 public class AnzeigenDO extends CommonDataObject implements DataObject {
-
-    //TODO serialVersionUID
+    private static final long serialVersionUID = 5596529992814830603L;
     private Long id;
     private String physischeBildschirmId;
     private String tableTyp;

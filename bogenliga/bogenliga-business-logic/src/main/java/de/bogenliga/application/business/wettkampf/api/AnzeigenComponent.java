@@ -60,6 +60,11 @@ public interface AnzeigenComponent {
     void delete(AnzeigenDO anzeigenDO, Long currentMemberId);
 
     /**
+     * Wiping anzeigen table.
+     */
+    void deleteAll();
+
+    /**
      * Generate a randomized, alphanumeric four character id.
      * @return The generated id.
      */
