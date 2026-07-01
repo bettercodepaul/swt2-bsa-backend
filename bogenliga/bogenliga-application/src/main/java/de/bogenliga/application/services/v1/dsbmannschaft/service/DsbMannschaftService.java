@@ -702,13 +702,12 @@ public class DsbMannschaftService implements ServiceFacade {
 
             if (veranstaltungDO != null) {
 
-                /*
                 if (!veranstaltungDO.getVeranstaltungPhase().equals("Geplant")) {
                     throw new BusinessException(
                             ErrorCode.ENTITY_CONFLICT_ERROR,
                             "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor."
                     );
-                }*/
+                }
 
                 // Neue Prüfung: nur vor Meldedeadline löschen
                 if (veranstaltungDO.getVeranstaltungMeldeDeadline() != null) {
