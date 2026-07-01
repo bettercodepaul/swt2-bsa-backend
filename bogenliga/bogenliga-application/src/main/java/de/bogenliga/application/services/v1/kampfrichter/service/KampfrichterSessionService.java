@@ -61,7 +61,7 @@ public class KampfrichterSessionService {
         this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
 
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_ORT})
     @GetMapping(value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> getOrCreateToken(@RequestParam Long wettkampfid,
                                                                 final Principal principal) {
@@ -83,7 +83,7 @@ public class KampfrichterSessionService {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_ORT})
     @PostMapping(value = "/tokenize", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> regenerateToken(@RequestParam Long wettkampfid,
                                                                final Principal principal) {
