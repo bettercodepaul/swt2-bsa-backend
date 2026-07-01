@@ -22,7 +22,10 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
-
+/* Diese Api sollte von Ausrichtern, Ligaleitern und Admins verwendet werden können,
+   kann (Stand SoSe 2026), aber leider nur von Ligaleitern und Admins verwendet werden.
+   Die entsprechenden Permissions für die Ausrichter müssen in Zukunft erstellt,
+   und hier hinzugefügt werden*/
 
 @RestController
 @RequestMapping("v1/anzeigen")
@@ -45,7 +48,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public List<AnzeigenDTO> findAll() {
         final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findAll();
         LOG.debug("Received Anzeigen request");
@@ -59,7 +62,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public AnzeigenDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -75,7 +78,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(value = "byWettkampfId/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public List<AnzeigenDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
         Preconditions.checkArgument(wettkampfId > 0, "ID must not be negative.");
 
@@ -96,7 +99,7 @@ public class AnzeigenService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
     public long create(@RequestBody final Long wettkampfId, final Principal principal) {
 
         Preconditions.checkNotNull(wettkampfId, "Wettkampf ID must not be null.");
@@ -123,7 +126,7 @@ public class AnzeigenService implements ServiceFacade {
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER})
     public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
 
         LOG.debug("Received 'update' request with id '{}'", anzeigenDTO.getId());
@@ -157,7 +160,7 @@ public class AnzeigenService implements ServiceFacade {
      *
      */
     @DeleteMapping(value = "{id}")
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_SYSTEMDATEN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER})
     public void delete(@PathVariable final Long id, final Principal principal) {
         Preconditions.checkNotNull(id, "ID must not be null.");
 
