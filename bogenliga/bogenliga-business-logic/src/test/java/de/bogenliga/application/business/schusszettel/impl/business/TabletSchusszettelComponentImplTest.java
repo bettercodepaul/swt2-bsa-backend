@@ -659,4 +659,40 @@ public class TabletSchusszettelComponentImplTest {
         assertThat(result).isNotNull();
         assertThat(result.getEigenesTeamMatchNr()).isEqualTo(42);
     }
+
+    @Test
+    public void isValidToken_validSession_returnsTrue() {
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        boolean result = component.isValidToken(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void isValidToken_noMatchingSession_returnsFalse() {
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "wrong-token"))
+            .thenReturn(Optional.empty());
+
+        boolean result = component.isValidToken(50L, 100L, "wrong-token");
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void isValidToken_nullToken_returnsFalseWithoutCallingDao() {
+        boolean result = component.isValidToken(50L, 100L, null);
+
+        assertThat(result).isFalse();
+        verify(mockDAO, never()).findByTokenWettkampfUndTeam(anyLong(), anyLong(), any());
+    }
+
+    @Test
+    public void isValidToken_emptyToken_returnsFalseWithoutCallingDao() {
+        boolean result = component.isValidToken(50L, 100L, "");
+
+        assertThat(result).isFalse();
+        verify(mockDAO, never()).findByTokenWettkampfUndTeam(anyLong(), anyLong(), any());
+    }
 }

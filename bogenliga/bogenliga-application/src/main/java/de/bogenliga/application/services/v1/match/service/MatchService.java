@@ -33,11 +33,14 @@ import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.business.PasseComponentImpl;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -120,6 +123,7 @@ public class MatchService implements ServiceFacade {
     private final VereinComponent vereinComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
     private final VeranstaltungComponent veranstaltungComponent;
+    private final TabletSchusszettelComponent tabletSchusszettelComponent;
 
     /**
      * Constructor with dependency injection
@@ -136,6 +140,7 @@ public class MatchService implements ServiceFacade {
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                         final WettkampfTypComponent wettkampftypComponent,
                         final VeranstaltungComponent veranstaltungComponent,
+                        final TabletSchusszettelComponent tabletSchusszettelComponent,
                         RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
@@ -146,6 +151,7 @@ public class MatchService implements ServiceFacade {
         this.wettkampfTypComponent = wettkampftypComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.tabletSchusszettelComponent = tabletSchusszettelComponent;
     }
 
     /**
@@ -253,6 +259,55 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
         this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
+
+        return matches;
+    }
+
+    /**
+     * Read-only variant of {@link #findMatchesByIds} for anonymous QR-scanning tablet clients.
+     * <p>
+     * Instead of a permission check, this validates the same session token used by the
+     * public tablet-schusszettel endpoint, and additionally verifies that the requested
+     * matches actually belong to the token's wettkampf, so a token cannot be used to
+     * browse matches of other competitions.
+     *
+     * @param matchId1 das erste Match auf dem Schusszettel
+     * @param matchId2 das zweite Match auf dem Schusszettel
+     * @param token Zugriffs-Token der Tablet-Session
+     * @param wettkampfid Wettkampf-ID der Tablet-Session
+     * @param teamid Team-ID der Tablet-Session
+     *
+     * @return MatchDTOs zu den IDs (2 Stück)
+     */
+    @GetMapping(value = "schusszettel/tablet/{matchId1}/{matchId2}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MatchDTO> findMatchesByIdsForTablet(@PathVariable("matchId1") Long matchId1,
+                                                     @PathVariable("matchId2") Long matchId2,
+                                                     @RequestParam String token,
+                                                     @RequestParam Long wettkampfid,
+                                                     @RequestParam Long teamid) {
+        if (!tabletSchusszettelComponent.isValidToken(wettkampfid, teamid, token)) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Invalid or expired token");
+        }
+
+        this.checkMatchId(matchId1);
+        this.checkMatchId(matchId2);
+
+        MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
+        MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
+
+        if (!matchDTO1.getWettkampfId().equals(wettkampfid) || !matchDTO2.getWettkampfId().equals(wettkampfid)) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Matches do not belong to the given Wettkampf");
+        }
+
+        checkPreconditions(matchDTO1, matchConditionErrors);
+        checkPreconditions(matchDTO2, matchConditionErrors);
+
+        List<MatchDTO> matches = new ArrayList<>();
+        matches.add(matchDTO1);
+        matches.add(matchDTO2);
+        this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
+        this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
         return matches;
     }
