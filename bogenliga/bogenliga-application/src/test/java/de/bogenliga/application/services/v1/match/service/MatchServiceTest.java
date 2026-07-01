@@ -7,7 +7,9 @@ import java.util.*;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.schusszettel.api.TabletSchusszettelComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,6 +82,9 @@ public class MatchServiceTest {
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
+    @Mock
+    private TabletSchusszettelComponent tabletSchusszettelComponent;
 
 
     @InjectMocks
@@ -384,6 +389,64 @@ public class MatchServiceTest {
         // expect a NPE as the null-state should be checked in MatchComponentImpl
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID));
+    }
+
+
+    @Test
+    public void findMatchesByIdsForTablet_validToken_returnsMatches() {
+        MatchDO matchDO1 = getMatchDO();
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_TYP_ID);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_ID);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+        LigamatchBE ligamatchBE = getLigamatchBE();
+        when(tabletSchusszettelComponent.isValidToken(MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID, "valid-token"))
+                .thenReturn(true);
+        when(matchComponent.getLigamatchById(anyLong())).thenReturn(ligamatchBE);
+        when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
+        when(wettkampfTypComponent.findById(W_TYP_ID)).thenReturn(wettkampftypDO);
+
+        final List<MatchDTO> actual = underTest.findMatchesByIdsForTablet(
+                MATCH_ID, MATCH_ID, "valid-token", MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID);
+
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+    }
+
+
+    @Test
+    public void findMatchesByIdsForTablet_invalidToken_throwsBusinessException() {
+        when(tabletSchusszettelComponent.isValidToken(anyLong(), anyLong(), any()))
+                .thenReturn(false);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findMatchesByIdsForTablet(
+                        MATCH_ID, MATCH_ID, "invalid-token", MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID));
+
+        verify(matchComponent, never()).findById(anyLong());
+    }
+
+
+    @Test
+    public void findMatchesByIdsForTablet_wettkampfMismatch_throwsBusinessException() {
+        MatchDO matchDO1 = getMatchDO();
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_ID);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+        LigamatchBE ligamatchBE = getLigamatchBE();
+        final Long otherWettkampfId = MATCH_WETTKAMPF_ID + 1;
+        when(tabletSchusszettelComponent.isValidToken(otherWettkampfId, MATCH_MANNSCHAFT_ID, "valid-token"))
+                .thenReturn(true);
+        when(matchComponent.getLigamatchById(anyLong())).thenReturn(ligamatchBE);
+        when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+
+        // matchDO1 belongs to MATCH_WETTKAMPF_ID, but we pass a different wettkampfid -> must be rejected
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findMatchesByIdsForTablet(
+                        MATCH_ID, MATCH_ID, "valid-token", otherWettkampfId, MATCH_MANNSCHAFT_ID));
     }
 
 
