@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.wettkampf.mapper.AnzeigenDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
+import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenMatchDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +36,8 @@ public class AnzeigenService implements ServiceFacade {
     private final AnzeigenComponent anzeigenComponent;
 
 
-
     @Autowired
-    public AnzeigenService(final AnzeigenComponent anzeigenComponent) {
+    public AnzeigenService(final AnzeigenComponent anzeigenComponent, MatchComponent matchComponent) {
         this.anzeigenComponent = anzeigenComponent;
     }
 
@@ -171,5 +172,18 @@ public class AnzeigenService implements ServiceFacade {
         anzeigenComponent.delete(anzeigenDO, userId);
     }
 
+    /**
+     * I return the AnzeigenMatch of the database with a specific physische Bildschirm id.
+     *
+     * @return list of {@link AnzeigenDTO} as JSON
+     */
+    @GetMapping(value = "AnzeigenMatch{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AnzeigenMatchDTO findAnzeigenMatchByPhysischeBildschirmId(@PathVariable("id") final String id) {
+        Preconditions.checkArgument(id.length() ==  4, "ID must be four characters long.");
+
+        LOG.debug("Receive 'findAnzeigenMatchByPhysischeBildschirmId' request with id '{}'", id);
+
+        return new AnzeigenMatchDTO();
+    }
 
 }
