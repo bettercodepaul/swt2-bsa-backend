@@ -175,7 +175,6 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
     public AnzeigenMatchDTO findAnzeigenMatchByPhysischeBildschirmId(@PathVariable("id") final String id) {
         Preconditions.checkArgument(id.length() ==  4, "ID must be four characters long.");
 
