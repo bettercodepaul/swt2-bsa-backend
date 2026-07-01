@@ -242,6 +242,14 @@ public class TabletSchusszettelComponentImpl implements TabletSchusszettelCompon
         return SessionRuntime.loadFromDatabase(wettkampfId, teamId, token, sessionDAO, matchComponent, passeComponent, matchAnalysisService, mmComponent, mitgliedComponent, wettkampfComponent, veranstaltungComponent);
     }
 
+    @Override
+    public boolean isValidToken(long wettkampfid, long teamid, String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+        return sessionDAO.findByTokenWettkampfUndTeam(wettkampfid, teamid, token).isPresent();
+    }
+
     /**
      * Builds base response with core match data.
      * 
