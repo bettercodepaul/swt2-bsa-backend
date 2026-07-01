@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
+import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenMatchDTO;
 import de.bogenliga.application.services.v1.wettkampf.service.AnzeigenService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -215,5 +216,11 @@ public class AnzeigenServiceTest {
                 .withMessageContaining("ID must not be null.");
 
         verifyZeroInteractions(anzeigenComponent);
+    }
+
+    @Test
+    public void findAnzeigenMatchByPhysischeBildschirmIdReturnsDTO() {
+        AnzeigenMatchDTO anzeigenMatchDTO = underTest.findAnzeigenMatchByPhysischeBildschirmId("ABCD");
+        assertThat(anzeigenMatchDTO).isNotNull();
     }
 }
