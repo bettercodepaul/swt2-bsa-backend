@@ -8,6 +8,7 @@ import java.security.Principal;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +19,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.rueckennummern.api.RueckennummernComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.setzliste.service.SetzlisteService;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 /**
@@ -65,6 +69,8 @@ public class DownloadService implements ServiceFacade {
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
     private final RueckennummernComponent rueckennummernComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     /**
@@ -76,7 +82,9 @@ public class DownloadService implements ServiceFacade {
                            final MeldezettelComponent meldezettelComponent,
                            final BogenkontrolllisteComponent bogenkontrolllisteComponent,
                            final RueckennummernComponent rueckennummernComponent,
-                           final WettkampfComponent wettkampfComponent) {
+                           final WettkampfComponent wettkampfComponent,
+                           final DsbMannschaftComponent dsbMannschaftComponent,
+                           final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
@@ -84,8 +92,10 @@ public class DownloadService implements ServiceFacade {
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
         this.rueckennummernComponent = rueckennummernComponent;
         this.wettkampfComponent = wettkampfComponent;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
-  
+
     /**
      * returns the Setzliste as pdf file for client download
      * <p>
@@ -231,8 +241,8 @@ public class DownloadService implements ServiceFacade {
      */
     @CrossOrigin(maxAge = 0)
     @GetMapping(
-                    path = "pdf/rueckennummern",
-                    produces = MediaType.APPLICATION_PDF_VALUE)
+            path = "pdf/rueckennummern",
+            produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public
     ResponseEntity<InputStreamResource> downloadRueckennummernPdf(@RequestParam("mannschaftid") final long mannschaftid) {
@@ -291,11 +301,32 @@ public class DownloadService implements ServiceFacade {
     @GetMapping(
             path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MY_VEREIN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
-    @PathVariable("teamId") final long teamID) {
+                                                              @PathVariable("teamId") final long teamID) {
         LOG.debug("dsbMitgliedID: {}", dsbMitgliedID);
         LOG.debug("teamID: {}", teamID);
+
+        // Data-specific authorization check
+        var mannschaft = dsbMannschaftComponent.findById(teamID);
+        if (mannschaft == null) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                    "Team not found");
+        }
+
+        // Check if user has permission to modify their own club (Sportleiter)
+        boolean isSportleiter = requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, mannschaft.getVereinId());
+
+        // Check if user has permission to modify event (Ligaleiter)
+        boolean isLigaleiter = requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, mannschaft.getVeranstaltungId());
+
+        if (!isSportleiter && !isLigaleiter) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                    String.format("User does not have permission to download license for team %d", teamID));
+        }
+
         final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
 
         return generateInputStream(fileBloB);
@@ -314,10 +345,29 @@ public class DownloadService implements ServiceFacade {
     @GetMapping(
             path = "pdf/lizenzen",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MY_VEREIN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public
     ResponseEntity<InputStreamResource> downloadLizenzenPdf(@RequestParam("mannschaftid") final long mannschaftid) {
 
+        // Data-specific authorization check
+        var mannschaft = dsbMannschaftComponent.findById(mannschaftid);
+        if (mannschaft == null) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                    "Team not found");
+        }
+
+        // Check if user has permission to modify their own club (Sportleiter)
+        boolean isSportleiter = requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, mannschaft.getVereinId());
+
+        // Check if user has permission to modify event (Ligaleiter)
+        boolean isLigaleiter = requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, mannschaft.getVeranstaltungId());
+
+        if (!isSportleiter && !isLigaleiter) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                    String.format("User does not have permission to download licenses for team %d", mannschaftid));
+        }
 
         final byte[] fileBloB = lizenzComponent.getMannschaftsLizenzenPDFasByteArray(mannschaftid);
 
@@ -334,7 +384,7 @@ public class DownloadService implements ServiceFacade {
      * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?werte=x}</pre>
      *
      * @return pdf as InputStreamRessource
-    */
+     */
     @CrossOrigin(maxAge = 0)
     @GetMapping(
             path = "pdf/Einzelstatistik",
@@ -342,8 +392,8 @@ public class DownloadService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public
     ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
-    @RequestParam("manschaftsid") final long manschaftsid,
-    @RequestParam("jahr") final int jahr)
+                                                                   @RequestParam("manschaftsid") final long manschaftsid,
+                                                                   @RequestParam("jahr") final int jahr)
     {
 
         final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Einzelstatistik",veranstaltungsid,manschaftsid,jahr);

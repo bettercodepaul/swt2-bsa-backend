@@ -45,7 +45,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserEmail must not be null or empty";
     private static final String PRECONDITION_MSG_ROLE_ID = "RoleID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_SEARCH = "Search term cannot be empty";
-    private static final String USER_ROLE_DEFAULT = "USER";
+    private static final String USER_ROLE_DEFAULT = "SPORTLEITER";
     private final UserRoleExtDAO userRoleExtDAO;
 
     private final RoleDAO roleDAO;
@@ -125,7 +125,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         for (UserRoleExtBE i: allUsers) {
-            if( i.getRoleId().equals(roleId)){
+            if(i.getRoleId() != null && i.getRoleId().equals(roleId)){
                 allUsersOfRole.add(UserRoleMapper.extToUserRoleDO.apply(i));
             }
         }

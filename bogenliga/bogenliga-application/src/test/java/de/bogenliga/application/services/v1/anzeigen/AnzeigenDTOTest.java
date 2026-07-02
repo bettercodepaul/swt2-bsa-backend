@@ -21,7 +21,7 @@ public class AnzeigenDTOTest {
         assertThat(result.getId()).isNull();
         assertThat(result.getPhysischeBildschirmId()).isNull();
         assertThat(result.getTableTyp()).isEqualTo("Tabelle");
-        assertThat(result.getVeranstaltungsId()).isNull();
+        assertThat(result.getWettkampfId()).isNull();
         assertThat(result.getAktuellesMatch()).isEqualTo(1);
     }
 
@@ -34,7 +34,7 @@ public class AnzeigenDTOTest {
         assertThat(result.getId()).isEqualTo(ID);
         assertThat(result.getPhysischeBildschirmId()).isEqualTo(BILD_ID);
         assertThat(result.getTableTyp()).isEqualTo(TABLE_TYP);
-        assertThat(result.getVeranstaltungsId()).isEqualTo(VERANSTALTUNG_ID);
+        assertThat(result.getWettkampfId()).isEqualTo(VERANSTALTUNG_ID);
         assertThat(result.getAktuellesMatch()).isEqualTo(AKTUELLES_MATCH);
     }
 
@@ -46,13 +46,13 @@ public class AnzeigenDTOTest {
         // When - Setter explizit aufrufen
         result.setPhysischeBildschirmId(BILD_ID);
         result.setTableTyp(TABLE_TYP);
-        result.setVeranstaltungsId(VERANSTALTUNG_ID);
+        result.setWettkampfId(VERANSTALTUNG_ID);
         result.setAktuellesMatch(AKTUELLES_MATCH);
 
         // Then - Getter validieren
         assertThat(result.getPhysischeBildschirmId()).isEqualTo(BILD_ID);
         assertThat(result.getTableTyp()).isEqualTo(TABLE_TYP);
-        assertThat(result.getVeranstaltungsId()).isEqualTo(VERANSTALTUNG_ID);
+        assertThat(result.getWettkampfId()).isEqualTo(VERANSTALTUNG_ID);
         assertThat(result.getAktuellesMatch()).isEqualTo(AKTUELLES_MATCH);
     }
 }

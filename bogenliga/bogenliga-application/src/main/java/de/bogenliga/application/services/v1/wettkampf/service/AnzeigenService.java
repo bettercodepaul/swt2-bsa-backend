@@ -1,13 +1,17 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.wettkampf.api.AnzeigenComponent;
 import de.bogenliga.application.business.wettkampf.api.types.AnzeigenDO;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.wettkampf.mapper.AnzeigenDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenDTO;
+import de.bogenliga.application.services.v1.wettkampf.model.AnzeigenMatchDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+
+/* Diese Api sollte von Ausrichtern, Ligaleitern und Admins verwendet werden können,
+   kann (Stand SoSe 2026), aber leider nur von Ligaleitern und Admins verwendet werden.
+   Die entsprechenden Permissions für die Ausrichter müssen in Zukunft erstellt,
+   und hier hinzugefügt werden*/
 
 @RestController
 @RequestMapping("v1/anzeigen")
@@ -28,7 +37,7 @@ public class AnzeigenService implements ServiceFacade {
 
 
     @Autowired
-    public AnzeigenService(final AnzeigenComponent anzeigenComponent) {
+    public AnzeigenService(final AnzeigenComponent anzeigenComponent, MatchComponent matchComponent) {
         this.anzeigenComponent = anzeigenComponent;
     }
 
@@ -39,7 +48,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public List<AnzeigenDTO> findAll() {
         final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findAll();
         LOG.debug("Received Anzeigen request");
@@ -53,7 +62,7 @@ public class AnzeigenService implements ServiceFacade {
      * @return list of {@link AnzeigenDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
     public AnzeigenDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -64,25 +73,25 @@ public class AnzeigenService implements ServiceFacade {
     }
 
     /**
-     * I return all Anzeigen entries of the database with a specific VeranstaltungsId.
+     * I return all Anzeigen entries of the database with a specific WettkampfId.
      *
      * @return list of {@link AnzeigenDTO} as JSON
      */
-    @GetMapping(value = "{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm={UserPermission.CAN_READ_SYSTEMDATEN})
-    public List<AnzeigenDTO> findByVeranstaltungsId(@PathVariable("veranstaltungsId") final long veranstaltungsId) {
-        Preconditions.checkArgument(veranstaltungsId > 0, "ID must not be negative.");
+    @GetMapping(value = "byWettkampfId/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm={UserPermission.CAN_READ_STAMMDATEN})
+    public List<AnzeigenDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(wettkampfId > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findByVeranstaltungsId' request with id '{}'", veranstaltungsId);
+        LOG.debug("Receive 'findByWettkampfId' request with id '{}'", wettkampfId);
 
-        final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findByVeranstaltungsId(veranstaltungsId);
+        final List<AnzeigenDO> anzeigenDOList = anzeigenComponent.findByWettkampfId(wettkampfId);
         return anzeigenDOList.stream().map(AnzeigenDTOMapper.toDTO).toList();
     }
 
     /**
      * create-Method() writes a new entry of Anzeigen into the database
      *
-     * @param anzeigenDTO anzulegende Anzeige
+     * @param wettkampfId Wettkampf ID der anzulegenden Anzeige
      * @param principal User der arbeitet
      *
      * @return angelegter anzeigenDTO
@@ -90,19 +99,91 @@ public class AnzeigenService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN})
-    public long create(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
+    public long create(@RequestBody final Long wettkampfId, final Principal principal) {
 
-        LOG.debug("Received 'create' request with id '{}' ", anzeigenDTO.getId());
-
-        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
+        Preconditions.checkNotNull(wettkampfId, "Wettkampf ID must not be null.");
+        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(new AnzeigenDTO());
         final long userId = UserProvider.getCurrentUserId(principal);
+
+        newAnzeigenDO.setWettkampfId(wettkampfId); // Setze ID direkt im 1. Aufkommen des AnzeigenDOs
 
         final AnzeigenDO savedAnzeigenDO = anzeigenComponent.create(newAnzeigenDO, userId);
 
         final AnzeigenDTO savedAnzeigenDTO = AnzeigenDTOMapper.toDTO.apply(savedAnzeigenDO);
 
         return savedAnzeigenDTO.getId();
+    }
+
+    /**
+     * update-method() changes the chosen Anzeige entry in the Database
+     *
+     * @param anzeigenDTO Anzeige mit zu aktualisierenden Daten
+     * @param principal ändernder User
+     *
+     * @return aktualisierter anzeigenDTO
+     */
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER})
+    public AnzeigenDTO update(@RequestBody final AnzeigenDTO anzeigenDTO, final Principal principal) {
+
+        LOG.debug("Received 'update' request with id '{}'", anzeigenDTO.getId());
+
+
+
+
+
+        final AnzeigenDO newAnzeigenDO = AnzeigenDTOMapper.toDO.apply(anzeigenDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final AnzeigenDO updatedAnzeigenDO = anzeigenComponent.update(newAnzeigenDO, userId);
+
+
+        return AnzeigenDTOMapper.toDTO.apply(updatedAnzeigenDO);
+    }
+
+    @GetMapping(
+            value = "getNewPhysischeBildschirmID",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> getNewPhysischeBildschirmID() {
+        String randomId = anzeigenComponent.generatePhysischeBildschirmId();
+        return Collections.singletonMap("id", randomId);
+    }
+
+    /**
+     * delete-method() deletes the chosen Anzeige entry in the Database
+     *
+     * @param id id der zu löschenden Anzeige
+     * @param principal Auftrag gebender User
+     *
+     */
+    @DeleteMapping(value = "{id}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER})
+    public void delete(@PathVariable final Long id, final Principal principal) {
+        Preconditions.checkNotNull(id, "ID must not be null.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+        final AnzeigenDO anzeigenDO = anzeigenComponent.findById(id);
+
+        anzeigenComponent.delete(anzeigenDO, userId);
+    }
+
+    /**
+     * I return the AnzeigenMatch of the database with a specific physische Bildschirm id.
+     *
+     * @return list of {@link AnzeigenDTO} as JSON
+     */
+    @GetMapping(value = "AnzeigenMatch{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AnzeigenMatchDTO findAnzeigenMatchByPhysischeBildschirmId(@PathVariable("id") final String id) {
+        Preconditions.checkArgument(id.length() ==  4, "ID must be four characters long.");
+
+        LOG.debug("Receive 'findAnzeigenMatchByPhysischeBildschirmId' request with id '{}'", id);
+
+        return new AnzeigenMatchDTO();
     }
 
 }

@@ -23,13 +23,13 @@ public class AnzeigenDAO implements DataAccessObject {
     private static final String ANZEIGEN_BE_ID = "id";
     private static final String ANZEIGEN_BE_PHYSISCHE_BILDSCHIRM_ID = "physischeBildschirmId";
     private static final String ANZEIGEN_BE_TABLE_TYP = "tableTyp";
-    private static final String ANZEIGEN_BE_VERANSTALTUNGS_ID = "veranstaltungsId";
+    private static final String ANZEIGEN_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String ANZEIGEN_BE_AKTUELLES_MATCH = "aktuellesMatch";
 
     private static final String ANZEIGEN_TABLE_ID = "anzeigen_id";
     private static final String ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID = "physische_bildschirm_id";
     private static final String ANZEIGEN_TABLE_TABLE_TYP = "table_typ";
-    private static final String ANZEIGEN_TABLE_VERANSTALTUNGS_ID = "veranstaltungs_id";
+    private static final String ANZEIGEN_TABLE_WETTKAMPF_ID = "wettkampf_id";
     private static final String ANZEIGEN_TABLE_AKTUELLES_MATCH = "aktuelles_match";
 
     private static final BusinessEntityConfiguration<AnzeigenBE> ANZEIGE = new BusinessEntityConfiguration<>(
@@ -48,7 +48,7 @@ public class AnzeigenDAO implements DataAccessObject {
         columnsToFieldsMap.put(ANZEIGEN_TABLE_ID, ANZEIGEN_BE_ID);
         columnsToFieldsMap.put(ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID, ANZEIGEN_BE_PHYSISCHE_BILDSCHIRM_ID);
         columnsToFieldsMap.put(ANZEIGEN_TABLE_TABLE_TYP, ANZEIGEN_BE_TABLE_TYP);
-        columnsToFieldsMap.put(ANZEIGEN_TABLE_VERANSTALTUNGS_ID, ANZEIGEN_BE_VERANSTALTUNGS_ID);
+        columnsToFieldsMap.put(ANZEIGEN_TABLE_WETTKAMPF_ID, ANZEIGEN_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(ANZEIGEN_TABLE_AKTUELLES_MATCH, ANZEIGEN_BE_AKTUELLES_MATCH);
 
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -69,10 +69,17 @@ public class AnzeigenDAO implements DataAccessObject {
             .orderBy(ANZEIGEN_TABLE_ID)
             .compose().toString();
 
-    private static final String FIND_BY_VERANSTALTUNGS_ID = new QueryBuilder()
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .whereEquals(ANZEIGEN_TABLE_VERANSTALTUNGS_ID)
+            .whereEquals(ANZEIGEN_TABLE_WETTKAMPF_ID)
+            .orderBy(ANZEIGEN_TABLE_ID)
+            .compose().toString();
+
+    private static final String FIND_BY_PHYSISCHE_BILDSCHIRM_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(ANZEIGEN_TABLE_PHYSISCHE_BILDSCHIRM_ID)
             .orderBy(ANZEIGEN_TABLE_ID)
             .compose().toString();
 
@@ -86,12 +93,20 @@ public class AnzeigenDAO implements DataAccessObject {
     }
 
     /**
-     * Return all entries with specific veranstaltungsId.
+     * Return all entries with specific wettkampfId.
      *
-     * @return list of all anzeigen with this veranstaltungsId; empty list, if no match is found
+     * @return list of all anzeigen with this wettkampfId; empty list, if no match is found
      */
-    public List<AnzeigenBE> findByVeranstaltungsId(Long veranstaltungsId) {
-        return basicDao.selectEntityList(ANZEIGE, FIND_BY_VERANSTALTUNGS_ID, veranstaltungsId);
+    public List<AnzeigenBE> findByWettkampfId(Long wettkampfId) {
+        return basicDao.selectEntityList(ANZEIGE, FIND_BY_WETTKAMPF_ID, wettkampfId);
+    }
+    /**
+     * Return all entries with specific physischeBildschirmId.
+     *
+     * @return anzeige with this physischeBildschrimId; null if no match is found.
+     */
+    public AnzeigenBE findByPhysischeBildschirmId(String physischeBildschirmId) {
+        return basicDao.selectSingleEntity(ANZEIGE, FIND_BY_PHYSISCHE_BILDSCHIRM_ID, physischeBildschirmId);
     }
     /**
      * Return all entries.
@@ -137,5 +152,14 @@ public class AnzeigenDAO implements DataAccessObject {
     public void delete(final AnzeigenBE anzeigenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(anzeigenBE, currentUserId);
         basicDao.deleteEntity(ANZEIGE, anzeigenBE, ANZEIGEN_BE_ID);
+    }
+
+    /**
+     * Clears the anzeigen database which is usually scheduled at night
+     * For security reasons, there is no basicDAO implementation of deleteAll since it could wipe other tables by accident
+     */
+    public void deleteAll() {
+        final String clear_anzeigen_database_sql = "DELETE FROM anzeigen";
+        basicDao.executeQuery(clear_anzeigen_database_sql);
     }
 }

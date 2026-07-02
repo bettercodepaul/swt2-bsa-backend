@@ -68,7 +68,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/api-docs")
                 .antMatchers("/webjars/**")
                 .antMatchers(HttpMethod.POST, "/v1/signin")
-                .antMatchers(HttpMethod.POST, "/v1/user/signin");
+                .antMatchers(HttpMethod.POST, "/v1/user/signin")
+                // Kampfrichter-Session read endpoints: protected by QR token, no JWT needed
+                .antMatchers(HttpMethod.GET, "/v1/kampfrichter-session/matches")
+                .antMatchers(HttpMethod.PUT, "/v1/kampfrichter-session/strafpunkte")
+                // Tablet-Schusszettel endpoints: protected by QR token, no JWT needed
+                .antMatchers(HttpMethod.GET, "/v1/tablet-schusszettel")
+                .antMatchers(HttpMethod.POST, "/v1/tablet-schusszettel")
+                // Read-only match details for the tablet flow: protected by the same QR token
+                .antMatchers(HttpMethod.GET, "/v1/match/schusszettel/tablet/*/*");
     }
 
 

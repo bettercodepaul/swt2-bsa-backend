@@ -1007,6 +1007,64 @@ public class DsbMannschaftServiceTest {
 
 
     @Test
+    public void assignMannschaftToVeranstaltung_VeranstaltungLaufend_expectException() {
+        // Prepare test data: Ziel-Veranstaltung ist 'Laufend'
+        final DsbMannschaftDO mannschaftDO = getDsbMannschaftDO();
+        final long inputVeranstaltungsId = 222L;
+
+        // configure mocks (assign laedt das Veranstaltungs-DO einmal und prueft darauf)
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(true);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+        when(veranstaltungComponent.isVeranstaltungLaufend(any(VeranstaltungDO.class))).thenReturn(true);
+
+        // call + assert: bei laufender Veranstaltung wird die Zuordnung abgelehnt
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.assignMannschaftToVeranstaltung(inputVeranstaltungsId, mannschaftDO.getId(), principal))
+                .withMessageContaining("Laufend");
+
+        // es darf nichts gespeichert werden
+        verify(dsbMannschaftComponent, times(0)).update(any(), anyLong());
+    }
+
+    @Test
+    public void unassignMannschaftFromVeranstaltung_VeranstaltungLaufend_expectException() {
+        // Prepare test data: Mannschaft gehoert zu einer laufenden Veranstaltung
+        final DsbMannschaftDO mannschaftDO = getDsbMannschaftDO();
+        mannschaftDO.setVeranstaltungId(222L);
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
+
+        // call + assert: bei laufender Veranstaltung wird das Entfernen abgelehnt
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.unassignMannschaftFromVeranstaltung(mannschaftDO.getId(), principal))
+                .withMessageContaining("Laufend");
+
+        verify(dsbMannschaftComponent, times(0)).update(any(), anyLong());
+    }
+
+    @Test
+    public void create_VeranstaltungLaufend_expectException() {
+        // Prepare test data: Ziel-Veranstaltung ist 'Laufend'
+        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+        input.setVeranstaltungId(222L);
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(veranstaltungComponent.isVeranstaltungLaufend(anyLong())).thenReturn(true);
+
+        // call + assert: bei laufender Veranstaltung wird das Anlegen abgelehnt
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(input, principal))
+                .withMessageContaining("Laufend");
+
+        // es darf keine Mannschaft angelegt werden
+        verify(dsbMannschaftComponent, times(0)).create(any(), anyLong());
+    }
+
+    @Test
     public void testEqualsAndHashCode() {
         // Arrange
         DsbMannschaftDO dsbMannschaftDO1 = getDsbMannschaftDO();

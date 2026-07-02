@@ -3,7 +3,6 @@ package de.bogenliga.application.business.schusszettel.impl.business.domain.stat
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.VerfuegbarerSchuetzeDO;
 import de.bogenliga.application.business.schusszettel.api.types.inside.SchuetzeStammdatenDO;
 import de.bogenliga.application.business.schusszettel.api.types.SatzEingabeDO;
@@ -35,7 +34,6 @@ public class Satzeingabe extends State {
     private static final Logger LOGGER = LoggerFactory.getLogger(Satzeingabe.class);
     private static final int SHOOTERS_PER_TEAM = 3;
     private static final int ARROWS_PER_SHOOTER = 2;
-    private static final int MATCH_POINTS_TO_WIN = 6;
     
     @Override
     public boolean isValidState(StateContext context) {
@@ -170,10 +168,10 @@ public class Satzeingabe extends State {
         try {
             // Create passes with scores
             createPassesWithScores(context, eingabe);
-            
-            // Update match scores for database consistency
-            updateMatchScoresAfterSetCompletion(context);
-            
+
+            // Match scores (Satzpunkte/Matchpunkte) are recalculated centrally in
+            // TabletSchusszettelComponentImpl.updateMatchScoresAfterSetCompletion after this operation.
+
             // Transition to WARTE
             context.updateSessionStatus(STATUS_WARTE);
             
@@ -311,107 +309,6 @@ public class Satzeingabe extends State {
     }
     
     /**
-     * Updates match scores in database for consistency with LigamatchBE.
-     * CRITICAL FIX: Uses team-specific passe calculation for score updates.
-     */
-    private void updateMatchScoresAfterSetCompletion(StateContext context) {
-        try {
-            // CRITICAL FIX: Get the actual passe number this team just completed
-            long matchId = context.getCurrentMatchId();
-            long teamId = context.getTeamId();
-            long opponentTeamId = context.getOpponentTeamId();
-            
-            // Get the passe number this team just completed (highest complete passe)
-            int teamCompletedPasse = context.getMatchAnalysisService()
-                .getNextPasseNumberForTeam(matchId, teamId) - 1;
-            
-            LOGGER.debug("Updating match scores for team {} after completing passe {}", teamId, teamCompletedPasse);
-            
-            // Only process if this team actually completed a passe
-            if (teamCompletedPasse <= 0) {
-                LOGGER.debug("Team {} has not completed any passes yet - skipping score update", teamId);
-                return;
-            }
-            
-            // Get passes for completed set from both teams
-            List<PasseDO> teamPasses = context.getAllMatchPasses().stream()
-                .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
-                .toList();
-                
-            List<PasseDO> oppPasses = context.getPasseComponent()
-                .findByMannschaftMatchId(opponentTeamId, matchId).stream()
-                .filter(p -> p.getPasseLfdnr() == teamCompletedPasse)
-                .toList();
-            
-            // Only update if both teams have completed the set (3 shooters each)
-            if (teamPasses.size() >= SHOOTERS_PER_TEAM && oppPasses.size() >= SHOOTERS_PER_TEAM) {
-                int teamSetPoints = calculateSetPoints(teamPasses);
-                int oppSetPoints = calculateSetPoints(oppPasses);
-                
-                // Calculate Satzpunkte using official archery rules
-                int teamSatzpunkte;
-                int oppSatzpunkte;
-                
-                if (teamSetPoints > oppSetPoints) {
-                    teamSatzpunkte = 2; // Winner gets 2 Satzpunkte
-                    oppSatzpunkte = 0;  // Loser gets 0 Satzpunkte
-                } else if (oppSetPoints > teamSetPoints) {
-                    teamSatzpunkte = 0; // Loser gets 0 Satzpunkte
-                    oppSatzpunkte = 2;  // Winner gets 2 Satzpunkte
-                } else {
-                    teamSatzpunkte = 1; // Tie: both teams get 1 Satzpunkt
-                    oppSatzpunkte = 1;
-                }
-                
-                // Update match scores
-                updateTeamMatchScores(context, matchId, teamId, teamSatzpunkte);
-                updateTeamMatchScores(context, matchId, opponentTeamId, oppSatzpunkte);
-                
-                LOGGER.info("Updated match scores: Team {} (+{} Satzpunkte), Opponent {} (+{} Satzpunkte) for set {}",
-                           teamId, teamSatzpunkte, opponentTeamId, oppSatzpunkte, teamCompletedPasse);
-            }
-            
-        } catch (Exception e) {
-            LOGGER.error("Error updating match scores: {}", e.getMessage());
-            // Don't throw - score calculation failure shouldn't break session progression
-        }
-    }
-    
-    
-    /**
-     * Updates a team's match record with additional Satzpunkte.
-     */
-    private void updateTeamMatchScores(StateContext context, long matchId, long teamId, int additionalSatzpunkte) {
-        try {
-            MatchDO match = context.getMatchComponent().findById(matchId);
-            if (match == null || !Objects.equals(match.getMannschaftId(), teamId)) {
-                LOGGER.warn("Match {} not found for team {} - cannot update scores", matchId, teamId);
-                return;
-            }
-            
-            // Update Satzpunkte (add to existing value)
-            int currentSatzpunkte = Math.toIntExact(match.getSatzpunkte() != null ? match.getSatzpunkte() : 0);
-            int newSatzpunkte = currentSatzpunkte + additionalSatzpunkte;
-            match.setSatzpunkte((long) newSatzpunkte);
-            
-            // Check if match is won (6+ Satzpunkte) and update Matchpunkte
-            if (newSatzpunkte >= MATCH_POINTS_TO_WIN) {
-                match.setMatchpunkte(2L); // Winner gets 2 Matchpunkte
-                LOGGER.info("Team {} won match {} with {} Satzpunkte", teamId, matchId, newSatzpunkte);
-            }
-            
-            // Persist changes
-            context.getMatchComponent().update(match, 0L);
-            
-            LOGGER.debug("Updated match {} for team {}: Satzpunkte={}, Matchpunkte={}",
-                        matchId, teamId, newSatzpunkte, match.getMatchpunkte());
-            
-        } catch (Exception e) {
-            LOGGER.error("Error updating match record {} for team {}: {}", matchId, teamId, e.getMessage());
-        }
-    }
-    
-    /**
      * Validates arrow values are within valid range (0-10).
      */
     private void validateArrowValues(StateContext context, SchuetzenSatzDO satz) {
@@ -445,12 +342,12 @@ public class Satzeingabe extends State {
     private void validateShooterRegistration(StateContext context, long shooterId) {
         try {
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             MannschaftsmitgliedDO member = context.getMannschaftsmitgliedComponent()
                 .findByMemberAndTeamId(context.getTeamId(), shooterId);
-            
-            if (member.getDsbMitgliedEingesetzt() < currentMatchNr) {
+
+            if (member.getDsbMitgliedEingesetzt() == null
+                    || member.getDsbMitgliedEingesetzt() != Math.toIntExact(currentMatchId)) {
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                     "Shooter " + shooterId + " was not registered in Schützenmeldung for this match");
             }
@@ -466,15 +363,16 @@ public class Satzeingabe extends State {
     
     /**
      * Gets shooters registered for the current match.
+     * Gemeldet-Marker ist die eindeutige Match-ID, nicht die Match-Nr
+     * (Kollision mit dem Kader-Flag eingesetzt=1, siehe Schuetzenmeldung#markShootersAsDeployed).
      */
     private List<Long> getRegisteredShootersForCurrentMatch(StateContext context) {
         try {
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             return context.getMannschaftsmitgliedComponent().findByTeamId(context.getTeamId()).stream()
                 .filter(mm -> mm.getDsbMitgliedEingesetzt() != null &&
-                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchNr)))
+                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchId)))
                 .map(MannschaftsmitgliedDO::getDsbMitgliedId)
                 .distinct() // Remove duplicates
                 .collect(Collectors.toList());

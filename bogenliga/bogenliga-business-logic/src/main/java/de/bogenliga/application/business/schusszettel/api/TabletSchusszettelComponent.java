@@ -72,4 +72,18 @@ public interface TabletSchusszettelComponent {
      * @throws BusinessException if validation fails or invalid state
      */
     void submitSchuetzen(long wettkampfid, long teamid, String token, SchuetzenMeldungDO doObj);
+
+    /**
+     * Checks whether the given token is a valid, currently active session token
+     * for the given wettkampf/team combination.
+     *
+     * Used to grant read-only access to other endpoints (e.g. match details)
+     * to anonymous QR-scanning clients, without requiring a login.
+     *
+     * @param wettkampfid Competition identifier
+     * @param teamid Team identifier
+     * @param token Access token to validate
+     * @return true if the token belongs to an existing session for this wettkampf/team
+     */
+    boolean isValidToken(long wettkampfid, long teamid, String token);
 }
