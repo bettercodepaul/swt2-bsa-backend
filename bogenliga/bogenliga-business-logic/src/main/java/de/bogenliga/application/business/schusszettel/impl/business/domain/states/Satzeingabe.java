@@ -342,12 +342,12 @@ public class Satzeingabe extends State {
     private void validateShooterRegistration(StateContext context, long shooterId) {
         try {
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             MannschaftsmitgliedDO member = context.getMannschaftsmitgliedComponent()
                 .findByMemberAndTeamId(context.getTeamId(), shooterId);
-            
-            if (member.getDsbMitgliedEingesetzt() < currentMatchNr) {
+
+            if (member.getDsbMitgliedEingesetzt() == null
+                    || member.getDsbMitgliedEingesetzt() != Math.toIntExact(currentMatchId)) {
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                     "Shooter " + shooterId + " was not registered in Schützenmeldung for this match");
             }
@@ -363,15 +363,16 @@ public class Satzeingabe extends State {
     
     /**
      * Gets shooters registered for the current match.
+     * Gemeldet-Marker ist die eindeutige Match-ID, nicht die Match-Nr
+     * (Kollision mit dem Kader-Flag eingesetzt=1, siehe Schuetzenmeldung#markShootersAsDeployed).
      */
     private List<Long> getRegisteredShootersForCurrentMatch(StateContext context) {
         try {
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             return context.getMannschaftsmitgliedComponent().findByTeamId(context.getTeamId()).stream()
                 .filter(mm -> mm.getDsbMitgliedEingesetzt() != null &&
-                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchNr)))
+                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchId)))
                 .map(MannschaftsmitgliedDO::getDsbMitgliedId)
                 .distinct() // Remove duplicates
                 .collect(Collectors.toList());
