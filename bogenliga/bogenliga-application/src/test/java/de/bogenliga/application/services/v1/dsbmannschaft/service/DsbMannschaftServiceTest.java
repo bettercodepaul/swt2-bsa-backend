@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.assertj.core.api.Java6Assertions;
 import org.junit.Before;
 import org.junit.Rule;
@@ -761,6 +763,60 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
+    public void delete_meldedeadline_ueberschritten_exception() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() - 24L * 60L * 60L * 1000L)
+        ); // gestern
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // assert
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(ID, principal))
+                .withMessageContaining("Meldedeadline");
+
+        // verify
+        verify(dsbMannschaftComponent).findById(ID);
+        verify(veranstaltungComponent).findById(VERANSTALTUNG_ID);
+        verify(dsbMannschaftComponent, never()).delete(any(), anyLong());
+    }
+
+    @Test
+    public void delete_vor_meldedeadline_erlaubt() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L)
+        ); // morgen
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // act
+        underTest.delete(ID, principal);
+
+        // verify
+        verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(deletedDsbMannschaft).isNotNull();
+        assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
+    }
+
+    @Test
     public void delete_nicht_geplant_exception() {
         // prepare test data
         final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
@@ -776,6 +832,89 @@ public class DsbMannschaftServiceTest {
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.delete(ID, principal));
+    }
+
+    @Test
+    public void delete_no_permission_exception() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, VERANSTALTUNG_ID)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, VEREIN_ID)).thenReturn(false);
+
+        // assert
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(ID, principal));
+
+        // verify
+        verify(dsbMannschaftComponent, never()).delete(any(), anyLong());
+    }
+
+    @Test
+    public void delete_erlaubt_fuer_sportleiter_des_eigenen_vereins() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L)
+        ); // morgen
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, VERANSTALTUNG_ID)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, VEREIN_ID)).thenReturn(true);
+
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // act
+        underTest.delete(ID, principal);
+
+        // verify
+        verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(deletedDsbMannschaft).isNotNull();
+        assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
+    }
+
+    @Test
+    public void delete_erlaubt_fuer_ligaleiter() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase("Geplant");
+        veranstaltungDO.setVeranstaltungMeldeDeadline(
+                new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L)
+        ); // morgen
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, VERANSTALTUNG_ID)).thenReturn(true);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, VEREIN_ID)).thenReturn(false);
+
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+        // act
+        underTest.delete(ID, principal);
+
+        // verify
+        verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(deletedDsbMannschaft).isNotNull();
+        assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
     }
 
     @Test
