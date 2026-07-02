@@ -1,7 +1,10 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
@@ -47,7 +50,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
+    private static final String ERROR_MSG_VERANSTALTUNG_FULL = "Die Veranstaltung hat ihre maximale Kapazität erreicht. Es kann keine weitere Mannschaft hinzugefügt werden.";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
     private static final String PRECONDITION_MSG_WRONG_YEAR = "Year has to be a valid year.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
@@ -361,9 +364,9 @@ public class DsbMannschaftService implements ServiceFacade {
                 }
 
 
-                Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
-
-                        , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+                if (actualMannschaftInVeranstaltungCount.size() >= veranstaltungsgroesse) {
+                    throw new BusinessException(ErrorCode.VERANSTALTUNG_MAX_CAPACITY_ERROR, ERROR_MSG_VERANSTALTUNG_FULL);
+                }
             }
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
@@ -642,8 +645,9 @@ public class DsbMannschaftService implements ServiceFacade {
             if(veranstaltungDO != null) {
                 veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
             }
-            Preconditions.checkArgument(mannschaftenInZielveranstaltung.size() < veranstaltungsgroesse
-                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+            if (mannschaftenInZielveranstaltung.size() >= veranstaltungsgroesse) {
+                throw new BusinessException(ErrorCode.VERANSTALTUNG_MAX_CAPACITY_ERROR, ERROR_MSG_VERANSTALTUNG_FULL);
+            }
         }
 
 
@@ -670,7 +674,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @DeleteMapping(value = "{id}")
-    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_MODIFY_MY_VEREIN})
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
@@ -679,8 +683,13 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
-        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
+                dsbMannschaftDO.getVeranstaltungId())
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN,
+                dsbMannschaftDO.getVereinId())) {
             throw new BusinessException(
                     ErrorCode.NO_PERMISSION_ERROR,
                     ERROR_MSG_DELETE_MANNSCHAFT_NO_PERMISSION
@@ -688,8 +697,33 @@ public class DsbMannschaftService implements ServiceFacade {
         }
 
         // Wenn eine Veranstaltung zugeordnet ist (id!=null) und die Phase ist nicht "Geplant", dann nicht löschen
-        if (dsbMannschaftDO.getVeranstaltungId() != null && !veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId()).getVeranstaltungPhase().equals("Geplant"))
-                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor.");
+        if (dsbMannschaftDO.getVeranstaltungId() != null) {
+            final VeranstaltungDO veranstaltungDO =
+                    veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
+
+            if (veranstaltungDO != null) {
+
+                if (!veranstaltungDO.getVeranstaltungPhase().equals("Geplant")) {
+                    throw new BusinessException(
+                            ErrorCode.ENTITY_CONFLICT_ERROR,
+                            "Mannschaft kann nicht gelöscht werden - es liegen weitere abhängige Daten vor."
+                    );
+                }
+
+                // Neue Prüfung: nur vor Meldedeadline löschen
+                if (veranstaltungDO.getVeranstaltungMeldeDeadline() != null) {
+                    final Date today = new Date();
+                    final Date meldeDeadline = veranstaltungDO.getVeranstaltungMeldeDeadline();
+
+                    if (!today.before(meldeDeadline)) {
+                        throw new BusinessException(
+                                ErrorCode.MANNSCHAFT_DELETE_AFTER_MELDEDEADLINE,
+                                "Mannschaft kann nach Erreichen der Meldedeadline nicht mehr gelöscht werden."
+                        );
+                    }
+                }
+            }
+        }
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
