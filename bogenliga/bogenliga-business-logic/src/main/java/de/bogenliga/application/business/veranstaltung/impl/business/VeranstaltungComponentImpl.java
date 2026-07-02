@@ -98,6 +98,36 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return VeranstaltungMapper.toVeranstaltungDOext(result);
     }
 
+    /** Zentrale Phasen-Hilfslogik (String &lt;-&gt; numerischer Phasenwert). */
+    private static final VeranstaltungPhase VERANSTALTUNG_PHASE = new VeranstaltungPhase();
+    /** Numerischer Phasenwert fuer 'Laufend'. */
+    private static final int PHASE_LAUFEND = VERANSTALTUNG_PHASE.getPhaseAsInt(VeranstaltungPhase.Phase.LAUFEND);
+
+    /**
+     * Einzige Stelle, an der ueber 'Laufend' entschieden wird: Vergleich des
+     * numerischen Phasenwerts (robuster als das String-Label). Null-safe.
+     */
+    private static boolean isPhaseLaufend(final Integer phase) {
+        return phase != null && phase == PHASE_LAUFEND;
+    }
+
+    @Override
+    public boolean isVeranstaltungLaufend(final long veranstaltungId) {
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
+        // Null-safe: existiert die Veranstaltung nicht, ist sie nicht 'Laufend'.
+        final VeranstaltungBEext result = veranstaltungDAOext.findById(veranstaltungId);
+        return result != null && isPhaseLaufend(result.getVeranstaltungPhase());
+    }
+
+    @Override
+    public boolean isVeranstaltungLaufend(final VeranstaltungDO veranstaltung) {
+        // Variante fuer bereits geladene Veranstaltungen (vermeidet ein erneutes findById).
+        // Das DO traegt nur das Label -> zentral in den numerischen Phasenwert wandeln.
+        return veranstaltung != null
+                && isPhaseLaufend(VERANSTALTUNG_PHASE.getPhaseFromStringToInt(veranstaltung.getVeranstaltungPhase()));
+    }
+
     @Override
     public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
         Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);

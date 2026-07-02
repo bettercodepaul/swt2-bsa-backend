@@ -64,10 +64,11 @@ public class SatzeingabeTest {
         testMatch.setSatzpunkte(2L);
         testMatch.setMatchpunkte(0L);
         
+        // gemeldet = eingesetzt traegt die eindeutige Match-ID (300), nicht die Match-Nr
         testTeamMembers = Arrays.asList(
-            createTeamMember(1L, 101L, 1),
-            createTeamMember(2L, 102L, 1),
-            createTeamMember(3L, 103L, 1)
+            createTeamMember(1L, 101L, 300),
+            createTeamMember(2L, 102L, 300),
+            createTeamMember(3L, 103L, 300)
         );
         
         testMembers = Arrays.asList(
@@ -316,37 +317,13 @@ public class SatzeingabeTest {
     }
 
     @Test
-    public void updateMatchScoresAfterSetCompletion_bothTeamsComplete_updatesScores() {
-        List<PasseDO> opponentPasses = Arrays.asList(
-            createPass(4L, 101L, 301L, 1, 104L, 8, 7, 6),
-            createPass(5L, 101L, 301L, 1, 105L, 7, 6, 5),
-            createPass(6L, 101L, 301L, 1, 106L, 6, 5, 4)
-        );
-        when(mockPasseComponent.findByMannschaftMatchId(101L, 300L)).thenReturn(opponentPasses);
-        
+    public void handlePostOperation_doesNotUpdateMatchScores_scoresAreUpdatedCentrally() {
+        // Satzpunkte/Matchpunkte werden zentral in TabletSchusszettelComponentImpl
+        // nach der Satzeingabe neu berechnet - der State selbst schreibt keine Match-Scores mehr.
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
-        
-        verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(0L));
-    }
 
-    @Test
-    public void updateMatchScoresAfterSetCompletion_teamCompletedNoPasses_skipsUpdate() {
-        when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L)).thenReturn(1);
-        
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void updateMatchScoresAfterSetCompletion_exceptionInUpdate_continuesGracefully() {
-        when(mockMatchAnalysisService.getNextPasseNumberForTeam(300L, 100L))
-            .thenThrow(new RuntimeException("DB error"));
-
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        // The method may return false due to exceptions in the complex logic
-        // Just verify it doesn't throw exceptions and executes the path
-        assertThat(result == true || !result).isTrue();
+        verify(mockMatchComponent, never()).update(any(MatchDO.class), anyLong());
     }
 
     @Test
@@ -404,6 +381,22 @@ public class SatzeingabeTest {
     }
 
     @Test
+    public void prepareResponseData_kaderFlagMemberNotCountedAsRegistered() {
+        // Regression zum Ticket "inkonsistente Schuetzen": ein 4. Kadermitglied mit
+        // blossem Waehlbar-Flag (eingesetzt=1) kollidierte frueher mit Match Nr. 1
+        // und liess die Satzeingabe mit >3 Schuetzen abbrechen
+        List<MannschaftsmitgliedDO> membersWithExtra = new ArrayList<>(testTeamMembers);
+        membersWithExtra.add(createTeamMember(4L, 104L, 1));
+        when(mockMannschaftsmitgliedComponent.findByTeamId(100L)).thenReturn(membersWithExtra);
+
+        Map<String, Object> result = state.prepareResponseData(mockContext);
+
+        @SuppressWarnings("unchecked")
+        List<SchuetzeStammdatenDO> stammdaten = (List<SchuetzeStammdatenDO>) result.get("schuetzeStammDaten");
+        assertThat(stammdaten).hasSize(3);
+    }
+
+    @Test
     public void getRegisteredShootersForCurrentMatch_exceptionInQuery_returnsEmpty() {
         when(mockMannschaftsmitgliedComponent.findByTeamId(100L))
             .thenThrow(new RuntimeException("DB error"));
@@ -434,32 +427,6 @@ public class SatzeingabeTest {
     @Test
     public void calculateSetPoints_validPasses_returnsCorrectScore() {
         // Indirect test through score update functionality
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void updateTeamMatchScores_validMatch_updatesSuccessfully() {
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        assertThat(result).isTrue();
-        
-        verify(mockMatchComponent, atLeastOnce()).findById(300L);
-    }
-
-    @Test
-    public void updateTeamMatchScores_matchNotFound_continuesGracefully() {
-        when(mockMatchComponent.findById(300L)).thenReturn(null);
-
-        boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
-        // The method may return false due to exceptions when match is not found
-        // Just verify it doesn't throw exceptions and executes the path
-        assertThat(result == true || result == false).isTrue();
-    }
-
-    @Test
-    public void updateTeamMatchScores_exceptionInUpdate_continuesGracefully() {
-        doThrow(new RuntimeException("DB error")).when(mockMatchComponent).update(any(MatchDO.class), anyLong());
-        
         boolean result = state.handlePostOperation(mockContext, "submitSatz", validSatzEingabe);
         assertThat(result).isTrue();
     }

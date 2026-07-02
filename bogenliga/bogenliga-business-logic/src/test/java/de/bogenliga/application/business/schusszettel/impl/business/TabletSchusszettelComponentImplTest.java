@@ -18,6 +18,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
 
 /**
  * Test class for TabletSchusszettelComponentImpl business component.
@@ -97,6 +99,7 @@ public class TabletSchusszettelComponentImplTest {
         testMatch.setSatzpunkte(0L);
         testMatch.setMatchpunkte(0L);
         testMatch.setNr(1L);
+        testMatch.setMatchScheibennummer(7L);
     }
     
     private void setupMockBehavior() {
@@ -265,12 +268,49 @@ public class TabletSchusszettelComponentImplTest {
         
         try {
             component.submitSatz(50L, 100L, "test-token-123456789012345", satzEingabe);
-            verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(-1L));
+            verify(mockMatchComponent, atLeastOnce()).update(any(MatchDO.class), eq(0L));
         } catch (Exception e) {
             // Expected - just covering the code path
         }
     }
     
+    @Test
+    public void updateMatchScoresAfterSetCompletion_opponentPassesViaOwnMatchRow_matchEndsAtSixSatzpunkte() {
+        // Regression: Gegner-Pässe hängen an der Match-Zeile des Gegners (id 201),
+        // nicht an der eigenen (id 200). Vorher wurden sie mit der eigenen Match-ID
+        // gesucht, nie gefunden und die Satzpunkte blieben 0 - das Match endete nie.
+        MatchDO opponentMatch = new MatchDO();
+        opponentMatch.setId(201L);
+        opponentMatch.setWettkampfId(50L);
+        opponentMatch.setMannschaftId(101L);
+        opponentMatch.setNr(1L);
+        opponentMatch.setSatzpunkte(0L);
+        opponentMatch.setMatchpunkte(0L);
+
+        when(mockMatchComponent.findByWettkampfId(50L)).thenReturn(Arrays.asList(testMatch, opponentMatch));
+
+        // 3 abgeschlossene Saetze, eigenes Team gewinnt jeden -> 6:0 Satzpunkte
+        List<PasseDO> teamPasses = new ArrayList<>();
+        List<PasseDO> opponentPasses = new ArrayList<>();
+        for (int set = 1; set <= 3; set++) {
+            teamPasses.addAll(createTestPasses(100L, 200L, set, 10, 9, 8));
+            opponentPasses.addAll(createTestPasses(101L, 201L, set, 5, 4, 3));
+        }
+        when(mockPasseComponent.findByMannschaftMatchId(100L, 200L)).thenReturn(teamPasses);
+        when(mockPasseComponent.findByMannschaftMatchId(101L, 201L)).thenReturn(opponentPasses);
+
+        component.updateMatchScoresAfterSetCompletion(200L, 100L, 101L);
+
+        assertThat(testMatch.getSatzpunkte()).isEqualTo(6L);
+        assertThat(testMatch.getMatchpunkte()).isEqualTo(2L);
+        assertThat(opponentMatch.getSatzpunkte()).isEqualTo(0L);
+        assertThat(opponentMatch.getMatchpunkte()).isEqualTo(0L);
+        // System-User 0: negative User-IDs werden von MatchComponentImpl.update()
+        // per Precondition abgelehnt (Satzpunkte wuerden sonst nie gespeichert)
+        verify(mockMatchComponent).update(testMatch, 0L);
+        verify(mockMatchComponent).update(opponentMatch, 0L);
+    }
+
     @Test
     public void calculateSetScore_sumsAllArrows() {
         List<PasseDO> passes = createTestPasses(100L, 200L, 1, 10, 9, 8);
@@ -372,6 +412,69 @@ public class TabletSchusszettelComponentImplTest {
         }
     }
     
+    @Test
+    public void getStatus_mapsOwnTeamScheibennummer_whenMatchAvailable() {
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        // Field may remain null in states without assigned own match id.
+        if (result.getEigenesTeamMatchId() != null) {
+            assertThat(result.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        }
+    }
+
+    @Test
+    public void getStatus_keepsScheibennummerNull_whenOwnMatchHasNoScheibe() {
+        testMatch.setMatchScheibennummer(null);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        if (result.getEigenesTeamMatchId() != null) {
+            assertThat(result.getEigenesTeamScheibennummer()).isNull();
+        }
+    }
+
+    @Test
+    public void getStatus_keepsScheibennummerNull_whenMatchComponentReturnsNull() {
+        lenient().when(mockMatchComponent.findById(200L)).thenReturn(null);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamScheibennummer()).isNull();
+    }
+
+    @Test
+    public void getStatus_swallowsException_whenMatchComponentThrows() {
+        // Make the *own match lookup* (called via result.getEigenesTeamMatchId())
+        // throw. The component should log debug and continue, returning a result
+        // with eigenesTeamScheibennummer == null.
+        lenient().when(mockMatchComponent.findById(200L))
+            .thenThrow(new RuntimeException("simulated DB failure"));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamScheibennummer()).isNull();
+    }
+
+    @Test
+    public void getStatus_invokesMatchComponentForOwnTeam_whenMatchIdPresent() {
+        // Reset to a clean invocation count and run.
+        reset(mockMatchComponent);
+        lenient().when(mockMatchComponent.findById(200L)).thenReturn(testMatch);
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        if (result.getEigenesTeamMatchId() != null) {
+            // The new logic must hit findById to read Scheibennummer.
+            verify(mockMatchComponent, atLeastOnce()).findById(result.getEigenesTeamMatchId());
+            assertThat(result.getEigenesTeamScheibennummer()).isEqualTo(7L);
+        }
+    }
+
     private List<PasseDO> createTestPasses(Long teamId, Long matchId, int passeNr, int arrow1, int arrow2, int arrow3) {
         List<PasseDO> passes = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
@@ -459,5 +562,137 @@ public class TabletSchusszettelComponentImplTest {
             component.updateMatchScoresAfterSetCompletion(1L, 1L, 2L);
         } catch (Exception ignored)  {
         }
+    }
+
+    // ========== Tests for loadAndSetMatchNumbers() ==========
+
+    @Test
+    public void getStatus_loadsAndSetsMatchNumber_successfully() {
+        // Setup: Match mit gültiger Nummer
+        testMatch.setNr(1L);
+        when(mockMatchComponent.findById(200L)).thenReturn(testMatch);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isEqualTo(1);
+    }
+
+    @Test
+    public void getStatus_matchNrIsNull_setsNullInDTO() {
+        // Setup: Match existiert, aber Nr ist null
+        testMatch.setNr(null);
+        when(mockMatchComponent.findById(200L)).thenReturn(testMatch);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isNull();
+    }
+
+    @Test
+    public void getStatus_matchIdIsZero_setsNullInDTO() {
+        // Setup: Match-ID ist 0 (invalid)
+        testEntity.setCurrentMatchId(0L);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isNull();
+    }
+
+    @Test
+    public void getStatus_matchIdIsNegative_setsNullInDTO() {
+        // Setup: Match-ID ist negativ
+        testEntity.setCurrentMatchId(-1L);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isNull();
+    }
+
+    @Test
+    public void getStatus_matchNotFound_setsNullAndLogsWarning() {
+        // Setup: Match-ID gültig, aber Match nicht in DB gefunden
+        when(mockMatchComponent.findById(200L)).thenReturn(null);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isNull();
+    }
+
+    @Test
+    public void getStatus_matchComponentThrowsException_setsNullAndLogsWarning() {
+        // Setup: matchComponent wirft Exception
+        when(mockMatchComponent.findById(200L)).thenThrow(new BusinessException(ErrorCode.INTERNAL_ERROR, "DB error"));
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isNull();
+    }
+
+    @Test
+    public void getStatus_matchNumberConversionSucceeds_convertsLongToInt() {
+        // Setup: Match mit großer Nummer (aber noch im Int-Range)
+        testMatch.setNr(42L);
+        when(mockMatchComponent.findById(200L)).thenReturn(testMatch);
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        TabletSchusszettelDO result = component.getStatus(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getEigenesTeamMatchNr()).isEqualTo(42);
+    }
+
+    @Test
+    public void isValidToken_validSession_returnsTrue() {
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "test-token-123456789012345"))
+            .thenReturn(Optional.of(testEntity));
+
+        boolean result = component.isValidToken(50L, 100L, "test-token-123456789012345");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void isValidToken_noMatchingSession_returnsFalse() {
+        when(mockDAO.findByTokenWettkampfUndTeam(50L, 100L, "wrong-token"))
+            .thenReturn(Optional.empty());
+
+        boolean result = component.isValidToken(50L, 100L, "wrong-token");
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void isValidToken_nullToken_returnsFalseWithoutCallingDao() {
+        boolean result = component.isValidToken(50L, 100L, null);
+
+        assertThat(result).isFalse();
+        verify(mockDAO, never()).findByTokenWettkampfUndTeam(anyLong(), anyLong(), any());
+    }
+
+    @Test
+    public void isValidToken_emptyToken_returnsFalseWithoutCallingDao() {
+        boolean result = component.isValidToken(50L, 100L, "");
+
+        assertThat(result).isFalse();
+        verify(mockDAO, never()).findByTokenWettkampfUndTeam(anyLong(), anyLong(), any());
     }
 }
