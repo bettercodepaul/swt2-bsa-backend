@@ -320,10 +320,10 @@ public class DsbMitgliedServiceTest {
         when(userComponent.findById(USER)).thenReturn(userDO);
         when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
 
-        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER but has CAN_MODIFY_MY_VEREIN
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER and CAN_READ_MY_VEREIN
         when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
-        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MY_VEREIN)).thenReturn(true);
-        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(true);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(true);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(true);
 
 
         DsbMitgliedDTO actual;
@@ -379,6 +379,61 @@ public class DsbMitgliedServiceTest {
     }
 
     @Test
+    public void findByIdNoPermission(){
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER and CAN_READ_MY_VEREIN
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(false);
+
+        // assert that NoPermissionException is thrown
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.findById(ID));
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+    }
+
+    @Test
+    public void findByIdWrongClubSportleiter(){
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER but has CAN_READ_MY_VEREIN but tries to find dsbmitglied not in his club
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(true);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(false);
+
+        // assert that NoPermissionException is thrown
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.findById(ID));
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+    }
+
+    @Test
     public void findBySearch() {
         //prepare test data
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
@@ -401,7 +456,6 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findBySearch(dsbMitgliedDO.getVorname());
     }
-
 
     @Test
     public void insertUserId() {

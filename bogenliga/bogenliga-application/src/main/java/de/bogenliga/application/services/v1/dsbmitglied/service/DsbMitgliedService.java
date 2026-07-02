@@ -176,13 +176,13 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_DSBMITGLIEDER, UserPermission.CAN_READ_MY_VEREIN})
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
 
         if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
-                || this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMitgliedDO.getVereinsId()))
+                || this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId()))
         {
             LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
