@@ -985,4 +985,52 @@ final VeranstaltungBEext expectedBEext = new VeranstaltungBEext();
 */
 
 
+    @Test
+    public void isVeranstaltungLaufend_laufend_true() {
+        final VeranstaltungBEext be = new VeranstaltungBEext();
+        be.setVeranstaltungId(VERANSTALTUNG_ID);
+        be.setVeranstaltungPhase(VERANSTALTUNG_PHASE_LAUFEND); // 2 = Laufend
+        when(veranstaltungDAOext.findById(VERANSTALTUNG_ID)).thenReturn(be);
+
+        assertThat(underTest.isVeranstaltungLaufend(VERANSTALTUNG_ID)).isTrue();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_geplant_false() {
+        final VeranstaltungBEext be = new VeranstaltungBEext();
+        be.setVeranstaltungId(VERANSTALTUNG_ID);
+        be.setVeranstaltungPhase(VERANSTALTUNG_PHASE); // 1 = Geplant
+        when(veranstaltungDAOext.findById(VERANSTALTUNG_ID)).thenReturn(be);
+
+        assertThat(underTest.isVeranstaltungLaufend(VERANSTALTUNG_ID)).isFalse();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_notFound_false() {
+        when(veranstaltungDAOext.findById(anyLong())).thenReturn(null);
+
+        assertThat(underTest.isVeranstaltungLaufend(VERANSTALTUNG_ID)).isFalse();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_byDO_laufend_true() {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE_LAUFEND_NAME); // "Laufend"
+
+        assertThat(underTest.isVeranstaltungLaufend(veranstaltungDO)).isTrue();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_byDO_geplant_false() {
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungPhase(VERANSTALTUNG_PHASE_GEPLANT); // "Geplant"
+
+        assertThat(underTest.isVeranstaltungLaufend(veranstaltungDO)).isFalse();
+    }
+
+    @Test
+    public void isVeranstaltungLaufend_byDO_null_false() {
+        assertThat(underTest.isVeranstaltungLaufend((VeranstaltungDO) null)).isFalse();
+    }
+
 }
