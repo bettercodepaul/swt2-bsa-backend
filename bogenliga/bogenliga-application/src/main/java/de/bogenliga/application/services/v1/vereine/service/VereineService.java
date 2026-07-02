@@ -133,12 +133,20 @@ public class VereineService implements ServiceFacade {
 
         if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN) || this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER)) {
             //der User hat allgemeine Schreibrechte - wir machen weiter
-        } else if (this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
+        } else if (this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+
+                UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
             // der user modifiziert seinen eigenen Verein und ist Sportleiter
             VereinDO temp = vereinComponent.findById(vereineDTO.getId());
             // das darf aber aber nur wenn der Verein in der bestehenen Region verbleibt - d.h. diese sich nicht ändert
-            if (!temp.getRegionId().equals(vereineDTO.getRegionId())) throw new NoPermissionException();
+            if (!temp.getRegionId().equals(vereineDTO.getRegionId())
+                    || !temp.getName().equals(vereineDTO.getName())
+                    || !temp.getDsbIdentifier().equals(vereineDTO.getIdentifier())) {
+                throw new NoPermissionException();
+            }
         } else throw new NoPermissionException();
+
+
 
         final VereinDO newVereinDo = VereineDTOMapper.toDO.apply(vereineDTO);
         final long userID = UserProvider.getCurrentUserId(principal);

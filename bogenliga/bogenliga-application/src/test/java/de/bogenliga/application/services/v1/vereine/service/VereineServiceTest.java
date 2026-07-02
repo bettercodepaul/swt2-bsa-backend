@@ -5,6 +5,7 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -245,6 +246,68 @@ public class VereineServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
+    }
+
+    @Test
+    public void update_sportleiter_darf_editierbare_felder_aendern() throws NoPermissionException {
+        // prepare test data
+        final VereineDTO input = getVereineDTO();
+        input.setWebsite("https://neu.de");
+        input.setDescription("Neue Beschreibung");
+        input.setIcon("neuesIcon");
+
+        final VereinDO existing = getVereinDO();
+        final VereinDO updated = getVereinDO();
+        updated.setWebsite("https://neu.de");
+        updated.setDescription("Neue Beschreibung");
+        updated.setIcon("neuesIcon");
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, VEREIN_ID))
+                .thenReturn(true);
+
+        when(vereinComponent.findById(VEREIN_ID)).thenReturn(existing);
+        when(vereinComponent.update(any(), anyLong())).thenReturn(updated);
+
+        // act
+        final VereineDTO actual = underTest.update(input, principal);
+
+        // assert
+        assertThat(actual).isNotNull();
+        verify(vereinComponent).update(vereinDOArgumentCaptor.capture(), anyLong());
+
+        final VereinDO updatedVerein = vereinDOArgumentCaptor.getValue();
+        assertThat(updatedVerein).isNotNull();
+        assertThat(updatedVerein.getWebsite()).isEqualTo("https://neu.de");
+        assertThat(updatedVerein.getDescription()).isEqualTo("Neue Beschreibung");
+        assertThat(updatedVerein.getIcon()).isEqualTo("neuesIcon");
+    }
+
+    @Test
+    public void update_sportleiter_darf_name_identifier_und_region_nicht_aendern() {
+        // prepare test data
+        final VereineDTO input = getVereineDTO();
+        input.setName("Neuer Vereinsname");
+        input.setIdentifier("NEU12345");
+        input.setRegionId(999L);
+
+        final VereinDO existing = getVereinDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, VEREIN_ID))
+                .thenReturn(true);
+
+        when(vereinComponent.findById(VEREIN_ID)).thenReturn(existing);
+
+        // assert
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.update(input, principal));
+
+        verify(vereinComponent).findById(VEREIN_ID);
     }
 
 
