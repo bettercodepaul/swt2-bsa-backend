@@ -198,19 +198,23 @@ public class Schuetzenmeldung extends State {
     }
     
     /**
-     * Marks shooters as deployed for current match using match number.
+     * Marks shooters as deployed for current match using the unique match id.
+     *
+     * <p>Die Match-Nr (1..7) darf hier nicht verwendet werden: sie kollidiert mit dem
+     * Kader-Flag {@code eingesetzt = 1} ("in der Schuetzenmeldung waehlbar"). Bei
+     * Mannschaften mit mehr als 3 Kadermitgliedern galten dadurch in Match Nr. 1
+     * alle Mitglieder als "gemeldet" und die Satzeingabe brach mit
+     * "inkonsistente Schuetzen" ab.</p>
      */
     private void markShootersAsDeployed(StateContext context, List<Long> shooterIds) {
         try {
-            // Get current match number from session
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             for (Long shooterId : shooterIds) {
                 try {
                     MannschaftsmitgliedDO member = context.getMannschaftsmitgliedComponent()
                         .findByMemberAndTeamId(context.getTeamId(), shooterId);
-                    member.setDsbMitgliedEingesetzt(Math.toIntExact(currentMatchNr));
+                    member.setDsbMitgliedEingesetzt(Math.toIntExact(currentMatchId));
                     context.getMannschaftsmitgliedComponent().update(member, 0L);
 
                 } catch (Exception e) {
@@ -231,11 +235,10 @@ public class Schuetzenmeldung extends State {
     private List<MannschaftsmitgliedDO> getDeployedMembersForCurrentMatch(StateContext context) {
         try {
             long currentMatchId = context.getCurrentMatchId();
-            long currentMatchNr = context.getMatchComponent().findById(currentMatchId).getNr();
-            
+
             return context.getMannschaftsmitgliedComponent().findByTeamId(context.getTeamId()).stream()
                 .filter(mm -> mm.getDsbMitgliedEingesetzt() != null &&
-                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchNr)))
+                             mm.getDsbMitgliedEingesetzt().equals(Math.toIntExact(currentMatchId)))
                 .collect(Collectors.toList());
         } catch (Exception e) {
             LOGGER.error("Error getting deployed members for current match: {}", e.getMessage());
