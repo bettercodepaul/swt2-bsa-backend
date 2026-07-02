@@ -308,15 +308,32 @@ public class DsbMitgliedServiceTest {
 
 
     @Test
-    public void findById() {
+    public void findByIdSportleiter() {
         // prepare test data
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
-        // configure mocks
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
 
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER and CAN_READ_MY_VEREIN
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(true);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(true);
+
+
+        DsbMitgliedDTO actual;
         // call test method
-        final DsbMitgliedDTO actual = underTest.findById(ID);
+        try {
+            actual = underTest.findById(ID);
+        }
+        catch (NoPermissionException e) {
+            actual = null;
+        }
 
         // assert result
         assertThat(actual).isNotNull();
@@ -327,6 +344,94 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findById(ID);
     }
 
+    @Test
+    public void findById() {
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user has CAN_READ_DSBMITGLIEDER
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(true);
+
+        DsbMitgliedDTO actual;
+        // call test method
+        try {
+            actual = underTest.findById(ID);
+        }
+        catch (NoPermissionException e) {
+            actual = null;
+        }
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(dsbMitgliedDO.getId());
+        assertThat(actual.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+    }
+
+    @Test
+    public void findByIdNoPermission(){
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER and CAN_READ_MY_VEREIN
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(false);
+
+        // assert that NoPermissionException is thrown
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.findById(ID));
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+    }
+
+    @Test
+    public void findByIdWrongClubSportleiter(){
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+
+        // configure mocks similar to findAllInVerein: user belongs to the same verein
+        final UserDO userDO = new UserDO();
+        userDO.setId(USER);
+        userDO.setDsbMitgliedId(ID);
+
+        when(userComponent.findById(USER)).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(dsbMitgliedDO);
+
+        // simulate that the user DOES NOT have CAN_READ_DSBMITGLIEDER but has CAN_READ_MY_VEREIN but tries to find dsbmitglied not in his club
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_DSBMITGLIEDER)).thenReturn(false);
+        when(requiresOnePermissionAspect.hasPermission(UserPermission.CAN_READ_MY_VEREIN)).thenReturn(true);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_READ_MY_VEREIN, dsbMitgliedDO.getVereinsId())).thenReturn(false);
+
+        // assert that NoPermissionException is thrown
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.findById(ID));
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(ID);
+    }
 
     @Test
     public void findBySearch() {
@@ -351,7 +456,6 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findBySearch(dsbMitgliedDO.getVorname());
     }
-
 
     @Test
     public void insertUserId() {
