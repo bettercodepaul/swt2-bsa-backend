@@ -122,12 +122,13 @@ public class SchuetzenmeldungTest {
 
     @Test
     public void isDatabaseReadyForTransition_threeShootersDeployed_returnsTrue() {
-        when(mockMmComponent.findByTeamId(100L)).thenReturn(
-            testTeamMembers.stream()
-                .filter(tm -> tm.getDsbMitgliedEingesetzt().equals(1))
-                .toList()
-        );
-        
+        // gemeldet = eingesetzt traegt die Match-ID (200), nicht die Match-Nr
+        when(mockMmComponent.findByTeamId(100L)).thenReturn(Arrays.asList(
+            createTeamMember(1L, 101L, 200),
+            createTeamMember(2L, 102L, 200),
+            createTeamMember(3L, 103L, 200)
+        ));
+
         boolean result = state.isDatabaseReadyForTransition(mockContext, State.STATUS_SATZEINGABE);
         assertThat(result).isTrue();
     }
@@ -250,9 +251,14 @@ public class SchuetzenmeldungTest {
         
         boolean result = state.handlePostOperation(mockContext, "submitSchuetzen", shooterIds);
         assertThat(result).isTrue();
-        
+
         verify(mockContext).updateSessionStatus(State.STATUS_SATZEINGABE);
         verify(mockMmComponent, times(3)).update(any(MannschaftsmitgliedDO.class), eq(0L));
+
+        // eingesetzt muss die eindeutige Match-ID tragen, nicht die Match-Nr
+        assertThat(testTeamMembers.get(0).getDsbMitgliedEingesetzt()).isEqualTo(200);
+        assertThat(testTeamMembers.get(1).getDsbMitgliedEingesetzt()).isEqualTo(200);
+        assertThat(testTeamMembers.get(2).getDsbMitgliedEingesetzt()).isEqualTo(200);
     }
 
     @Test
@@ -300,8 +306,15 @@ public class SchuetzenmeldungTest {
 
     @Test
     public void getDeployedMembersForCurrentMatch_validMatch_returnsFilteredMembers() {
-        when(mockMmComponent.findByTeamId(100L)).thenReturn(testTeamMembers);
-        
+        // Regression zum Ticket "inkonsistente Schuetzen": Kadermitglieder mit
+        // blossem Waehlbar-Flag (eingesetzt=1) duerfen nicht als gemeldet zaehlen
+        when(mockMmComponent.findByTeamId(100L)).thenReturn(Arrays.asList(
+            createTeamMember(1L, 101L, 200),
+            createTeamMember(2L, 102L, 200),
+            createTeamMember(3L, 103L, 200),
+            createTeamMember(4L, 104L, 1)
+        ));
+
         boolean result = state.isDatabaseReadyForTransition(mockContext, State.STATUS_SATZEINGABE);
         assertThat(result).isTrue();
     }
