@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
+import java.util.Date;
 
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -20,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
@@ -70,6 +74,7 @@ public class DownloadService implements ServiceFacade {
     private final RueckennummernComponent rueckennummernComponent;
     private final WettkampfComponent wettkampfComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
@@ -84,6 +89,7 @@ public class DownloadService implements ServiceFacade {
                            final RueckennummernComponent rueckennummernComponent,
                            final WettkampfComponent wettkampfComponent,
                            final DsbMannschaftComponent dsbMannschaftComponent,
+                           final VeranstaltungComponent veranstaltungComponent,
                            final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
@@ -93,6 +99,7 @@ public class DownloadService implements ServiceFacade {
         this.rueckennummernComponent = rueckennummernComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
@@ -246,7 +253,14 @@ public class DownloadService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public
     ResponseEntity<InputStreamResource> downloadRueckennummernPdf(@RequestParam("mannschaftid") final long mannschaftid) {
-
+        var mannschaft = dsbMannschaftComponent.findById(mannschaftid);
+        boolean isSportleiter = requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, mannschaft.getVereinId());
+        boolean isLigaleiter = requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, mannschaft.getVeranstaltungId());
+        if (isSportleiter && !isLigaleiter) {
+            checkDownloadDeadline(mannschaft);
+        }
 
         final byte[] fileBloB = rueckennummernComponent.getMannschaftsRueckennummernPDFasByteArray(mannschaftid);
 
@@ -272,10 +286,36 @@ public class DownloadService implements ServiceFacade {
     public
     ResponseEntity<InputStreamResource> downloadRueckennummerPdf(@RequestParam("mannschaftid") final long mannschaftid,
                                                                  @RequestParam("dsbmitgliedid") final long dsbmitgliedid) {
+        var mannschaft = dsbMannschaftComponent.findById(mannschaftid);
+        boolean isSportleiter = requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, mannschaft.getVereinId());
+        boolean isLigaleiter = requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, mannschaft.getVeranstaltungId());
+        if (isSportleiter && !isLigaleiter) {
+            checkDownloadDeadline(mannschaft);
+        }
 
         final byte[] fileBloB = rueckennummernComponent.getRueckennummerPDFasByteArray(mannschaftid,dsbmitgliedid);
 
         return generateInputStream(fileBloB);
+    }
+
+    /**
+     * Throws BusinessException if the current user is a Sportleiter and the Meldedeadline has not yet passed.
+     * Ligaleiter for the event and Admins are not affected by this check.
+     */
+    private void checkDownloadDeadline(DsbMannschaftDO mannschaft) {
+        VeranstaltungDO veranstaltung = veranstaltungComponent.findById(mannschaft.getVeranstaltungId());
+        if (veranstaltung == null || veranstaltung.getVeranstaltungMeldeDeadline() == null) {
+            return;
+        }
+        final Date today = new Date();
+        if (!today.after(veranstaltung.getVeranstaltungMeldeDeadline())) {
+            throw new BusinessException(
+                    ErrorCode.PDF_DOWNLOAD_BEFORE_MELDEDEADLINE,
+                    "PDF-Download erst nach Ablauf der Meldedeadline möglich."
+            );
+        }
     }
 
     /**
@@ -327,6 +367,10 @@ public class DownloadService implements ServiceFacade {
                     String.format("User does not have permission to download license for team %d", teamID));
         }
 
+        if (isSportleiter && !isLigaleiter) {
+            checkDownloadDeadline(mannschaft);
+        }
+
         final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
 
         return generateInputStream(fileBloB);
@@ -367,6 +411,10 @@ public class DownloadService implements ServiceFacade {
         if (!isSportleiter && !isLigaleiter) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
                     String.format("User does not have permission to download licenses for team %d", mannschaftid));
+        }
+
+        if (isSportleiter && !isLigaleiter) {
+            checkDownloadDeadline(mannschaft);
         }
 
         final byte[] fileBloB = lizenzComponent.getMannschaftsLizenzenPDFasByteArray(mannschaftid);
