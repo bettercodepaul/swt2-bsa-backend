@@ -64,10 +64,11 @@ public class SatzeingabeTest {
         testMatch.setSatzpunkte(2L);
         testMatch.setMatchpunkte(0L);
         
+        // gemeldet = eingesetzt traegt die eindeutige Match-ID (300), nicht die Match-Nr
         testTeamMembers = Arrays.asList(
-            createTeamMember(1L, 101L, 1),
-            createTeamMember(2L, 102L, 1),
-            createTeamMember(3L, 103L, 1)
+            createTeamMember(1L, 101L, 300),
+            createTeamMember(2L, 102L, 300),
+            createTeamMember(3L, 103L, 300)
         );
         
         testMembers = Arrays.asList(
@@ -373,6 +374,22 @@ public class SatzeingabeTest {
     public void getRegisteredShootersForCurrentMatch_validMatch_returnsShooters() {
         Map<String, Object> result = state.prepareResponseData(mockContext);
         assertThat(result).isNotNull();
+
+        @SuppressWarnings("unchecked")
+        List<SchuetzeStammdatenDO> stammdaten = (List<SchuetzeStammdatenDO>) result.get("schuetzeStammDaten");
+        assertThat(stammdaten).hasSize(3);
+    }
+
+    @Test
+    public void prepareResponseData_kaderFlagMemberNotCountedAsRegistered() {
+        // Regression zum Ticket "inkonsistente Schuetzen": ein 4. Kadermitglied mit
+        // blossem Waehlbar-Flag (eingesetzt=1) kollidierte frueher mit Match Nr. 1
+        // und liess die Satzeingabe mit >3 Schuetzen abbrechen
+        List<MannschaftsmitgliedDO> membersWithExtra = new ArrayList<>(testTeamMembers);
+        membersWithExtra.add(createTeamMember(4L, 104L, 1));
+        when(mockMannschaftsmitgliedComponent.findByTeamId(100L)).thenReturn(membersWithExtra);
+
+        Map<String, Object> result = state.prepareResponseData(mockContext);
 
         @SuppressWarnings("unchecked")
         List<SchuetzeStammdatenDO> stammdaten = (List<SchuetzeStammdatenDO>) result.get("schuetzeStammDaten");

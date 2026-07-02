@@ -158,7 +158,8 @@ public class TabletSchusszettelService {
      */
     @RequiresOnePermissions(perm = {
             UserPermission.CAN_MODIFY_WETTKAMPF,
-            UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+            UserPermission.CAN_MODIFY_MY_WETTKAMPF,
+            UserPermission.CAN_MODIFY_MY_ORT})
     @GetMapping("/sessions")
     public ResponseEntity<TabletSessionInfoDTO> getTabletSessionInfo(@RequestParam Long wettkampfid) {
         
