@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Bundesliga", "ligaUebergeordnetId": null },
+  { "id": 2, "name": "Regionalliga Nord", "ligaUebergeordnetId": 1 },
+  { "id": 3, "name": "Regionalliga Süd", "ligaUebergeordnetId": 1 },
+  { "id": 4, "name": "Oberliga Hamburg", "ligaUebergeordnetId": 2 },
+  { "id": 5, "name": "Oberliga Bremen", "ligaUebergeordnetId": 2 },
+  { "id": 6, "name": "Verbandsliga München", "ligaUebergeordnetId": 3 }
+]
